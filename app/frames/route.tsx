@@ -172,7 +172,6 @@ const handleRequest = frames(async (ctx) => {
     if (includeMoreButton) {
       buttonEndIndex--;
     }
-    console.log(allButtons, includeMoreButton);
     return [
       ...(allButtons.length <= 3
         ? allButtons

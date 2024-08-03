@@ -1,5 +1,5 @@
 import { farcasterHubContext } from "frames.js/middleware";
-import { createFrames, Button } from "frames.js/next";
+import { createFrames } from "frames.js/next";
 import { FrameImage } from "../UI/FrameImage";
 import yaml from "js-yaml";
 import fs from "fs";

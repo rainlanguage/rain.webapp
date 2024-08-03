@@ -1,4 +1,4 @@
-import { fetchMetadata } from "frames.js/next";
+import { Button, fetchMetadata } from "frames.js/next";
 import { Metadata } from "next";
 import { FrameImage } from "./UI/FrameImage";
 

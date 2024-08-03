@@ -72,6 +72,16 @@ export const generateButtons = (
   isWebapp: boolean | undefined = false
 ): any[] => {
   let buttons: any[] = [];
+  if (currentState.textInputLabel) {
+    return [
+      <Button action="post" target={{ query: { textInputLabel: "" } }}>
+        {"<"}
+      </Button>,
+      <Button action="post" target={{ query: { buttonValue: "submit" } }}>
+        Submit
+      </Button>,
+    ];
+  }
   switch (currentState.currentStep) {
     case "start":
       buttons = [

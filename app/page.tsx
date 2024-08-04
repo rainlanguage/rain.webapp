@@ -1,6 +1,9 @@
-import { Button, fetchMetadata } from "frames.js/next";
+import { fetchMetadata } from "frames.js/next";
 import { Metadata } from "next";
-import { FrameImage } from "./UI/FrameImage";
+import WebappFrame from "./UI/WebappFrame";
+import yaml from "js-yaml";
+import fs from "fs";
+import { YamlData } from "./types/yamlData";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -19,34 +22,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const buttons: any[] = [];
-  return (
-    <>
-      <div className="w-1/4 ml-10">
-        <FrameImage
-          currentState={{
-            strategyName: "DCA into WFLR",
-            currentStep: "start",
-            deploymentOption: undefined,
-            bindings: {},
-            deposit: undefined,
-            buttonPage: 0,
-            showTextInput: false,
-            error: undefined,
-          }}
-        />
-      </div>
-      {/* {...buttons.map((button) => (
-        <div key={button}>
-          <Button
-            onClick={() => {
-              window.location.href = `/frames?buttonPage=${button}`;
-            }}
-          >
-            {button}
-          </Button>
-        </div>
-      ))} */}
-    </>
-  );
+  const yamlText = fs
+    .readFileSync("streaming-gui-example.rain", "utf8")
+    .split("---")[0];
+  const yamlData = yaml.load(yamlText) as YamlData;
+
+  return <WebappFrame yamlData={yamlData} />;
 }

@@ -1,32 +1,8 @@
-import { Button } from "frames.js/next";
 import { DeploymentOption, YamlData } from "../types/yamlData";
-
-interface HybridButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  isWebapp: boolean;
-  target?: any;
-  children?: any;
-}
-
-export const HybridButton = ({
-  isWebapp,
-  target,
-  children,
-  ...rest
-}: HybridButtonProps) => {
-  return isWebapp ? (
-    <button {...rest}>{children}</button>
-  ) : (
-    <Button action={"post"} target={{ query: target }}>
-      {children}
-    </Button>
-  );
-};
 
 export const getPaginatedButtons = (
   allButtons: any[],
-  buttonPage: number,
-  isWebapp: boolean | undefined = false
+  buttonPage: number
 ): any[] => {
   const buttonPageOffset = buttonPage * 3;
   let buttonEndIndex = buttonPageOffset + 4;
@@ -38,93 +14,92 @@ export const getPaginatedButtons = (
     ...(allButtons.length <= 3
       ? allButtons
       : [
-          buttonPage > 0 &&
-            HybridButton({
-              isWebapp,
-              target: { buttonPage: buttonPage - 1 },
-              children: "<",
-            }),
+          ...(buttonPage > 0
+            ? [
+                {
+                  buttonTarget: "buttonPage",
+                  buttonValue: buttonPage - 1,
+                  buttonText: "<",
+                },
+              ]
+            : []),
           ...allButtons.slice(buttonPageOffset, buttonEndIndex),
-          includeMoreButton &&
-            HybridButton({
-              isWebapp,
-              target: { buttonPage: buttonPage + 1 },
-              children: "More",
-            }),
+          ...(includeMoreButton
+            ? [
+                {
+                  buttonTarget: "buttonPage",
+                  buttonValue: buttonPage + 1,
+                  buttonText: "More",
+                },
+              ]
+            : []),
         ]),
   ];
 };
 
 export const getPresetsButtons = (
   presets: number[],
-  minimum: number | undefined,
-  isWebapp: boolean | undefined = false
+  minimum: number | undefined
 ): any[] => {
   return [
-    HybridButton({
-      isWebapp: false,
-      target: { buttonValue: "back" },
-      children: "<",
-    }),
-    ...presets.map((preset: number) =>
-      HybridButton({
-        isWebapp: false,
-        target: { buttonValue: `${preset}` },
-        children: `${preset}`,
-      })
-    ),
+    {
+      buttonTarget: "buttonValue",
+      buttonValue: "back",
+      buttonText: "<",
+    },
+    ...presets.map((preset: number) => ({
+      buttonTarget: "buttonValue",
+      buttonValue: `${preset}`,
+      buttonText: `${preset}`,
+    })),
     ...(minimum !== undefined
       ? [
-          HybridButton({
-            isWebapp,
-            target: {
-              textInputLabel: `Enter a number greater than ${minimum}`,
-            },
-            children: "Custom",
-          }),
+          {
+            buttonTarget: "textInputLabel",
+            buttonValue: `Enter a number greater than ${minimum}`,
+            buttonText: "Custom",
+          },
         ]
       : []),
   ];
 };
 
-export const generateButtons = (
+export const generateButtonsData = (
   yamlData: YamlData,
-  currentState: any,
-  isWebapp: boolean | undefined = false
+  currentState: any
 ): any[] => {
   let buttons: any[] = [];
   if (currentState.textInputLabel) {
     return [
-      HybridButton({
-        isWebapp,
-        target: { textInputLabel: "" },
-        children: "<",
-      }),
-      HybridButton({
-        isWebapp,
-        target: { buttonValue: "submit" },
-        children: "Submit",
-      }),
+      {
+        buttonTarget: "textInputLabel",
+        buttonValue: "",
+        buttonText: "<",
+      },
+      {
+        buttonTarget: "buttonValue",
+        buttonValue: "submit",
+        buttonText: "Submit",
+      },
     ];
   }
   switch (currentState.currentStep) {
     case "start":
       buttons = [
-        HybridButton({
-          isWebapp,
-          target: { buttonValue: "start" },
-          children: "Start",
-        }),
+        {
+          buttonTarget: "buttonValue",
+          buttonValue: "start",
+          buttonText: "Start",
+        },
       ];
       break;
     case "deployment":
       const allButtons = yamlData.gui.deployments.map(
-        (deploymentOption: DeploymentOption) =>
-          HybridButton({
-            isWebapp,
-            target: { buttonValue: JSON.stringify(deploymentOption) },
-            children: deploymentOption.name,
-          })
+        (deploymentOption: DeploymentOption) => ({
+          buttonTarget: "buttonValue",
+          buttonValue: JSON.stringify(deploymentOption),
+          buttonText: deploymentOption.name,
+        })
       );
       buttons = getPaginatedButtons(allButtons, currentState.buttonPage);
       break;
@@ -143,25 +118,25 @@ export const generateButtons = (
       break;
     case "review":
       buttons = [
-        HybridButton({
-          isWebapp,
-          target: { buttonValue: "back" },
-          children: "<",
-        }),
-        HybridButton({
-          isWebapp,
-          target: { buttonValue: "submit" },
-          children: "Submit",
-        }),
+        {
+          buttonTarget: "buttonValue",
+          buttonValue: "back",
+          buttonText: "<",
+        },
+        {
+          buttonTarget: "buttonValue",
+          buttonValue: "submit",
+          buttonText: "Submit",
+        },
       ];
       break;
     case "done":
       buttons = [
-        HybridButton({
-          isWebapp,
-          target: { buttonValue: "restart" },
-          children: "Start over",
-        }),
+        {
+          buttonTarget: "buttonValue",
+          buttonValue: "restart",
+          buttonText: "Start over",
+        },
       ];
       break;
   }

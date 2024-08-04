@@ -1,10 +1,10 @@
 import { farcasterHubContext } from "frames.js/middleware";
-import { createFrames } from "frames.js/next";
+import { Button, createFrames } from "frames.js/next";
 import { FrameImage } from "../UI/FrameImage";
 import yaml from "js-yaml";
 import fs from "fs";
 import { YamlData } from "../types/yamlData";
-import { generateButtons } from "../services/buttons";
+import { generateButtonsData } from "../services/buttons";
 import { FrameState } from "../types/frame";
 import { getUpdatedFrameState } from "../services/frameState";
 
@@ -37,6 +37,17 @@ const frames = createFrames<FrameState>({
   },
 });
 
+const parseButtonsData = (buttonsData: any[]) => {
+  return buttonsData.map((button) => (
+    <Button
+      action="post"
+      target={{ query: { [button.buttonTarget]: button.buttonValue } }}
+    >
+      {button.buttonText}
+    </Button>
+  ));
+};
+
 const handleRequest = frames(async (ctx) => {
   let currentState = { ...ctx.state };
   // Handle page navigation
@@ -59,9 +70,11 @@ const handleRequest = frames(async (ctx) => {
     );
   }
 
+  const buttonsData = generateButtonsData(yamlData, currentState);
+
   return {
     image: <FrameImage currentState={currentState} />,
-    buttons: generateButtons(yamlData, currentState),
+    buttons: parseButtonsData(buttonsData),
     textInput: currentState.textInputLabel,
     state: currentState,
   };

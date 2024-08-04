@@ -5,7 +5,7 @@ export const getUpdatedFrameState = (
   yamlData: YamlData,
   currentState: any,
   buttonValue: any,
-  inputText: string | undefined
+  inputText?: string
 ): FrameState => {
   const updatedState = { ...currentState };
   switch (currentState.currentStep) {

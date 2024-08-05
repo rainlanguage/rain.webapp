@@ -1,5 +1,5 @@
-import { FrameState } from "../types/frame";
-import { YamlData } from "../types/yamlData";
+import { FrameState } from "../_types/frame";
+import { YamlData } from "../_types/yamlData";
 
 export const getUpdatedFrameState = (
   yamlData: YamlData,

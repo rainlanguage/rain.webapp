@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
-import { generateButtonsData } from "../services/buttons";
-import { YamlData } from "../types/yamlData";
+import { generateButtonsData } from "../_services/buttons";
+import { YamlData } from "../_types/yamlData";
 import { FrameImage } from "./FrameImage";
-import { getUpdatedFrameState } from "../services/frameState";
-import { FrameState } from "../types/frame";
+import { getUpdatedFrameState } from "../_services/frameState";
+import { FrameState } from "../_types/frame";
 
 interface props {
   yamlData: YamlData;

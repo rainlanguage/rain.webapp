@@ -1,4 +1,4 @@
-import { DeploymentOption, YamlData } from "../types/yamlData";
+import { DeploymentOption, YamlData } from "../_types/yamlData";
 
 export const getPaginatedButtons = (
   allButtons: any[],

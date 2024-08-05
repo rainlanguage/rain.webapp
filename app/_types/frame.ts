@@ -1,5 +1,5 @@
 export type FrameState = {
-  strategyName: string;
+  strategyName: string | null;
   currentStep: string;
   deploymentOption: any;
   bindings: any;

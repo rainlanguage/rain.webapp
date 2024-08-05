@@ -1,20 +1,15 @@
 import { farcasterHubContext } from "frames.js/middleware";
 import { Button, createFrames } from "frames.js/next";
-import { FrameImage } from "../UI/FrameImage";
+import { FrameImage } from "../../../_components/FrameImage";
 import yaml from "js-yaml";
 import fs from "fs";
-import { YamlData } from "../types/yamlData";
-import { generateButtonsData } from "../services/buttons";
-import { FrameState } from "../types/frame";
-import { getUpdatedFrameState } from "../services/frameState";
-
-const yamlText = fs
-  .readFileSync("streaming-gui-example.rain", "utf8")
-  .split("---")[0];
-const yamlData = yaml.load(yamlText) as YamlData;
+import { YamlData } from "../../../_types/yamlData";
+import { generateButtonsData } from "../../../_services/buttons";
+import { FrameState } from "../../../_types/frame";
+import { getUpdatedFrameState } from "../../../_services/frameState";
 
 const frames = createFrames<FrameState>({
-  basePath: "/frames",
+  basePath: "",
   middleware: [
     farcasterHubContext({
       // remove if you aren't using @frames.js/debugger or you just don't want to use the debugger hub
@@ -26,7 +21,7 @@ const frames = createFrames<FrameState>({
     }),
   ],
   initialState: {
-    strategyName: yamlData.gui.name,
+    strategyName: null,
     currentStep: "start",
     deploymentOption: null,
     bindings: {},
@@ -49,7 +44,18 @@ const parseButtonsData = (buttonsData: any[]) => {
 };
 
 const handleRequest = frames(async (ctx) => {
+  const projectName = ctx.url.pathname.split("/")[2];
+  const strategyName = ctx.url.pathname.split("/")[3];
+  const yamlText = fs
+    .readFileSync(`app/_strategies/${projectName}/${strategyName}.rain`, "utf8")
+    .split("---")[0];
+  const yamlData = yaml.load(yamlText) as YamlData;
+
+  if (!ctx.state.strategyName) {
+    ctx.state.strategyName = yamlData.gui.name;
+  }
   let currentState = { ...ctx.state };
+
   // Handle page navigation
   if (ctx.url.searchParams.has("textInputLabel")) {
     currentState.textInputLabel = ctx.url.searchParams.get(

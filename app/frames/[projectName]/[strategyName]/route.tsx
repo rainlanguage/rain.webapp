@@ -50,7 +50,7 @@ const handleRequest = frames(async (ctx) => {
 
   const filePath = path.join(
     process.cwd(),
-    "app",
+    "public",
     "_strategies",
     projectName,
     `${strategyName}.rain`

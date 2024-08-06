@@ -7,6 +7,7 @@ import { YamlData } from "../../../_types/yamlData";
 import { generateButtonsData } from "../../../_services/buttons";
 import { FrameState } from "../../../_types/frame";
 import { getUpdatedFrameState } from "../../../_services/frameState";
+import path from "path";
 
 const frames = createFrames<FrameState>({
   basePath: "",
@@ -46,9 +47,15 @@ const parseButtonsData = (buttonsData: any[]) => {
 const handleRequest = frames(async (ctx) => {
   const projectName = ctx.url.pathname.split("/")[2];
   const strategyName = ctx.url.pathname.split("/")[3];
-  const yamlText = fs
-    .readFileSync(`app/_strategies/${projectName}/${strategyName}.rain`, "utf8")
-    .split("---")[0];
+
+  const filePath = path.join(
+    process.cwd(),
+    "app",
+    "_strategies",
+    projectName,
+    `${strategyName}.rain`
+  );
+  const yamlText = fs.readFileSync(filePath, "utf8").split("---")[0];
   const yamlData = yaml.load(yamlText) as YamlData;
 
   if (!ctx.state.strategyName) {

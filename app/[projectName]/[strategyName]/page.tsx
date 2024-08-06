@@ -40,7 +40,7 @@ interface homeProps {
 export default async function Home({ params }: homeProps) {
   const yamlText = fs
     .readFileSync(
-      `app/_strategies/${params.projectName}/${params.strategyName}.rain`,
+      `public/_strategies/${params.projectName}/${params.strategyName}.rain`,
       "utf8"
     )
     .split("---")[0];

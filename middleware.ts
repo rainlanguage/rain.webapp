@@ -7,7 +7,8 @@ export function middleware(req: any) {
   // Extract domains
   const domains = host.split(".");
 
-  if (domains.length === 1) {
+  // Handle root domain
+  if (domains.length === 2) {
     return NextResponse.next();
   }
 

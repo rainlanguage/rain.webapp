@@ -4,19 +4,23 @@ export function middleware(req: any) {
   const url = req.nextUrl.clone();
   const host = req.headers.get("host") || "";
 
-  // Extract domains
+  // Split the host into its subdomains
   const domains = host.split(".");
 
-  // Handle root domain
-  if (domains.length === 2) {
-    return NextResponse.next();
+  // Handle root domain, accounting for localhost and Vercel deployments
+  const isLocalhostWithSubdomain =
+    host.includes("localhost") && domains.length > 1;
+  const isVercelWithSubdomain =
+    host.includes("vercel.app") && domains.length > 3;
+  if (isLocalhostWithSubdomain || isVercelWithSubdomain) {
+    // Add logic to handle different subdomains
+    const subdomain = domains[0];
+    url.pathname = `/${subdomain}${url.pathname}`;
+
+    return NextResponse.rewrite(url);
   }
 
-  // Add logic to handle different subdomains
-  const subdomain = domains[0];
-  url.pathname = `/${subdomain}${url.pathname}`;
-
-  return NextResponse.rewrite(url);
+  return NextResponse.next();
 }
 
 export const config = {

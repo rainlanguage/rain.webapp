@@ -11,7 +11,7 @@ export function middleware(req: any) {
   const isLocalhostWithSubdomain =
     host.includes("localhost") && domains.length > 1;
   const isVercelWithSubdomain =
-    host.includes("vercel.app") && domains.length > 3;
+    host.includes("rainframe.xyz") && domains.length > 2;
   if (isLocalhostWithSubdomain || isVercelWithSubdomain) {
     // Add logic to handle different subdomains
     const subdomain = domains[0];

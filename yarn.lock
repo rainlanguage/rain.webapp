@@ -4490,10 +4490,10 @@ valtio@1.11.2:
     proxy-compare "2.5.1"
     use-sync-external-store "1.2.0"
 
-viem@^2.7.14, viem@^2.7.8:
-  version "2.18.7"
-  resolved "https://registry.npmjs.org/viem/-/viem-2.18.7.tgz"
-  integrity sha512-0Xy5ypk+n4lYthsvC96jsZE97quKoq1t53RrbhKElmq84Dt705uUjQDgH0/LqAV02Oe6341M3jPTU9JLbs2K2Q==
+viem@^2.19.1, viem@^2.7.14, viem@^2.7.8:
+  version "2.19.1"
+  resolved "https://registry.npmjs.org/viem/-/viem-2.19.1.tgz"
+  integrity sha512-a0ca/ACEz3FRZB3OmiSfRUogWZGQh700wu7Pg3GmAWiGD+0PS9bVaWG67JQ+9azFZLq0BU/m0t2CeWd3xi8IzQ==
   dependencies:
     "@adraffy/ens-normalize" "1.10.0"
     "@noble/curves" "1.4.0"

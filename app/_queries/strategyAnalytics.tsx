@@ -13,12 +13,14 @@ export const transactionAnalytics = (transactionId: string) => `
           name
           decimals
         }
+        balance
       }
       outputs {
         token {
           name
           decimals
         }
+        balance
       }
       trades {
         tradeEvent {
@@ -28,9 +30,19 @@ export const transactionAnalytics = (transactionId: string) => `
         }
         inputVaultBalanceChange {
           amount
+          vault {
+            token {
+              name
+            }
+          }
         }
         outputVaultBalanceChange {
           amount
+          vault {
+            token {
+              name
+            }
+          }
         }
       }
     }

@@ -5,12 +5,16 @@ import { YamlData } from "../_types/yamlData";
 import { FrameImage } from "./FrameImage";
 import { getUpdatedFrameState } from "../_services/frameState";
 import { FrameState } from "../_types/frame";
+import { getAddOrderCalldata } from "@rainlanguage/orderbook";
+import yaml from "js-yaml";
 
 interface props {
-  yamlData: YamlData;
+  dotrainText: string;
 }
 
-const WebappFrame = ({ yamlData }: props) => {
+const WebappFrame = ({ dotrainText }: props) => {
+  const yamlData = yaml.load(dotrainText.split("---")[0]) as YamlData;
+
   const [currentState, setCurrentState] = useState<FrameState>({
     strategyName: yamlData.gui.name,
     currentStep: "start",
@@ -43,7 +47,7 @@ const WebappFrame = ({ yamlData }: props) => {
           <button
             key={buttonData.buttonText}
             className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => {
+            onClick={async () => {
               // Handle page navigation
               if (buttonData.buttonTarget === "textInputLabel") {
                 setCurrentState({
@@ -57,6 +61,17 @@ const WebappFrame = ({ yamlData }: props) => {
                   buttonPage: buttonData.buttonValue,
                 });
                 return;
+              }
+
+              if (
+                currentState.currentStep === "review" &&
+                buttonData.buttonValue === "submit"
+              ) {
+                const callData = await getAddOrderCalldata(
+                  dotrainText,
+                  currentState.deploymentOption.deployment
+                );
+                console.log(callData);
               }
 
               const updatedState = getUpdatedFrameState(

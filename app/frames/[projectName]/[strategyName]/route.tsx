@@ -55,14 +55,23 @@ export const frames = createFrames<FrameState>({
 });
 
 const parseButtonsData = (buttonsData: any[]) => {
-  return buttonsData.map((button) => (
-    <Button
-      action="post"
-      target={{ query: { [button.buttonTarget]: button.buttonValue } }}
-    >
-      {button.buttonText}
-    </Button>
-  ));
+  return buttonsData.map((button) => {
+    if (button.buttonValue === "submit") {
+      return (
+        <Button action="tx" target="/txdata">
+          {button.buttonText}
+        </Button>
+      );
+    }
+    return (
+      <Button
+        action="post"
+        target={{ query: { [button.buttonTarget]: button.buttonValue } }}
+      >
+        {button.buttonText}
+      </Button>
+    );
+  });
 };
 
 const handleRequest = frames(async (ctx) => {

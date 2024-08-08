@@ -1,9 +1,7 @@
 import { fetchMetadata } from "frames.js/next";
 import { Metadata } from "next";
 import WebappFrame from "../../_components/WebappFrame";
-import yaml from "js-yaml";
 import fs from "fs";
-import { YamlData } from "../../_types/yamlData";
 import path from "path";
 
 interface generateMetadataProps {
@@ -46,8 +44,7 @@ export default async function Home({ params }: homeProps) {
     params.projectName,
     `${params.strategyName}.rain`
   );
-  const yamlText = fs.readFileSync(filePath, "utf8").split("---")[0];
-  const yamlData = yaml.load(yamlText) as YamlData;
+  const dotrainText = fs.readFileSync(filePath, "utf8");
 
-  return <WebappFrame yamlData={yamlData} />;
+  return <WebappFrame dotrainText={dotrainText} />;
 }

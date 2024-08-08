@@ -1,6 +1,5 @@
 "use client";
 import { transactionAnalytics } from "@/app/_queries/strategyAnalytics";
-import { get } from "http";
 import { useState } from "react";
 import { formatUnits } from "viem";
 

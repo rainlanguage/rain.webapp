@@ -26,14 +26,18 @@ deployers:
     network: flare-dca
 
 tokens:
-  eusdt:
+  usdt:
+    network: flare-dca
+    address: 0x96B41289D90444B8adD57e6F265DB5aE8651DF29
+    decimals: 6
+  usdc:
     network: flare-dca
     address: 0x96B41289D90444B8adD57e6F265DB5aE8651DF29
     decimals: 6
   weth:
     network: flare-dca
     address: 0x96B41289D90444B8adD57e6F265DB5aE8651DF29
-    decimals: 6
+    decimals: 18
   wflr:
     network: flare-dca
     address: 0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d
@@ -65,17 +69,13 @@ scenarios:
     runs: 1
     bindings:
       start-time: 123456
-  other:
-    deployer: flare-dca
-    runs: 1
-    bindings:
 
 deployments:
   usd:
     scenario: default
     order: buy-wflr-w-usd
   weth:
-    scenario: other
+    scenario: default
     order: buy-wflr-w-weth
 
 gui:
@@ -124,7 +124,6 @@ gui:
             - 0.01
             - 0.02
             - 0.05
-      
 
 charts:
   DCA Strategy:
@@ -146,12 +145,11 @@ charts:
         value: 0.10
         unit-suffix: " FLR"
 ---
-#amount !the amount
+#start-time !the start time
 
 #calculate-io
 using-words-from 0x31A76D8644612e0ABD1aF0D42909Ed57F16F608D 0xCE6ad0ba209e7D3B59Ddb8a63595193C11C3B0aB
 
-start-time: 1720361228,
 budget-per-day: 10,
 budget-per-second: div(budget-per-day 86400),
 

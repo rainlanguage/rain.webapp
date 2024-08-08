@@ -1,5 +1,5 @@
 import { farcasterHubContext } from "frames.js/middleware";
-import { Button, createFrames } from "frames.js/next";
+import { Button, createFrames, types } from "frames.js/next";
 import { FrameImage } from "../../../_components/FrameImage";
 import yaml from "js-yaml";
 import fs from "fs";
@@ -9,7 +9,27 @@ import { FrameState } from "../../../_types/frame";
 import { getUpdatedFrameState } from "../../../_services/frameState";
 import path from "path";
 
-const frames = createFrames<FrameState>({
+const dotrainContext: types.FramesMiddleware<
+  any,
+  { dotrainText: string; yamlData: YamlData }
+> = async (ctx, next) => {
+  const projectName = ctx.url.pathname.split("/")[2];
+  const strategyName = ctx.url.pathname.split("/")[3];
+
+  const filePath = path.join(
+    process.cwd(),
+    "public",
+    "_strategies",
+    projectName,
+    `${strategyName}.rain`
+  );
+  const dotrainText = fs.readFileSync(filePath, "utf8");
+  const yamlData = yaml.load(dotrainText.split("---")[0]) as YamlData;
+
+  return next({ dotrainText, yamlData });
+};
+
+export const frames = createFrames<FrameState>({
   basePath: "",
   middleware: [
     farcasterHubContext({
@@ -20,6 +40,7 @@ const frames = createFrames<FrameState>({
             hubHttpUrl: "http://localhost:3010/hub",
           }),
     }),
+    dotrainContext,
   ],
   initialState: {
     strategyName: null,
@@ -45,19 +66,7 @@ const parseButtonsData = (buttonsData: any[]) => {
 };
 
 const handleRequest = frames(async (ctx) => {
-  const projectName = ctx.url.pathname.split("/")[2];
-  const strategyName = ctx.url.pathname.split("/")[3];
-
-  const filePath = path.join(
-    process.cwd(),
-    "public",
-    "_strategies",
-    projectName,
-    `${strategyName}.rain`
-  );
-  const yamlText = fs.readFileSync(filePath, "utf8").split("---")[0];
-  const yamlData = yaml.load(yamlText) as YamlData;
-
+  const yamlData = ctx.yamlData;
   if (!ctx.state.strategyName) {
     ctx.state.strategyName = yamlData.gui.name;
   }

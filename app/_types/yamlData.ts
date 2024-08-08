@@ -24,6 +24,61 @@ export interface Gui {
   deployments: DeploymentOption[];
 }
 
+interface Network {
+  rpc: string;
+  "chain-id": number;
+  "network-Id": number;
+  currency: string;
+}
+
+interface Orderbook {
+  address: string;
+}
+
+interface Deployer {
+  address: string;
+  network: string;
+}
+
+interface Token {
+  network: string;
+  address: string;
+  decimals: number;
+}
+
+interface OrderInputOutput {
+  token: string;
+  "vault-Id": string;
+}
+
+interface Order {
+  orderbook: string;
+  inputs: OrderInputOutput[];
+  outputs: OrderInputOutput[];
+}
+
+interface ScenarioBinding {
+  [key: string]: number;
+}
+
+interface Scenario {
+  deployer: string;
+  runs: number;
+  bindings: ScenarioBinding;
+}
+
+interface Deployment {
+  scenario: string;
+  order: string;
+}
+
 export interface YamlData {
+  networks: { [key: string]: Network };
+  orderbooks: { [key: string]: Orderbook };
+  deployers: { [key: string]: Deployer };
+  tokens: { [key: string]: Token };
+  orders: { [key: string]: Order };
+  scenarios: { [key: string]: Scenario };
+  deployments: { [key: string]: Deployment };
   gui: Gui;
 }

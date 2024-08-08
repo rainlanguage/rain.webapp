@@ -1,12 +1,15 @@
 import { transaction } from "frames.js/core";
-import { frames } from "../route";
 import { getAddOrderCalldata } from "@rainlanguage/orderbook";
 import { Abi, toHex } from "viem";
 import { orderBookJson } from "@/public/_abis/OrderBook";
 import YAML from "yaml";
 import { YamlData } from "@/app/_types/yamlData";
+import { frames } from "../frames";
+import { FrameState } from "@/app/_types/frame";
 
 export const POST = frames(async (ctx) => {
+  let currentState: FrameState = { ...(ctx.state as FrameState) };
+
   // Use different YAML parsing library because js-yaml does not support BigInt
   const YAMLData = YAML.parse(ctx.dotrainText.split("---")[0], {
     intAsBigInt: true,
@@ -14,12 +17,12 @@ export const POST = frames(async (ctx) => {
 
   const addOrderCalldata = await getAddOrderCalldata(
     ctx.dotrainText,
-    ctx.state.deploymentOption.deployment
+    currentState.deploymentOption.deployment
   );
 
   // Get network data from the yaml file
   const deployment =
-    YAMLData.deployments[ctx.state.deploymentOption.deployment];
+    YAMLData.deployments[currentState.deploymentOption.deployment];
   const scenario = YAMLData.scenarios[deployment.scenario];
   const deployer = YAMLData.deployers[scenario.deployer];
   const network = YAMLData.networks[deployer.network];

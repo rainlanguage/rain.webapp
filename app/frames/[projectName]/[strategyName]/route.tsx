@@ -8,6 +8,8 @@ import {
   getSubmissionTransaction,
 } from "@/app/_services/transactions";
 import { getFrameButtons } from "@/app/_services/frameButtons";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
 
 const handleRequest = frames(async (ctx) => {
   const yamlData = ctx.yamlData;
@@ -53,11 +55,27 @@ const handleRequest = frames(async (ctx) => {
   // Generate buttons based on current state
   const buttonsData = generateButtonsData(yamlData, currentState);
 
+    const dmSansLight = fs.readFile(
+      path.join(path.resolve(process.cwd(), "public/_fonts"), "DMSans-Light.ttf")
+    );
+
+    const [dmSansLightData] =
+    await Promise.all([dmSansLight]);
+
   return {
     image: <FrameImage currentState={currentState} />,
     buttons: getFrameButtons(buttonsData, currentState),
     textInput: currentState.textInputLabel,
     state: currentState,
+    imageOptions:   {
+        fonts: [
+        {
+          name: "DM Sans",
+          data: dmSansLightData,
+          weight: 400,
+        },
+      ]
+    }
   };
 });
 

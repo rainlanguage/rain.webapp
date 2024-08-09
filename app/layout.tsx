@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = DM_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,12 +19,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <Providers>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <ConnectButton />
+          <div className={`${inter.className} flex flex-col min-h-screen`}>
+            <div className="sticky top-0 w-full flex justify-end">
+              <ConnectButton />
+            </div>
+            <div className="flex flex-col flex-grow items-center justify-center">
+              {children}
+            </div>
           </div>
-          {children}
         </Providers>
       </body>
     </html>

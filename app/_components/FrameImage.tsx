@@ -17,22 +17,23 @@ export const FrameImage = ({ currentState }: any) => {
 
   return (
     <div
-      style={{
-        alignItems: "center",
-        background: "black",
-        backgroundSize: "100% 100%",
-        display: "flex",
-        flexDirection: "column",
-        flexWrap: "nowrap",
-        height: "100%",
-        justifyContent: "center",
-        textAlign: "left",
-        width: "100%",
-      }}
+    className={`flex items-center justify-center`}
+    tw={`flex items-center justify-center`}
+    style={{
+      alignItems: "center",
+      backgroundSize: "100% 100%",
+      flexDirection: "column",
+      flexWrap: "nowrap",
+      height: "100%",
+      justifyContent: "center",
+      textAlign: "left",
+      width: "100%",
+    }}
     >
       <div
+        className="flex"
+        tw="absolute"
         style={{
-          position: "absolute",
           top: 10,
           display: "flex",
           justifyContent: "center",
@@ -62,7 +63,6 @@ export const FrameImage = ({ currentState }: any) => {
       </div>
       <div
         style={{
-          color: "white",
           fontSize: 60,
           fontStyle: "normal",
           letterSpacing: "-0.025em",

@@ -6,7 +6,7 @@ import { FrameState } from "@/app/_types/frame";
 import {
   getApprovalTransaction,
   getSubmissionTransaction,
-} from "@/app/_services/transactions";
+} from "@/app/_services/frameTransactions";
 import { getFrameButtons } from "@/app/_services/frameButtons";
 
 const handleRequest = frames(async (ctx) => {

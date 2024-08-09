@@ -8,6 +8,14 @@ import {
 import { FrameState } from "../_types/frame";
 import { orderBookJson } from "@/public/_abis/OrderBook";
 
+interface DecodedAddOrderCallData {
+  args?: {
+    validInputs?: {
+      vaultId?: string;
+    }[];
+  }[];
+}
+
 export const getSubmissionTransactionData = async (
   currentState: FrameState,
   dotrainText: string,
@@ -25,13 +33,6 @@ export const getSubmissionTransactionData = async (
   );
 
   // Get randomly generated vaultId from addOrder call data
-  interface DecodedAddOrderCallData {
-    args?: {
-      validInputs?: {
-        vaultId?: string;
-      }[];
-    }[];
-  }
   const decodedAddOrderCalldata = decodeFunctionData({
     data: toHex(addOrderCalldata),
     abi: orderBookJson.abi,

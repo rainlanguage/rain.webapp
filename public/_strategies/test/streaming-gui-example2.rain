@@ -1,0 +1,472 @@
+# Strategy: Streaming DCA
+# Strategy cost averages output token against the input token for an input-ouput token pair,
+# buy offering tokens at a fixed rate per unit time which can be provided in the bindings, along with a minimum 
+# io-ratio for the order.
+# Bounty auction to pay for gas denominated in input token terms, with a min and max bounty offered for the trade.
+# Since the strategy has a per-second budget, any external order taker can offer any amount of input token and
+# take the output tokens from the orderbook provided the trade pays for the gas as well. So even if multiple order 
+# takers come in and try to take the order, the strategy just cost averages the tokens for a taker and 
+# calculates the budget amount for next. This prevents external takers to DDos the order as ouput amount is calculated
+# for each taker individually.
+# 
+# Target Network: Base
+# Quote (Input / Incoming): USDC or WLTH
+# Base (Output / Outgoing): WLTH or USDC
+# Token contract: https://basescan.org/address/0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
+# Token github: NA
+# Liquidity protocol: Uniswap V3
+# Liquidity pool address: https://www.dextools.io/app/en/base/pair-explorer/0x1536ee1506e24e5a36be99c73136cd82907a902e?t=1717921711270
+# Liquidity pool fee: 0.3%
+
+networks:
+  base-community: 
+    rpc: https://mainnet.base.org 
+    chain-id: 8453 
+    network-id: 8453 
+    currency: ETH
+
+subgraphs:
+  base-community: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.1/gn
+  
+orderbooks:
+  base-community:
+    address: 0xA2f56F8F74B7d04d61f281BE6576b6155581dcBA
+    network: base-community
+    subgraph: base-community
+
+deployers:
+  base-community:
+    address: 0x56394785a22b3BE25470a0e03eD9E0a939C47b9b
+    network: base-community
+
+tokens:
+  base-wlth:
+    network: base-community
+    address: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
+  base-usdc:
+    network: base-community
+    address: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+
+orders:
+  # vault-id generated with `openssl rand -hex 32`
+  base-wlth-sell:
+    orderbook: base-community
+    network: base-community
+    inputs:
+      - token: base-usdc
+        vault-id: 0x10a99da34ba197357c7799dc2b97088ca7ae48d7e89ced420cc6f9f7247373ab
+    outputs:
+      - token: base-wlth
+        vault-id: 0x10a99da34ba197357c7799dc2b97088ca7ae48d7e89ced420cc6f9f7247373ab
+  base-wlth-buy:
+    orderbook: base-community
+    network: base-community
+    inputs:
+      - token: base-wlth
+        vault-id: 0x653455b2594761c14979e694b92c26a9a196230d66496d337aabdbad8a185c96
+    outputs:
+      - token: base-usdc
+        vault-id: 0x653455b2594761c14979e694b92c26a9a196230d66496d337aabdbad8a185c96
+
+scenarios:
+    streaming-dca:
+        network: base-community
+        deployer: base-community
+        orderbook: base-community
+        bindings:
+          # Ask for now, registry in future.
+          uniswap-words: 0xD6B34F97d4A8Cb38D0544dB241CB3f335866f490
+          orderbook-subparser: 0x8D96ea3EF24D7123882c51CE4325b89bc0d63f9e
+
+          # Uniswap V3 factory addresses and init code
+          uniswap-v3-factory: 0x33128a8fC17869897dcE68Ed026d694621f6FDfD
+          uniswap-v3-init-code: '[uniswap-v3-init-code]'
+
+        scenarios:
+          sell-wlth:
+            bindings:
+              # Input and Output token addresses are from perspective of order.
+              input-token-address: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+              output-token-address: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
+
+              # If the order's input-output tokens are NOT paired on the uniswap v3 pool,
+              # then the reserve token address is the address of the token which is paired with order's output token on uniswapv3 pool.
+              # Eg: If WLTH is paired with WETH on the uniswap v3 pool for a USDT-WLTH order, reserve token address is the WETH address.
+              # If the order's input-output tokens are paired on the uniswap v3 pool, then reserve token address is same as the input token address.
+              # Eg: For WLTH/USDT pair where USDT is also the order's input token, reserve token address is same as the input token address.
+              reserve-token-address: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+
+              # Ratio multiplier for calculating the io-ratio.
+              # If the order's input-output token are paired on the uniswap v3 pool, then set to identity
+              # If the order's input-output token are NOT paired on the uniswap v3 pool, then set to reserve.
+              quote-multiplier: '''quote-multiplier-identity'
+    
+              # Number of output tokens offered per second.
+              # Total number of output tokens offered / Total time duration.
+              # Eg : 100 tokens cost averaged in 1 hours: 100/3600 = 0.027777777777777778  
+              per-second-rate: 0.277777777777777778
+    
+              # Unix timestamp for strating of the strategy.
+              # Ideally set it 15 minutes ahead of the whatever the timestamp is while you're deploying the order.
+              # https://www.epochconverter.com/
+              strat-start-time: 1723106176
+                                
+              # Bounty amount denominated in input tokens
+              #
+              # Minimum bounty offered in input token denominations. 
+              bounty-min: 0.02
+              # Maximum bounty offered in input token denominations.
+              bounty-max: 1
+              # Number of seconds after which the bounty auction starts once the order is evaling.
+              auction-start-time: 300
+              # Number of seconds for which bounty auction will last.
+              auction-duration: 1800
+    
+              # Uniswap v3 pool fees to calcualte budget from the pool.
+              # Uniswap v3 pool fees of pool which the output token is paired with.
+              # If the order's input-output tokens are NOT paired on the uniswap v3 pool, then fee is the pool fee for output-reserve token pool.
+              # If the order's input-output tokens are paired on the uniswap v3 pool, then fee is the pool fee for output-input token pool.
+              twap-io-fee: '[uniswap-v3-fee-medium]'
+              
+              # Uniswap v3 pool fees to calcualte multiplier for the io-ratio.
+              # If the order's input-output tokens are NOT paired on the uniswap v3 pool, then fee is the pool fee for input-reserve token pool.
+              # If the order's input-output tokens are paired on the uniswap v3 pool, then this binding is irrelevant.
+              twap-multiplier-fee: '[uniswap-v3-fee-low]'
+    
+            scenarios:
+              prod:
+                bindings:
+                  # Minimum input/output token ratio accepatble for the order.
+                  # Eg: For sell WLTH, min-ratio is the minimum USDT/WLTH value to sell above.
+                  min-ratio: 0.01
+                  plottables: '''plottables-prod'
+                  get-last-time: '''get-last-time-prod'
+                  ensure-ratio: '''ensure-ratio-prod'
+              chart:
+                runs: 1000
+                bindings:
+                  min-ratio: 0.01
+                  plottables: '''plottables-plot'
+                  get-last-time: '''get-last-time-plot'
+                  ensure-ratio: '''ensure-ratio-plot'
+              test:
+                bindings:
+                  min-ratio: 0.01
+                  plottables: '''plottables-prod'
+                  get-last-time: '''get-last-time-prod'
+                  ensure-ratio: '''ensure-ratio-prod'
+
+          buy-wlth:
+            bindings:
+              # Input and Output token addresses from perspective of order
+              input-token-address: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
+              output-token-address: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+
+              # If the order's input-output tokens are NOT paired on the uniswap v3 pool,
+              # then the reserve token address is the address of the token which is paired with order's output token on uniswapv3 pool.
+              # Eg: If WLTH is paired with WETH on the uniswap v3 pool for a USDT-WLTH order, reserve token address is the WETH address.
+              # If the order's input-output tokens are paired on the uniswap v3 pool, then reserve token address is same as the input token address.
+              # Eg: For WLTH/USDT pair where USDT is also the order's input token, reserve token address is same as the input token address.
+              reserve-token-address: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
+
+              # Ratio multiplier for calculating the io-ratio.
+              # If the order's input-output token are paired on the uniswap v3 pool, then set to identity
+              # If the order's input-output token are NOT paired on the uniswap v3 pool, then set to reserve.
+              quote-multiplier: '''quote-multiplier-identity'
+    
+              # Number of output tokens offered per second.
+              # Total number of output tokens offered / Total time duration.
+              # Eg : 100 tokens cost averaged in 1 hours: 100/3600 = 0.027777777777777778  
+              per-second-rate: 0.01
+    
+              # Unix timestamp for strating of the strategy.
+              # Ideally set it 15 minutes ahead of the whatever the timestamp is while you're deploying the order.
+              # https://www.epochconverter.com/
+              strat-start-time: 1723106176
+
+              # Bounty amount denominated in input tokens
+              #
+              # Minimum bounty offered in input token denominations. 
+              bounty-min: 1.77
+              # Maximum bounty offered in input token denominations.
+              bounty-max: 88
+              # Number of seconds after which the bounty auction starts once the order is evaling.
+              auction-start-time: 300
+              # Number of seconds for which bounty auction will last.
+              auction-duration: 1800
+
+              # Uniswap v3 pool fees to calcualte budget from the pool.
+              # Uniswap v3 pool fees of pool which the output token is paired with.
+              # If the order's input-output tokens are NOT paired on the uniswap v3 pool, then fee is the pool fee for output-reserve token pool.
+              # If the order's input-output tokens are paired on the uniswap v3 pool, then fee is the pool fee for output-input token pool.
+              twap-io-fee: '[uniswap-v3-fee-medium]'
+              
+              # Uniswap v3 pool fees to calcualte multiplier for the io-ratio.
+              # If the order's input-output tokens are NOT paired on the uniswap v3 pool, then fee is the pool fee for input-reserve token pool.
+              # If the order's input-output tokens are paired on the uniswap v3 pool, then this binding is irrelevant.
+              twap-multiplier-fee: '[uniswap-v3-fee-low]'
+
+            scenarios:
+              prod:
+                bindings:
+                  # Minimum input/output token ratio
+                  # Eg: For buy WLTH, min-ratio is the minimum WLTH/USDT value to buy above.
+                  min-ratio: 10
+                  plottables: '''plottables-prod'
+                  get-last-time: '''get-last-time-prod'
+                  ensure-ratio: '''ensure-ratio-prod'
+              chart:
+                runs: 1000
+                bindings:
+                  min-ratio: 10
+                  plottables: '''plottables-plot'
+                  get-last-time: '''get-last-time-plot'
+                  ensure-ratio: '''ensure-ratio-plot'  
+              test:
+                bindings:
+                  min-ratio: 100
+                  plottables: '''plottables-prod'
+                  get-last-time: '''get-last-time-prod'
+                  ensure-ratio: '''ensure-ratio-prod'
+
+gui:
+  name: DCA into WLTH
+  description: Buy WLTH!
+  deployments:
+    -   deployment: base-usdc-dca
+        name: DCA into WLTH with USDC
+        fields:
+          - binding: amount
+            name: Amount
+            description: The amount of USDC you want to spend each day.
+            min: 10
+            presets:
+              - 1
+              - 5
+              - 10
+        deposit:
+          min: 20
+          presets:
+            - 10
+            - 50
+            - 100
+
+charts:
+  sell-streaming-dca:
+    scenario: streaming-dca.sell-wlth.chart
+    metrics:
+      - label: WLTH Per second rate
+        value: 0.6.0
+        description: Amount of WLTH tokens sold per second.
+      - label: WLTH sold per hour
+        value: 0.6.1
+        description: Amount of WLTH tokens sold per hour.
+      - label: WLTH sold per day
+        value: 0.6.2
+        description: Amount of WLTH tokens sold per day.
+      - label: Minimum bounty
+        value: 0.6.3
+        description: Minimum bounty offered in USDT tokens.
+      - label: Maximum bounty
+        value: 0.6.4
+        description: Maximum bounty offered in USDT tokens.
+      - label: Bounty auction start
+        value: 0.6.5
+        description: Number of seconds after which the bounty auction strats after order evals.
+      - label: Bounty duration
+        value: 0.6.6
+        description: Duration for which the bounty lasts
+      - label: Minimum ratio
+        value: 0.6.7
+      - label: Strategy start unix timestamp
+        value: 0.6.8
+
+  sell-dca-simulation:
+        scenario: streaming-dca.sell-wlth.chart
+        plots:
+          Number of WLTH tokens sold vs time difference:
+            marks:
+              - type: line
+                options:
+                  x: 0.2
+                  y: 0.3
+          Bounty offered vs time difference:
+            marks:
+              - type: line
+                options:
+                  x: 0.2
+                  y: 0.4
+
+  buy-streaming-dca:
+    scenario: streaming-dca.buy-wlth.chart
+    metrics:
+      - label: USDT Per second rate
+        value: 0.6.0
+        description: Amount of USDT tokens sold per second.
+      - label: USDT sold per hour
+        value: 0.6.1
+        description: Amount of USDT tokens sold per hour.
+      - label: USDT sold per day
+        value: 0.6.2
+        description: Amount of USDT tokens sold per day.
+      - label: Minimum bounty
+        value: 0.6.3
+        description: Minimum bounty offered in WLTH tokens.
+      - label: Maximum bounty
+        value: 0.6.4
+        description: Maximum bounty offered in WLTH tokens.
+      - label: Bounty auction start
+        value: 0.6.5
+        description: Number of seconds after which the bounty auction strats after order evals.
+      - label: Bounty duration
+        value: 0.6.6
+        description: Duration for which the bounty lasts
+      - label: Minimum ratio
+        value: 0.6.7
+      - label: Strategy start unix timestamp
+        value: 0.6.8
+
+  buy-dca-simulation:
+        scenario: streaming-dca.buy-wlth.chart
+        plots:
+          Number of USDT tokens sold vs time difference:
+            marks:
+              - type: line
+                options:
+                  x: 0.2
+                  y: 0.3
+          Bounty offered vs time difference:
+            marks:
+              - type: line
+                options:
+                  x: 0.2
+                  y: 0.4
+    
+      
+deployments:
+  base-wlth-dca:
+    scenario: streaming-dca.sell-wlth.prod
+    order: base-wlth-sell    
+  base-usdc-dca:
+    scenario: streaming-dca.buy-wlth.prod
+    order: base-wlth-buy    
+---
+#input-token-address !Order input token address.
+#output-token-address !Order output token address.
+#reserve-token-address !Reserve token address.
+
+#twap-io-fee !Twap fee for the distribution token pool, paired with either stable token.
+#twap-multiplier-fee !Twap fee for io-ratio mulitplier for the pool which distribution token is paired with.
+#min-ratio !Minimum input ouput ratio for the order.
+
+#auction-start-time !Minimum time elapsed before the auction begans.
+#auction-duration !Total time for which the auction lasts.
+#bounty-min !Minimum bounty to offer for each trade in USD.
+#bounty-max !Maximum bounty that can be offered. 
+
+#per-second-rate !The rate of stable denominated distributed tokens distributed per second.
+#strat-start-time !Strategy start timestamp
+#get-last-time !Binding to get last time and current time
+#plottables !Binding for charting metrics.
+#ensure-ratio !Binding to enfore minimum io-ratio check.
+#quote-multiplier !Binding to calculate multiplier for io-ratio.
+#test-current-time !Binding to have test current time.
+
+#uniswap-words !The subparser for the Uniswap words
+#orderbook-subparser !The subparser for the Orderbook words
+#uniswap-v3-factory !Uniswap v3 factory.
+#uniswap-v3-init-code !Uniswap v3 factory init code.
+#last-time-key "last-time-key"
+
+#bounty-auction
+  current-time last-time: ,
+  time-since-start: saturating-sub(current-time add(last-time auction-start-time)),
+  growth-index: if(
+          greater-than(current-time add(last-time auction-start-time))
+          min(
+            div(time-since-start auction-duration)
+            1
+          )
+          0
+        ),
+  bounty: min(
+    linear-growth(
+      bounty-min
+      saturating-sub(bounty-max bounty-min)
+      growth-index
+    )
+    bounty-max
+  );
+
+#get-last-time-plot
+ current-time: test-current-time,
+ last-time: sub(current-time mod(current-time 86400));
+
+#get-last-time-prod
+ current-time: now(),
+ last-time: any(
+    get(hash(order-hash() last-time-key))
+    strat-start-time
+  );
+
+#calculate-budget-input
+  current-budget: ,
+  output-to-reserve: uniswap-v3-quote-exact-input(
+    output-token-address reserve-token-address
+    current-budget
+    uniswap-v3-factory uniswap-v3-init-code
+    twap-io-fee
+  ),
+  output-to-input: call<'quote-multiplier>(output-to-reserve);
+
+#plottables-plot
+  _: per-second-rate,
+  tokens-per-hour: mul(per-second-rate 3600),
+  tokens-per-day: mul(per-second-rate 86400),
+  _: bounty-min,
+  _: bounty-max,
+  _: auction-start-time,
+  _: auction-duration,
+  _: min-ratio,
+  _: strat-start-time;
+
+#plottables-prod
+ :;
+
+#ensure-ratio-prod
+  io-ratio: ,
+  :ensure(
+    greater-than-or-equal-to(io-ratio min-ratio)
+    "min ratio"
+  );
+
+#ensure-ratio-plot
+  io-ratio: ;
+
+#quote-multiplier-identity
+  _: ;
+
+#quote-multiplier-reserve
+  reserve-amount: ,
+  reserve-to-input: uniswap-v3-quote-exact-input(
+    reserve-token-address input-token-address 
+    reserve-amount
+    uniswap-v3-factory uniswap-v3-init-code
+    twap-multiplier-fee
+  );
+
+#calculate-io
+  using-words-from uniswap-words orderbook-subparser
+  
+  current-time last-time: call<'get-last-time>(), 
+  elapsed-time: saturating-sub(current-time last-time),
+  current-budget: mul(per-second-rate elapsed-time),
+  bounty-amount: call<'bounty-auction>(current-time last-time),
+  input-amount: call<'calculate-budget-input>(current-budget),
+  max-amount: current-budget,
+  io-ratio: div(saturating-sub(input-amount bounty-amount) current-budget),
+  :call<'ensure-ratio>(io-ratio),
+  :call<'plottables>();
+
+#handle-io
+ :;

@@ -46,6 +46,7 @@ tokens:
 orders:
   buy-wflr-w-usd:
     orderbook: flare-dca
+    network: flare-dca
     inputs:
       - token: wflr
         vault-id: 0xee4c4284a414696a5d768fb71329ffbb961a7184079aa0f25390deb29193b4f1
@@ -56,6 +57,7 @@ orders:
         vault-id: 0xee4c4284a414696a5d768fb71329ffbb961a7184079aa0f25390deb29193b4f1
   buy-wflr-w-weth:
     orderbook: flare-dca
+    network: flare-dca
     inputs:
       - token: wflr
         vault-id: 0xee4c4284a414696a5d768fb71329ffbb961a7184079aa0f25390deb29193b4f1

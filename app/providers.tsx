@@ -12,7 +12,7 @@ import {
   flare,
 } from "wagmi/chains";
 
-const config = getDefaultConfig({
+export const config = getDefaultConfig({
   appName: "RainFrame",
   projectId: "ba29a4b0642a94fd4dbc754841c2decb",
   chains: [mainnet, polygon, optimism, arbitrum, base, flare],

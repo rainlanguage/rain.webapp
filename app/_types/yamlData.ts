@@ -27,7 +27,7 @@ export interface Gui {
 interface Network {
   rpc: string;
   "chain-id": number;
-  "network-Id": number;
+  "network-id": number;
   currency: string;
 }
 
@@ -48,13 +48,14 @@ interface Token {
 
 interface OrderInputOutput {
   token: string;
-  "vault-Id": string;
+  "vault-id": string;
 }
 
 interface Order {
   orderbook: string;
   inputs: OrderInputOutput[];
   outputs: OrderInputOutput[];
+  network: string;
 }
 
 interface ScenarioBinding {

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { generateButtonsData } from "../_services/buttons";
+import { generateButtonsData } from "../_services/buttonsData";
 import { YamlData } from "../_types/yamlData";
 import { FrameImage } from "./FrameImage";
 import { getUpdatedFrameState } from "../_services/frameState";

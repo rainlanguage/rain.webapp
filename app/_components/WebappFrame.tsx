@@ -34,6 +34,7 @@ const WebappFrame = ({ dotrainText }: props) => {
     buttonPage: 0,
     textInputLabel: "",
     error: null,
+    requiresTokenApproval: false,
   });
   const [inputText, setInputText] = useState<string>("");
 

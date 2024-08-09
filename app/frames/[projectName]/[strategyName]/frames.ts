@@ -48,5 +48,7 @@ export const frames = createFrames<FrameState>({
     buttonPage: 0,
     textInputLabel: "",
     error: null,
+    requiresTokenApproval: true,
+    tokensApproved: false,
   },
 });

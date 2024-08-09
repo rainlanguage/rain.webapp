@@ -241,13 +241,13 @@ gui:
             description: The amount of USDC you want to spend each day.
             min: 10
             presets:
-              - 1
+              - 0.01
               - 5
               - 10
         deposit:
           min: 20
           presets:
-            - 10
+            - 0.01
             - 50
             - 100
 

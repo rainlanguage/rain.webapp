@@ -97,6 +97,9 @@ export const getUpdatedFrameState = (
       if (buttonValue === "back") {
         updatedState.deposit = null;
         updatedState.currentStep = "deposit";
+        if (updatedState.tokensApproved) {
+          updatedState.tokensApproved = false;
+        }
       } else if (buttonValue === "submit") {
         updatedState.currentStep = "done";
       }
@@ -107,6 +110,7 @@ export const getUpdatedFrameState = (
         updatedState.deploymentOption = undefined;
         updatedState.bindings = {};
         updatedState.deposit = null;
+        updatedState.tokensApproved = false;
       }
       break;
   }

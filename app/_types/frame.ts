@@ -7,4 +7,6 @@ export type FrameState = {
   buttonPage: number;
   textInputLabel: string;
   error: string | null;
+  requiresTokenApproval: boolean;
+  tokensApproved?: boolean;
 };

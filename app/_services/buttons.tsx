@@ -123,11 +123,21 @@ export const generateButtonsData = (
           buttonValue: "back",
           buttonText: "<",
         },
-        {
-          buttonTarget: "buttonValue",
-          buttonValue: "submit",
-          buttonText: "Submit",
-        },
+        ...(!currentState.requiresTokenApproval || currentState.tokensApproved
+          ? [
+              {
+                buttonTarget: "buttonValue",
+                buttonValue: "submit",
+                buttonText: "Submit strategy",
+              },
+            ]
+          : [
+              {
+                buttonTarget: "buttonValue",
+                buttonValue: "approve",
+                buttonText: "Approve token spend",
+              },
+            ]),
       ];
       break;
     case "done":

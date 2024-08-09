@@ -12,9 +12,9 @@ import YAML from "yaml";
 import { YamlData } from "@/app/_types/yamlData";
 import { FrameState } from "@/app/_types/frame";
 import { readContract } from "viem/actions";
-import { base } from "viem/chains";
 import { orderBookJson } from "@/public/_abis/OrderBook";
 import { getSubmissionTransactionData } from "./transactionData";
+import * as chains from "viem/chains";
 
 export const getApprovalTransaction = async (
   currentState: FrameState,
@@ -24,12 +24,6 @@ export const getApprovalTransaction = async (
   const YAMLData = YAML.parse(dotrainText.split("---")[0], {
     intAsBigInt: true,
   }) as YamlData;
-
-  // TODO support multiple networks
-  const client = createPublicClient({
-    chain: base,
-    transport: http(),
-  });
 
   // Get network and orderbook data from the yaml file
   const deployment =
@@ -42,6 +36,13 @@ export const getApprovalTransaction = async (
 
   const outputToken = YAMLData.tokens[order.outputs[0].token];
   const outputTokenAddress = toHex(BigInt(outputToken.address));
+
+  const client = createPublicClient({
+    chain: Object.values(chains).find(
+      (chain) => chain.id === Number(network["chain-id"])
+    ),
+    transport: http(),
+  });
   const outputTokenDecimals = await readContract(client, {
     abi: erc20Abi,
     address: outputTokenAddress,
@@ -80,12 +81,6 @@ export const getSubmissionTransaction = async (
     intAsBigInt: true,
   }) as YamlData;
 
-  // TODO support multiple networks
-  const client = createPublicClient({
-    chain: base,
-    transport: http(),
-  });
-
   // Get network and orderbook data from the yaml file
   const deployment =
     YAMLData.deployments[currentState.deploymentOption.deployment];
@@ -97,6 +92,13 @@ export const getSubmissionTransaction = async (
 
   const outputToken = YAMLData.tokens[order.outputs[0].token];
   const outputTokenAddress = toHex(BigInt(outputToken.address));
+
+  const client = createPublicClient({
+    chain: Object.values(chains).find(
+      (chain) => chain.id === Number(network["chain-id"])
+    ),
+    transport: http(),
+  });
   const outputTokenDecimals = await readContract(client, {
     abi: erc20Abi,
     address: outputTokenAddress,

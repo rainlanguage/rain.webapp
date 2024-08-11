@@ -19,7 +19,7 @@ export const getPaginatedButtons = (
                 {
                   buttonTarget: "buttonPage",
                   buttonValue: buttonPage - 1,
-                  buttonText: "<",
+                  buttonText: "←",
                 },
               ]
             : []),
@@ -45,7 +45,7 @@ export const getPresetsButtons = (
     {
       buttonTarget: "buttonValue",
       buttonValue: "back",
-      buttonText: "<",
+      buttonText: "←",
     },
     ...presets.map((preset: number) => ({
       buttonTarget: "buttonValue",
@@ -74,7 +74,7 @@ export const generateButtonsData = (
       {
         buttonTarget: "textInputLabel",
         buttonValue: "",
-        buttonText: "<",
+        buttonText: "←",
       },
       {
         buttonTarget: "buttonValue",
@@ -121,7 +121,7 @@ export const generateButtonsData = (
         {
           buttonTarget: "buttonValue",
           buttonValue: "back",
-          buttonText: "<",
+          buttonText: "←",
         },
         ...(!currentState.requiresTokenApproval || currentState.tokensApproved
           ? [

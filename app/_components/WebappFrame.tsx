@@ -11,6 +11,7 @@ import { toHex, erc20Abi, parseUnits } from "viem";
 import { orderBookJson } from "@/public/_abis/OrderBook";
 import { readContract } from "wagmi/actions";
 import { config } from "../providers";
+import { ProgressBar } from "./ProgressBar";
 import { getSubmissionTransactionData } from "../_services/transactionData";
 import _ from "lodash";
 import { FailsafeSchemaWithNumbers } from "../_schemas/failsafeWithNumbers";
@@ -27,6 +28,7 @@ const WebappFrame = ({ dotrainText }: props) => {
   const { data: hash, error, writeContractAsync } = useWriteContract();
   const [currentState, setCurrentState] = useState<FrameState>({
     strategyName: yamlData.gui.name,
+    strategyDescription: yamlData.gui.description,
     currentStep: "start",
     deploymentOption: null,
     bindings: {},
@@ -140,34 +142,41 @@ const WebappFrame = ({ dotrainText }: props) => {
   };
 
   const buttonsData = generateButtonsData(yamlData, currentState);
+
   return (
-    <>
+    <div className="flex-grow flex-col flex w-full">
+      <div className="absolute w-full top-0">
+        <ProgressBar currentState={currentState} />
+      </div>
       <FrameImage currentState={currentState} />
       {currentState.textInputLabel && (
-        <>
+        <div className="flex justify-center mb-4">
           <input
+            className="border-gray-200 rounded-lg border p-2 w-full max-w-96"
             type="number"
             placeholder={currentState.textInputLabel}
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
           />
           <br />
-        </>
+        </div>
       )}
-      {buttonsData.map((buttonData) => (
-        <button
-          key={buttonData.buttonText}
-          className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-          onClick={async () => {
-            await handleButtonClick(buttonData);
-          }}
-        >
-          {buttonData.buttonText}
-        </button>
-      ))}
+      <div className="flex gap-x-2 justify-center pb-20">
+        {buttonsData.map((buttonData) => (
+          <button
+            key={buttonData.buttonText}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+            onClick={async () => {
+              await handleButtonClick(buttonData);
+            }}
+          >
+            {buttonData.buttonText}
+          </button>
+        ))}
+      </div>
       {error && <div>{error.message}</div>}
       {hash && <div>Transaction successful! {hash}</div>}
-    </>
+    </div>
   );
 };
 

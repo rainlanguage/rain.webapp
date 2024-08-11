@@ -126,7 +126,7 @@ scenarios:
                 bindings:
                   # Minimum input/output token ratio accepatble for the order.
                   # Eg: For sell WLTH, min-ratio is the minimum USDT/WLTH value to sell above.
-                  min-ratio: 0.01
+                  min-ratio: 0
                   plottables: '''plottables-prod'
                   get-last-time: '''get-last-time-prod'
                   ensure-ratio: '''ensure-ratio-prod'
@@ -161,9 +161,6 @@ scenarios:
               # If the order's input-output token are paired on the uniswap v3 pool, then set to identity
               # If the order's input-output token are NOT paired on the uniswap v3 pool, then set to reserve.
               quote-multiplier: '''quote-multiplier-identity'
-    
-              # Number of output tokens offered per day.
-              per-day-output: 120
 
               # Bounty amount denominated in input tokens
               #
@@ -196,6 +193,8 @@ scenarios:
                   plottables: '''plottables-prod'
                   get-last-time: '''get-last-time-prod'
                   ensure-ratio: '''ensure-ratio-prod'
+                  # Number of output tokens offered per day.
+                  per-day-output: 120
               chart:
                 runs: 1000
                 bindings:
@@ -383,7 +382,7 @@ deployments:
  current-time: now(),
  last-time: any(
     get(hash(order-hash() last-time-key))
-    get(hash(order-hash()) start-time-key)
+    get(hash(order-hash() start-time-key))
   );
 
 #calculate-budget-input

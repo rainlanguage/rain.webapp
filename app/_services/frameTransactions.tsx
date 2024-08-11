@@ -8,7 +8,6 @@ import {
   parseUnits,
   toHex,
 } from "viem";
-import YAML from "yaml";
 import { YamlData } from "@/app/_types/yamlData";
 import { FrameState } from "@/app/_types/frame";
 import { readContract } from "viem/actions";
@@ -18,23 +17,18 @@ import * as chains from "viem/chains";
 
 export const getApprovalTransaction = async (
   currentState: FrameState,
-  dotrainText: string
+  yamlData: YamlData
 ) => {
-  // Use different YAML parsing library because js-yaml does not support BigInt
-  const YAMLData = YAML.parse(dotrainText.split("---")[0], {
-    intAsBigInt: true,
-  }) as YamlData;
-
   // Get network and orderbook data from the yaml file
   const deployment =
-    YAMLData.deployments[currentState.deploymentOption.deployment];
-  const order = YAMLData.orders[deployment.order];
-  const network = YAMLData.networks[order.network];
+    yamlData.deployments[currentState.deploymentOption.deployment];
+  const order = yamlData.orders[deployment.order];
+  const network = yamlData.networks[order.network];
 
-  const orderBook = YAMLData.orderbooks[order.orderbook];
+  const orderBook = yamlData.orderbooks[order.orderbook];
   const orderBookAddress = toHex(BigInt(orderBook.address));
 
-  const outputToken = YAMLData.tokens[order.outputs[0].token];
+  const outputToken = yamlData.tokens[order.outputs[0].token];
   const outputTokenAddress = toHex(BigInt(outputToken.address));
 
   const client = createPublicClient({
@@ -74,23 +68,19 @@ export const getApprovalTransaction = async (
 
 export const getSubmissionTransaction = async (
   currentState: FrameState,
+  yamlData: YamlData,
   dotrainText: string
 ) => {
-  // Use different YAML parsing library because js-yaml does not support BigInt
-  const YAMLData = YAML.parse(dotrainText.split("---")[0], {
-    intAsBigInt: true,
-  }) as YamlData;
-
   // Get network and orderbook data from the yaml file
   const deployment =
-    YAMLData.deployments[currentState.deploymentOption.deployment];
-  const order = YAMLData.orders[deployment.order];
-  const network = YAMLData.networks[order.network];
+    yamlData.deployments[currentState.deploymentOption.deployment];
+  const order = yamlData.orders[deployment.order];
+  const network = yamlData.networks[order.network];
 
-  const orderBook = YAMLData.orderbooks[order.orderbook];
+  const orderBook = yamlData.orderbooks[order.orderbook];
   const orderBookAddress = toHex(BigInt(orderBook.address));
 
-  const outputToken = YAMLData.tokens[order.outputs[0].token];
+  const outputToken = yamlData.tokens[order.outputs[0].token];
   const outputTokenAddress = toHex(BigInt(outputToken.address));
 
   const client = createPublicClient({

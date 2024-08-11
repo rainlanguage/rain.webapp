@@ -6,22 +6,22 @@ import { FrameImage } from "./FrameImage";
 import { getUpdatedFrameState } from "../_services/frameState";
 import { FrameState } from "../_types/frame";
 import yaml from "js-yaml";
-import YAML from "yaml";
 import { useWriteContract } from "wagmi";
 import { toHex, erc20Abi, parseUnits } from "viem";
 import { orderBookJson } from "@/public/_abis/OrderBook";
 import { readContract } from "wagmi/actions";
 import { config } from "../providers";
 import { getSubmissionTransactionData } from "../_services/transactionData";
+import _ from "lodash";
+import { FailsafeSchemaWithNumbers } from "../_schemas/failsafeWithNumbers";
 
 interface props {
   dotrainText: string;
 }
 
 const WebappFrame = ({ dotrainText }: props) => {
-  const yamlData = yaml.load(dotrainText.split("---")[0]) as YamlData;
-  const YAMLData = YAML.parse(dotrainText.split("---")[0], {
-    intAsBigInt: true,
+  const yamlData = yaml.load(dotrainText.split("---")[0], {
+    schema: FailsafeSchemaWithNumbers,
   }) as YamlData;
 
   const { data: hash, error, writeContractAsync } = useWriteContract();
@@ -60,13 +60,35 @@ const WebappFrame = ({ dotrainText }: props) => {
       buttonData.buttonValue === "submit"
     ) {
       const deployment =
-        YAMLData.deployments[currentState.deploymentOption.deployment];
-      const order = YAMLData.orders[deployment.order];
+        yamlData.deployments[currentState.deploymentOption.deployment];
+      const order = yamlData.orders[deployment.order];
 
-      const orderBook = YAMLData.orderbooks[order.orderbook];
+      const fullScenarioPath = deployment.scenario
+        .split(".")
+        .map((scenario, index, array) =>
+          index === array.length - 1 ? scenario : scenario + ".scenarios"
+        )
+        .join(".");
+      const scenario = _.get(yamlData.scenarios, fullScenarioPath);
+      const convertedBindings = Object.keys(currentState.bindings).reduce(
+        (acc, key) => {
+          const value = currentState.bindings[key];
+          if (isNaN(value)) {
+            return { ...acc, [key]: value };
+          }
+          return { ...acc, [key]: Number(value) };
+        },
+        {}
+      );
+      scenario.bindings = {
+        ...scenario.bindings,
+        ...convertedBindings,
+      };
+
+      const orderBook = yamlData.orderbooks[order.orderbook];
       const orderBookAddress = toHex(BigInt(orderBook.address));
 
-      const outputToken = YAMLData.tokens[order.outputs[0].token];
+      const outputToken = yamlData.tokens[order.outputs[0].token];
       const outputTokenAddress = toHex(BigInt(outputToken.address));
       const outputTokenDecimals = await readContract(config, {
         abi: erc20Abi,
@@ -87,10 +109,12 @@ const WebappFrame = ({ dotrainText }: props) => {
       });
 
       // Get multicall data for addOrder and deposit
+      const updatedDotrainText =
+        yaml.dump(yamlData) + "---" + dotrainText.split("---")[1];
       const { addOrderCalldata, depositCallData } =
         await getSubmissionTransactionData(
           currentState,
-          dotrainText,
+          updatedDotrainText,
           outputTokenAddress,
           outputTokenDecimals
         );
@@ -118,29 +142,29 @@ const WebappFrame = ({ dotrainText }: props) => {
   const buttonsData = generateButtonsData(yamlData, currentState);
   return (
     <>
-        <FrameImage currentState={currentState} />
-        {currentState.textInputLabel && (
-          <>
-            <input
-              type="number"
-              placeholder={currentState.textInputLabel}
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-            />
-            <br />
-          </>
-        )}
-        {buttonsData.map((buttonData) => (
-          <button
-            key={buttonData.buttonText}
-            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-            onClick={async () => {
-              await handleButtonClick(buttonData);
-            }}
-          >
-            {buttonData.buttonText}
-          </button>
-        ))}
+      <FrameImage currentState={currentState} />
+      {currentState.textInputLabel && (
+        <>
+          <input
+            type="number"
+            placeholder={currentState.textInputLabel}
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+          />
+          <br />
+        </>
+      )}
+      {buttonsData.map((buttonData) => (
+        <button
+          key={buttonData.buttonText}
+          className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+          onClick={async () => {
+            await handleButtonClick(buttonData);
+          }}
+        >
+          {buttonData.buttonText}
+        </button>
+      ))}
       {error && <div>{error.message}</div>}
       {hash && <div>Transaction successful! {hash}</div>}
     </>

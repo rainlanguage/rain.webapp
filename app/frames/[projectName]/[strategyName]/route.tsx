@@ -38,9 +38,9 @@ const handleRequest = frames(async (ctx) => {
     const buttonValue = ctx.url.searchParams.get("buttonValue");
     // Handle transactions
     if (buttonValue === "approve") {
-      return getApprovalTransaction(currentState, ctx.dotrainText);
+      return getApprovalTransaction(currentState, yamlData);
     } else if (buttonValue === "submit") {
-      return getSubmissionTransaction(currentState, ctx.dotrainText);
+      return getSubmissionTransaction(currentState, yamlData, ctx.dotrainText);
     }
     // Handle state transitions
     const inputText = ctx.message?.inputText;
@@ -55,27 +55,26 @@ const handleRequest = frames(async (ctx) => {
   // Generate buttons based on current state
   const buttonsData = generateButtonsData(yamlData, currentState);
 
-    const dmSansLight = fs.readFile(
-      path.join(path.resolve(process.cwd(), "public/_fonts"), "DMSans-Light.ttf")
-    );
+  const dmSansLight = fs.readFile(
+    path.join(path.resolve(process.cwd(), "public/_fonts"), "DMSans-Light.ttf")
+  );
 
-    const [dmSansLightData] =
-    await Promise.all([dmSansLight]);
+  const [dmSansLightData] = await Promise.all([dmSansLight]);
 
   return {
     image: <FrameImage currentState={currentState} />,
     buttons: getFrameButtons(buttonsData, currentState),
     textInput: currentState.textInputLabel,
     state: currentState,
-    imageOptions:   {
-        fonts: [
+    imageOptions: {
+      fonts: [
         {
           name: "DM Sans",
           data: dmSansLightData,
           weight: 400,
         },
-      ]
-    }
+      ],
+    },
   };
 });
 

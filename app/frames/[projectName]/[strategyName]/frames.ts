@@ -5,6 +5,7 @@ import { FrameState } from "frames.js/next/types";
 import path from "path";
 import yaml from "js-yaml";
 import fs from "fs";
+import { FailsafeSchemaWithNumbers } from "@/app/_schemas/failsafeWithNumbers";
 
 const dotrainContext: types.FramesMiddleware<
   any,
@@ -21,7 +22,9 @@ const dotrainContext: types.FramesMiddleware<
     `${strategyName}.rain`
   );
   const dotrainText = fs.readFileSync(filePath, "utf8");
-  const yamlData = yaml.load(dotrainText.split("---")[0]) as YamlData;
+  const yamlData = yaml.load(dotrainText.split("---")[0], {
+    schema: FailsafeSchemaWithNumbers,
+  }) as YamlData;
 
   return next({ dotrainText, yamlData });
 };

@@ -8,15 +8,16 @@
     "@rainlanguage/orderbook": "^0.0.1",
     "@tanstack/react-query": "^5.51.23",
     "@types/js-yaml": "^4.0.9",
+    "@types/lodash": "^4.17.7",
     "dotenv": "^16.4.5",
     "frames.js": "^0.16.2",
     "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21",
     "next": "^14.1.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "viem": "^2.19.1",
-    "wagmi": "^2.12.4",
-    "yaml": "^2.5.0"
+    "wagmi": "^2.12.4"
   },
   "devDependencies": {
     "@frames.js/debugger": "^0.2.11",

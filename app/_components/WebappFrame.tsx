@@ -5,15 +5,15 @@ import { YamlData } from "../_types/yamlData";
 import { FrameImage } from "./FrameImage";
 import { getUpdatedFrameState } from "../_services/frameState";
 import { FrameState } from "../_types/frame";
-import { getAddOrderCalldata } from "@rainlanguage/orderbook";
 import yaml from "js-yaml";
 import YAML from "yaml";
 import { useWriteContract } from "wagmi";
-import { encodeFunctionData, toHex, erc20Abi, parseUnits } from "viem";
+import { toHex, erc20Abi, parseUnits } from "viem";
 import { orderBookJson } from "@/public/_abis/OrderBook";
 import { readContract } from "wagmi/actions";
 import { config } from "../providers";
 import { ProgressBar } from "./ProgressBar";
+import { getSubmissionTransactionData } from "../_services/transactionData";
 
 interface props {
   dotrainText: string;
@@ -76,12 +76,11 @@ const WebappFrame = ({ dotrainText }: props) => {
         functionName: "decimals",
       });
 
+      // Get token approval for output token
       const depositAmount = parseUnits(
         String(currentState.deposit),
         outputTokenDecimals
       );
-
-      // Get token approval for output token
       await writeContractAsync({
         address: outputTokenAddress,
         abi: erc20Abi,
@@ -89,26 +88,20 @@ const WebappFrame = ({ dotrainText }: props) => {
         args: [orderBookAddress, depositAmount],
       });
 
-      // Add order to orderbook and deposit output token to vault
-      const addOrderCallData = await getAddOrderCalldata(
-        dotrainText,
-        currentState.deploymentOption.deployment
-      );
-      const depositCallData = encodeFunctionData({
-        functionName: "deposit2",
-        abi: orderBookJson.abi,
-        args: [
+      // Get multicall data for addOrder and deposit
+      const { addOrderCalldata, depositCallData } =
+        await getSubmissionTransactionData(
+          currentState,
+          dotrainText,
           outputTokenAddress,
-          toHex(BigInt(order.outputs[0]["vault-id"])),
-          depositAmount,
-          [],
-        ],
-      });
+          outputTokenDecimals
+        );
+
       await writeContractAsync({
         address: orderBookAddress,
         abi: orderBookJson.abi,
         functionName: "multicall",
-        args: [[toHex(addOrderCallData), depositCallData]],
+        args: [[addOrderCalldata, depositCallData]],
       });
     }
 

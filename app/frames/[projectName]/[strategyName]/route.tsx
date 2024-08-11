@@ -6,7 +6,7 @@ import { FrameState } from "@/app/_types/frame";
 import {
   getApprovalTransaction,
   getSubmissionTransaction,
-} from "@/app/_services/transactions";
+} from "@/app/_services/frameTransactions";
 import { getFrameButtons } from "@/app/_services/frameButtons";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";

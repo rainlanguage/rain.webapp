@@ -26,6 +26,10 @@ const handleRequest = frames(async (ctx) => {
     currentState.strategyName = yamlData.gui.name;
   }
 
+  if (currentState && !currentState.strategyDescription) {
+    currentState.strategyDescription = yamlData.gui.description;
+  }
+
   // Handle page navigation
   if (ctx.url.searchParams.has("textInputLabel")) {
     currentState.textInputLabel = ctx.url.searchParams.get(

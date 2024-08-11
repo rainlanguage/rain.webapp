@@ -41,6 +41,7 @@ export const frames = createFrames<FrameState>({
   ],
   initialState: {
     strategyName: null,
+    strategyDescription: null,
     currentStep: "start",
     deploymentOption: null,
     bindings: {},

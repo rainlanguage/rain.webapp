@@ -5,7 +5,7 @@ import { Providers } from "./providers";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 
-const inter = DM_Sans({ subsets: ["latin"] });
+const inter = DM_Sans({ subsets: ["latin"], weight: "200" });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,7 +22,7 @@ export default function RootLayout({
       <body>
         <Providers>
           <div className={`${inter.className} flex flex-col min-h-screen`}>
-            <div className="sticky top-0 w-full flex justify-end">
+            <div className="sticky w-full flex justify-end pr-2 pt-5">
               <ConnectButton />
             </div>
             <div className="flex flex-col flex-grow items-center justify-center">

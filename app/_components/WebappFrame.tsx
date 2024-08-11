@@ -118,7 +118,6 @@ const WebappFrame = ({ dotrainText }: props) => {
   const buttonsData = generateButtonsData(yamlData, currentState);
   return (
     <>
-      <div className="w-1/2 ml-10">
         <FrameImage currentState={currentState} />
         {currentState.textInputLabel && (
           <>
@@ -142,7 +141,6 @@ const WebappFrame = ({ dotrainText }: props) => {
             {buttonData.buttonText}
           </button>
         ))}
-      </div>
       {error && <div>{error.message}</div>}
       {hash && <div>Transaction successful! {hash}</div>}
     </>

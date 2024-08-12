@@ -11,6 +11,7 @@ import { getFrameButtons } from "@/app/_services/frameButtons";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import yaml from "js-yaml";
+import { hasEnoughTokenApproval } from "@/app/_services/tokenApproval";
 
 const handleRequest = frames(async (ctx) => {
   const yamlData = ctx.yamlData;
@@ -60,6 +61,19 @@ const handleRequest = frames(async (ctx) => {
       currentState,
       buttonValue,
       inputText
+    );
+  }
+
+  // Check for existing token allowance and update state
+  if (
+    currentState.currentStep === "review" &&
+    currentState.requiresTokenApproval &&
+    (ctx?.message as any)?.requesterCustodyAddress
+  ) {
+    currentState.tokensApproved = await hasEnoughTokenApproval(
+      currentState,
+      yamlData,
+      (ctx.message as any)?.requesterCustodyAddress
     );
   }
 

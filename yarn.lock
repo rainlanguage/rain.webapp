@@ -2390,10 +2390,10 @@
     react-remove-scroll "2.5.7"
     ua-parser-js "^1.0.37"
 
-"@rainlanguage/orderbook@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.npmjs.org/@rainlanguage/orderbook/-/orderbook-0.0.1.tgz"
-  integrity sha512-HjFS4jYsFa+48NNOtVAK7KwJcSD/6bAGhtXVVFmrgiCTgtjHY0UEausf02MBZnBlCHsQ8yy92Nhh8vcT7pMczg==
+"@rainlanguage/orderbook@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/@rainlanguage/orderbook/-/orderbook-0.1.0.tgz"
+  integrity sha512-JAgQHaiLrsPgt5pfA0v2LkEwFD5a5+omBi3/uVnZYSG0nTFkuxnLwUQnFviTqJksZu/3L78hL419GM3Hninr6g==
   dependencies:
     buffer "^6.0.3"
 

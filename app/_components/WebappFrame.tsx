@@ -196,7 +196,14 @@ const WebappFrame = ({ dotrainText }: props) => {
         ))}
       </div>
       {error && <div>{error.message}</div>}
-      {hash && <div>Transaction successful! {hash}</div>}
+      {hash && (
+        <>
+          <div>Transaction successful! {hash}</div>
+          <div>
+            <a href={`${window.location.href}/${hash}`}>Analytics</a>
+          </div>
+        </>
+      )}
     </div>
   );
 };

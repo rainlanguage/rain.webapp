@@ -11,7 +11,7 @@ interface props {
   };
 }
 
-const WebappFrame = ({ params: { transactionId } }: props) => {
+const StrategyAnalytics = ({ params: { transactionId } }: props) => {
   const [transactionAnalyticsData, setTransactionAnalyticsData] =
     useState<any>();
 
@@ -140,4 +140,4 @@ const WebappFrame = ({ params: { transactionId } }: props) => {
   );
 };
 
-export default WebappFrame;
+export default StrategyAnalytics;

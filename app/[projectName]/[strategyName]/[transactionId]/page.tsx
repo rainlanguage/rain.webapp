@@ -17,7 +17,7 @@ const StrategyAnalytics = ({ params: { transactionId } }: props) => {
 
   const getTransactionAnalyticsData = async () => {
     const response = await fetch(
-      "https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.3/gn",
+      "https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.4/gn",
       {
         method: "POST",
         headers: {
@@ -33,6 +33,7 @@ const StrategyAnalytics = ({ params: { transactionId } }: props) => {
     }
 
     const result = await response.json();
+    console.log(result);
     setTransactionAnalyticsData(result);
   };
   if (transactionAnalyticsData === undefined) {

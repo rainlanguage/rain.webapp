@@ -5,7 +5,7 @@
   "type": "module",
   "dependencies": {
     "@rainbow-me/rainbowkit": "^2.1.4",
-    "@rainlanguage/orderbook": "^0.0.1",
+    "@rainlanguage/orderbook": "^0.1.0",
     "@tanstack/react-query": "^5.51.23",
     "@types/js-yaml": "^4.0.9",
     "@types/lodash": "^4.17.7",

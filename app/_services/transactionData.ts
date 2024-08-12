@@ -1,4 +1,4 @@
-import { getAddOrderCalldata } from "@rainlanguage/orderbook";
+import { getAddOrderCalldata } from "@rainlanguage/orderbook/common";
 import {
   decodeFunctionData,
   encodeFunctionData,

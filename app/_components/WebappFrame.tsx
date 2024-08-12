@@ -6,7 +6,12 @@ import { FrameImage } from "./FrameImage";
 import { getUpdatedFrameState } from "../_services/frameState";
 import { FrameState } from "../_types/frame";
 import yaml from "js-yaml";
-import { useChainId, useSwitchChain, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useChainId,
+  useSwitchChain,
+  useWriteContract,
+} from "wagmi";
 import { toHex, erc20Abi, parseUnits } from "viem";
 import { orderBookJson } from "@/public/_abis/OrderBook";
 import { readContract } from "wagmi/actions";
@@ -25,6 +30,7 @@ const WebappFrame = ({ dotrainText }: props) => {
     schema: FailsafeSchemaWithNumbers,
   }) as YamlData;
 
+  const account = useAccount();
   const currentWalletChainId = useChainId();
   const { switchChainAsync } = useSwitchChain();
   const { data: hash, error, writeContractAsync } = useWriteContract();
@@ -105,17 +111,25 @@ const WebappFrame = ({ dotrainText }: props) => {
         functionName: "decimals",
       });
 
-      // Get token approval for output token
+      // Get token approval for output token, if required
       const depositAmount = parseUnits(
         String(currentState.deposit),
         outputTokenDecimals
       );
-      await writeContractAsync({
-        address: outputTokenAddress,
+      const existingAllowance = await readContract(config, {
         abi: erc20Abi,
-        functionName: "approve",
-        args: [orderBookAddress, depositAmount],
+        address: outputTokenAddress,
+        functionName: "allowance",
+        args: [account.address as `0x${string}`, orderBookAddress],
       });
+      if (existingAllowance < depositAmount) {
+        await writeContractAsync({
+          address: outputTokenAddress,
+          abi: erc20Abi,
+          functionName: "approve",
+          args: [orderBookAddress, depositAmount],
+        });
+      }
 
       // Get multicall data for addOrder and deposit
       const updatedDotrainText =

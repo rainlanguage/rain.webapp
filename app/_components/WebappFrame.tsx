@@ -6,7 +6,7 @@ import { FrameImage } from "./FrameImage";
 import { getUpdatedFrameState } from "../_services/frameState";
 import { FrameState } from "../_types/frame";
 import yaml from "js-yaml";
-import { useWriteContract } from "wagmi";
+import { useChainId, useSwitchChain, useWriteContract } from "wagmi";
 import { toHex, erc20Abi, parseUnits } from "viem";
 import { orderBookJson } from "@/public/_abis/OrderBook";
 import { readContract } from "wagmi/actions";
@@ -25,6 +25,8 @@ const WebappFrame = ({ dotrainText }: props) => {
     schema: FailsafeSchemaWithNumbers,
   }) as YamlData;
 
+  const currentWalletChainId = useChainId();
+  const { switchChainAsync } = useSwitchChain();
   const { data: hash, error, writeContractAsync } = useWriteContract();
   const [currentState, setCurrentState] = useState<FrameState>({
     strategyName: yamlData.gui.name,
@@ -89,6 +91,11 @@ const WebappFrame = ({ dotrainText }: props) => {
 
       const orderBook = yamlData.orderbooks[order.orderbook];
       const orderBookAddress = toHex(BigInt(orderBook.address));
+
+      const network = yamlData.networks[order.network];
+      if (currentWalletChainId !== network["chain-id"]) {
+        await switchChainAsync({ chainId: network["chain-id"] });
+      }
 
       const outputToken = yamlData.tokens[order.outputs[0].token];
       const outputTokenAddress = toHex(BigInt(outputToken.address));

@@ -26,7 +26,7 @@ networks:
     currency: ETH
 
 subgraphs:
-  base-community: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.3/gn
+  base-community: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.4/gn
   
 orderbooks:
   base-community:
@@ -71,7 +71,7 @@ scenarios:
         bindings:
           # Ask for now, registry in future.
           uniswap-words: 0xD6B34F97d4A8Cb38D0544dB241CB3f335866f490
-          orderbook-subparser: 0x8D96ea3EF24D7123882c51CE4325b89bc0d63f9e
+          orderbook-subparser: 0x762adD85a30A83722feF2e029087C9D110B6a7b3
 
           # Uniswap V3 factory addresses and init code
           uniswap-v3-factory: 0x33128a8fC17869897dcE68Ed026d694621f6FDfD
@@ -313,7 +313,7 @@ gui:
               - 5
               - 10
         deposit:
-          min: 20
+          min: 2
           presets:
             - 0.01
             - 50
@@ -447,4 +447,5 @@ deployments:
  :;
 
 #post-add-order
+  using-words-from orderbook-subparser
   :set(hash(order-hash() start-time-key) block-timestamp());

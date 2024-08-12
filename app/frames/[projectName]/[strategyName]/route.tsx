@@ -68,6 +68,7 @@ const handleRequest = frames(async (ctx) => {
   if (
     currentState.currentStep === "review" &&
     currentState.requiresTokenApproval &&
+    currentState.tokensApproved === false &&
     (ctx?.message as any)?.requesterCustodyAddress
   ) {
     currentState.tokensApproved = await hasEnoughTokenApproval(

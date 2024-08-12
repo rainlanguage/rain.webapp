@@ -10,6 +10,7 @@ import {
 import { getFrameButtons } from "@/app/_services/frameButtons";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import yaml from "js-yaml";
 
 const handleRequest = frames(async (ctx) => {
   const yamlData = ctx.yamlData;
@@ -44,7 +45,13 @@ const handleRequest = frames(async (ctx) => {
     if (buttonValue === "approve") {
       return getApprovalTransaction(currentState, yamlData);
     } else if (buttonValue === "submit") {
-      return getSubmissionTransaction(currentState, yamlData, ctx.dotrainText);
+      const updatedDotrainText =
+        yaml.dump(yamlData) + "---" + ctx.dotrainText.split("---")[1];
+      return getSubmissionTransaction(
+        currentState,
+        yamlData,
+        updatedDotrainText
+      );
     }
     // Handle state transitions
     const inputText = ctx.message?.inputText;

@@ -1,8 +1,10 @@
 "use client";
 import { transactionAnalytics } from "@/app/_queries/strategyAnalytics";
 import { useState } from "react";
-import { formatUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 import { YamlData } from "@/app/_types/yamlData";
+import { useWriteContract } from "wagmi";
+import { orderBookJson } from "@/public/_abis/OrderBook";
 
 interface props {
   transactionId: string;
@@ -12,6 +14,7 @@ interface props {
 const StrategyAnalytics = ({ transactionId, yamlData }: props) => {
   const [transactionAnalyticsData, setTransactionAnalyticsData] =
     useState<any>();
+  const { writeContractAsync } = useWriteContract();
 
   const getTransactionAnalyticsData = async () => {
     // Find which subgraph has the transaction data by checking each subgraph
@@ -38,6 +41,22 @@ const StrategyAnalytics = ({ transactionId, yamlData }: props) => {
     getTransactionAnalyticsData();
   }
 
+  const withdraw = async (token: any, vaultId: string, amount: number) => {
+    const orderBookAddress =
+      transactionAnalyticsData?.data?.events[0]?.order.orderbook.id;
+    await writeContractAsync({
+      address: orderBookAddress,
+      abi: orderBookJson.abi,
+      functionName: "withdraw2",
+      args: [
+        token.address,
+        vaultId,
+        parseUnits(String(amount), token.decimals),
+        [],
+      ],
+    });
+  };
+
   const order = transactionAnalyticsData?.data?.events[0]?.order;
   const totalTradeCount = order?.trades.length;
   const inputVaults = order?.inputs.reduce((acc: any, vault: any) => {
@@ -54,6 +73,9 @@ const StrategyAnalytics = ({ transactionId, yamlData }: props) => {
       {
         decimals: vault.token.decimals,
         balance: vault.balance,
+        address: vault.token.address,
+        vaultId: vault.vaultId,
+        totalIn: 0,
       }
     );
 
@@ -74,6 +96,9 @@ const StrategyAnalytics = ({ transactionId, yamlData }: props) => {
       {
         decimals: vault.token.decimals,
         balance: vault.balance,
+        address: vault.token.address,
+        vaultId: vault.vaultId,
+        totalOut: 0,
       }
     );
 
@@ -82,7 +107,7 @@ const StrategyAnalytics = ({ transactionId, yamlData }: props) => {
 
   return (
     <div className="p-4">
-      {totalTradeCount && (
+      {totalTradeCount !== undefined && (
         <h1>
           <span className="font-bold">Number of trades:</span> {totalTradeCount}
         </h1>
@@ -106,6 +131,18 @@ const StrategyAnalytics = ({ transactionId, yamlData }: props) => {
                   inputVaults[token].balance,
                   inputVaults[token].decimals
                 )}
+                <button
+                  className="bg-gray-500 hover:bg-gray-400 text-white font-bold px-2 mx-1 rounded"
+                  onClick={() =>
+                    withdraw(
+                      inputVaults[token],
+                      inputVaults[token].vaultId,
+                      inputVaults[token].balance
+                    )
+                  }
+                >
+                  Withdraw all
+                </button>
               </p>
             </div>
           ))}
@@ -130,6 +167,18 @@ const StrategyAnalytics = ({ transactionId, yamlData }: props) => {
                   outputVaults[token].balance,
                   outputVaults[token].decimals
                 )}
+                <button
+                  className="bg-gray-500 hover:bg-gray-400 text-white font-bold px-2 mx-1 rounded"
+                  onClick={() =>
+                    withdraw(
+                      outputVaults[token],
+                      outputVaults[token].vaultId,
+                      inputVaults[token].balance
+                    )
+                  }
+                >
+                  Withdraw all
+                </button>
               </p>
             </div>
           ))}

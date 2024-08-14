@@ -5,14 +5,7 @@ import { formatUnits, parseUnits } from "viem";
 import { YamlData } from "@/app/_types/yamlData";
 import { useWriteContract } from "wagmi";
 import { orderBookJson } from "@/public/_abis/OrderBook";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { WithdrawalForm } from "./WithdrawalForm";
+import { WithdrawalModal } from "./WithdrawalModal";
 
 interface props {
   transactionId: string;
@@ -150,36 +143,16 @@ const StrategyAnalytics = ({ transactionId, yamlData }: props) => {
                     inputVaults[token].decimals
                   )
                 ) > 0 && (
-                  <Dialog>
-                    <DialogTrigger
-                      className="bg-gray-500 hover:bg-gray-400 text-white font-bold px-2 mx-1 rounded"
-                      disabled={
-                        Number(
-                          formatUnits(
-                            inputVaults[token].balance,
-                            inputVaults[token].decimals
-                          )
-                        ) === 0
-                      }
-                    >
-                      Withdraw
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Withdraw</DialogTitle>
-                        <WithdrawalForm
-                          onSubmit={(data) => {
-                            console.log(data);
-                            // withdraw(
-                            //   inputVaults[token],
-                            //   inputVaults[token].vaultId,
-                            //   Number(data.withdrawalAmount)
-                            // );
-                          }}
-                        />
-                      </DialogHeader>
-                    </DialogContent>
-                  </Dialog>
+                  <WithdrawalModal
+                    onSubmit={async (data) => {
+                      await withdraw(
+                        inputVaults[token],
+                        inputVaults[token].vaultId,
+                        Number(data.withdrawalAmount)
+                      );
+                      getTransactionAnalyticsData();
+                    }}
+                  />
                 )}
               </p>
             </div>
@@ -211,35 +184,16 @@ const StrategyAnalytics = ({ transactionId, yamlData }: props) => {
                     outputVaults[token].decimals
                   )
                 ) > 0 && (
-                  <Dialog>
-                    <DialogTrigger
-                      className="bg-gray-500 hover:bg-gray-400 text-white font-bold px-2 mx-1 rounded"
-                      disabled={
-                        Number(
-                          formatUnits(
-                            outputVaults[token].balance,
-                            outputVaults[token].decimals
-                          )
-                        ) === 0
-                      }
-                    >
-                      Withdraw
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Withdraw</DialogTitle>
-                        <WithdrawalForm
-                          onSubmit={(data) => {
-                            withdraw(
-                              outputVaults[token],
-                              outputVaults[token].vaultId,
-                              Number(data.withdrawalAmount)
-                            );
-                          }}
-                        />
-                      </DialogHeader>
-                    </DialogContent>
-                  </Dialog>
+                  <WithdrawalModal
+                    onSubmit={async (data) => {
+                      await withdraw(
+                        outputVaults[token],
+                        outputVaults[token].vaultId,
+                        Number(data.withdrawalAmount)
+                      );
+                      getTransactionAnalyticsData();
+                    }}
+                  />
                 )}
               </p>
             </div>

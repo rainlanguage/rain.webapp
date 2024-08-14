@@ -5,6 +5,14 @@ import { formatUnits, parseUnits } from "viem";
 import { YamlData } from "@/app/_types/yamlData";
 import { useWriteContract } from "wagmi";
 import { orderBookJson } from "@/public/_abis/OrderBook";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { WithdrawalForm } from "./WithdrawalForm";
 
 interface props {
   transactionId: string;
@@ -41,23 +49,10 @@ const StrategyAnalytics = ({ transactionId, yamlData }: props) => {
     getTransactionAnalyticsData();
   }
 
-  const withdraw = async (token: any, vaultId: string, amount: number) => {
-    const orderBookAddress =
-      transactionAnalyticsData?.data?.events[0]?.order.orderbook.id;
-    await writeContractAsync({
-      address: orderBookAddress,
-      abi: orderBookJson.abi,
-      functionName: "withdraw2",
-      args: [
-        token.address,
-        vaultId,
-        parseUnits(String(amount), token.decimals),
-        [],
-      ],
-    });
-  };
-
-  const order = transactionAnalyticsData?.data?.events[0]?.order;
+  const order = transactionAnalyticsData?.data?.events.find(
+    (event: any) => event.order
+  )?.order;
+  const orderBookAddress = order?.orderbook.id;
   const totalTradeCount = order?.trades.length;
   const inputVaults = order?.inputs.reduce((acc: any, vault: any) => {
     acc[vault.token.name] = order.trades.reduce(
@@ -105,6 +100,24 @@ const StrategyAnalytics = ({ transactionId, yamlData }: props) => {
     return acc;
   }, {});
 
+  const withdraw = async (token: any, vaultId: string, amount: number) => {
+    await writeContractAsync({
+      address: orderBookAddress,
+      abi: orderBookJson.abi,
+      functionName: "withdraw2",
+      args: [
+        token.address,
+        vaultId,
+        parseUnits(String(amount), token.decimals),
+        [],
+      ],
+    });
+  };
+
+  if (!transactionAnalyticsData) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="p-4">
       {totalTradeCount !== undefined && (
@@ -131,18 +144,43 @@ const StrategyAnalytics = ({ transactionId, yamlData }: props) => {
                   inputVaults[token].balance,
                   inputVaults[token].decimals
                 )}
-                <button
-                  className="bg-gray-500 hover:bg-gray-400 text-white font-bold px-2 mx-1 rounded"
-                  onClick={() =>
-                    withdraw(
-                      inputVaults[token],
-                      inputVaults[token].vaultId,
-                      inputVaults[token].balance
-                    )
-                  }
-                >
-                  Withdraw all
-                </button>
+                {Number(
+                  formatUnits(
+                    inputVaults[token].balance,
+                    inputVaults[token].decimals
+                  )
+                ) > 0 && (
+                  <Dialog>
+                    <DialogTrigger
+                      className="bg-gray-500 hover:bg-gray-400 text-white font-bold px-2 mx-1 rounded"
+                      disabled={
+                        Number(
+                          formatUnits(
+                            inputVaults[token].balance,
+                            inputVaults[token].decimals
+                          )
+                        ) === 0
+                      }
+                    >
+                      Withdraw
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Withdraw</DialogTitle>
+                        <WithdrawalForm
+                          onSubmit={(data) => {
+                            console.log(data);
+                            // withdraw(
+                            //   inputVaults[token],
+                            //   inputVaults[token].vaultId,
+                            //   Number(data.withdrawalAmount)
+                            // );
+                          }}
+                        />
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                )}
               </p>
             </div>
           ))}
@@ -167,18 +205,42 @@ const StrategyAnalytics = ({ transactionId, yamlData }: props) => {
                   outputVaults[token].balance,
                   outputVaults[token].decimals
                 )}
-                <button
-                  className="bg-gray-500 hover:bg-gray-400 text-white font-bold px-2 mx-1 rounded"
-                  onClick={() =>
-                    withdraw(
-                      outputVaults[token],
-                      outputVaults[token].vaultId,
-                      inputVaults[token].balance
-                    )
-                  }
-                >
-                  Withdraw all
-                </button>
+                {Number(
+                  formatUnits(
+                    outputVaults[token].balance,
+                    outputVaults[token].decimals
+                  )
+                ) > 0 && (
+                  <Dialog>
+                    <DialogTrigger
+                      className="bg-gray-500 hover:bg-gray-400 text-white font-bold px-2 mx-1 rounded"
+                      disabled={
+                        Number(
+                          formatUnits(
+                            outputVaults[token].balance,
+                            outputVaults[token].decimals
+                          )
+                        ) === 0
+                      }
+                    >
+                      Withdraw
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Withdraw</DialogTitle>
+                        <WithdrawalForm
+                          onSubmit={(data) => {
+                            withdraw(
+                              outputVaults[token],
+                              outputVaults[token].vaultId,
+                              Number(data.withdrawalAmount)
+                            );
+                          }}
+                        />
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                )}
               </p>
             </div>
           ))}

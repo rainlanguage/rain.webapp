@@ -14,7 +14,10 @@ import {
 import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
-  withdrawalAmount: z.string(),
+  withdrawalAmount: z.preprocess(
+    (value) => Number(value),
+    z.number().min(0, "Amount must be a positive number")
+  ),
 });
 
 interface WithdrawalFormProps {

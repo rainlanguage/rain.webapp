@@ -253,7 +253,11 @@ const WebappFrame = ({ dotrainText }: props) => {
         <>
           <div>Transaction successful! {hash}</div>
           <div>
-            <a href={`${window.location.href}/${hash}`}>Analytics</a>
+            <a
+              href={`${window.location.origin}${window.location.pathname}/${hash}`}
+            >
+              Analytics
+            </a>
           </div>
         </>
       )}

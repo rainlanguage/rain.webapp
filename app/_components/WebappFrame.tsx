@@ -21,6 +21,7 @@ import { getSubmissionTransactionData } from "../_services/transactionData";
 import _, { set } from "lodash";
 import { FailsafeSchemaWithNumbers } from "../_schemas/failsafeWithNumbers";
 import { SubmissionModal } from "./SubmissionModal";
+import { useSearchParams } from "next/navigation";
 
 interface props {
   dotrainText: string;
@@ -36,7 +37,15 @@ const WebappFrame = ({ dotrainText }: props) => {
   const { switchChainAsync } = useSwitchChain();
   const { data: hash, writeContractAsync } = useWriteContract();
 
-  const [currentState, setCurrentState] = useState<FrameState>({
+  const searchParams = useSearchParams();
+  const urlState = searchParams.get("currentState")
+    ? {
+        ...JSON.parse(searchParams.get("currentState") as string),
+        requiresTokenApproval: false,
+        isWebapp: true,
+      }
+    : null;
+  const defaultState: FrameState = {
     strategyName: yamlData.gui.name,
     strategyDescription: yamlData.gui.description,
     currentStep: "start",
@@ -47,7 +56,11 @@ const WebappFrame = ({ dotrainText }: props) => {
     textInputLabel: "",
     error: null,
     requiresTokenApproval: false,
-  });
+    isWebapp: true,
+  };
+  const [currentState, setCurrentState] = useState<FrameState>(
+    urlState || defaultState
+  );
   const [error, setError] = useState<Error | null>(null);
   const [inputText, setInputText] = useState<string>("");
   const [submissionState, setSubmissionState] = useState({

@@ -89,7 +89,7 @@ const handleRequest = frames(async (ctx) => {
 
   return {
     image: <FrameImage currentState={currentState} />,
-    buttons: getFrameButtons(buttonsData, currentState),
+    buttons: getFrameButtons(buttonsData, currentState, ctx.url),
     textInput: currentState.textInputLabel,
     state: currentState,
     imageOptions: {

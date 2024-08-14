@@ -92,7 +92,7 @@ gui:
             description: The amount of USD you want to spend each day.
             min: 10
             presets:
-              - 1
+              - 0.01
               - 5
               - 10
           - binding: frequency
@@ -107,7 +107,7 @@ gui:
         deposit:
           min: 20
           presets:
-            - 10
+            - 0.01
             - 50
             - 100
     -   deployment: weth

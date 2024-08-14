@@ -53,9 +53,7 @@ export const WithdrawalModal = ({ onSubmit }: WithdrawalModalProps) => {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(async () => {
-                console.log("submitting form");
                 await onSubmit(form.getValues());
-                console.log("form submitted");
                 setOpen(false);
               })}
               className="space-y-8"

@@ -20,6 +20,7 @@ import { ProgressBar } from "./ProgressBar";
 import { getSubmissionTransactionData } from "../_services/transactionData";
 import _ from "lodash";
 import { FailsafeSchemaWithNumbers } from "../_schemas/failsafeWithNumbers";
+import { SubmissionModal } from "./SubmissionModal";
 
 interface props {
   dotrainText: string;
@@ -47,6 +48,10 @@ const WebappFrame = ({ dotrainText }: props) => {
     requiresTokenApproval: false,
   });
   const [inputText, setInputText] = useState<string>("");
+  const [submissionState, setSubmissionState] = useState({
+    tokenApprovalStatus: "pending",
+    strategyDeploymentStatus: "pending",
+  });
 
   const handleButtonClick = async (buttonData: any) => {
     // Handle page navigation
@@ -130,6 +135,10 @@ const WebappFrame = ({ dotrainText }: props) => {
           args: [orderBookAddress, depositAmount],
         });
       }
+      await setSubmissionState({
+        tokenApprovalStatus: "approved",
+        strategyDeploymentStatus: "pending",
+      });
 
       // Get multicall data for addOrder and deposit
       const updatedDotrainText =
@@ -147,6 +156,10 @@ const WebappFrame = ({ dotrainText }: props) => {
         abi: orderBookJson.abi,
         functionName: "multicall",
         args: [[addOrderCalldata, depositCallData]],
+      });
+      await setSubmissionState({
+        tokenApprovalStatus: "approved",
+        strategyDeploymentStatus: "approved",
       });
     }
 
@@ -183,17 +196,28 @@ const WebappFrame = ({ dotrainText }: props) => {
         </div>
       )}
       <div className="flex gap-x-2 justify-center pb-20">
-        {buttonsData.map((buttonData) => (
-          <button
-            key={buttonData.buttonText}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
-            onClick={async () => {
-              await handleButtonClick(buttonData);
-            }}
-          >
-            {buttonData.buttonText}
-          </button>
-        ))}
+        {buttonsData.map((buttonData) => {
+          return buttonData.buttonValue === "submit" ? (
+            <SubmissionModal
+              key={buttonData.buttonText}
+              buttonText={buttonData.buttonText}
+              submissionState={submissionState}
+              onOpen={async () => {
+                await handleButtonClick(buttonData);
+              }}
+            />
+          ) : (
+            <button
+              key={buttonData.buttonText}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+              onClick={async () => {
+                await handleButtonClick(buttonData);
+              }}
+            >
+              {buttonData.buttonText}
+            </button>
+          );
+        })}
       </div>
       {error && <div>{error.message}</div>}
       {hash && (

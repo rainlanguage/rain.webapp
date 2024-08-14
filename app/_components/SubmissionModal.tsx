@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/dialog";
 
 interface SubmissionModalProps {
+  open: boolean;
+  setOpen: (value: boolean) => void;
   buttonText: string;
   submissionState: {
     tokenApprovalStatus: string;
@@ -19,11 +21,12 @@ interface SubmissionModalProps {
 }
 
 export const SubmissionModal = ({
+  open,
+  setOpen,
   buttonText,
   submissionState,
   onOpen,
 }: SubmissionModalProps) => {
-  const [open, setOpen] = useState(false);
   if (submissionState.strategyDeploymentStatus === "approved") {
     setOpen(false);
   }

@@ -18,7 +18,7 @@ import { readContract } from "wagmi/actions";
 import { config } from "../providers";
 import { ProgressBar } from "./ProgressBar";
 import { getSubmissionTransactionData } from "../_services/transactionData";
-import _ from "lodash";
+import _, { set } from "lodash";
 import { FailsafeSchemaWithNumbers } from "../_schemas/failsafeWithNumbers";
 import { SubmissionModal } from "./SubmissionModal";
 
@@ -34,7 +34,8 @@ const WebappFrame = ({ dotrainText }: props) => {
   const account = useAccount();
   const currentWalletChainId = useChainId();
   const { switchChainAsync } = useSwitchChain();
-  const { data: hash, error, writeContractAsync } = useWriteContract();
+  const { data: hash, writeContractAsync } = useWriteContract();
+
   const [currentState, setCurrentState] = useState<FrameState>({
     strategyName: yamlData.gui.name,
     strategyDescription: yamlData.gui.description,
@@ -47,13 +48,17 @@ const WebappFrame = ({ dotrainText }: props) => {
     error: null,
     requiresTokenApproval: false,
   });
+  const [error, setError] = useState<Error | null>(null);
   const [inputText, setInputText] = useState<string>("");
   const [submissionState, setSubmissionState] = useState({
     tokenApprovalStatus: "pending",
     strategyDeploymentStatus: "pending",
   });
+  const [isSubmissionModalOpen, setIsSubmissionModalOpen] = useState(false);
 
   const handleButtonClick = async (buttonData: any) => {
+    setError(null);
+
     // Handle page navigation
     if (buttonData.buttonTarget === "textInputLabel") {
       setCurrentState({
@@ -69,109 +74,118 @@ const WebappFrame = ({ dotrainText }: props) => {
       return;
     }
 
-    if (
-      currentState.deposit &&
-      currentState.currentStep === "review" &&
-      buttonData.buttonValue === "submit"
-    ) {
-      const deployment =
-        yamlData.deployments[currentState.deploymentOption.deployment];
-      const order = yamlData.orders[deployment.order];
+    try {
+      if (
+        currentState.deposit &&
+        currentState.currentStep === "review" &&
+        buttonData.buttonValue === "submit"
+      ) {
+        const deployment =
+          yamlData.deployments[currentState.deploymentOption.deployment];
+        const order = yamlData.orders[deployment.order];
 
-      const fullScenarioPath = deployment.scenario
-        .split(".")
-        .map((scenario, index, array) =>
-          index === array.length - 1 ? scenario : scenario + ".scenarios"
-        )
-        .join(".");
-      const scenario = _.get(yamlData.scenarios, fullScenarioPath);
-      const convertedBindings = Object.keys(currentState.bindings).reduce(
-        (acc, key) => {
-          const value = currentState.bindings[key];
-          if (isNaN(value)) {
-            return { ...acc, [key]: value };
-          }
-          return { ...acc, [key]: Number(value) };
-        },
-        {}
-      );
-      scenario.bindings = {
-        ...scenario.bindings,
-        ...convertedBindings,
-      };
+        const fullScenarioPath = deployment.scenario
+          .split(".")
+          .map((scenario, index, array) =>
+            index === array.length - 1 ? scenario : scenario + ".scenarios"
+          )
+          .join(".");
+        const scenario = _.get(yamlData.scenarios, fullScenarioPath);
+        const convertedBindings = Object.keys(currentState.bindings).reduce(
+          (acc, key) => {
+            const value = currentState.bindings[key];
+            if (isNaN(value)) {
+              return { ...acc, [key]: value };
+            }
+            return { ...acc, [key]: Number(value) };
+          },
+          {}
+        );
+        scenario.bindings = {
+          ...scenario.bindings,
+          ...convertedBindings,
+        };
 
-      const orderBook = yamlData.orderbooks[order.orderbook];
-      const orderBookAddress = toHex(BigInt(orderBook.address));
+        const orderBook = yamlData.orderbooks[order.orderbook];
+        const orderBookAddress = toHex(BigInt(orderBook.address));
 
-      const network = yamlData.networks[order.network];
-      if (currentWalletChainId !== network["chain-id"]) {
-        await switchChainAsync({ chainId: network["chain-id"] });
-      }
+        const network = yamlData.networks[order.network];
+        if (currentWalletChainId !== network["chain-id"]) {
+          await switchChainAsync({ chainId: network["chain-id"] });
+        }
 
-      const outputToken = yamlData.tokens[order.outputs[0].token];
-      const outputTokenAddress = toHex(BigInt(outputToken.address));
-      const outputTokenDecimals = await readContract(config, {
-        abi: erc20Abi,
-        address: outputTokenAddress,
-        functionName: "decimals",
-      });
-
-      // Get token approval for output token, if required
-      const depositAmount = parseUnits(
-        String(currentState.deposit),
-        outputTokenDecimals
-      );
-      const existingAllowance = await readContract(config, {
-        abi: erc20Abi,
-        address: outputTokenAddress,
-        functionName: "allowance",
-        args: [account.address as `0x${string}`, orderBookAddress],
-      });
-      if (existingAllowance < depositAmount) {
-        await writeContractAsync({
-          address: outputTokenAddress,
+        const outputToken = yamlData.tokens[order.outputs[0].token];
+        const outputTokenAddress = toHex(BigInt(outputToken.address));
+        const outputTokenDecimals = await readContract(config, {
           abi: erc20Abi,
-          functionName: "approve",
-          args: [orderBookAddress, depositAmount],
+          address: outputTokenAddress,
+          functionName: "decimals",
         });
-      }
-      await setSubmissionState({
-        tokenApprovalStatus: "approved",
-        strategyDeploymentStatus: "pending",
-      });
 
-      // Get multicall data for addOrder and deposit
-      const updatedDotrainText =
-        yaml.dump(yamlData) + "---" + dotrainText.split("---")[1];
-      const { addOrderCalldata, depositCallData } =
-        await getSubmissionTransactionData(
-          currentState,
-          updatedDotrainText,
-          outputTokenAddress,
+        // Get token approval for output token, if required
+        const depositAmount = parseUnits(
+          String(currentState.deposit),
           outputTokenDecimals
         );
+        const existingAllowance = await readContract(config, {
+          abi: erc20Abi,
+          address: outputTokenAddress,
+          functionName: "allowance",
+          args: [account.address as `0x${string}`, orderBookAddress],
+        });
+        if (existingAllowance < depositAmount) {
+          await writeContractAsync({
+            address: outputTokenAddress,
+            abi: erc20Abi,
+            functionName: "approve",
+            args: [orderBookAddress, depositAmount],
+          });
+        }
+        await setSubmissionState({
+          tokenApprovalStatus: "approved",
+          strategyDeploymentStatus: "pending",
+        });
 
-      await writeContractAsync({
-        address: orderBookAddress,
-        abi: orderBookJson.abi,
-        functionName: "multicall",
-        args: [[addOrderCalldata, depositCallData]],
-      });
-      await setSubmissionState({
-        tokenApprovalStatus: "approved",
-        strategyDeploymentStatus: "approved",
-      });
-    }
+        // Get multicall data for addOrder and deposit
+        const updatedDotrainText =
+          yaml.dump(yamlData) + "---" + dotrainText.split("---")[1];
+        const { addOrderCalldata, depositCallData } =
+          await getSubmissionTransactionData(
+            currentState,
+            updatedDotrainText,
+            outputTokenAddress,
+            outputTokenDecimals
+          );
 
-    const updatedState = getUpdatedFrameState(
-      yamlData,
-      currentState,
-      buttonData.buttonValue,
-      inputText
-    );
-    setCurrentState({ ...updatedState });
-    if (inputText) {
-      setInputText("");
+        await writeContractAsync({
+          address: orderBookAddress,
+          abi: orderBookJson.abi,
+          functionName: "multicall",
+          args: [[addOrderCalldata, depositCallData]],
+        });
+        await setSubmissionState({
+          tokenApprovalStatus: "approved",
+          strategyDeploymentStatus: "approved",
+        });
+      }
+
+      const updatedState = getUpdatedFrameState(
+        yamlData,
+        currentState,
+        buttonData.buttonValue,
+        inputText
+      );
+      setCurrentState({ ...updatedState });
+      if (inputText) {
+        setInputText("");
+      }
+    } catch (error) {
+      setSubmissionState({
+        tokenApprovalStatus: "pending",
+        strategyDeploymentStatus: "pending",
+      });
+      setIsSubmissionModalOpen(false);
+      setError(error as Error);
     }
   };
 
@@ -200,6 +214,8 @@ const WebappFrame = ({ dotrainText }: props) => {
           return buttonData.buttonValue === "submit" ? (
             <SubmissionModal
               key={buttonData.buttonText}
+              open={isSubmissionModalOpen}
+              setOpen={setIsSubmissionModalOpen}
               buttonText={buttonData.buttonText}
               submissionState={submissionState}
               onOpen={async () => {
@@ -220,7 +236,7 @@ const WebappFrame = ({ dotrainText }: props) => {
         })}
       </div>
       {error && <div>{error.message}</div>}
-      {hash && (
+      {hash && submissionState.strategyDeploymentStatus === "approved" && (
         <>
           <div>Transaction successful! {hash}</div>
           <div>

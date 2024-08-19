@@ -15,6 +15,15 @@ import { orderBookJson } from "@/public/_abis/OrderBook";
 import { getSubmissionTransactionData } from "./transactionData";
 import * as chains from "viem/chains";
 
+export const getPublicClient = (network: any) => {
+  return createPublicClient({
+    chain: Object.values(chains).find(
+      (chain) => chain.id === Number(network["chain-id"])
+    ),
+    transport: http(),
+  });
+};
+
 export const getApprovalTransaction = async (
   currentState: FrameState,
   yamlData: YamlData
@@ -31,12 +40,7 @@ export const getApprovalTransaction = async (
   const outputToken = yamlData.tokens[order.outputs[0].token];
   const outputTokenAddress = toHex(BigInt(outputToken.address));
 
-  const client = createPublicClient({
-    chain: Object.values(chains).find(
-      (chain) => chain.id === Number(network["chain-id"])
-    ),
-    transport: http(),
-  });
+  const client = getPublicClient(network);
   const outputTokenDecimals = await readContract(client, {
     abi: erc20Abi,
     address: outputTokenAddress,
@@ -83,12 +87,7 @@ export const getSubmissionTransaction = async (
   const outputToken = yamlData.tokens[order.outputs[0].token];
   const outputTokenAddress = toHex(BigInt(outputToken.address));
 
-  const client = createPublicClient({
-    chain: Object.values(chains).find(
-      (chain) => chain.id === Number(network["chain-id"])
-    ),
-    transport: http(),
-  });
+  const client = getPublicClient(network);
   const outputTokenDecimals = await readContract(client, {
     abi: erc20Abi,
     address: outputTokenAddress,

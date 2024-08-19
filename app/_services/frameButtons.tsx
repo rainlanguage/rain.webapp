@@ -3,10 +3,25 @@ import { FrameState } from "frames.js/next/types";
 
 export const getFrameButtons = (
   buttonsData: any[],
-  currentState: FrameState
+  currentState: FrameState,
+  urlContext: any
 ) => {
   return buttonsData.map((button) => {
-    if (button.buttonValue === "approve" || button.buttonValue === "submit") {
+    if (button.buttonAction === "link") {
+      const projectName = urlContext.pathname.split("/")[2];
+      const strategyName = urlContext.pathname.split("/")[3];
+      return (
+        <Button
+          action="link"
+          target={`${urlContext.origin}/${projectName}/${strategyName}?${button.buttonTarget}=${button.buttonValue}`}
+        >
+          {button.buttonText}
+        </Button>
+      );
+    } else if (
+      button.buttonValue === "approve" ||
+      button.buttonValue === "submit"
+    ) {
       // Update state after tokens have been approved or submission has been made
       const updatedState = {
         ...(currentState as object),

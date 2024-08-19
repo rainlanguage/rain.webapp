@@ -10,4 +10,5 @@ export type FrameState = {
   error: string | null;
   requiresTokenApproval: boolean;
   tokensApproved?: boolean;
+  isWebapp?: boolean;
 };

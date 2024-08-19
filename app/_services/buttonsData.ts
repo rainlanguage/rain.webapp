@@ -123,22 +123,51 @@ export const generateButtonsData = (
           buttonValue: "back",
           buttonText: "←",
         },
-        ...(!currentState.requiresTokenApproval || currentState.tokensApproved
-          ? [
-              {
-                buttonTarget: "buttonValue",
-                buttonValue: "submit",
-                buttonText: "Submit strategy",
-              },
-            ]
-          : [
-              {
-                buttonTarget: "buttonValue",
-                buttonValue: "approve",
-                buttonText: "Approve token spend",
-              },
-            ]),
       ];
+
+      const supportedNetworks = {
+        Ethereum: 1,
+        Arbitrum: 42161,
+        Base: 8453,
+        Degen: 666666666,
+        Gnosis: 100,
+        Optimism: 10,
+        Zora: 7777777,
+      };
+      const deployment =
+        yamlData.deployments[currentState.deploymentOption.deployment];
+      const order = yamlData.orders[deployment.order];
+      const network = yamlData.networks[order.network];
+
+      if (
+        currentState.isWebapp ||
+        Object.values(supportedNetworks).includes(network["chain-id"])
+      ) {
+        buttons.push(
+          ...(!currentState.requiresTokenApproval || currentState.tokensApproved
+            ? [
+                {
+                  buttonTarget: "buttonValue",
+                  buttonValue: "submit",
+                  buttonText: "Submit strategy",
+                },
+              ]
+            : [
+                {
+                  buttonTarget: "buttonValue",
+                  buttonValue: "approve",
+                  buttonText: "Approve token spend",
+                },
+              ])
+        );
+      } else {
+        buttons.push({
+          buttonAction: "link",
+          buttonTarget: "currentState",
+          buttonValue: encodeURIComponent(JSON.stringify(currentState)),
+          buttonText: "Submit strategy",
+        });
+      }
       break;
     case "done":
       buttons = [

@@ -8,17 +8,24 @@ export const transactionAnalytics = (transactionId: string) => `
     id
     order {
       orderHash
+      orderbook {
+        id
+      }
       inputs {
+        vaultId
         token {
           name
           decimals
+          address
         }
         balance
       }
       outputs {
+        vaultId
         token {
           name
           decimals
+          address
         }
         balance
       }

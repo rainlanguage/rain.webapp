@@ -75,6 +75,7 @@ interface Deployment {
 
 export interface YamlData {
   networks: { [key: string]: Network };
+  subgraphs: { [key: string]: string };
   orderbooks: { [key: string]: Orderbook };
   deployers: { [key: string]: Deployer };
   tokens: { [key: string]: Token };

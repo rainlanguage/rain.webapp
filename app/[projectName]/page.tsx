@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { retrieveProjectData } from "../_services/buildProjectHome";
 import { StrategyCard } from "../_components/StrategyCard";
+import Markdown from 'react-markdown';
 
 // interface generateMetadataProps {
 //   params: {
@@ -40,9 +41,9 @@ export default async function ProjectHome({ params }: homeProps) {
     console.log(projectData);
       
   return (
-    <div className="grid grid-cols-5 px-8 flex-grow mt-4 w-full">
-        <div className="col-span-2">{projectData.webappMDText}</div>
-        <div className="flex flex-col gap-y-4 col-span-3 justify-start">
+    <div className="grid grid-cols-5 flex-grow w-full">
+        <div className="col-span-2 prose p-4"><Markdown>{projectData.webappMDText}</Markdown></div>
+        <div className="flex flex-col gap-y-4 col-span-3 justify-start bg-gray-50 p-4">
             {projectData.yamlDatas.map(yaml => (<StrategyCard data={yaml.gui} />))}
         </div>
     </div>

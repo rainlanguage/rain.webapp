@@ -14,6 +14,7 @@ export interface Deposit {
 export interface DeploymentOption {
   deployment: string;
   name: string;
+  description: string;
   fields: Field[];
   deposit: Deposit;
 }

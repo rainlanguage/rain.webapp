@@ -22,7 +22,7 @@ export default function RootLayout({
       <body className={dmsans.className}>
         <Providers>
           <div className={`flex flex-col min-h-screen`}>
-            <div className="sticky w-full flex justify-end pr-2 py-2 border-b">
+            <div className="sticky w-full flex justify-end pr-2 py-2 border-b top-0 bg-white">
               <ConnectButton />
             </div>
             <div className="flex flex-col flex-grow items-center justify-center">

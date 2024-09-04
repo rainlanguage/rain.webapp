@@ -303,6 +303,7 @@ gui:
   deployments:
     -   deployment: base-usdc-dca
         name: DCA into WLTH with USDC
+        description: The description for DCA into WLTH with USDC
         fields:
           - binding: per-day-output
             name: Daily amount
@@ -313,6 +314,7 @@ gui:
               - 5
               - 10
         deposit:
+          token: base-usdc
           min: 2
           presets:
             - 0.01

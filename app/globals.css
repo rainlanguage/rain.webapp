@@ -64,6 +64,7 @@
     /* @apply border-border; */
   }
   body {
+    font-family: 'DM Sans', sans-serif;
     /* @apply bg-background text-foreground; */
   }
 }

@@ -1,34 +1,7 @@
-import { fetchMetadata } from "frames.js/next";
-import { Metadata } from "next";
-import fs from "fs";
-import path from "path";
 import { retrieveProjectData } from "../_services/buildProjectHome";
 import { StrategyCard } from "../_components/StrategyCard";
 import Markdown from "react-markdown";
-
-// interface generateMetadataProps {
-//   params: {
-//     projectName: string;
-//   };
-// }
-
-// export async function generateMetadata({
-//   params,
-// }: generateMetadataProps): Promise<Metadata> {
-//   return {
-//     title: "Frames Next.js Example",
-//     other: {
-//       ...(await fetchMetadata(
-//         new URL(
-//           `/frames/${params.projectName}`,
-//           process.env.VERCEL_URL
-//             ? `https://${process.env.VERCEL_URL}`
-//             : "http://localhost:3000"
-//         )
-//       )),
-//     },
-//   };
-// }
+import rehypeRaw from "rehype-raw";
 
 interface homeProps {
   params: {
@@ -42,10 +15,12 @@ export default async function ProjectHome({ params }: homeProps) {
 
   return (
     <div className="grid grid-cols-5 flex-grow w-full">
-      <div className="col-span-2 prose p-4">
-        <Markdown>{projectData.webappMDText}</Markdown>
+      <div className="col-span-2 prose p-8 border-r border-gray-100">
+        <Markdown rehypePlugins={[rehypeRaw]}>
+          {projectData.webappMDText}
+        </Markdown>
       </div>
-      <div className="flex flex-col gap-y-4 col-span-3 justify-start bg-gray-50 p-4">
+      <div className="flex flex-col gap-y-4 col-span-3 justify-start bg-gray-50 p-8">
         {projectData.yamlDatas.map((data) => (
           <StrategyCard data={data} />
         ))}

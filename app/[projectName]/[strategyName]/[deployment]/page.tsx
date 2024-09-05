@@ -1,6 +1,6 @@
 import { fetchMetadata } from "frames.js/next";
 import { Metadata } from "next";
-import WebappFrame from "../../_components/WebappFrame";
+import WebappFrame from "../../../_components/WebappFrame";
 import fs from "fs";
 import path from "path";
 
@@ -33,6 +33,7 @@ interface homeProps {
   params: {
     projectName: string;
     strategyName: string;
+    deployment: string;
   };
 }
 
@@ -45,6 +46,11 @@ export default async function Home({ params }: homeProps) {
     `${params.strategyName}.rain`
   );
   const dotrainText = fs.readFileSync(filePath, "utf8");
-
-  return <WebappFrame dotrainText={dotrainText} deploymentOption={null} />;
+  console.log(params);
+  return (
+    <WebappFrame
+      dotrainText={dotrainText}
+      deploymentOption={params.deployment}
+    />
+  );
 }

@@ -49,6 +49,7 @@ export const getUpdatedFrameState = (
       } else if (buttonValue === "back") {
         if (currentBindingsCount === 0) {
           updatedState.currentStep = "deployment";
+          updatedState.deploymentOption = undefined;
         } else {
           const currentField = fields[currentBindingsCount - 1];
           delete updatedState.bindings[currentField.binding];

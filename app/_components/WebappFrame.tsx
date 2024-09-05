@@ -18,16 +18,17 @@ import { readContract } from "wagmi/actions";
 import { config } from "../providers";
 import { ProgressBar } from "./ProgressBar";
 import { getSubmissionTransactionData } from "../_services/transactionData";
-import _, { set } from "lodash";
+import _ from "lodash";
 import { FailsafeSchemaWithNumbers } from "../_schemas/failsafeWithNumbers";
 import { SubmissionModal } from "./SubmissionModal";
 import { useSearchParams } from "next/navigation";
 
 interface props {
   dotrainText: string;
+  deploymentOption: string | null;
 }
 
-const WebappFrame = ({ dotrainText }: props) => {
+const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
   const yamlData = yaml.load(dotrainText.split("---")[0], {
     schema: FailsafeSchemaWithNumbers,
   }) as YamlData;
@@ -48,16 +49,21 @@ const WebappFrame = ({ dotrainText }: props) => {
   const defaultState: FrameState = {
     strategyName: yamlData.gui.name,
     strategyDescription: yamlData.gui.description,
-    currentStep: "start",
-    deploymentOption: null,
+    currentStep: deploymentOption ? "fields" : "start",
+    deploymentOption:
+      yamlData.gui.deployments.find(
+        (deployment) => deployment.deployment === deploymentOption
+      ) || null,
     bindings: {},
     deposit: null,
     buttonPage: 0,
+    buttonMax: 10,
     textInputLabel: "",
     error: null,
     requiresTokenApproval: false,
     isWebapp: true,
   };
+
   const [currentState, setCurrentState] = useState<FrameState>(
     urlState || defaultState
   );
@@ -91,7 +97,8 @@ const WebappFrame = ({ dotrainText }: props) => {
       if (
         currentState.deposit &&
         currentState.currentStep === "review" &&
-        buttonData.buttonValue === "submit"
+        buttonData.buttonValue === "submit" &&
+        currentState.deploymentOption
       ) {
         const deployment =
           yamlData.deployments[currentState.deploymentOption.deployment];
@@ -123,6 +130,7 @@ const WebappFrame = ({ dotrainText }: props) => {
         const orderBookAddress = toHex(BigInt(orderBook.address));
 
         const network = yamlData.networks[order.network];
+        console.log("network", network);
         if (currentWalletChainId !== network["chain-id"]) {
           await switchChainAsync({ chainId: network["chain-id"] });
         }
@@ -206,7 +214,7 @@ const WebappFrame = ({ dotrainText }: props) => {
 
   return (
     <div className="flex-grow flex-col flex w-full">
-      <div className="absolute w-full top-0">
+      <div className="w-full top-0">
         <ProgressBar currentState={currentState} />
       </div>
       <FrameImage currentState={currentState} />
@@ -248,13 +256,13 @@ const WebappFrame = ({ dotrainText }: props) => {
           );
         })}
       </div>
-      {error && <div>{error.message}</div>}
+      {error && <div>{error.shortMessage}</div>}
       {hash && submissionState.strategyDeploymentStatus === "approved" && (
         <>
           <div>Transaction successful! {hash}</div>
           <div>
             <a
-              href={`${window.location.origin}${window.location.pathname}/${hash}`}
+              href={`${window.location.origin}${window.location.pathname}/report/${hash}`}
             >
               Analytics
             </a>

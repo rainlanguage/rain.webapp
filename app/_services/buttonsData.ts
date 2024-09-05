@@ -1,11 +1,13 @@
+import { FrameState } from "../_types/frame";
 import { DeploymentOption, YamlData } from "../_types/yamlData";
 
 export const getPaginatedButtons = (
   allButtons: any[],
-  buttonPage: number
+  buttonPage: number,
+  buttonMax = 4
 ): any[] => {
   const buttonPageOffset = buttonPage * 3;
-  let buttonEndIndex = buttonPageOffset + 4;
+  let buttonEndIndex = buttonPageOffset + buttonMax;
   const includeMoreButton = buttonEndIndex < allButtons.length;
   if (includeMoreButton) {
     buttonEndIndex--;
@@ -66,7 +68,7 @@ export const getPresetsButtons = (
 
 export const generateButtonsData = (
   yamlData: YamlData,
-  currentState: any
+  currentState: FrameState
 ): any[] => {
   let buttons: any[] = [];
   if (currentState.textInputLabel) {
@@ -101,7 +103,11 @@ export const generateButtonsData = (
           buttonText: deploymentOption.name,
         })
       );
-      buttons = getPaginatedButtons(allButtons, currentState.buttonPage);
+      buttons = getPaginatedButtons(
+        allButtons,
+        currentState.buttonPage,
+        currentState.buttonMax
+      );
       break;
     case "fields":
       const field =
@@ -109,12 +115,20 @@ export const generateButtonsData = (
           Object.keys(currentState.bindings).length
         ];
       const fieldButtons = getPresetsButtons(field.presets, field.min);
-      buttons = getPaginatedButtons(fieldButtons, currentState.buttonPage);
+      buttons = getPaginatedButtons(
+        fieldButtons,
+        currentState.buttonPage,
+        currentState.buttonMax
+      );
       break;
     case "deposit":
       const deposit = currentState.deploymentOption.deposit;
       const depositButtons = getPresetsButtons(deposit.presets, deposit.min);
-      buttons = getPaginatedButtons(depositButtons, currentState.buttonPage);
+      buttons = getPaginatedButtons(
+        depositButtons,
+        currentState.buttonPage,
+        currentState.buttonMax
+      );
       break;
     case "review":
       buttons = [

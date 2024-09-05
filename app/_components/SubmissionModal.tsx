@@ -8,6 +8,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
 
 interface SubmissionModalProps {
   open: boolean;
@@ -31,6 +33,8 @@ export const SubmissionModal = ({
     setOpen(false);
   }
 
+  const { isConnected } = useAccount();
+
   return (
     <Dialog
       open={open}
@@ -41,10 +45,14 @@ export const SubmissionModal = ({
         }
       }}
     >
-      <DialogTrigger className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-        {buttonText}
-      </DialogTrigger>
-      <DialogContent>
+      {isConnected ? (
+        <DialogTrigger className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+          {buttonText}
+        </DialogTrigger>
+      ) : (
+        <ConnectButton />
+      )}
+      <DialogContent className="bg-white">
         <DialogHeader>
           <DialogTitle>Submit strategy</DialogTitle>
         </DialogHeader>

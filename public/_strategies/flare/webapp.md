@@ -1,3 +1,5 @@
+<img style="width:200px;" src="_images/Flare_dark_bg.png" />
+
 # Raindex strategies on Flare
 
 ## Want to earn rewards on Flare by running a Raindex strategy?

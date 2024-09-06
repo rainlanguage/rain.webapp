@@ -3,24 +3,26 @@ import { ProgressBar } from "./ProgressBar";
 export const FrameImage = ({ currentState }: any) => {
   return (
     <div
-      className={`flex flex-col justify-center items-center text-[50px] relative flex-grow`}
-      tw={`flex flex-col items-center justify-center h-full w-full`}
+      className={`flex flex-col justify-center items-center md:text-[50px] text-center text-[30px] relative flex-grow px-8`}
+      tw={`flex flex-col items-center justify-center h-full w-full text-center`}
     >
       <div tw="absolute top-0 flex w-full" className="hidden">
         <ProgressBar currentState={currentState} />
       </div>
       {currentState.deploymentOption ? (
         <div
-          className={
-            "absolute top-0 text-xl border rounded-full bg-gray-100 px-6 py-3"
-          }
+          className="absolute top-0 md:text-xl text-sm border rounded-full bg-gray-100 px-6 py-3"
+          tw="absolute top-12 text-[30px] border rounded-full bg-gray-100 px-6 py-3"
         >
           {currentState.deploymentOption.name}
         </div>
       ) : (
         ""
       )}
-      <div tw="text-[60px] font-light flex px-28" className="font-light px-32">
+      <div
+        tw="text-[60px] font-light flex px-28"
+        className="font-light md:px-32"
+      >
         {currentState.currentStep === "start" ? (
           <div className="flex flex-col gap-y-2" tw="flex flex-col">
             <div className="text-1xl">{currentState.strategyName}</div>
@@ -43,28 +45,28 @@ export const FrameImage = ({ currentState }: any) => {
           ? "Choose your deposit amount."
           : ""}
         {currentState.currentStep === "review" ? (
-          <table className="min-w-full bg-white">
+          <table className="min-w-full bg-white text-left" tw="text-left">
             <tbody tw="flex flex-col text-[40px] w-full">
               <tr>
                 <td
-                  className="px-4 py-2 text-xl font-bold text-gray-800"
+                  className="px-4 py-3 text-xl font-bold text-gray-800"
                   tw="px-4 py-2 text-[30px] font-bold text-gray-800"
                 >
                   Review
                 </td>
               </tr>
               <tr
-                className="border-t border-gray-300"
+                className="border-t border-gray-300 flex flex-col lg:table-row py-3"
                 tw="border-t border-gray-300"
               >
                 <td
-                  className="px-4 py-2 font-semibold text-gray-700"
-                  tw="px-4 py-2 font-semibold text-gray-700 w-[300px]"
+                  className="px-4 lg:py-2 font-semibold text-gray-700 text-sm lg:text-[30px]"
+                  tw="px-4 py-4 font-semibold text-gray-700 w-[300px]"
                 >
                   Deployment
                 </td>
                 <td
-                  className="px-4 py-2 text-gray-600"
+                  className="px-4 lg:py-2 text-gray-600"
                   tw="px-4 py-2 text-gray-600"
                 >
                   {currentState.deploymentOption.name}
@@ -77,17 +79,17 @@ export const FrameImage = ({ currentState }: any) => {
                 return (
                   <tr
                     key={binding}
-                    className="border-t border-gray-300"
+                    className="border-t border-gray-300 flex flex-col lg:table-row py-3"
                     tw="border-t border-gray-300"
                   >
                     <td
-                      className="px-4 py-2 font-semibold text-gray-700"
-                      tw="px-4 py-2 font-semibold text-gray-700 w-[300px]"
+                      className="px-4 lg:py-2 font-semibold text-gray-700 text-sm lg:text-[30px] lg:leading-[33px]"
+                      tw="px-4 py-4 font-semibold text-gray-700 w-[300px] leading-tight"
                     >
                       {field.name}
                     </td>
                     <td
-                      className="px-4 py-2 text-gray-600"
+                      className="px-4 text-gray-600 "
                       tw="px-4 py-2 text-gray-600"
                     >
                       {currentState.bindings[binding]}
@@ -96,19 +98,16 @@ export const FrameImage = ({ currentState }: any) => {
                 );
               })}
               <tr
-                className="border-t border-gray-300"
+                className="border-t border-gray-300 flex flex-col lg:table-row py-3"
                 tw="border-t border-gray-300"
               >
                 <td
-                  className="px-4 py-2 font-semibold text-gray-700"
-                  tw="px-4 py-2 font-semibold text-gray-700 w-[300px]"
+                  className="px-4 lg:py-2 font-semibold text-gray-700 text-sm lg:text-[30px]"
+                  tw="px-4 py-4 font-semibold text-gray-700 w-[300px]"
                 >
                   Deposit
                 </td>
-                <td
-                  className="px-4 py-2 text-gray-600"
-                  tw="px-4 py-2 text-gray-600"
-                >
+                <td className="px-4 text-gray-600" tw="px-4 py-2 text-gray-600">
                   {currentState.deposit} {currentState.depositToken}
                 </td>
               </tr>

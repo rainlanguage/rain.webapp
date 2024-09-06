@@ -15,7 +15,6 @@ export async function generateMetadata({
   params,
 }: generateMetadataProps): Promise<Metadata> {
   return {
-    title: "Frames Next.js Example",
     other: {
       ...(await fetchMetadata(
         new URL(
@@ -46,7 +45,6 @@ export default async function Home({ params }: homeProps) {
     `${params.strategyName}.rain`
   );
   const dotrainText = fs.readFileSync(filePath, "utf8");
-  console.log(params);
   return (
     <WebappFrame
       dotrainText={dotrainText}

@@ -15,7 +15,6 @@ export async function generateMetadata({
   params,
 }: generateMetadataProps): Promise<Metadata> {
   return {
-    title: "Frames Next.js Example",
     other: {
       ...(await fetchMetadata(
         new URL(

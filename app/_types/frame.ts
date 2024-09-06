@@ -4,7 +4,7 @@ export type FrameState = {
   strategyName: string | null;
   strategyDescription: string | null;
   currentStep: string;
-  deploymentOption: YamlData["gui"]["deployments"][0] | null;
+  deploymentOption?: YamlData["gui"]["deployments"][0];
   bindings: any;
   deposit: number | null;
   buttonPage: number;

@@ -163,7 +163,7 @@ export const generateButtonsData = (
                 {
                   buttonTarget: "buttonValue",
                   buttonValue: "submit",
-                  buttonText: "Submit strategy",
+                  buttonText: "Deposit tokens and deploy strategy",
                 },
               ]
             : [
@@ -179,7 +179,7 @@ export const generateButtonsData = (
           buttonAction: "link",
           buttonTarget: "currentState",
           buttonValue: encodeURIComponent(JSON.stringify(currentState)),
-          buttonText: "Submit strategy",
+          buttonText: "Deposit tokens and deploy strategy",
         });
       }
       break;

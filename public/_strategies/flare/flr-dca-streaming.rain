@@ -11,8 +11,8 @@ gui:
       name: Buy WFLR with USDC
       description: Bridge USDC to Flare and deploy this strategy to buy WFLR over time with USDC.
       fields:
-        - binding: amount
-          name: Amount
+        - binding: budget-per-day
+          name: USDC spend per day
           description: How much USDC do you want to spend per day to buy WFLR?
           min: 10
           presets:
@@ -80,6 +80,8 @@ orders:
 scenarios:
   default:
     deployer: flare-dca
+    bindings:
+      budget-per-day: 0
     runs: 1
 
 deployments:
@@ -107,11 +109,11 @@ charts:
         value: 0.10
         unit-suffix: " FLR"
 ---
+#budget-per-day !budget
 #calculate-io
 using-words-from 0x31A76D8644612e0ABD1aF0D42909Ed57F16F608D 0xCE6ad0ba209e7D3B59Ddb8a63595193C11C3B0aB
 
 start-time: 1720361228,
-budget-per-day: 10,
 budget-per-second: div(budget-per-day 86400),
 
 time-elapsed: sub(now() start-time),
@@ -130,4 +132,7 @@ io-ratio: mul(0.9 usd-flr),
 :set(order-hash() add(spent-so-far spend-this-time));
 
 #handle-io
+:;
+
+#post-add-order
 :;

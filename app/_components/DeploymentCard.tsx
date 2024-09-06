@@ -14,7 +14,6 @@ export const DeploymentCard = ({
 
   const handleClick = () => {
     router.push(`/${slug}/${deployment.deployment}`);
-    console.log("Deploying...");
   };
 
   return (

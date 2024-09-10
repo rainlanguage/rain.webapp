@@ -110,6 +110,9 @@ export const generateButtonsData = (
       );
       break;
     case "fields":
+      if (!currentState.deploymentOption) {
+        return buttons;
+      }
       const field =
         currentState.deploymentOption.fields[
           Object.keys(currentState.bindings).length
@@ -122,6 +125,9 @@ export const generateButtonsData = (
       );
       break;
     case "deposit":
+      if (!currentState.deploymentOption) {
+        return buttons;
+      }
       const deposit = currentState.deploymentOption.deposit;
       const depositButtons = getPresetsButtons(deposit.presets, deposit.min);
       buttons = getPaginatedButtons(
@@ -149,7 +155,7 @@ export const generateButtonsData = (
         Zora: 7777777,
       };
       const deployment =
-        yamlData.deployments[currentState.deploymentOption.deployment];
+        yamlData.deployments[currentState.deploymentOption?.deployment || ""];
       const order = yamlData.orders[deployment.order];
       const network = yamlData.networks[order.network];
 

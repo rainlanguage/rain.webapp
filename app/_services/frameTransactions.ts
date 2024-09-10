@@ -28,6 +28,11 @@ export const getApprovalTransaction = async (
   currentState: FrameState,
   yamlData: YamlData
 ) => {
+  if (!currentState.deploymentOption) {
+    throw new Error(
+      "Deployment option is required to get approval transaction"
+    );
+  }
   // Get network and orderbook data from the yaml file
   const deployment =
     yamlData.deployments[currentState.deploymentOption.deployment];
@@ -75,6 +80,11 @@ export const getSubmissionTransaction = async (
   yamlData: YamlData,
   dotrainText: string
 ) => {
+  if (!currentState.deploymentOption) {
+    throw new Error(
+      "Deployment option is required to get submission transaction"
+    );
+  }
   // Get network and orderbook data from the yaml file
   const deployment =
     yamlData.deployments[currentState.deploymentOption.deployment];

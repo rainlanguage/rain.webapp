@@ -85,7 +85,7 @@ export const SubmissionModal = ({
     scenario,
   } = getOrderDetailsGivenDeployment(
     yamlData,
-    currentState.deploymentOption.deployment
+    currentState.deploymentOption?.deployment || ""
   ); // Restored call to getOrderDetailsGivenDeployment
 
   const submitStrategy = async () => {

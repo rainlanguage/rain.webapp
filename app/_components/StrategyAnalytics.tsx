@@ -2,7 +2,7 @@
 import { getTransactionAnalyticsData } from "@/app/_queries/strategyAnalytics";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { TokenAndBalance } from "../my-strategies/page";
+import { TokenAndBalance } from "./TokenAndBalance";
 import { formatTimestampSecondsAsLocal } from "../_services/dates";
 import { Button } from "@/components/ui/button";
 import { orderBookJson } from "@/public/_abis/OrderBook";
@@ -104,7 +104,7 @@ const StrategyAnalytics = ({ transactionId }: props) => {
 
   return (
     <div className="container flex-grow pt-8">
-      {query.loading && <div>Loading...</div>}
+      {query.isLoading && <div>Loading...</div>}
       {query.isError && <div>{query.error.message}</div>}
       {query.data && (
         <div className="flex flex-col gap-y-4">

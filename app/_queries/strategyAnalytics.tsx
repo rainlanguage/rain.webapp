@@ -91,10 +91,13 @@ export const getTransactionAnalyticsData = async (transactionId: string) => {
         throw new Error(result.errors[0].message);
       }
       return result.data.addOrders[0];
-    } catch (error) {
-      throw new Error(
-        `Error fetching transaction data from ${network} subgraph: ${error.message}`
-      );
+    } catch (error: any) {
+      if (error?.message)
+        throw new Error(
+          `Error fetching transaction data from ${network} subgraph: ${
+            error?.message || ""
+          }`
+        );
     }
   }
 };

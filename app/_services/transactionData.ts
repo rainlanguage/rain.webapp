@@ -29,7 +29,7 @@ export const getSubmissionTransactionData = async (
 
   const addOrderCalldata = await getAddOrderCalldata(
     dotrainText,
-    currentState.deploymentOption.deployment
+    currentState.deploymentOption?.deployment || ""
   );
 
   // Get randomly generated vaultId from addOrder call data

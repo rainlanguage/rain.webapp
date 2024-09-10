@@ -49,7 +49,7 @@ export const getOrders = async (subgraphUrl: string, owner?: string) => {
       }`;
 
   // make a query for each network
-  const promises = [];
+  const promises: Promise<any>[] = [];
   Object.entries(networks).forEach(([network, subgraphUrl]) => {
     promises.push(
       fetch(subgraphUrl, {

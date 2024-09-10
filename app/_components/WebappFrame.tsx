@@ -6,24 +6,13 @@ import { FrameImage } from "./FrameImage";
 import { getUpdatedFrameState } from "../_services/frameState";
 import { FrameState } from "../_types/frame";
 import yaml from "js-yaml";
-import {
-  useAccount,
-  useChainId,
-  useSwitchChain,
-  useWriteContract,
-} from "wagmi";
-import { toHex, erc20Abi, parseUnits } from "viem";
-import { orderBookJson } from "@/public/_abis/OrderBook";
-import { readContract } from "wagmi/actions";
-import { config } from "../providers";
 import { ProgressBar } from "./ProgressBar";
-import { getSubmissionTransactionData } from "../_services/transactionData";
 import _ from "lodash";
 import { FailsafeSchemaWithNumbers } from "../_schemas/failsafeWithNumbers";
 import { SubmissionModal } from "./SubmissionModal";
 import { useSearchParams } from "next/navigation";
-import { getOrderDetailsGivenDeployment } from "../_services/parseDotrainFrontmatter";
-
+import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
+import { TriangleAlert } from "lucide-react";
 interface props {
   dotrainText: string;
   deploymentOption: string | null;
@@ -63,7 +52,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
   const [currentState, setCurrentState] = useState<FrameState>(
     urlState || defaultState
   );
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [inputText, setInputText] = useState<string>("");
   const [submissionState, setSubmissionState] = useState({
     tokenApprovalStatus: "pending",
@@ -129,6 +118,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
               yamlData={yamlData}
               currentState={currentState}
               dotrainText={dotrainText}
+              setError={setError}
             />
           ) : (
             <button
@@ -143,6 +133,20 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
           );
         })}
       </div>
+      <Dialog open={!!error}>
+        <DialogContent className="bg-white flex flex-col items-center">
+          <TriangleAlert color="red" />
+          <div className="w-full text-center">{error}</div>
+          <DialogClose asChild>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
+              onClick={() => setError(null)}
+            >
+              Close
+            </button>
+          </DialogClose>
+        </DialogContent>
+      </Dialog>
       {/* {error && <div>{error.shortMessage}</div>}
       {hash && submissionState.strategyDeploymentStatus === "approved" && (
         <>

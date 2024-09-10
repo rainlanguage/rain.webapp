@@ -28,8 +28,13 @@ export default function RootLayout({
       <body>
         <Providers>
           <div className={`flex flex-col min-h-screen`}>
-            <div className="sticky w-full flex justify-between items-center p-2 border-b top-0 bg-white">
-              <img src="/_images/raindex-logo.png" className="h-10" />
+            <div className="sticky w-full flex justify-between items-center p-2 border-b top-0 bg-white z-[100]">
+              <div className="flex gap-x-2 items-center">
+                <img src="/_images/raindex-logo.png" className="h-10 mr-8" />
+                <a href="/my-strategies" className="text-gray-900">
+                  My strategies
+                </a>
+              </div>
               <ConnectButton />
             </div>
             <div className="flex flex-col flex-grow items-center justify-center">

@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +20,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useWriteContract } from "wagmi";
+import { orderBookJson } from "@/public/_abis/OrderBook";
+import { parseUnits, formatUnits } from "viem";
 
 const formSchema = z.object({
   withdrawalAmount: z.preprocess(
@@ -28,13 +31,35 @@ const formSchema = z.object({
   ),
 });
 
-interface WithdrawalModalProps {
-  onSubmit: (data: z.infer<typeof formSchema>) => void;
+interface Vault {
+  token: any;
+  vaultId: any;
+  balance: any;
+  orderbook: any;
 }
 
-export const WithdrawalModal = ({ onSubmit }: WithdrawalModalProps) => {
+interface WithdrawalModalProps {
+  vault: Vault;
+}
+
+export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
+  const { writeContractAsync } = useWriteContract();
   const [open, setOpen] = useState(false);
-  // 1. Define your form.
+  const [rawAmount, setRawAmount] = useState<string>("0"); // Store the raw 18-decimal amount
+
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setError(null);
+    if (BigInt(rawAmount) > BigInt(vault.balance)) {
+      setError("Amount exceeds vault balance");
+    }
+  }, [rawAmount, vault.balance]);
+
+  // Vault balance in human-readable format (i.e., converted from 18 decimals)
+  const readableBalance = formatUnits(vault.balance, vault.token.decimals);
+
+  // Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,10 +67,48 @@ export const WithdrawalModal = ({ onSubmit }: WithdrawalModalProps) => {
     },
   });
 
+  const withdraw = async (amount: string) => {
+    // Send raw value to the contract (no conversion needed here)
+    await writeContractAsync({
+      abi: orderBookJson.abi,
+      address: vault.orderbook.id,
+      functionName: "withdraw2",
+      args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []],
+    });
+  };
+
+  const handleMaxClick = () => {
+    // Set the form field to the readable max balance for display
+    form.setValue("withdrawalAmount", parseFloat(readableBalance));
+    // Set the raw balance directly
+    setRawAmount(vault.balance); // Use raw vault balance directly
+    form.setFocus("withdrawalAmount"); // Optional: focus the field after setting value
+  };
+
+  const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const userInput = e.target.value;
+    form.setValue("withdrawalAmount", parseFloat(userInput));
+
+    // Update the raw amount based on the user input (convert back to raw value)
+    if (userInput) {
+      try {
+        const parsedRawAmount = parseUnits(
+          userInput,
+          vault.token.decimals
+        ).toString();
+        setRawAmount(parsedRawAmount); // Update raw amount on every user change
+      } catch (err) {
+        setRawAmount("0"); // Fallback to 0 if input is invalid
+      }
+    } else {
+      setRawAmount("0"); // Fallback to 0 if input is empty
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="bg-gray-500 hover:bg-gray-400 text-white font-bold px-2 mx-1 rounded">
-        Withdraw
+      <DialogTrigger>
+        <Button>Withdraw</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -53,7 +116,8 @@ export const WithdrawalModal = ({ onSubmit }: WithdrawalModalProps) => {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(async () => {
-                await onSubmit(form.getValues());
+                // Always submit the raw amount stored in state
+                await withdraw(rawAmount);
                 setOpen(false);
               })}
               className="space-y-8"
@@ -65,13 +129,26 @@ export const WithdrawalModal = ({ onSubmit }: WithdrawalModalProps) => {
                   <FormItem>
                     <FormLabel>Amount</FormLabel>
                     <FormControl>
-                      <Input placeholder="0" {...field} type="number" />
+                      {/* Use onChange to listen to user typing */}
+                      <Input
+                        placeholder="0"
+                        {...field}
+                        type="number"
+                        step="0.000000000000000001" // 18 decimals
+                        onChange={handleUserChange} // Listen for user typing
+                      />
                     </FormControl>
+                    <FormMessage>{error}</FormMessage>
+                    <Button size="sm" type="button" onClick={handleMaxClick}>
+                      Max
+                    </Button>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit">Submit</Button>
+              <Button type="submit" disabled={!!error}>
+                Submit
+              </Button>
             </form>
           </Form>
         </DialogHeader>

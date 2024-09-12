@@ -7,6 +7,7 @@ export interface Field {
 }
 
 export interface Deposit {
+  token: string;
   min: number;
   presets: number[];
 }
@@ -17,6 +18,7 @@ export interface DeploymentOption {
   description: string;
   fields: Field[];
   deposit: Deposit;
+  deposits: Deposit[];
 }
 
 export interface Gui {

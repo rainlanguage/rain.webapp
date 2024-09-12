@@ -40,6 +40,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
         (deployment) => deployment.deployment === deploymentOption
       ) || undefined,
     bindings: {},
+    deposits: [],
     deposit: null,
     buttonPage: 0,
     buttonMax: 10,
@@ -147,19 +148,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
           </DialogClose>
         </DialogContent>
       </Dialog>
-      {/* {error && <div>{error.shortMessage}</div>}
-      {hash && submissionState.strategyDeploymentStatus === "approved" && (
-        <>
-          <div>Transaction successful! {hash}</div>
-          <div>
-            <a
-              href={`${window.location.origin}${window.location.pathname}/report/${hash}`}
-            >
-              Analytics
-            </a>
-          </div>
-        </>
-      )} */}
     </div>
   );
 };

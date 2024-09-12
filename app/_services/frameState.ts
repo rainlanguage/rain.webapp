@@ -3,7 +3,7 @@ import { YamlData } from "../_types/yamlData";
 
 export const getUpdatedFrameState = (
   yamlData: YamlData,
-  currentState: any,
+  currentState: FrameState,
   buttonValue: any,
   inputText?: string
 ): FrameState => {
@@ -63,8 +63,15 @@ export const getUpdatedFrameState = (
       }
       break;
     case "deposit":
+      let currentDepositCount = updatedState.deposits.length;
+      const deposits = updatedState.deploymentOption.deposits;
+      const currentDeposit = deposits[currentDepositCount];
+
       const setDepositValue = (value: number) => {
-        updatedState.deposit = value;
+        updatedState.deposits.push({
+          token: currentDeposit.token,
+          amount: value,
+        });
         updatedState.error = null;
       };
       if (buttonValue === "submit") {
@@ -80,23 +87,28 @@ export const getUpdatedFrameState = (
           updatedState.error = `Value must be at least ${updatedState.deploymentOption.deposit.min}`;
         }
       } else if (buttonValue === "back") {
-        const currentField =
-          updatedState.deploymentOption.fields[
-            Object.keys(updatedState.bindings).length - 1
-          ];
-        delete updatedState.bindings[currentField.binding];
-        updatedState.currentStep = "fields";
+        if (currentDepositCount === 0) {
+          const currentField =
+            updatedState.deploymentOption.fields[
+              Object.keys(updatedState.bindings).length - 1
+            ];
+          delete updatedState.bindings[currentField.binding];
+          updatedState.currentStep = "fields";
+        } else {
+          updatedState.deposits.pop();
+          currentDepositCount--;
+        }
       } else {
         setDepositValue(Number(buttonValue));
       }
-      if (updatedState.deposit !== null && updatedState.deposit > 0) {
+      if (currentDepositCount >= deposits.length - 1) {
         updatedState.currentStep = "review";
         updatedState.buttonPage = 0;
       }
       break;
     case "review":
       if (buttonValue === "back") {
-        updatedState.deposit = null;
+        updatedState.deposits.pop();
         updatedState.currentStep = "deposit";
         if (updatedState.tokensApproved) {
           updatedState.tokensApproved = false;

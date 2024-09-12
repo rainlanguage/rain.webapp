@@ -6,6 +6,7 @@ export type FrameState = {
   currentStep: string;
   deploymentOption?: YamlData["gui"]["deployments"][0];
   bindings: any;
+  deposits: { token: string; amount: number }[];
   deposit: number | null;
   buttonPage: number;
   buttonMax?: number;

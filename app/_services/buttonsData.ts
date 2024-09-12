@@ -128,7 +128,13 @@ export const generateButtonsData = (
       if (!currentState.deploymentOption) {
         return buttons;
       }
-      const deposit = currentState.deploymentOption.deposit;
+
+      const deposit =
+        currentState.deploymentOption.deposits[
+          Object.keys(currentState.deposits).length
+        ];
+
+      // const deposit = currentState.deploymentOption.deposit;
       const depositButtons = getPresetsButtons(deposit.presets, deposit.min);
       buttons = getPaginatedButtons(
         depositButtons,

@@ -42,7 +42,11 @@ export const FrameImage = ({ currentState }: any) => {
             ].description
           : ""}
         {currentState.currentStep === "deposit"
-          ? "Choose your deposit amount."
+          ? `Choose your deposit amount for ${
+              currentState.deploymentOption.deposits[
+                Object.keys(currentState.deposits).length
+              ].token
+            }.`
           : ""}
         {currentState.currentStep === "review" ? (
           <table className="min-w-full bg-white text-left" tw="text-left">
@@ -98,19 +102,38 @@ export const FrameImage = ({ currentState }: any) => {
                 );
               })}
               <tr
-                className="border-t border-gray-300 flex flex-col lg:table-row py-3"
+                className="flex flex-col lg:table-row py-3"
                 tw="border-t border-gray-300"
               >
                 <td
-                  className="px-4 lg:py-2 font-semibold text-gray-700 text-sm lg:text-[30px]"
-                  tw="px-4 py-4 font-semibold text-gray-700 w-[300px]"
+                  className="px-4 pt-8 pb-3 text-xl font-bold text-gray-800"
+                  tw="px-4 py-2 text-[30px] font-bold text-gray-800"
                 >
-                  Deposit
-                </td>
-                <td className="px-4 text-gray-600" tw="px-4 py-2 text-gray-600">
-                  {currentState.deposit} {currentState.depositToken}
+                  Deposits
                 </td>
               </tr>
+              {currentState.deposits.map(({ token, amount }) => {
+                return (
+                  <tr
+                    key={token}
+                    className="border-t border-gray-300 flex flex-col lg:table-row py-3"
+                    tw="border-t border-gray-300"
+                  >
+                    <td
+                      className="px-4 lg:py-2 font-semibold text-gray-700 text-sm lg:text-[30px] lg:leading-[33px]"
+                      tw="px-4 py-4 font-semibold text-gray-700 w-[300px] leading-tight"
+                    >
+                      {token}
+                    </td>
+                    <td
+                      className="px-4 text-gray-600"
+                      tw="px-4 py-2 text-gray-600"
+                    >
+                      {amount}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         ) : (

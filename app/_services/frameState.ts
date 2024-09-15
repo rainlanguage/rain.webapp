@@ -26,6 +26,8 @@ export const getUpdatedFrameState = (
       }
       break;
     case "fields":
+      if (!updatedState.deploymentOption)
+        throw new Error("Deployment option is required");
       let currentBindingsCount = Object.keys(updatedState.bindings).length;
       const fields = updatedState.deploymentOption.fields;
       const currentField = fields[currentBindingsCount];
@@ -40,7 +42,11 @@ export const getUpdatedFrameState = (
       if (buttonValue === "submit") {
         if (inputText && isNaN(Number(inputText))) {
           updatedState.error = "Value must be a number";
-        } else if (inputText && Number(inputText) >= currentField.min) {
+        } else if (
+          inputText &&
+          currentField.min &&
+          Number(inputText) >= currentField.min
+        ) {
           setBindingValue(inputText);
           updatedState.textInputLabel = "";
         } else {
@@ -63,13 +69,22 @@ export const getUpdatedFrameState = (
       }
       break;
     case "deposit":
+      if (!updatedState.deploymentOption)
+        throw new Error("Deployment option is required");
+
       let currentDepositCount = updatedState.deposits.length;
       const deposits = updatedState.deploymentOption.deposits;
       const currentDeposit = deposits[currentDepositCount];
 
       const setDepositValue = (value: number) => {
+        const info = updatedState.tokenInfos.find(
+          (info) => info.yamlName === currentDeposit.token
+        );
+        if (!info)
+          throw new Error(`Token info not found for ${currentDeposit.token}`);
+
         updatedState.deposits.push({
-          token: currentDeposit.token,
+          info,
           amount: value,
         });
         updatedState.error = null;
@@ -79,7 +94,7 @@ export const getUpdatedFrameState = (
           updatedState.error = "Value must be a number";
         } else if (
           inputText &&
-          inputText >= updatedState.deploymentOption.deposit.min
+          parseFloat(inputText) >= updatedState.deploymentOption.deposit.min
         ) {
           setDepositValue(Number(inputText));
           updatedState.textInputLabel = "";
@@ -110,9 +125,6 @@ export const getUpdatedFrameState = (
       if (buttonValue === "back") {
         updatedState.deposits.pop();
         updatedState.currentStep = "deposit";
-        if (updatedState.tokensApproved) {
-          updatedState.tokensApproved = false;
-        }
       } else if (buttonValue === "submit") {
         updatedState.currentStep = "done";
       }
@@ -122,8 +134,6 @@ export const getUpdatedFrameState = (
         updatedState.currentStep = "start";
         updatedState.deploymentOption = undefined;
         updatedState.bindings = {};
-        updatedState.deposit = null;
-        updatedState.tokensApproved = false;
       }
       break;
   }

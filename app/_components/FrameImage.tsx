@@ -1,6 +1,7 @@
+import { FrameState } from "../_types/frame";
 import { ProgressBar } from "./ProgressBar";
 
-export const FrameImage = ({ currentState }: any) => {
+export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
   return (
     <div
       className={`flex flex-col justify-center items-center md:text-[50px] text-center text-[30px] relative flex-grow px-8`}
@@ -41,14 +42,19 @@ export const FrameImage = ({ currentState }: any) => {
               Object.keys(currentState.bindings).length
             ].description
           : ""}
-        {currentState.currentStep === "deposit"
+        {currentState.currentStep === "deposit" && currentState.deploymentOption
           ? `Choose your deposit amount for ${
-              currentState.deploymentOption.deposits[
-                Object.keys(currentState.deposits).length
-              ].token
+              currentState.tokenInfos.find(
+                (info) =>
+                  info.yamlName ===
+                  currentState.deploymentOption.deposits[
+                    Object.keys(currentState.deposits).length
+                  ].token
+              )?.symbol
             }.`
           : ""}
-        {currentState.currentStep === "review" ? (
+        {currentState.currentStep === "review" &&
+        currentState.deploymentOption ? (
           <table className="min-w-full bg-white text-left" tw="text-left">
             <tbody tw="flex flex-col text-[40px] w-full">
               <tr>
@@ -77,9 +83,11 @@ export const FrameImage = ({ currentState }: any) => {
                 </td>
               </tr>
               {Object.keys(currentState.bindings).map((binding: string) => {
+                if (!currentState.deploymentOption) return;
                 const field = currentState.deploymentOption.fields.find(
                   (field: any) => field.binding === binding
                 );
+                if (!field) return;
                 return (
                   <tr
                     key={binding}
@@ -112,10 +120,10 @@ export const FrameImage = ({ currentState }: any) => {
                   Deposits
                 </td>
               </tr>
-              {currentState.deposits.map(({ token, amount }) => {
+              {currentState.deposits.map(({ info, amount }) => {
                 return (
                   <tr
-                    key={token}
+                    key={info.address}
                     className="border-t border-gray-300 flex flex-col lg:table-row py-3"
                     tw="border-t border-gray-300"
                   >
@@ -123,7 +131,7 @@ export const FrameImage = ({ currentState }: any) => {
                       className="px-4 lg:py-2 font-semibold text-gray-700 text-sm lg:text-[30px] lg:leading-[33px]"
                       tw="px-4 py-4 font-semibold text-gray-700 w-[300px] leading-tight"
                     >
-                      {token}
+                      {info.symbol}
                     </td>
                     <td
                       className="px-4 text-gray-600"

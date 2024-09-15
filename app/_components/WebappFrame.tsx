@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { generateButtonsData } from "../_services/buttonsData";
 import { YamlData } from "../_types/yamlData";
@@ -13,12 +14,14 @@ import { SubmissionModal } from "./SubmissionModal";
 import { useSearchParams } from "next/navigation";
 import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
 import { TriangleAlert } from "lucide-react";
+import { TokenInfo } from "../_services/getTokenInfo";
 interface props {
   dotrainText: string;
   deploymentOption: string | null;
+  tokenInfos: TokenInfo[];
 }
 
-const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
+const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
   const yamlData = yaml.load(dotrainText.split("---")[0], {
     schema: FailsafeSchemaWithNumbers,
   }) as YamlData;
@@ -41,13 +44,12 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
       ) || undefined,
     bindings: {},
     deposits: [],
-    deposit: null,
     buttonPage: 0,
     buttonMax: 10,
     textInputLabel: "",
     error: null,
-    requiresTokenApproval: false,
     isWebapp: true,
+    tokenInfos,
   };
 
   const [currentState, setCurrentState] = useState<FrameState>(
@@ -55,10 +57,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
   );
   const [error, setError] = useState<string | null>(null);
   const [inputText, setInputText] = useState<string>("");
-  const [submissionState, setSubmissionState] = useState({
-    tokenApprovalStatus: "pending",
-    strategyDeploymentStatus: "pending",
-  });
 
   const handleButtonClick = async (buttonData: any) => {
     setError(null);

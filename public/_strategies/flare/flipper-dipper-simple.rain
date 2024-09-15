@@ -85,9 +85,6 @@ scenarios:
       time-per-epoch-trading: 10800
       io-multiplier: 0.01
 
-charts:
-  flare:
-
 deployments:
   flare:
     order: flare

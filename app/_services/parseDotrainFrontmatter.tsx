@@ -11,8 +11,8 @@ export const getOrderDetailsGivenDeployment = (
   const orderBook = yamlData.orderbooks[order.orderbook];
   const orderBookAddress = toHex(BigInt(orderBook.address));
   const network = yamlData.networks[order.network];
-  const outputToken = yamlData.tokens[order.outputs[0].token];
-  const outputTokenAddress = toHex(BigInt(outputToken.address));
+
+  const tokens = yamlData.tokens;
 
   const fullScenarioPath = deployment.scenario
     .split(".")
@@ -28,8 +28,7 @@ export const getOrderDetailsGivenDeployment = (
     orderBook,
     orderBookAddress,
     network,
-    outputToken,
-    outputTokenAddress,
+    tokens,
     scenario,
   };
 };

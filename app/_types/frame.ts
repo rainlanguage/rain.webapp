@@ -1,3 +1,4 @@
+import { TokenInfo } from "../_services/getTokenInfo";
 import { YamlData } from "./yamlData";
 
 export type FrameState = {
@@ -6,13 +7,11 @@ export type FrameState = {
   currentStep: string;
   deploymentOption?: YamlData["gui"]["deployments"][0];
   bindings: any;
-  deposits: { token: string; amount: number }[];
-  deposit: number | null;
+  deposits: { info: TokenInfo; amount: number }[];
   buttonPage: number;
   buttonMax?: number;
   textInputLabel: string;
   error: string | null;
-  requiresTokenApproval: boolean;
-  tokensApproved?: boolean;
   isWebapp?: boolean;
+  tokenInfos: TokenInfo[];
 };

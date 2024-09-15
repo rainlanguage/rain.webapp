@@ -169,23 +169,11 @@ export const generateButtonsData = (
         currentState.isWebapp ||
         Object.values(supportedNetworks).includes(network["chain-id"])
       ) {
-        buttons.push(
-          ...(!currentState.requiresTokenApproval || currentState.tokensApproved
-            ? [
-                {
-                  buttonTarget: "buttonValue",
-                  buttonValue: "submit",
-                  buttonText: "Deposit tokens and deploy strategy",
-                },
-              ]
-            : [
-                {
-                  buttonTarget: "buttonValue",
-                  buttonValue: "approve",
-                  buttonText: "Approve token spend",
-                },
-              ])
-        );
+        buttons.push({
+          buttonTarget: "buttonValue",
+          buttonValue: "submit",
+          buttonText: "Deposit tokens and deploy strategy",
+        });
       } else {
         buttons.push({
           buttonAction: "link",

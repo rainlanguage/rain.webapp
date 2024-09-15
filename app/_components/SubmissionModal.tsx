@@ -16,15 +16,16 @@ import {
 import { readContract } from "viem/actions";
 import { waitForTransactionReceipt } from "viem/actions";
 import { config } from "../providers";
-import { erc20Abi, parseUnits } from "viem";
+import { Hex, erc20Abi, parseUnits } from "viem";
 import { orderBookJson } from "@/public/_abis/OrderBook";
-import { getOrderDetailsGivenDeployment } from "../_services/parseDotrainFrontmatter"; // Restored
-import { getSubmissionTransactionData } from "../_services/transactionData"; // Assuming you're still using this
-import yaml from "js-yaml"; // Still needed
+import { getOrderDetailsGivenDeployment } from "../_services/parseDotrainFrontmatter";
+import { getSubmissionTransactionData } from "../_services/transactionData";
+import yaml from "js-yaml";
 import { YamlData } from "../_types/yamlData";
 import { FrameState } from "../_types/frame";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { TokenInfo } from "../_services/getTokenInfo";
 
 interface SubmissionModalProps {
   yamlData: YamlData;
@@ -35,12 +36,25 @@ interface SubmissionModalProps {
 }
 
 enum SubmissionStatus {
-  CheckingAllowance = "CheckingAllowance",
   ApprovingTokens = "ApprovingTokens",
-  WaitingForApprovalConfirmation = "WaitingForApprovalConfirmation",
   DeployingStrategy = "DeployingStrategy",
   WaitingForDeploymentConfirmation = "WaitingForDeploymentConfirmation",
   Done = "Done",
+}
+
+export interface TokenDeposit {
+  tokenAddress: Hex;
+  tokenInfo: TokenInfo;
+  amount: number;
+  status: TokenDepositStatus;
+}
+
+enum TokenDepositStatus {
+  Pending = "Pending",
+  CheckingAllowance = "CheckingAllowance",
+  ApprovingTokens = "ApprovingTokens",
+  WaitingForApprovalConfirmation = "WaitingForApprovalConfirmation",
+  TokensApproved = "TokensApproved",
 }
 
 export const SubmissionModal = ({
@@ -57,8 +71,24 @@ export const SubmissionModal = ({
   const { switchChainAsync } = useSwitchChain();
   const { writeContractAsync } = useWriteContract();
 
+  const { orderBookAddress, network, tokens, scenario } =
+    getOrderDetailsGivenDeployment(
+      yamlData,
+      currentState.deploymentOption?.deployment || ""
+    );
+
   const [submissionState, setSubmissionState] = useState<SubmissionStatus>(
-    SubmissionStatus.CheckingAllowance
+    SubmissionStatus.ApprovingTokens
+  );
+  const [tokenDeposits, setTokenDeposits] = useState<TokenDeposit[]>(
+    currentState.deposits.map((deposit) => ({
+      tokenAddress: deposit.info.address as Hex,
+      tokenInfo: currentState.tokenInfos.find(
+        (info) => info.address === deposit.info.address
+      ) as TokenInfo,
+      amount: deposit.amount,
+      status: TokenDepositStatus.Pending,
+    }))
   );
 
   const [open, setOpen] = useState(false);
@@ -74,63 +104,75 @@ export const SubmissionModal = ({
     }
   }, [submissionState]);
 
-  const {
-    deployment,
-    order,
-    orderBook,
-    orderBookAddress,
-    network,
-    outputToken,
-    outputTokenAddress,
-    scenario,
-  } = getOrderDetailsGivenDeployment(
-    yamlData,
-    currentState.deploymentOption?.deployment || ""
-  ); // Restored call to getOrderDetailsGivenDeployment
-
   const submitStrategy = async () => {
     setOpen(true);
     try {
-      const outputTokenDecimals = await readContract(config.getClient(), {
-        abi: erc20Abi,
-        address: outputTokenAddress,
-        functionName: "decimals",
-      });
+      for (const deposit of tokenDeposits) {
+        if (!deposit.tokenInfo)
+          throw new Error(`Token info not found for ${deposit.tokenAddress}`);
 
-      const depositAmount = parseUnits(
-        String(currentState.deposit),
-        outputTokenDecimals
-      );
+        const depositAmount = parseUnits(
+          String(deposit.amount),
+          deposit.tokenInfo.decimals
+        );
 
-      const existingAllowance = await readContract(config.getClient(), {
-        abi: erc20Abi,
-        address: outputTokenAddress,
-        functionName: "allowance",
-        args: [account.address as `0x${string}`, orderBookAddress],
-      });
-
-      if (existingAllowance < depositAmount) {
-        setSubmissionState(SubmissionStatus.ApprovingTokens);
-
-        // Send approval transaction
-        const approveTx = await writeContractAsync({
-          address: outputTokenAddress,
+        const existingAllowance = await readContract(config.getClient(), {
           abi: erc20Abi,
-          functionName: "approve",
-          args: [orderBookAddress, depositAmount],
+          address: deposit.tokenAddress,
+          functionName: "allowance",
+          args: [account.address as `0x${string}`, orderBookAddress],
         });
 
-        setSubmissionState(SubmissionStatus.WaitingForApprovalConfirmation);
+        if (existingAllowance < depositAmount) {
+          setTokenDeposits((prev) =>
+            prev.map((prevDeposit) =>
+              prevDeposit.tokenAddress === deposit.tokenAddress
+                ? { ...prevDeposit, status: TokenDepositStatus.ApprovingTokens }
+                : prevDeposit
+            )
+          );
 
-        // Wait for approval transaction confirmation
-        await waitForTransactionReceipt(config.getClient(), {
-          hash: approveTx,
-          confirmations: 1,
-        });
+          // Send approval transaction
+          const approveTx = await writeContractAsync({
+            address: deposit.tokenAddress,
+            abi: erc20Abi,
+            functionName: "approve",
+            args: [orderBookAddress, depositAmount],
+          });
 
-        setSubmissionState(SubmissionStatus.DeployingStrategy);
-      } else {
-        setSubmissionState(SubmissionStatus.DeployingStrategy);
+          setTokenDeposits((prev) =>
+            prev.map((prevDeposit) =>
+              prevDeposit.tokenAddress === deposit.tokenAddress
+                ? {
+                    ...prevDeposit,
+                    status: TokenDepositStatus.WaitingForApprovalConfirmation,
+                  }
+                : prevDeposit
+            )
+          );
+
+          // Wait for approval transaction confirmation
+          await waitForTransactionReceipt(config.getClient(), {
+            hash: approveTx,
+            confirmations: 1,
+          });
+
+          setTokenDeposits((prev) =>
+            prev.map((prevDeposit) =>
+              prevDeposit.tokenAddress === deposit.tokenAddress
+                ? { ...prevDeposit, status: TokenDepositStatus.TokensApproved }
+                : prevDeposit
+            )
+          );
+        } else {
+          setTokenDeposits((prev) =>
+            prev.map((prevDeposit) =>
+              prevDeposit.tokenAddress === deposit.tokenAddress
+                ? { ...prevDeposit, status: TokenDepositStatus.TokensApproved }
+                : prevDeposit
+            )
+          );
+        }
       }
 
       const convertedBindings = Object.keys(currentState.bindings).reduce(
@@ -156,12 +198,11 @@ export const SubmissionModal = ({
       const updatedDotrainText =
         yaml.dump(yamlData) + "---" + dotrainText.split("---")[1];
 
-      const { addOrderCalldata, depositCallData } =
+      const { addOrderCalldata, depositCalldatas } =
         await getSubmissionTransactionData(
           currentState,
           updatedDotrainText,
-          outputTokenAddress,
-          outputTokenDecimals
+          tokenDeposits
         );
 
       // Send deployment transaction
@@ -169,7 +210,7 @@ export const SubmissionModal = ({
         address: orderBookAddress,
         abi: orderBookJson.abi,
         functionName: "multicall",
-        args: [[addOrderCalldata, depositCallData]],
+        args: [[addOrderCalldata, ...depositCalldatas]],
       });
 
       setSubmissionState(SubmissionStatus.WaitingForDeploymentConfirmation);
@@ -215,34 +256,50 @@ export const SubmissionModal = ({
                   : "opacity-100"
               }`}
             >
-              <div className="flex items-center my-4">
-                <div
-                  className={`text-2xl text-white rounded-full flex items-center justify-center mr-4 transition-all ${
-                    submissionState === SubmissionStatus.CheckingAllowance ||
-                    submissionState === SubmissionStatus.ApprovingTokens ||
-                    submissionState ===
-                      SubmissionStatus.WaitingForApprovalConfirmation
-                      ? "bg-amber-500 w-12 h-12"
-                      : "bg-emerald-600 w-10 h-10"
-                  }`}
-                >
-                  1
+              {tokenDeposits.map((deposit, i) => (
+                <div key={i} className="flex items-center my-4">
+                  <div
+                    className={`text-2xl text-white rounded-full flex items-center justify-center mr-4 transition-all ${
+                      deposit.status === TokenDepositStatus.Pending
+                        ? "bg-gray-400 w-10 h-10"
+                        : deposit.status ===
+                            TokenDepositStatus.CheckingAllowance ||
+                          deposit.status ===
+                            TokenDepositStatus.ApprovingTokens ||
+                          deposit.status ===
+                            TokenDepositStatus.WaitingForApprovalConfirmation
+                        ? "bg-amber-500 w-12 h-12"
+                        : "bg-emerald-600 w-10 h-10"
+                    }`}
+                  >
+                    {i + 1}
+                  </div>
+                  <div className="text-lg">
+                    {deposit.status === TokenDepositStatus.Pending ? (
+                      <span className="text-gray-500">
+                        Approve {deposit.tokenInfo.symbol}
+                      </span>
+                    ) : deposit.status ===
+                      TokenDepositStatus.CheckingAllowance ? (
+                      <span className="animate-pulse">
+                        Checking allowance for {deposit.tokenInfo.symbol}...
+                      </span>
+                    ) : deposit.status ===
+                      TokenDepositStatus.ApprovingTokens ? (
+                      <span className="animate-pulse">
+                        Approving allowance for {deposit.tokenInfo.symbol}...
+                      </span>
+                    ) : deposit.status ===
+                      TokenDepositStatus.WaitingForApprovalConfirmation ? (
+                      <span className="animate-pulse">
+                        Waiting for approval confirmation...
+                      </span>
+                    ) : (
+                      `${deposit.tokenInfo.symbol} allowance approved`
+                    )}
+                  </div>
                 </div>
-                <div className="text-lg">
-                  {submissionState === SubmissionStatus.CheckingAllowance ? (
-                    <span className="animate-pulse">Checking allowance...</span>
-                  ) : submissionState === SubmissionStatus.ApprovingTokens ? (
-                    <span className="animate-pulse">Approving tokens...</span>
-                  ) : submissionState ===
-                    SubmissionStatus.WaitingForApprovalConfirmation ? (
-                    <span className="animate-pulse">
-                      Waiting for approval confirmation...
-                    </span>
-                  ) : (
-                    "Tokens approved"
-                  )}
-                </div>
-              </div>
+              ))}
 
               <div className="flex items-center my-4">
                 <div
@@ -257,7 +314,7 @@ export const SubmissionModal = ({
                       : "bg-gray-400 w-10 h-10"
                   }`}
                 >
-                  2
+                  {currentState.deposits.length + 1}
                 </div>
                 <div className="text-lg">
                   {submissionState === SubmissionStatus.DeployingStrategy ? (

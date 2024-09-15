@@ -3,6 +3,10 @@ import { Metadata } from "next";
 import WebappFrame from "../../_components/WebappFrame";
 import fs from "fs";
 import path from "path";
+import jsYaml from "js-yaml";
+import { FailsafeSchemaWithNumbers } from "@/app/_schemas/failsafeWithNumbers";
+import { YamlData } from "@/app/_types/yamlData";
+import { getTokenInfos } from "@/app/_services/getTokenInfo";
 
 interface generateMetadataProps {
   params: {
@@ -45,5 +49,17 @@ export default async function Home({ params }: homeProps) {
   );
   const dotrainText = fs.readFileSync(filePath, "utf8");
 
-  return <WebappFrame dotrainText={dotrainText} deploymentOption={null} />;
+  const yamlData = jsYaml.load(dotrainText.split("---")[0], {
+    schema: FailsafeSchemaWithNumbers,
+  }) as YamlData;
+
+  const tokenInfos = await getTokenInfos(yamlData);
+
+  return (
+    <WebappFrame
+      dotrainText={dotrainText}
+      deploymentOption={null}
+      tokenInfos={tokenInfos}
+    />
+  );
 }

@@ -56,6 +56,7 @@ export const getUpdatedFrameState = (
         if (currentBindingsCount === 0) {
           updatedState.currentStep = "deployment";
           updatedState.deploymentOption = undefined;
+          updatedState.textInputLabel = "";
         } else {
           const currentField = fields[currentBindingsCount - 1];
           delete updatedState.bindings[currentField.binding];
@@ -88,28 +89,29 @@ export const getUpdatedFrameState = (
           amount: value,
         });
         updatedState.error = null;
+
+        if (currentDepositCount >= deposits.length - 1) {
+          updatedState.currentStep = "review";
+          updatedState.buttonPage = 0;
+        }
       };
 
-      if (buttonValue === "submit") {
+      if (buttonValue === "submit" && currentDeposit.min) {
         if (inputText && isNaN(Number(inputText))) {
           updatedState.error = "Value must be a number";
-        } else if (
-          inputText &&
-          parseFloat(inputText) >= updatedState.deploymentOption.deposit.min
-        ) {
+        } else if (inputText && parseFloat(inputText) >= currentDeposit.min) {
           setDepositValue(Number(inputText));
           updatedState.textInputLabel = "";
         } else {
-          updatedState.error = `Value must be at least ${updatedState.deploymentOption.deposit.min}`;
+          updatedState.error = `Value must be at least ${currentDeposit.min}`;
         }
       } else if (buttonValue === "back") {
-        console.log({ currentDepositCount });
         if (currentDepositCount === 0) {
           const currentField =
             updatedState.deploymentOption.fields[
               Object.keys(updatedState.bindings).length - 1
             ];
-          console.log({ currentField });
+          updatedState.textInputLabel = "";
           delete updatedState.bindings[currentField.binding];
           updatedState.currentStep = "fields";
         } else {
@@ -118,10 +120,6 @@ export const getUpdatedFrameState = (
         }
       } else {
         setDepositValue(Number(buttonValue));
-        if (currentDepositCount >= deposits.length - 1) {
-          updatedState.currentStep = "review";
-          updatedState.buttonPage = 0;
-        }
       }
 
       break;

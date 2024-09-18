@@ -60,9 +60,10 @@ const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
 
   const handleButtonClick = async (buttonData: any) => {
     setError(null);
-
+    console.log(buttonData);
     // Handle page navigation
     if (buttonData.buttonTarget === "textInputLabel") {
+      console.log("buttonData.buttonValue", buttonData.buttonValue);
       setCurrentState({
         ...currentState,
         textInputLabel: buttonData.buttonValue,
@@ -74,6 +75,14 @@ const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
         buttonPage: buttonData.buttonValue,
       });
       return;
+    } else if (
+      buttonData.buttonTarget === "buttonValue" &&
+      buttonData.buttonValue === "back"
+    ) {
+      setCurrentState({
+        ...currentState,
+        textInputLabel: "",
+      });
     }
 
     const updatedState = getUpdatedFrameState(
@@ -82,7 +91,35 @@ const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
       buttonData.buttonValue,
       inputText
     );
+
+    if (
+      updatedState.currentStep === "deposit" &&
+      updatedState.deploymentOption
+    ) {
+      const deposit =
+        updatedState.deploymentOption.deposits[
+          Object.keys(currentState.deposits).length
+        ];
+      if (deposit.min && !deposit.presets) {
+        updatedState.textInputLabel = `Enter a number greater than ${deposit.min}`;
+      }
+    }
+
+    if (
+      updatedState.currentStep === "fields" &&
+      updatedState.deploymentOption
+    ) {
+      const field =
+        updatedState.deploymentOption.fields[
+          Object.keys(updatedState.bindings).length
+        ];
+      if (field.min && !field.presets) {
+        updatedState.textInputLabel = `Enter a number greater than ${field.min}`;
+      }
+    }
+
     setCurrentState({ ...updatedState });
+
     if (inputText) {
       setInputText("");
     }
@@ -110,7 +147,7 @@ const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
       )}
       <div className="flex flex-wrap gap-2 justify-center pb-20 px-8">
         {buttonsData.map((buttonData) => {
-          return buttonData.buttonValue === "submit" ? (
+          return buttonData.buttonValue === "finalSubmit" ? (
             <SubmissionModal
               key={buttonData.buttonText}
               buttonText={buttonData.buttonText}
@@ -131,6 +168,15 @@ const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
             </button>
           );
         })}
+        <div className="flex w-full justify-center">
+          {currentState.error ? (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <span className="text-red-600">{currentState.error}</span>
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
       </div>
       <Dialog open={!!error}>
         <DialogContent className="bg-white flex flex-col items-center">

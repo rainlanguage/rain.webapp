@@ -1,5 +1,11 @@
 import { FrameState } from "../_types/frame";
-import { DeploymentOption, Preset, YamlData } from "../_types/yamlData";
+import {
+  DeploymentOption,
+  Deposit,
+  Preset,
+  YamlData,
+  Field,
+} from "../_types/yamlData";
 
 export const getPaginatedButtons = (
   allButtons: any[],
@@ -39,26 +45,25 @@ export const getPaginatedButtons = (
   ];
 };
 
-export const getPresetsButtons = (
-  presets: Preset[],
-  minimum: number | undefined
-): any[] => {
+export const getFieldPresetsButtons = (field: Field): any[] => {
   return [
     {
       buttonTarget: "buttonValue",
       buttonValue: "back",
       buttonText: "←",
     },
-    ...presets.map((preset: Preset) => ({
-      buttonTarget: "buttonValue",
-      buttonValue: `${preset.value}`,
-      buttonText: `${preset.name}`,
-    })),
-    ...(minimum !== undefined
+    ...(field.presets
+      ? field.presets.map((preset: Preset) => ({
+          buttonTarget: "buttonValue",
+          buttonValue: `${preset.value}`,
+          buttonText: `${preset.name}`,
+        }))
+      : []),
+    ...(field.min !== undefined
       ? [
           {
             buttonTarget: "textInputLabel",
-            buttonValue: `Enter a number greater than ${minimum}`,
+            buttonValue: `Enter a number greater than ${field.min}`,
             buttonText: "Custom",
           },
         ]
@@ -66,26 +71,25 @@ export const getPresetsButtons = (
   ];
 };
 
-export const getDepositPresetsButtons = (
-  presets: number[],
-  minimum: number | undefined
-): any[] => {
+export const getDepositPresetsButtons = (deposit: Deposit): any[] => {
   return [
     {
       buttonTarget: "buttonValue",
       buttonValue: "back",
       buttonText: "←",
     },
-    ...presets.map((preset: number) => ({
-      buttonTarget: "buttonValue",
-      buttonValue: `${preset}`,
-      buttonText: `${preset}`,
-    })),
-    ...(minimum !== undefined
+    ...(deposit?.presets
+      ? deposit.presets?.map((preset: number) => ({
+          buttonTarget: "buttonValue",
+          buttonValue: `${preset}`,
+          buttonText: `${preset}`,
+        }))
+      : []),
+    ...(deposit?.min !== undefined
       ? [
           {
             buttonTarget: "textInputLabel",
-            buttonValue: `Enter a number greater than ${minimum}`,
+            buttonValue: `Enter a number greater than ${deposit.min}`,
             buttonText: "Custom",
           },
         ]
@@ -97,13 +101,12 @@ export const generateButtonsData = (
   yamlData: YamlData,
   currentState: FrameState
 ): any[] => {
-  console.log({ currentState });
   let buttons: any[] = [];
   if (currentState.textInputLabel) {
     return [
       {
-        buttonTarget: "textInputLabel",
-        buttonValue: "",
+        buttonTarget: "buttonValue",
+        buttonValue: "back",
         buttonText: "←",
       },
       {
@@ -145,7 +148,7 @@ export const generateButtonsData = (
         currentState.deploymentOption.fields[
           Object.keys(currentState.bindings).length
         ];
-      const fieldButtons = getPresetsButtons(field.presets, field.min);
+      const fieldButtons = getFieldPresetsButtons(field);
       buttons = getPaginatedButtons(
         fieldButtons,
         currentState.buttonPage,
@@ -162,10 +165,7 @@ export const generateButtonsData = (
           Object.keys(currentState.deposits).length
         ];
 
-      const depositButtons = getDepositPresetsButtons(
-        deposit.presets,
-        deposit.min
-      );
+      const depositButtons = getDepositPresetsButtons(deposit);
       buttons = getPaginatedButtons(
         depositButtons,
         currentState.buttonPage,
@@ -201,7 +201,7 @@ export const generateButtonsData = (
       ) {
         buttons.push({
           buttonTarget: "buttonValue",
-          buttonValue: "submit",
+          buttonValue: "finalSubmit",
           buttonText: "Deposit tokens and deploy strategy",
         });
       } else {

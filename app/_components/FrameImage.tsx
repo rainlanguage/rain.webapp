@@ -149,15 +149,6 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
         )}
         {currentState.currentStep === "done" ? "Done!" : ""}
       </div>
-      {currentState.error ? (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <span style={{ color: "red", fontSize: 50 }}>
-            {currentState.error}
-          </span>
-        </div>
-      ) : (
-        ""
-      )}
       <div
         className="hidden"
         tw="right-2 bottom-2 flex absolute w-[232px] h-[37px]"

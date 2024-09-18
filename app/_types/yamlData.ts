@@ -3,7 +3,7 @@ export interface Field {
   name: string;
   description: string;
   min?: number;
-  presets: Preset[];
+  presets?: Preset[];
 }
 
 export interface Preset {
@@ -13,8 +13,8 @@ export interface Preset {
 
 export interface Deposit {
   token: string;
-  min: number;
-  presets: number[];
+  min?: number;
+  presets?: number[];
 }
 
 export interface DeploymentOption {

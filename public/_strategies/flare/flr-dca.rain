@@ -22,10 +22,6 @@ gui:
       deposits:
         - token: usdce
           min: 20
-          presets:
-            - 0.01
-            - 50
-            - 100
 
     - deployment: sflr-usdc
       name: Buy sFLR with USDC

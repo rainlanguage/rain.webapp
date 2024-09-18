@@ -2,6 +2,7 @@ import { getAddOrderCalldata } from "@rainlanguage/orderbook/common";
 import {
   decodeFunctionData,
   encodeFunctionData,
+  getAddress,
   parseUnits,
   toHex,
 } from "viem";
@@ -41,8 +42,12 @@ export const getSubmissionTransactionData = async (
     );
 
     const vaultId = decodedAddOrderCalldata.args?.[0]?.validOutputs?.find(
-      (io) => io.token === tokenDeposit.tokenAddress
+      (io) => getAddress(io.token) === getAddress(tokenDeposit.tokenAddress)
     )?.vaultId;
+
+    console.log(tokenDeposit.tokenAddress);
+
+    console.log(decodedAddOrderCalldata);
 
     if (!vaultId) {
       throw new Error("Vault id not found");

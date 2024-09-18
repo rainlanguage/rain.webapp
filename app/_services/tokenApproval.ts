@@ -29,7 +29,7 @@ export const hasEnoughTokenApproval = async (
 
   // Get token approval for output token, if required
   const depositAmount = parseUnits(
-    String(currentState.deposit),
+    String(currentState.deposits[0].amount),
     outputTokenDecimals
   );
   const existingAllowance = await readContract(client, {

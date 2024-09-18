@@ -77,6 +77,8 @@ export const SubmissionModal = ({
       currentState.deploymentOption?.deployment || ""
     );
 
+  console.log({ network });
+
   const [submissionState, setSubmissionState] = useState<SubmissionStatus>(
     SubmissionStatus.ApprovingTokens
   );

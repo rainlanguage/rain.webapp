@@ -3,7 +3,12 @@ export interface Field {
   name: string;
   description: string;
   min?: number;
-  presets: number[];
+  presets: Preset[];
+}
+
+export interface Preset {
+  name: string;
+  value: number;
 }
 
 export interface Deposit {

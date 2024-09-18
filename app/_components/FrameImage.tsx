@@ -47,7 +47,7 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
               currentState.tokenInfos.find(
                 (info) =>
                   info.yamlName ===
-                  currentState.deploymentOption.deposits[
+                  currentState.deploymentOption!.deposits[
                     Object.keys(currentState.deposits).length
                   ].token
               )?.symbol

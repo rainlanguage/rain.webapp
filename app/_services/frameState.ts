@@ -89,6 +89,7 @@ export const getUpdatedFrameState = (
         });
         updatedState.error = null;
       };
+
       if (buttonValue === "submit") {
         if (inputText && isNaN(Number(inputText))) {
           updatedState.error = "Value must be a number";
@@ -102,11 +103,13 @@ export const getUpdatedFrameState = (
           updatedState.error = `Value must be at least ${updatedState.deploymentOption.deposit.min}`;
         }
       } else if (buttonValue === "back") {
+        console.log({ currentDepositCount });
         if (currentDepositCount === 0) {
           const currentField =
             updatedState.deploymentOption.fields[
               Object.keys(updatedState.bindings).length - 1
             ];
+          console.log({ currentField });
           delete updatedState.bindings[currentField.binding];
           updatedState.currentStep = "fields";
         } else {
@@ -115,11 +118,12 @@ export const getUpdatedFrameState = (
         }
       } else {
         setDepositValue(Number(buttonValue));
+        if (currentDepositCount >= deposits.length - 1) {
+          updatedState.currentStep = "review";
+          updatedState.buttonPage = 0;
+        }
       }
-      if (currentDepositCount >= deposits.length - 1) {
-        updatedState.currentStep = "review";
-        updatedState.buttonPage = 0;
-      }
+
       break;
     case "review":
       if (buttonValue === "back") {

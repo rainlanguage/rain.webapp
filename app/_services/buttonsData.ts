@@ -1,5 +1,5 @@
 import { FrameState } from "../_types/frame";
-import { DeploymentOption, YamlData } from "../_types/yamlData";
+import { DeploymentOption, Preset, YamlData } from "../_types/yamlData";
 
 export const getPaginatedButtons = (
   allButtons: any[],
@@ -40,6 +40,33 @@ export const getPaginatedButtons = (
 };
 
 export const getPresetsButtons = (
+  presets: Preset[],
+  minimum: number | undefined
+): any[] => {
+  return [
+    {
+      buttonTarget: "buttonValue",
+      buttonValue: "back",
+      buttonText: "←",
+    },
+    ...presets.map((preset: Preset) => ({
+      buttonTarget: "buttonValue",
+      buttonValue: `${preset.value}`,
+      buttonText: `${preset.name}`,
+    })),
+    ...(minimum !== undefined
+      ? [
+          {
+            buttonTarget: "textInputLabel",
+            buttonValue: `Enter a number greater than ${minimum}`,
+            buttonText: "Custom",
+          },
+        ]
+      : []),
+  ];
+};
+
+export const getDepositPresetsButtons = (
   presets: number[],
   minimum: number | undefined
 ): any[] => {
@@ -70,6 +97,7 @@ export const generateButtonsData = (
   yamlData: YamlData,
   currentState: FrameState
 ): any[] => {
+  console.log({ currentState });
   let buttons: any[] = [];
   if (currentState.textInputLabel) {
     return [
@@ -134,8 +162,10 @@ export const generateButtonsData = (
           Object.keys(currentState.deposits).length
         ];
 
-      // const deposit = currentState.deploymentOption.deposit;
-      const depositButtons = getPresetsButtons(deposit.presets, deposit.min);
+      const depositButtons = getDepositPresetsButtons(
+        deposit.presets,
+        deposit.min
+      );
       buttons = getPaginatedButtons(
         depositButtons,
         currentState.buttonPage,

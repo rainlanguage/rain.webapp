@@ -65,7 +65,7 @@ export const getApprovalTransaction = async (
   });
 
   const depositAmount = parseUnits(
-    String(currentState.deposit),
+    String(currentState.deposits[0].amount),
     outputTokenDecimals
   );
 
@@ -97,37 +97,18 @@ export const getSubmissionTransaction = async (
       "Deployment option is required to get submission transaction"
     );
   }
-  // Get network and orderbook data from the yaml file
-  const deployment =
-    yamlData.deployments[currentState.deploymentOption.deployment];
-  const order = yamlData.orders[deployment.order];
-  const network = yamlData.networks[order.network];
 
-  const orderBook = yamlData.orderbooks[order.orderbook];
-  const orderBookAddress = toHex(BigInt(orderBook.address));
-
-  const outputToken = yamlData.tokens[order.outputs[0].token];
-  const outputTokenAddress = toHex(BigInt(outputToken.address));
-
-  const client = getPublicClient(network);
-  const outputTokenDecimals = await readContract(client, {
-    abi: erc20Abi,
-    address: outputTokenAddress,
-    functionName: "decimals",
-  });
-
-  const { addOrderCalldata, depositCallData } =
+  const { addOrderCalldata, depositCalldatas } =
     await getSubmissionTransactionData(
       currentState,
       dotrainText,
-      outputTokenAddress,
-      outputTokenDecimals
+      outputTokenAddress
     );
 
   const multicallCalldata = encodeFunctionData({
     functionName: "multicall",
     abi: orderBookJson.abi,
-    args: [[addOrderCalldata, depositCallData]],
+    args: [[addOrderCalldata, ...depositCalldatas]],
   });
 
   // Return transaction data that conforms to the correct type

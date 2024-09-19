@@ -173,6 +173,11 @@ export const generateButtonsData = (
         (token) => token.yamlName == deposit.token
       );
 
+      if (!token)
+        throw new Error(
+          "Token from deposit not found in retrieved token infos"
+        );
+
       const depositButtons = getDepositPresetsButtons(deposit, token);
       buttons = getPaginatedButtons(
         depositButtons,

@@ -1,3 +1,4 @@
+import { TokenDeposit } from "../_components/SubmissionModal";
 import { TokenInfo } from "../_services/getTokenInfo";
 import { YamlData } from "./yamlData";
 
@@ -7,7 +8,7 @@ export type FrameState = {
   currentStep: string;
   deploymentOption?: YamlData["gui"]["deployments"][0];
   bindings: any;
-  deposits: { info: TokenInfo; amount: number }[];
+  deposits: TokenDeposit[];
   buttonPage: number;
   buttonMax?: number;
   textInputLabel: string;

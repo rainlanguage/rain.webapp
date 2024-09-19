@@ -114,14 +114,14 @@ export const getUpdatedFrameState = (
       }
 
       const setDepositValue = (value: number) => {
-        const info = updatedState.tokenInfos.find(
+        const tokenInfo = updatedState.tokenInfos.find(
           (info) => info.yamlName === currentDeposit.token
         );
-        if (!info)
+        if (!tokenInfo)
           throw new Error(`Token info not found for ${currentDeposit.token}`);
 
         updatedState.deposits.push({
-          info,
+          tokenInfo,
           amount: value,
         });
         updatedState.error = null;

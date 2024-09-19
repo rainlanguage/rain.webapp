@@ -136,10 +136,10 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
                   Deposits
                 </td>
               </tr>
-              {currentState.deposits.map(({ info, amount }) => {
+              {currentState.deposits.map(({ tokenInfo, amount }) => {
                 return (
                   <tr
-                    key={info.address}
+                    key={tokenInfo.address}
                     className="border-t border-gray-300 table-row"
                     tw="border-t border-gray-300"
                   >
@@ -147,7 +147,7 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
                       className="p-2 lg:p-3 font-regular text-gray-700"
                       tw="px-4 py-4 font-semibold text-gray-700 w-[300px] leading-tight"
                     >
-                      {info.symbol}
+                      {tokenInfo.symbol}
                     </td>
                     <td
                       className="px-4 text-gray-600"

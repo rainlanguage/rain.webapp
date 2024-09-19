@@ -42,10 +42,11 @@ export const getSubmissionTransactionData = async (
     );
 
     const vaultId = decodedAddOrderCalldata.args?.[0]?.validOutputs?.find(
-      (io) => getAddress(io.token) === getAddress(tokenDeposit.tokenAddress)
+      (io) =>
+        getAddress(io.token) === getAddress(tokenDeposit.tokenInfo.address)
     )?.vaultId;
 
-    console.log(tokenDeposit.tokenAddress);
+    console.log(tokenDeposit.tokenInfo.address);
 
     console.log(decodedAddOrderCalldata);
 
@@ -56,7 +57,7 @@ export const getSubmissionTransactionData = async (
     return encodeFunctionData({
       functionName: "deposit2",
       abi: orderBookJson.abi,
-      args: [tokenDeposit.tokenAddress, toHex(vaultId), depositAmount, []],
+      args: [tokenDeposit.tokenInfo.address, toHex(vaultId), depositAmount, []],
     });
   });
 

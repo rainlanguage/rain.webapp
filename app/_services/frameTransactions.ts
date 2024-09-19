@@ -14,6 +14,7 @@ import { readContract } from "viem/actions";
 import { orderBookJson } from "@/public/_abis/OrderBook";
 import { getSubmissionTransactionData } from "./transactionData";
 import * as chains from "viem/chains";
+import { getOrderDetailsGivenDeployment } from "./parseDotrainFrontmatter";
 
 export const getPublicClient = (network: any) => {
   let chain = Object.values(chains).find(
@@ -102,7 +103,7 @@ export const getSubmissionTransaction = async (
     await getSubmissionTransactionData(
       currentState,
       dotrainText,
-      outputTokenAddress
+      currentState.deposits
     );
 
   const multicallCalldata = encodeFunctionData({
@@ -110,6 +111,11 @@ export const getSubmissionTransaction = async (
     abi: orderBookJson.abi,
     args: [[addOrderCalldata, ...depositCalldatas]],
   });
+
+  const { orderBookAddress, network } = getOrderDetailsGivenDeployment(
+    yamlData,
+    currentState.deploymentOption.deployment
+  );
 
   // Return transaction data that conforms to the correct type
   return transaction({

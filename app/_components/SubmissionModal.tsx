@@ -43,11 +43,16 @@ enum SubmissionStatus {
   Done = "Done",
 }
 
-export interface TokenDeposit {
+export interface TokenDepositWithStatus {
   tokenAddress: Hex;
   tokenInfo: TokenInfo;
   amount: number;
   status: TokenDepositStatus;
+}
+
+export interface TokenDeposit {
+  amount: number;
+  tokenInfo: TokenInfo;
 }
 
 enum TokenDepositStatus {
@@ -80,17 +85,15 @@ export const SubmissionModal = ({
       currentState.deploymentOption?.deployment || ""
     );
 
-  console.log({ network });
-
   const [submissionState, setSubmissionState] = useState<SubmissionStatus>(
     SubmissionStatus.ApprovingTokens
   );
-  const [tokenDeposits, setTokenDeposits] = useState<TokenDeposit[]>(
+  const [tokenDeposits, setTokenDeposits] = useState<TokenDepositWithStatus[]>(
     currentState.deposits.map((deposit) => ({
-      tokenAddress: deposit.info.address as Hex,
+      tokenAddress: deposit.tokenInfo.address as Hex,
       tokenInfo: currentState.tokenInfos.find(
-        (info) => info.address === deposit.info.address
-      ) as TokenInfo,
+        (info) => info.address === deposit.tokenInfo.address
+      )!,
       amount: deposit.amount,
       status: TokenDepositStatus.Pending,
     }))
@@ -112,8 +115,7 @@ export const SubmissionModal = ({
   const submitStrategy = async () => {
     try {
       for (const deposit of tokenDeposits) {
-        if (!deposit.tokenInfo)
-          throw new Error(`Token info not found for ${deposit.tokenAddress}`);
+        if (!deposit.tokenInfo) throw new Error(`Token info not found`);
 
         const depositAmount = parseUnits(
           String(deposit.amount),
@@ -122,7 +124,7 @@ export const SubmissionModal = ({
 
         const existingAllowance = await readContract(config.getClient(), {
           abi: erc20Abi,
-          address: deposit.tokenAddress,
+          address: deposit.tokenInfo.address,
           functionName: "allowance",
           args: [account.address as `0x${string}`, orderBookAddress],
         });
@@ -130,7 +132,7 @@ export const SubmissionModal = ({
         if (existingAllowance < depositAmount) {
           setTokenDeposits((prev) =>
             prev.map((prevDeposit) =>
-              prevDeposit.tokenAddress === deposit.tokenAddress
+              prevDeposit.tokenInfo.address === deposit.tokenInfo.address
                 ? { ...prevDeposit, status: TokenDepositStatus.ApprovingTokens }
                 : prevDeposit
             )
@@ -138,7 +140,7 @@ export const SubmissionModal = ({
 
           // Send approval transaction
           const approveTx = await writeContractAsync({
-            address: deposit.tokenAddress,
+            address: deposit.tokenInfo.address,
             abi: erc20Abi,
             functionName: "approve",
             args: [orderBookAddress, depositAmount],
@@ -146,7 +148,7 @@ export const SubmissionModal = ({
 
           setTokenDeposits((prev) =>
             prev.map((prevDeposit) =>
-              prevDeposit.tokenAddress === deposit.tokenAddress
+              prevDeposit.tokenInfo.address === deposit.tokenInfo.address
                 ? {
                     ...prevDeposit,
                     status: TokenDepositStatus.WaitingForApprovalConfirmation,
@@ -163,7 +165,7 @@ export const SubmissionModal = ({
 
           setTokenDeposits((prev) =>
             prev.map((prevDeposit) =>
-              prevDeposit.tokenAddress === deposit.tokenAddress
+              prevDeposit.tokenInfo.address === deposit.tokenInfo.address
                 ? { ...prevDeposit, status: TokenDepositStatus.TokensApproved }
                 : prevDeposit
             )
@@ -171,7 +173,7 @@ export const SubmissionModal = ({
         } else {
           setTokenDeposits((prev) =>
             prev.map((prevDeposit) =>
-              prevDeposit.tokenAddress === deposit.tokenAddress
+              prevDeposit.tokenInfo.address === deposit.tokenInfo.address
                 ? { ...prevDeposit, status: TokenDepositStatus.TokensApproved }
                 : prevDeposit
             )

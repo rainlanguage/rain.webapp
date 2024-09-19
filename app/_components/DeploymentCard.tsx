@@ -11,10 +11,13 @@ export const DeploymentCard = ({
   deployment: YamlData["gui"]["deployments"][0];
   slug: string;
 }) => {
+  console.log({ slug });
   const router = useRouter();
 
+  const currentHostname = window.location.hostname;
+
   const handleClick = () => {
-    router.push(`/${slug}/${deployment.deployment}`);
+    router.push(`${slug}/${deployment.deployment}`);
   };
 
   return (

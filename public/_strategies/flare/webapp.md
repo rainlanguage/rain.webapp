@@ -1,4 +1,4 @@
-<img style="width:200px;" src="_images/Flare_dark_bg.png" />
+<img style="width:200px;" src="/_images/Flare_dark_bg.png" />
 
 # Raindex strategies on Flare
 

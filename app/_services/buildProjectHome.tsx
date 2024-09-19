@@ -24,6 +24,7 @@ export const retrieveProjectData = async (
     "_strategies",
     projectName
   );
+  console.log("WHAAAAAAAAA", { projectName });
   const files = fs.readdirSync(dirPath, "utf8");
 
   const fileNames = files.filter((filename) => filename.endsWith(".rain"));
@@ -39,7 +40,7 @@ export const retrieveProjectData = async (
       schema: FailsafeSchemaWithNumbers,
     }) as YamlData;
     return {
-      fileName: projectName + "/" + path.parse(fileNames[index]).name, // Extracts the filename without extension
+      fileName: "/" + path.parse(fileNames[index]).name, // Extracts the filename without extension
       yamlData: yamlData,
     };
   });

@@ -6,7 +6,7 @@ import { Button, Navbar } from "flowbite-react";
 export function NavItems() {
   return (
     <>
-      <Navbar.Link className="text-[17px]" href="/flare">
+      <Navbar.Link className="text-[17px]" href="/">
         Browse strategies
       </Navbar.Link>
       <Navbar.Link className="text-[17px]" href="/my-strategies">

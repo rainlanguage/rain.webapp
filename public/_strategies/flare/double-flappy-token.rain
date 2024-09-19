@@ -13,40 +13,50 @@ gui:
           name: Initial price
           description: This should be the USD price you see for sFLR on Dextools.
           min: 0
-          presets:
-            - 0.1
         - binding: next-trade-multiplier
           name: Next trade multiplier
           description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
           min: 0
           presets:
-            - 1.01
-            - 1.03
-            - 1.05
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05 
+              value: 1.05x
         - binding: time-per-epoch
           name: Time per epoch
           description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
           min: 0
           presets:
-            - 7200
-            - 14400
-            - 28800
+            - name: 1 hour
+              value: 7200
+            - name: 4 hours
+              value: 14400
+            - name: 8 hours
+              value: 28800
         - binding: min-trade-amount
           name: Minimum trade amount
           description: The minimum amount of USDC.e that can be traded in a single auction.
           min: 0
           presets:
-            - 0.1
-            - 1
-            - 10
+            - name: $0.1
+              value: 0.1
+            - name: $1
+              value: 1
+            - name: $10
+              value: 10
         - binding: max-amount
           name: Max amount
           description: The maximum amount of USDC.e that can be traded in a single auction.
           min: 0
           presets:
-            - 100
-            - 1000
-            - 10000
+            - name: $100
+              value: 100
+            - name: $1000
+              value: 1000
+            - name: $10000
+              value: 10000
 
       deposits:
         - token: usdce

@@ -4,7 +4,7 @@ import { ProgressBar } from "./ProgressBar";
 export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
   return (
     <div
-      className={`flex flex-col justify-center items-center md:text-[50px] text-center text-[30px] relative flex-grow px-8`}
+      className={`flex flex-col md:justify-center items-center md:text-[50px] text-center text-[30px] relative flex-grow px-8`}
       tw={`flex flex-col items-center justify-center h-full w-full text-center`}
     >
       <div tw="absolute top-0 flex w-full" className="hidden">
@@ -12,7 +12,7 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
       </div>
       {currentState.deploymentOption ? (
         <div
-          className="absolute top-0 md:text-xl text-sm border rounded-full bg-gray-100 px-6 py-3"
+          className="top-0 md:text-xl text-sm border rounded-full bg-gray-100 px-6 py-3 my-4 md:mb-0"
           tw="absolute top-12 text-[30px] border rounded-full bg-gray-100 px-6 py-3"
         >
           {currentState.deploymentOption.name}
@@ -21,11 +21,11 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
         ""
       )}
       <div
-        tw="text-[60px] font-light flex px-28"
-        className="font-light md:px-32"
+        tw="text-[60px] font-light flex px-28 "
+        className="font-light md:px-32 max-w-[1200px] w-full flex flex-col justify-center flex-grow"
       >
         {currentState.currentStep === "start" ? (
-          <div className="flex flex-col gap-y-2" tw="flex flex-col">
+          <div className="flex flex-col gap-y-8" tw="flex flex-col">
             <div className="text-1xl">{currentState.strategyName}</div>
             <div className="text-lg" tw="text-[30px] mt-5">
               {currentState.strategyDescription}
@@ -37,11 +37,27 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
         {currentState.currentStep === "deployment"
           ? "Choose a strategy variation."
           : ""}
-        {currentState.currentStep === "fields" && currentState.deploymentOption
-          ? currentState.deploymentOption.fields[
-              Object.keys(currentState.bindings).length
-            ].description
-          : ""}
+        {currentState.currentStep === "fields" &&
+        currentState.deploymentOption ? (
+          <div className="flex flex-col gap-y-6">
+            <div className="leading-tight">
+              {
+                currentState.deploymentOption.fields[
+                  Object.keys(currentState.bindings).length
+                ].name
+              }
+            </div>
+            <div className="text-2xl">
+              {
+                currentState.deploymentOption.fields[
+                  Object.keys(currentState.bindings).length
+                ].description
+              }
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
         {currentState.currentStep === "deposit" && currentState.deploymentOption
           ? `Choose your deposit amount for ${
               currentState.tokenInfos.find(
@@ -55,30 +71,30 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
           : ""}
         {currentState.currentStep === "review" &&
         currentState.deploymentOption ? (
-          <table className="min-w-full bg-white text-left" tw="text-left">
+          <table
+            className="min-w-full bg-white text-left text-[20px] lg:text-[25px]"
+            tw="text-left"
+          >
             <tbody tw="flex flex-col text-[40px] w-full">
               <tr>
                 <td
-                  className="px-4 py-3 text-xl font-bold text-gray-800"
-                  tw="px-4 py-2 text-[30px] font-bold text-gray-800"
+                  className="p-2 lg:p-3 text-2xl font-bold text-gray-800"
+                  tw="px-4 py-2 text-[50px] font-bold text-gray-800"
                 >
-                  Review
+                  Review choices
                 </td>
               </tr>
               <tr
-                className="border-t border-gray-300 flex flex-col lg:table-row py-3"
+                className="border-t border-gray-300 table-row py-3"
                 tw="border-t border-gray-300"
               >
                 <td
-                  className="px-4 lg:py-2 font-semibold text-gray-700 text-sm lg:text-[30px]"
-                  tw="px-4 py-4 font-semibold text-gray-700 w-[300px]"
+                  className="lg:p-3 p-2 font-regular text-gray-700"
+                  tw="px-4 py-4 font-regular text-gray-700 w-[300px]"
                 >
                   Deployment
                 </td>
-                <td
-                  className="px-4 lg:py-2 text-gray-600"
-                  tw="px-4 py-2 text-gray-600"
-                >
+                <td className="p-4 text-gray-600" tw="px-4 py-2 text-gray-600">
                   {currentState.deploymentOption.name}
                 </td>
               </tr>
@@ -91,12 +107,12 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
                 return (
                   <tr
                     key={binding}
-                    className="border-t border-gray-300 flex flex-col lg:table-row py-3"
+                    className="border-t border-gray-300 table-row py-3"
                     tw="border-t border-gray-300"
                   >
                     <td
-                      className="px-4 lg:py-2 font-semibold text-gray-700 text-sm lg:text-[30px] lg:leading-[33px]"
-                      tw="px-4 py-4 font-semibold text-gray-700 w-[300px] leading-tight"
+                      className="lg:p-3 p-2 font-regular text-gray-700"
+                      tw="p-4 font-semibold text-gray-700 w-[300px] leading-tight"
                     >
                       {field.name}
                     </td>
@@ -114,7 +130,7 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
                 tw="border-t border-gray-300"
               >
                 <td
-                  className="px-4 pt-8 pb-3 text-xl font-bold text-gray-800"
+                  className="lg:p-3 p-2 text-2xl font-bold text-gray-800"
                   tw="px-4 py-2 text-[30px] font-bold text-gray-800"
                 >
                   Deposits
@@ -124,11 +140,11 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
                 return (
                   <tr
                     key={info.address}
-                    className="border-t border-gray-300 flex flex-col lg:table-row py-3"
+                    className="border-t border-gray-300 table-row"
                     tw="border-t border-gray-300"
                   >
                     <td
-                      className="px-4 lg:py-2 font-semibold text-gray-700 text-sm lg:text-[30px] lg:leading-[33px]"
+                      className="p-2 lg:p-3 font-regular text-gray-700"
                       tw="px-4 py-4 font-semibold text-gray-700 w-[300px] leading-tight"
                     >
                       {info.symbol}

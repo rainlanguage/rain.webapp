@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { generateButtonsData } from "../_services/buttonsData";
 import { YamlData } from "../_types/yamlData";
 import { FrameImage } from "./FrameImage";
@@ -8,13 +8,16 @@ import { getUpdatedFrameState } from "../_services/frameState";
 import { FrameState } from "../_types/frame";
 import yaml from "js-yaml";
 import { ProgressBar } from "./ProgressBar";
-import _ from "lodash";
+import _, { get } from "lodash";
 import { FailsafeSchemaWithNumbers } from "../_schemas/failsafeWithNumbers";
 import { SubmissionModal } from "./SubmissionModal";
 import { useSearchParams } from "next/navigation";
 import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
 import { TriangleAlert } from "lucide-react";
 import { TokenInfo } from "../_services/getTokenInfo";
+import { Button } from "@/components/ui/button";
+import { Toast } from "flowbite-react";
+import ShareStateAsUrl from "./ShareStateAsUrl";
 interface props {
   dotrainText: string;
   deploymentOption: string | null;
@@ -27,6 +30,7 @@ const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
   }) as YamlData;
 
   const searchParams = useSearchParams();
+
   const urlState = searchParams.get("currentState")
     ? {
         ...JSON.parse(searchParams.get("currentState") as string),
@@ -34,6 +38,7 @@ const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
         isWebapp: true,
       }
     : null;
+
   const defaultState: FrameState = {
     strategyName: yamlData.gui.name,
     strategyDescription: yamlData.gui.description,
@@ -46,7 +51,21 @@ const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
     deposits: [],
     buttonPage: 0,
     buttonMax: 10,
-    textInputLabel: "",
+    textInputLabel: (() => {
+      const deployment =
+        yamlData.gui.deployments.find(
+          (deployment) => deployment.deployment === deploymentOption
+        ) || undefined;
+      if (!deployment) {
+        return "";
+      }
+      const fields = deployment.fields;
+      const currentField = fields[0];
+      if (currentField.min !== undefined && !currentField.presets) {
+        return `Enter a number greater than ${currentField.min}`;
+      }
+      return "";
+    })(),
     error: null,
     isWebapp: true,
     tokenInfos,
@@ -55,15 +74,14 @@ const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
   const [currentState, setCurrentState] = useState<FrameState>(
     urlState || defaultState
   );
+
   const [error, setError] = useState<string | null>(null);
   const [inputText, setInputText] = useState<string>("");
 
   const handleButtonClick = async (buttonData: any) => {
     setError(null);
-    console.log(buttonData);
     // Handle page navigation
     if (buttonData.buttonTarget === "textInputLabel") {
-      console.log("buttonData.buttonValue", buttonData.buttonValue);
       setCurrentState({
         ...currentState,
         textInputLabel: buttonData.buttonValue,
@@ -92,32 +110,6 @@ const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
       inputText
     );
 
-    if (
-      updatedState.currentStep === "deposit" &&
-      updatedState.deploymentOption
-    ) {
-      const deposit =
-        updatedState.deploymentOption.deposits[
-          Object.keys(currentState.deposits).length
-        ];
-      if (deposit.min && !deposit.presets) {
-        updatedState.textInputLabel = `Enter a number greater than ${deposit.min}`;
-      }
-    }
-
-    if (
-      updatedState.currentStep === "fields" &&
-      updatedState.deploymentOption
-    ) {
-      const field =
-        updatedState.deploymentOption.fields[
-          Object.keys(updatedState.bindings).length
-        ];
-      if (field.min && !field.presets) {
-        updatedState.textInputLabel = `Enter a number greater than ${field.min}`;
-      }
-    }
-
     setCurrentState({ ...updatedState });
 
     if (inputText) {
@@ -128,7 +120,7 @@ const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
   const buttonsData = generateButtonsData(yamlData, currentState);
 
   return (
-    <div className="flex-grow flex-col flex w-full">
+    <div className="flex-grow flex-col flex w-full ">
       <div className="w-full top-0">
         <ProgressBar currentState={currentState} />
       </div>
@@ -145,17 +137,20 @@ const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
           <br />
         </div>
       )}
-      <div className="flex flex-wrap gap-2 justify-center pb-20 px-8">
+      <div className="flex flex-wrap gap-2 justify-center md:pb-20 pb-8 px-8 pt-10">
         {buttonsData.map((buttonData) => {
           return buttonData.buttonValue === "finalSubmit" ? (
-            <SubmissionModal
-              key={buttonData.buttonText}
-              buttonText={buttonData.buttonText}
-              yamlData={yamlData}
-              currentState={currentState}
-              dotrainText={dotrainText}
-              setError={setError}
-            />
+            <div className="flex gap-2 flex-wrap justify-center">
+              <SubmissionModal
+                key={buttonData.buttonText}
+                buttonText={buttonData.buttonText}
+                yamlData={yamlData}
+                currentState={currentState}
+                dotrainText={dotrainText}
+                setError={setError}
+              />
+              <ShareStateAsUrl currentState={currentState} />
+            </div>
           ) : (
             <button
               key={buttonData.buttonText}

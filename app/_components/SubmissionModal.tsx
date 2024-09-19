@@ -26,6 +26,7 @@ import { FrameState } from "../_types/frame";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { TokenInfo } from "../_services/getTokenInfo";
+import { Checkbox } from "flowbite-react";
 
 interface SubmissionModalProps {
   yamlData: YamlData;
@@ -64,6 +65,8 @@ export const SubmissionModal = ({
   dotrainText,
   setError,
 }: SubmissionModalProps) => {
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
+
   const router = useRouter();
 
   const account = useAccount();
@@ -107,7 +110,6 @@ export const SubmissionModal = ({
   }, [submissionState]);
 
   const submitStrategy = async () => {
-    setOpen(true);
     try {
       for (const deposit of tokenDeposits) {
         if (!deposit.tokenInfo)
@@ -237,7 +239,7 @@ export const SubmissionModal = ({
     <Dialog open={open}>
       {account.isConnected ? (
         <DialogTrigger
-          onClick={submitStrategy}
+          onClick={() => setOpen(true)}
           className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
         >
           {buttonText}
@@ -246,7 +248,28 @@ export const SubmissionModal = ({
         <ConnectButton />
       )}
       <DialogContent className="bg-white flex flex-col justify-center w-full font-light gap-y-8">
-        {!showFinalMessage && (
+        {showDisclaimer && (
+          <div className="flex flex-col items-start gap-y-4">
+            <DialogTitle className="w-full font-light text-2xl">
+              Wait!
+            </DialogTitle>
+            <div>
+              Before you deploy your strategy, make sure you understand the
+              following:
+              <Checkbox />
+            </div>
+            <Button
+              onClick={() => {
+                setShowDisclaimer(false);
+                submitStrategy();
+              }}
+            >
+              I understand
+            </Button>
+          </div>
+        )}
+
+        {!showDisclaimer && !showFinalMessage && (
           <div>
             <DialogTitle className="w-full font-light text-2xl">
               Deploying your strategy

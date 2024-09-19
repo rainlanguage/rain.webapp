@@ -6,6 +6,7 @@ import {
   YamlData,
   Field,
 } from "../_types/yamlData";
+import { TokenInfo } from "./getTokenInfo";
 
 export const getPaginatedButtons = (
   allButtons: any[],
@@ -71,7 +72,10 @@ export const getFieldPresetsButtons = (field: Field): any[] => {
   ];
 };
 
-export const getDepositPresetsButtons = (deposit: Deposit): any[] => {
+export const getDepositPresetsButtons = (
+  deposit: Deposit,
+  token: TokenInfo
+): any[] => {
   return [
     {
       buttonTarget: "buttonValue",
@@ -82,7 +86,7 @@ export const getDepositPresetsButtons = (deposit: Deposit): any[] => {
       ? deposit.presets?.map((preset: number) => ({
           buttonTarget: "buttonValue",
           buttonValue: `${preset}`,
-          buttonText: `${preset}`,
+          buttonText: `${preset} ${token.symbol}`,
         }))
       : []),
     ...(deposit?.min !== undefined
@@ -165,7 +169,11 @@ export const generateButtonsData = (
           Object.keys(currentState.deposits).length
         ];
 
-      const depositButtons = getDepositPresetsButtons(deposit);
+      const token = currentState.tokenInfos.find(
+        (token) => token.yamlName == deposit.token
+      );
+
+      const depositButtons = getDepositPresetsButtons(deposit, token);
       buttons = getPaginatedButtons(
         depositButtons,
         currentState.buttonPage,

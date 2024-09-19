@@ -15,6 +15,10 @@ export const getUpdatedFrameState = (
         // Deployment step can be skipped if there is only one deployment
         updatedState.deploymentOption = deploymentOptions[0];
         updatedState.currentStep = "fields";
+        const firstField = updatedState.deploymentOption.fields[0];
+        if (firstField.min !== undefined && !firstField.presets) {
+          updatedState.textInputLabel = `Enter a number greater than ${firstField.min}`;
+        }
       } else if (buttonValue) {
         updatedState.currentStep = "deployment";
       }
@@ -22,7 +26,14 @@ export const getUpdatedFrameState = (
     case "deployment":
       if (buttonValue) {
         updatedState.deploymentOption = JSON.parse(buttonValue);
+        if (!updatedState.deploymentOption) {
+          break;
+        }
         updatedState.currentStep = "fields";
+        const firstField = updatedState.deploymentOption.fields[0];
+        if (firstField.min !== undefined && !firstField.presets) {
+          updatedState.textInputLabel = `Enter a number greater than ${firstField.min}`;
+        }
       }
       break;
     case "fields":
@@ -32,6 +43,13 @@ export const getUpdatedFrameState = (
       const fields = updatedState.deploymentOption.fields;
       const currentField = fields[currentBindingsCount];
 
+      console.log("currentField", currentField);
+
+      if (currentField.min !== undefined && !currentField.presets) {
+        console.log("should be setting textInputLabel");
+        updatedState.textInputLabel = `Enter a number greater than ${currentField.min}`;
+      }
+
       const setBindingValue = (value: string) => {
         updatedState.bindings[currentField.binding] = value;
         currentBindingsCount++;
@@ -40,16 +58,25 @@ export const getUpdatedFrameState = (
       };
 
       if (buttonValue === "submit") {
+        console.log("inputText", inputText);
+        console.log("currentField.min", currentField.min);
+        console.log(
+          "Number(inputText) >= Number(currentField.min)",
+          Number(inputText) >= Number(currentField.min)
+        );
+
         if (inputText && isNaN(Number(inputText))) {
           updatedState.error = "Value must be a number";
         } else if (
           inputText &&
-          currentField.min &&
-          Number(inputText) >= currentField.min
+          currentField.min !== undefined &&
+          Number(inputText) >= Number(currentField.min)
         ) {
+          console.log("we hit the if");
           setBindingValue(inputText);
           updatedState.textInputLabel = "";
         } else {
+          console.log("we hit the else");
           updatedState.error = `Value must be at least ${currentField.min}`;
         }
       } else if (buttonValue === "back") {
@@ -59,15 +86,20 @@ export const getUpdatedFrameState = (
           updatedState.textInputLabel = "";
         } else {
           const currentField = fields[currentBindingsCount - 1];
+          if (currentField.min !== undefined && !currentField.presets) {
+            updatedState.textInputLabel = `Enter a number greater than ${currentField.min}`;
+          }
           delete updatedState.bindings[currentField.binding];
         }
-      } else {
+        updatedState.error = null;
+      } else if (buttonValue) {
         setBindingValue(buttonValue);
       }
       // If all bindings are filled, we can move to the next step
       if (currentBindingsCount >= fields.length) {
         updatedState.currentStep = "deposit";
       }
+
       break;
     case "deposit":
       if (!updatedState.deploymentOption)
@@ -76,6 +108,10 @@ export const getUpdatedFrameState = (
       let currentDepositCount = updatedState.deposits.length;
       const deposits = updatedState.deploymentOption.deposits;
       const currentDeposit = deposits[currentDepositCount];
+
+      if (currentDeposit.min !== undefined && !currentDeposit.presets) {
+        updatedState.textInputLabel = `Enter a number greater than ${currentDeposit.min}`;
+      }
 
       const setDepositValue = (value: number) => {
         const info = updatedState.tokenInfos.find(
@@ -118,10 +154,10 @@ export const getUpdatedFrameState = (
           updatedState.deposits.pop();
           currentDepositCount--;
         }
+        updatedState.error = null;
       } else {
         setDepositValue(Number(buttonValue));
       }
-
       break;
     case "review":
       if (buttonValue === "back") {

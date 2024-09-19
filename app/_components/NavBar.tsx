@@ -24,7 +24,7 @@ export function Nav() {
         </Navbar.Collapse>
       </div>
       <div className="flex gap-x-2 md:order-1">
-        <ConnectButton label="connect" chainStatus="none" />
+        <ConnectButton label="Connect" chainStatus="none" />
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse className="md:hidden visible">

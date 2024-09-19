@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { Tooltip } from "flowbite-react";
 import { FrameState } from "../_types/frame";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Button } from "flowbite-react";
 
 interface ShareStateAsUrlProps {
   currentState: FrameState;
@@ -28,7 +27,7 @@ const ShareStateAsUrl: React.FC<ShareStateAsUrlProps> = ({ currentState }) => {
 
   return (
     <div className="lg:relative">
-      <Button onClick={handleClick} className="btn">
+      <Button color="primary" size="sm" onClick={handleClick}>
         Share these choices
       </Button>
       <div

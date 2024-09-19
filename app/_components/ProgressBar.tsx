@@ -24,7 +24,7 @@ export const ProgressBar = ({ currentState }: any) => {
             width: `${(currentStepCount / totalStepCount) * 100}%`,
           }}
           tw="h-[20px] flex bg-blue-500"
-          className="transition-all h-2 lg:h-3 bg-blue-500"
+          className="transition-all h-2 lg:h-3 bg-blue-600"
         />
       </div>
     </div>

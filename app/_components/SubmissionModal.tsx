@@ -2,7 +2,6 @@ import React, { SetStateAction, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -23,10 +22,9 @@ import { getSubmissionTransactionData } from "../_services/transactionData";
 import yaml from "js-yaml";
 import { YamlData } from "../_types/yamlData";
 import { FrameState } from "../_types/frame";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { TokenInfo } from "../_services/getTokenInfo";
-import { Checkbox } from "flowbite-react";
+import { Button } from "flowbite-react";
 
 interface SubmissionModalProps {
   yamlData: YamlData;
@@ -240,11 +238,14 @@ export const SubmissionModal = ({
   return (
     <Dialog open={open}>
       {account.isConnected ? (
-        <DialogTrigger
-          onClick={() => setOpen(true)}
-          className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
-        >
-          {buttonText}
+        <DialogTrigger onClick={() => setOpen(true)}>
+          <Button
+            color="primary"
+            size="sm"
+            className=" from-blue-600 to-violet-600 bg-gradient-to-br"
+          >
+            {buttonText}
+          </Button>
         </DialogTrigger>
       ) : (
         <ConnectButton />
@@ -258,9 +259,10 @@ export const SubmissionModal = ({
             <div>
               Before you deploy your strategy, make sure you understand the
               following:
-              <Checkbox />
             </div>
             <Button
+              size="sm"
+              color="primary"
               onClick={() => {
                 setShowDisclaimer(false);
                 submitStrategy();
@@ -273,7 +275,7 @@ export const SubmissionModal = ({
 
         {!showDisclaimer && !showFinalMessage && (
           <div>
-            <DialogTitle className="w-full font-light text-2xl">
+            <DialogTitle className="w-full font-light text-2xl mb-4">
               Deploying your strategy
             </DialogTitle>
             <div

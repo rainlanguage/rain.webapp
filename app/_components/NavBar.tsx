@@ -1,13 +1,17 @@
 "use client";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { Navbar } from "flowbite-react";
+import { Button, Navbar } from "flowbite-react";
 
 export function NavItems() {
   return (
     <>
-      <Navbar.Link href="/flare">Browse strategies</Navbar.Link>
-      <Navbar.Link href="/my-strategies">My strategies</Navbar.Link>
+      <Navbar.Link className="text-[17px]" href="/flare">
+        Browse strategies
+      </Navbar.Link>
+      <Navbar.Link className="text-[17px]" href="/my-strategies">
+        My strategies
+      </Navbar.Link>
     </>
   );
 }

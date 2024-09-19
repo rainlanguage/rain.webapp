@@ -1,5 +1,8 @@
 import type { Config } from "tailwindcss";
 import flowbite from "flowbite-react/tailwind";
+const colors = require("tailwindcss/colors");
+
+console.log(colors);
 
 const config = {
   darkMode: ["class"],
@@ -21,38 +24,18 @@ const config = {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+        cyan: {
+          "50": "#eef6ff",
+          "100": "#daebff",
+          "200": "#bddcff",
+          "300": "#90c7ff",
+          "400": "#5ba7ff",
+          "500": "#3585fc",
+          "600": "#1e65f2",
+          "700": "#164cd6",
+          "800": "#1940b4",
+          "900": "#1a3a8e",
+          "950": "#152556",
         },
       },
       borderRadius: {

@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "flowbite-react";
 import { YamlData } from "../_types/yamlData";
 import { useRouter } from "next/navigation";
 
@@ -22,12 +23,9 @@ export const DeploymentCard = ({
         <div className="text-lg font-semibold">{deployment.name}</div>
         <div className="text-gray-500">{deployment.description}</div>
       </div>
-      <button
-        onClick={handleClick}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
-      >
+      <Button color="primary" size="sm" onClick={handleClick}>
         Deploy
-      </button>
+      </Button>
     </div>
   );
 };

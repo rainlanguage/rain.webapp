@@ -1,11 +1,20 @@
-import { DeploymentOption, YamlData } from "../_types/yamlData";
+import { FrameState } from "../_types/frame";
+import {
+  DeploymentOption,
+  Deposit,
+  Preset,
+  YamlData,
+  Field,
+} from "../_types/yamlData";
+import { TokenInfo } from "./getTokenInfo";
 
 export const getPaginatedButtons = (
   allButtons: any[],
-  buttonPage: number
+  buttonPage: number,
+  buttonMax = 4
 ): any[] => {
   const buttonPageOffset = buttonPage * 3;
-  let buttonEndIndex = buttonPageOffset + 4;
+  let buttonEndIndex = buttonPageOffset + buttonMax;
   const includeMoreButton = buttonEndIndex < allButtons.length;
   if (includeMoreButton) {
     buttonEndIndex--;
@@ -37,9 +46,35 @@ export const getPaginatedButtons = (
   ];
 };
 
-export const getPresetsButtons = (
-  presets: number[],
-  minimum: number | undefined
+export const getFieldPresetsButtons = (field: Field): any[] => {
+  return [
+    {
+      buttonTarget: "buttonValue",
+      buttonValue: "back",
+      buttonText: "←",
+    },
+    ...(field.presets
+      ? field.presets.map((preset: Preset) => ({
+          buttonTarget: "buttonValue",
+          buttonValue: `${preset.value}`,
+          buttonText: `${preset.name}`,
+        }))
+      : []),
+    ...(field.min !== undefined
+      ? [
+          {
+            buttonTarget: "textInputLabel",
+            buttonValue: `Enter a number greater than ${field.min}`,
+            buttonText: "Custom",
+          },
+        ]
+      : []),
+  ];
+};
+
+export const getDepositPresetsButtons = (
+  deposit: Deposit,
+  token: TokenInfo
 ): any[] => {
   return [
     {
@@ -47,16 +82,18 @@ export const getPresetsButtons = (
       buttonValue: "back",
       buttonText: "←",
     },
-    ...presets.map((preset: number) => ({
-      buttonTarget: "buttonValue",
-      buttonValue: `${preset}`,
-      buttonText: `${preset}`,
-    })),
-    ...(minimum !== undefined
+    ...(deposit?.presets
+      ? deposit.presets?.map((preset: number) => ({
+          buttonTarget: "buttonValue",
+          buttonValue: `${preset}`,
+          buttonText: `${preset} ${token.symbol}`,
+        }))
+      : []),
+    ...(deposit?.min !== undefined
       ? [
           {
             buttonTarget: "textInputLabel",
-            buttonValue: `Enter a number greater than ${minimum}`,
+            buttonValue: `Enter a number greater than ${deposit.min}`,
             buttonText: "Custom",
           },
         ]
@@ -66,14 +103,14 @@ export const getPresetsButtons = (
 
 export const generateButtonsData = (
   yamlData: YamlData,
-  currentState: any
+  currentState: FrameState
 ): any[] => {
   let buttons: any[] = [];
   if (currentState.textInputLabel) {
     return [
       {
-        buttonTarget: "textInputLabel",
-        buttonValue: "",
+        buttonTarget: "buttonValue",
+        buttonValue: "back",
         buttonText: "←",
       },
       {
@@ -101,20 +138,52 @@ export const generateButtonsData = (
           buttonText: deploymentOption.name,
         })
       );
-      buttons = getPaginatedButtons(allButtons, currentState.buttonPage);
+      buttons = getPaginatedButtons(
+        allButtons,
+        currentState.buttonPage,
+        currentState.buttonMax
+      );
       break;
     case "fields":
+      if (!currentState.deploymentOption) {
+        return buttons;
+      }
       const field =
         currentState.deploymentOption.fields[
           Object.keys(currentState.bindings).length
         ];
-      const fieldButtons = getPresetsButtons(field.presets, field.min);
-      buttons = getPaginatedButtons(fieldButtons, currentState.buttonPage);
+      const fieldButtons = getFieldPresetsButtons(field);
+      buttons = getPaginatedButtons(
+        fieldButtons,
+        currentState.buttonPage,
+        currentState.buttonMax
+      );
       break;
     case "deposit":
-      const deposit = currentState.deploymentOption.deposit;
-      const depositButtons = getPresetsButtons(deposit.presets, deposit.min);
-      buttons = getPaginatedButtons(depositButtons, currentState.buttonPage);
+      if (!currentState.deploymentOption) {
+        return buttons;
+      }
+
+      const deposit =
+        currentState.deploymentOption.deposits[
+          Object.keys(currentState.deposits).length
+        ];
+
+      const token = currentState.tokenInfos.find(
+        (token) => token.yamlName == deposit.token
+      );
+
+      if (!token)
+        throw new Error(
+          "Token from deposit not found in retrieved token infos"
+        );
+
+      const depositButtons = getDepositPresetsButtons(deposit, token);
+      buttons = getPaginatedButtons(
+        depositButtons,
+        currentState.buttonPage,
+        currentState.buttonMax
+      );
       break;
     case "review":
       buttons = [
@@ -135,7 +204,7 @@ export const generateButtonsData = (
         Zora: 7777777,
       };
       const deployment =
-        yamlData.deployments[currentState.deploymentOption.deployment];
+        yamlData.deployments[currentState.deploymentOption?.deployment || ""];
       const order = yamlData.orders[deployment.order];
       const network = yamlData.networks[order.network];
 
@@ -143,29 +212,17 @@ export const generateButtonsData = (
         currentState.isWebapp ||
         Object.values(supportedNetworks).includes(network["chain-id"])
       ) {
-        buttons.push(
-          ...(!currentState.requiresTokenApproval || currentState.tokensApproved
-            ? [
-                {
-                  buttonTarget: "buttonValue",
-                  buttonValue: "submit",
-                  buttonText: "Submit strategy",
-                },
-              ]
-            : [
-                {
-                  buttonTarget: "buttonValue",
-                  buttonValue: "approve",
-                  buttonText: "Approve token spend",
-                },
-              ])
-        );
+        buttons.push({
+          buttonTarget: "buttonValue",
+          buttonValue: "finalSubmit",
+          buttonText: "Deposit tokens and deploy strategy",
+        });
       } else {
         buttons.push({
           buttonAction: "link",
           buttonTarget: "currentState",
           buttonValue: encodeURIComponent(JSON.stringify(currentState)),
-          buttonText: "Submit strategy",
+          buttonText: "Deposit tokens and deploy strategy",
         });
       }
       break;

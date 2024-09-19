@@ -3,19 +3,27 @@ export interface Field {
   name: string;
   description: string;
   min?: number;
-  presets: number[];
+  presets?: Preset[];
+}
+
+export interface Preset {
+  name: string;
+  value: number;
 }
 
 export interface Deposit {
-  min: number;
-  presets: number[];
+  token: string;
+  min?: number;
+  presets?: number[];
 }
 
 export interface DeploymentOption {
   deployment: string;
   name: string;
+  description: string;
   fields: Field[];
   deposit: Deposit;
+  deposits: Deposit[];
 }
 
 export interface Gui {

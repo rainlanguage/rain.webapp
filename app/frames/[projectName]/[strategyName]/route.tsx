@@ -11,11 +11,11 @@ import { getFrameButtons } from "@/app/_services/frameButtons";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import yaml from "js-yaml";
-import { hasEnoughTokenApproval } from "@/app/_services/tokenApproval";
+import { FrameState as FrameJsFrameState } from "frames.js/next/types";
 
 const handleRequest = frames(async (ctx) => {
   const yamlData = ctx.yamlData;
-  let currentState: FrameState = { ...(ctx.state as FrameState) };
+  let currentState: FrameState = ctx.state as unknown as FrameState;
 
   // Handle state restoration after transactions
   if (ctx.url.searchParams.has("currentState")) {
@@ -64,20 +64,6 @@ const handleRequest = frames(async (ctx) => {
     );
   }
 
-  // Check for existing token allowance and update state
-  if (
-    currentState.currentStep === "review" &&
-    currentState.requiresTokenApproval &&
-    currentState.tokensApproved === false &&
-    (ctx?.message as any)?.requesterCustodyAddress
-  ) {
-    currentState.tokensApproved = await hasEnoughTokenApproval(
-      currentState,
-      yamlData,
-      (ctx.message as any)?.requesterCustodyAddress
-    );
-  }
-
   // Generate buttons based on current state
   const buttonsData = generateButtonsData(yamlData, currentState);
 
@@ -89,9 +75,13 @@ const handleRequest = frames(async (ctx) => {
 
   return {
     image: <FrameImage currentState={currentState} />,
-    buttons: getFrameButtons(buttonsData, currentState, ctx.url),
+    buttons: getFrameButtons(
+      buttonsData,
+      currentState as unknown as FrameJsFrameState,
+      ctx.url
+    ),
     textInput: currentState.textInputLabel,
-    state: currentState,
+    state: currentState as unknown as FrameJsFrameState,
     imageOptions: {
       fonts: [
         {

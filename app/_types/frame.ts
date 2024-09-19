@@ -1,14 +1,18 @@
+import { TokenDeposit } from "../_components/SubmissionModal";
+import { TokenInfo } from "../_services/getTokenInfo";
+import { YamlData } from "./yamlData";
+
 export type FrameState = {
   strategyName: string | null;
   strategyDescription: string | null;
   currentStep: string;
-  deploymentOption: any;
+  deploymentOption?: YamlData["gui"]["deployments"][0];
   bindings: any;
-  deposit: number | null;
+  deposits: TokenDeposit[];
   buttonPage: number;
+  buttonMax?: number;
   textInputLabel: string;
   error: string | null;
-  requiresTokenApproval: boolean;
-  tokensApproved?: boolean;
   isWebapp?: boolean;
+  tokenInfos: TokenInfo[];
 };

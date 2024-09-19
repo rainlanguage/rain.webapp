@@ -10,7 +10,7 @@ export const hasEnoughTokenApproval = async (
   requesterCustodyAddress: `0x${string}`
 ) => {
   const deployment =
-    yamlData.deployments[currentState.deploymentOption.deployment];
+    yamlData.deployments[currentState.deploymentOption?.deployment || ""];
   const order = yamlData.orders[deployment.order];
 
   const orderBook = yamlData.orderbooks[order.orderbook];
@@ -29,7 +29,7 @@ export const hasEnoughTokenApproval = async (
 
   // Get token approval for output token, if required
   const depositAmount = parseUnits(
-    String(currentState.deposit),
+    String(currentState.deposits[0].amount),
     outputTokenDecimals
   );
   const existingAllowance = await readContract(client, {

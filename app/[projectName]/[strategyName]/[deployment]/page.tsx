@@ -1,11 +1,12 @@
 import { fetchMetadata } from "frames.js/next";
 import { Metadata } from "next";
-import WebappFrame from "../../_components/WebappFrame";
+import WebappFrame from "../../../_components/WebappFrame";
 import fs from "fs";
 import path from "path";
-import jsYaml from "js-yaml";
+import yaml from "js-yaml";
 import { FailsafeSchemaWithNumbers } from "@/app/_schemas/failsafeWithNumbers";
 import { YamlData } from "@/app/_types/yamlData";
+import jsYaml from "js-yaml";
 import { getTokenInfos } from "@/app/_services/getTokenInfo";
 
 interface generateMetadataProps {
@@ -36,6 +37,7 @@ interface homeProps {
   params: {
     projectName: string;
     strategyName: string;
+    deployment: string;
   };
 }
 
@@ -48,7 +50,6 @@ export default async function Home({ params }: homeProps) {
     `${params.strategyName}.rain`
   );
   const dotrainText = fs.readFileSync(filePath, "utf8");
-
   const yamlData = jsYaml.load(dotrainText.split("---")[0], {
     schema: FailsafeSchemaWithNumbers,
   }) as YamlData;
@@ -58,7 +59,7 @@ export default async function Home({ params }: homeProps) {
   return (
     <WebappFrame
       dotrainText={dotrainText}
-      deploymentOption={null}
+      deploymentOption={params.deployment}
       tokenInfos={tokenInfos}
     />
   );

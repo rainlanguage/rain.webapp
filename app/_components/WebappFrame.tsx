@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { generateButtonsData } from "../_services/buttonsData";
 import { YamlData } from "../_types/yamlData";
@@ -6,38 +7,29 @@ import { FrameImage } from "./FrameImage";
 import { getUpdatedFrameState } from "../_services/frameState";
 import { FrameState } from "../_types/frame";
 import yaml from "js-yaml";
-import {
-  useAccount,
-  useChainId,
-  useSwitchChain,
-  useWriteContract,
-} from "wagmi";
-import { toHex, erc20Abi, parseUnits } from "viem";
-import { orderBookJson } from "@/public/_abis/OrderBook";
-import { readContract } from "wagmi/actions";
-import { config } from "../providers";
 import { ProgressBar } from "./ProgressBar";
-import { getSubmissionTransactionData } from "../_services/transactionData";
-import _, { set } from "lodash";
+import _ from "lodash";
 import { FailsafeSchemaWithNumbers } from "../_schemas/failsafeWithNumbers";
 import { SubmissionModal } from "./SubmissionModal";
 import { useSearchParams } from "next/navigation";
-
+import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
+import { TriangleAlert } from "lucide-react";
+import { TokenInfo } from "../_services/getTokenInfo";
+import { Button } from "flowbite-react";
+import ShareStateAsUrl from "./ShareStateAsUrl";
 interface props {
   dotrainText: string;
+  deploymentOption: string | null;
+  tokenInfos: TokenInfo[];
 }
 
-const WebappFrame = ({ dotrainText }: props) => {
+const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
   const yamlData = yaml.load(dotrainText.split("---")[0], {
     schema: FailsafeSchemaWithNumbers,
   }) as YamlData;
 
-  const account = useAccount();
-  const currentWalletChainId = useChainId();
-  const { switchChainAsync } = useSwitchChain();
-  const { data: hash, writeContractAsync } = useWriteContract();
-
   const searchParams = useSearchParams();
+
   const urlState = searchParams.get("currentState")
     ? {
         ...JSON.parse(searchParams.get("currentState") as string),
@@ -45,33 +37,48 @@ const WebappFrame = ({ dotrainText }: props) => {
         isWebapp: true,
       }
     : null;
+
   const defaultState: FrameState = {
     strategyName: yamlData.gui.name,
     strategyDescription: yamlData.gui.description,
-    currentStep: "start",
-    deploymentOption: null,
+    currentStep: deploymentOption ? "fields" : "start",
+    deploymentOption:
+      yamlData.gui.deployments.find(
+        (deployment) => deployment.deployment === deploymentOption
+      ) || undefined,
     bindings: {},
-    deposit: null,
+    deposits: [],
     buttonPage: 0,
-    textInputLabel: "",
+    buttonMax: 10,
+    textInputLabel: (() => {
+      const deployment =
+        yamlData.gui.deployments.find(
+          (deployment) => deployment.deployment === deploymentOption
+        ) || undefined;
+      if (!deployment) {
+        return "";
+      }
+      const fields = deployment.fields;
+      const currentField = fields[0];
+      if (currentField.min !== undefined && !currentField.presets) {
+        return `Enter a number greater than ${currentField.min}`;
+      }
+      return "";
+    })(),
     error: null,
-    requiresTokenApproval: false,
     isWebapp: true,
+    tokenInfos,
   };
+
   const [currentState, setCurrentState] = useState<FrameState>(
     urlState || defaultState
   );
-  const [error, setError] = useState<Error | null>(null);
+
+  const [error, setError] = useState<string | null>(null);
   const [inputText, setInputText] = useState<string>("");
-  const [submissionState, setSubmissionState] = useState({
-    tokenApprovalStatus: "pending",
-    strategyDeploymentStatus: "pending",
-  });
-  const [isSubmissionModalOpen, setIsSubmissionModalOpen] = useState(false);
 
   const handleButtonClick = async (buttonData: any) => {
     setError(null);
-
     // Handle page navigation
     if (buttonData.buttonTarget === "textInputLabel") {
       setCurrentState({
@@ -85,128 +92,35 @@ const WebappFrame = ({ dotrainText }: props) => {
         buttonPage: buttonData.buttonValue,
       });
       return;
+    } else if (
+      buttonData.buttonTarget === "buttonValue" &&
+      buttonData.buttonValue === "back"
+    ) {
+      setCurrentState({
+        ...currentState,
+        textInputLabel: "",
+      });
     }
 
-    try {
-      if (
-        currentState.deposit &&
-        currentState.currentStep === "review" &&
-        buttonData.buttonValue === "submit"
-      ) {
-        const deployment =
-          yamlData.deployments[currentState.deploymentOption.deployment];
-        const order = yamlData.orders[deployment.order];
+    const updatedState = getUpdatedFrameState(
+      yamlData,
+      currentState,
+      buttonData.buttonValue,
+      inputText
+    );
 
-        const fullScenarioPath = deployment.scenario
-          .split(".")
-          .map((scenario, index, array) =>
-            index === array.length - 1 ? scenario : scenario + ".scenarios"
-          )
-          .join(".");
-        const scenario = _.get(yamlData.scenarios, fullScenarioPath);
-        const convertedBindings = Object.keys(currentState.bindings).reduce(
-          (acc, key) => {
-            const value = currentState.bindings[key];
-            if (isNaN(value)) {
-              return { ...acc, [key]: value };
-            }
-            return { ...acc, [key]: Number(value) };
-          },
-          {}
-        );
-        scenario.bindings = {
-          ...scenario.bindings,
-          ...convertedBindings,
-        };
+    setCurrentState({ ...updatedState });
 
-        const orderBook = yamlData.orderbooks[order.orderbook];
-        const orderBookAddress = toHex(BigInt(orderBook.address));
-
-        const network = yamlData.networks[order.network];
-        if (currentWalletChainId !== network["chain-id"]) {
-          await switchChainAsync({ chainId: network["chain-id"] });
-        }
-
-        const outputToken = yamlData.tokens[order.outputs[0].token];
-        const outputTokenAddress = toHex(BigInt(outputToken.address));
-        const outputTokenDecimals = await readContract(config, {
-          abi: erc20Abi,
-          address: outputTokenAddress,
-          functionName: "decimals",
-        });
-
-        // Get token approval for output token, if required
-        const depositAmount = parseUnits(
-          String(currentState.deposit),
-          outputTokenDecimals
-        );
-        const existingAllowance = await readContract(config, {
-          abi: erc20Abi,
-          address: outputTokenAddress,
-          functionName: "allowance",
-          args: [account.address as `0x${string}`, orderBookAddress],
-        });
-        if (existingAllowance < depositAmount) {
-          await writeContractAsync({
-            address: outputTokenAddress,
-            abi: erc20Abi,
-            functionName: "approve",
-            args: [orderBookAddress, depositAmount],
-          });
-        }
-        await setSubmissionState({
-          tokenApprovalStatus: "approved",
-          strategyDeploymentStatus: "pending",
-        });
-
-        // Get multicall data for addOrder and deposit
-        const updatedDotrainText =
-          yaml.dump(yamlData) + "---" + dotrainText.split("---")[1];
-        const { addOrderCalldata, depositCallData } =
-          await getSubmissionTransactionData(
-            currentState,
-            updatedDotrainText,
-            outputTokenAddress,
-            outputTokenDecimals
-          );
-
-        await writeContractAsync({
-          address: orderBookAddress,
-          abi: orderBookJson.abi,
-          functionName: "multicall",
-          args: [[addOrderCalldata, depositCallData]],
-        });
-        await setSubmissionState({
-          tokenApprovalStatus: "approved",
-          strategyDeploymentStatus: "approved",
-        });
-      }
-
-      const updatedState = getUpdatedFrameState(
-        yamlData,
-        currentState,
-        buttonData.buttonValue,
-        inputText
-      );
-      setCurrentState({ ...updatedState });
-      if (inputText) {
-        setInputText("");
-      }
-    } catch (error) {
-      setSubmissionState({
-        tokenApprovalStatus: "pending",
-        strategyDeploymentStatus: "pending",
-      });
-      setIsSubmissionModalOpen(false);
-      setError(error as Error);
+    if (inputText) {
+      setInputText("");
     }
   };
 
   const buttonsData = generateButtonsData(yamlData, currentState);
 
   return (
-    <div className="flex-grow flex-col flex w-full">
-      <div className="absolute w-full top-0">
+    <div className="flex-grow flex-col flex w-full ">
+      <div className="w-full top-0">
         <ProgressBar currentState={currentState} />
       </div>
       <FrameImage currentState={currentState} />
@@ -222,45 +136,57 @@ const WebappFrame = ({ dotrainText }: props) => {
           <br />
         </div>
       )}
-      <div className="flex gap-x-2 justify-center pb-20">
+      <div className="flex flex-wrap gap-2 justify-center md:pb-20 pb-8 px-8 pt-10">
         {buttonsData.map((buttonData) => {
-          return buttonData.buttonValue === "submit" ? (
-            <SubmissionModal
-              key={buttonData.buttonText}
-              open={isSubmissionModalOpen}
-              setOpen={setIsSubmissionModalOpen}
-              buttonText={buttonData.buttonText}
-              submissionState={submissionState}
-              onOpen={async () => {
-                await handleButtonClick(buttonData);
-              }}
-            />
+          return buttonData.buttonValue === "finalSubmit" ? (
+            <div className="flex gap-2 flex-wrap justify-center">
+              <SubmissionModal
+                key={buttonData.buttonText}
+                buttonText={buttonData.buttonText}
+                yamlData={yamlData}
+                currentState={currentState}
+                dotrainText={dotrainText}
+                setError={setError}
+              />
+              <ShareStateAsUrl currentState={currentState} />
+            </div>
           ) : (
-            <button
+            <Button
+              color="primary"
+              size="sm"
               key={buttonData.buttonText}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
               onClick={async () => {
                 await handleButtonClick(buttonData);
               }}
             >
               {buttonData.buttonText}
-            </button>
+            </Button>
           );
         })}
+        <div className="flex w-full justify-center">
+          {currentState.error ? (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <span className="text-red-600">{currentState.error}</span>
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
       </div>
-      {error && <div>{error.message}</div>}
-      {hash && submissionState.strategyDeploymentStatus === "approved" && (
-        <>
-          <div>Transaction successful! {hash}</div>
-          <div>
-            <a
-              href={`${window.location.origin}${window.location.pathname}/${hash}`}
+      <Dialog open={!!error}>
+        <DialogContent className="bg-white flex flex-col items-center">
+          <TriangleAlert color="red" />
+          <div className="w-full text-center">{error}</div>
+          <DialogClose asChild>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
+              onClick={() => setError(null)}
             >
-              Analytics
-            </a>
-          </div>
-        </>
-      )}
+              Close
+            </button>
+          </DialogClose>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -1,0 +1,222 @@
+raindex-version: 6be7f1fbd490c587f9d8d2fb894435b0b02e25c4
+
+gui:
+  name: Dollar Cost Average (DCA) Strategies
+  description: A DCA strategy will buy or sell a fixed amount of token over time, based on a fixed budget. Choose the token you want to buy or sell, and the budget you want to spend per day. The strategy will then calculate the amount to buy or sell based on the current price of the token.
+  deployments: 
+    - deployment: flr-usdc
+      name: Buy WFLR with USDC.e
+      description: Bridge USDC to Flare and deploy this strategy to buy WFLR over time with USDC.e.
+      fields:
+        - binding: budget-per-day
+          name: USDC.e spend per day
+          description: How much USDC.e do you want to spend per day to buy WFLR?
+          min: 10
+          presets:
+            - name: $0.01
+              value: 0.01
+            - name: $5
+              value: 5
+            - name: $50
+              value: 50
+      deposits:
+        - token: usdce
+          min: 20
+          presets:
+            - 0.01
+            - 5
+            - 50
+
+    - deployment: sflr-usdc
+      name: Buy sFLR with USDC
+      description: sFLR is Flare's staking token. Bridge USDC to Flare and deploy this strategy to buy sFLR over time with USDC.
+      fields:
+        - binding: budget-per-day
+          name: USDC.e spend per day
+          description: How much USDC.e do you want to spend per day to buy sFLR?
+          min: 10
+          presets:
+            - name: $0.01
+              value: 0.01
+            - name: $5
+              value: 5
+            - name: $50
+              value: 50
+      deposits:
+        - token: usdce
+          min: 20
+          presets:
+            - 0.01
+            - 50
+            - 100
+
+    - deployment: weth-usdc
+      name: Buy WETH with USDC
+      description: Bridge USDC to Flare and deploy this strategy to buy WETH over time with USDC.
+      fields:
+        - binding: budget-per-day
+          name: USDC.e spend per day
+          description: How much USDC.e do you want to spend per day to buy WETH?
+          min: 10
+          presets:
+            - name: $0.01
+              value: 0.01
+            - name: $5
+              value: 5
+            - name: $50
+              value: 50
+      deposits:
+        - token: usdce
+          min: 20
+          presets:
+            - 0.01
+            - 50
+            - 100
+            
+networks:
+  flare-dca:
+    rpc: https://rpc.ankr.com/flare
+    chain-id: 14 
+    network-id: 14 
+    currency: FLR
+metaboards:
+  flare-dca: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
+  
+subgraphs:
+  flare-dca: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
+  
+orderbooks:
+  flare-dca: 
+    address: 0xCEe8Cd002F151A536394E564b84076c41bBBcD4d
+    
+deployers:
+  flare-dca:
+    address: 0xE3989Ea7486c0F418C764e6c511e86f6E8830FAb
+    
+tokens:
+  usdce:
+    network: flare-dca
+    address: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
+    decimals: 6
+  wflr:
+    network: flare-dca
+    address: 0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d
+    decimals: 18
+  sflr:
+    network: flare-dca
+    address: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
+    decimals: 18
+  weth:
+    network: flare-dca
+    address: 0x1502FA4be69d526124D453619276FacCab275d3D
+    decimals: 18
+
+scenarios:
+  dca:
+    deployer: flare-dca
+    runs: 1
+    bindings:
+      orderbook-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC  
+      flare-subparser: 0x915E36ef882941816356bC3718Df868054F868aD
+    scenarios:
+      flr-usd:
+        bindings:
+          buy-token-symbol: '"FLR"'
+          calc-ratio: '''calc-ratio-ftso'
+      weth-usd:
+        bindings:
+          buy-token-symbol: '"ETH"'
+          calc-ratio: '''calc-ratio-ftso'
+      sflr-usd:
+        bindings:
+          buy-token-symbol: '"FLR"'
+          calc-ratio: '''calc-ratio-sflr'
+          
+orders:
+  flr-usdc:
+    orderbook: flare-dca
+    network: flare-dca
+    inputs:
+      - token: wflr
+    outputs:
+      - token: usdce
+  sflr-usdc:
+    orderbook: flare-dca
+    network: flare-dca
+    inputs:
+      - token: sflr
+    outputs:
+      - token: usdce
+  weth-usdc:
+    orderbook: flare-dca
+    network: flare-dca
+    inputs:
+      - token: weth
+    outputs:
+      - token: usdce
+    
+deployments:
+  flr-usdc:
+    order: flr-usdc
+    scenario: dca.flr-usd
+  sflr-usdc:
+    order: sflr-usdc
+    scenario: dca.sflr-usd
+  weth-usdc:
+    order: weth-usdc
+    scenario: dca.weth-usd
+
+charts:
+  flr-usd:
+    scenario: dca.flr-usd
+  sflr-usd:
+    scenario: dca.sflr-usd
+  weth-usd:
+    scenario: dca.weth-usd
+    
+---
+#orderbook-subparser !
+#flare-subparser !
+#budget-per-day !
+#buy-token-symbol !
+#calc-ratio !
+
+#calc-amt
+start-time: get(hash(order-hash() "start-time")),
+budget-per-second: div(budget-per-day 86400),
+
+time-elapsed: sub(now() start-time),
+budget-to-date: mul(time-elapsed budget-per-second),
+spent-so-far: get(order-hash()),
+
+spend-this-time: sub(budget-to-date spent-so-far);
+
+#calc-ratio-ftso
+/* getting a quote from the Flare oracle, the FTSO */
+usd-price: ftso-current-price-usd(buy-token-symbol 3600),
+inv-price: inv(usd-price);
+
+#calc-ratio-sflr
+flr-usd-price: call<'calc-ratio-ftso>(),
+flr-sflr-rate: sflr-exchange-rate(),
+/* getting the sFLR onchain exchange rate to calculate the USD price */
+usd-sflr-price: mul(flr-usd-price flr-sflr-rate);
+
+#calculate-io
+using-words-from orderbook-subparser flare-subparser
+
+price: call<'calc-ratio>(),
+
+spent-so-far spend-this-time: call<'calc-amt>(),
+
+max-output: spend-this-time,
+io-ratio: mul(0.98 price),
+
+:set(order-hash() add(spent-so-far spend-this-time));
+
+#handle-io
+:;
+
+#handle-add-order
+using-words-from orderbook-subparser
+:set(hash(order-hash() "start-time") block-timestamp());

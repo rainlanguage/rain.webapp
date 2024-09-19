@@ -2,16 +2,19 @@ import { getAddOrderCalldata } from "@rainlanguage/orderbook/common";
 import {
   decodeFunctionData,
   encodeFunctionData,
+  getAddress,
   parseUnits,
   toHex,
 } from "viem";
 import { FrameState } from "../_types/frame";
 import { orderBookJson } from "@/public/_abis/OrderBook";
+import { TokenDeposit } from "../_components/SubmissionModal";
 
 interface DecodedAddOrderCallData {
   args?: {
-    validInputs?: {
-      vaultId?: string;
+    validOutputs?: {
+      vaultId: string;
+      token: string;
     }[];
   }[];
 }
@@ -19,35 +22,47 @@ interface DecodedAddOrderCallData {
 export const getSubmissionTransactionData = async (
   currentState: FrameState,
   dotrainText: string,
-  outputTokenAddress: string,
-  outputTokenDecimals: number
+  tokenDeposits: TokenDeposit[]
 ) => {
-  const depositAmount = parseUnits(
-    String(currentState.deposit),
-    outputTokenDecimals
-  );
-
   const addOrderCalldata = await getAddOrderCalldata(
     dotrainText,
-    currentState.deploymentOption.deployment
+    currentState.deploymentOption?.deployment || ""
   );
 
-  // Get randomly generated vaultId from addOrder call data
+  // Get the vault ids from the decoded calldata
   const decodedAddOrderCalldata = decodeFunctionData({
     data: toHex(addOrderCalldata),
     abi: orderBookJson.abi,
   }) as DecodedAddOrderCallData;
-  const vaultId = decodedAddOrderCalldata?.args?.[0]?.validInputs?.[0]
-    ?.vaultId as string;
 
-  const depositCallData = encodeFunctionData({
-    functionName: "deposit2",
-    abi: orderBookJson.abi,
-    args: [outputTokenAddress, toHex(vaultId), depositAmount, []],
+  const depositCalldatas = tokenDeposits.map((tokenDeposit) => {
+    const depositAmount = parseUnits(
+      String(tokenDeposit.amount),
+      tokenDeposit.tokenInfo.decimals
+    );
+
+    const vaultId = decodedAddOrderCalldata.args?.[0]?.validOutputs?.find(
+      (io) =>
+        getAddress(io.token) === getAddress(tokenDeposit.tokenInfo.address)
+    )?.vaultId;
+
+    console.log(tokenDeposit.tokenInfo.address);
+
+    console.log(decodedAddOrderCalldata);
+
+    if (!vaultId) {
+      throw new Error("Vault id not found");
+    }
+
+    return encodeFunctionData({
+      functionName: "deposit2",
+      abi: orderBookJson.abi,
+      args: [tokenDeposit.tokenInfo.address, toHex(vaultId), depositAmount, []],
+    });
   });
 
   return {
     addOrderCalldata: toHex(addOrderCalldata),
-    depositCallData,
+    depositCalldatas,
   };
 };

@@ -22,6 +22,10 @@ gui:
       deposits:
         - token: usdce
           min: 20
+          presets:
+            - 0.01
+            - 5
+            - 50
 
     - deployment: sflr-usdc
       name: Buy sFLR with USDC
@@ -29,12 +33,15 @@ gui:
       fields:
         - binding: budget-per-day
           name: USDC.e spend per day
-          description: How much USDC.e do you want to spend per day to buy WFLR?
+          description: How much USDC.e do you want to spend per day to buy sFLR?
           min: 10
           presets:
-            - 0.01
-            - 5
-            - 50
+            - name: $0.01
+              value: 0.01
+            - name: $5
+              value: 5
+            - name: $50
+              value: 50
       deposits:
         - token: usdce
           min: 20
@@ -52,16 +59,20 @@ gui:
           description: How much USDC.e do you want to spend per day to buy WETH?
           min: 10
           presets:
+            - name: $0.01
+              value: 0.01
+            - name: $5
+              value: 5
+            - name: $50
+              value: 50
+      deposits:
+        - token: usdce
+          min: 20
+          presets:
             - 0.01
-            - 5
             - 50
-      deposit:
-        min: 20
-        presets:
-          - 0.01
-          - 50
-          - 100
-
+            - 100
+            
 networks:
   flare-dca:
     rpc: https://rpc.ankr.com/flare

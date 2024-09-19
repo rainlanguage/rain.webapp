@@ -22,8 +22,8 @@ gui:
               value: 1.01
             - name: 1.02x
               value: 1.02
-            - name: 1.05 
-              value: 1.05x
+            - name: 1.05x
+              value: 1.05
         - binding: time-per-epoch
           name: Time per epoch
           description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.

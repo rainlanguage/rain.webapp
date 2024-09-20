@@ -2,7 +2,7 @@ raindex-version: 8898591f3bcaa21dc91dc3b8584330fc405eadfa
 
 gui:
   name: Two-sided dynamic spread strategies
-  description: Dave please write this.
+  description: The dynamic spread strategy for market-making uses time-based adjustments to maintain liquidity by narrowing spreads as market conditions stabilize, while recalculating averages and trade sizes to mitigate risks during trends.
   deployments: 
     - deployment: flare
       name: USDC/sFLR

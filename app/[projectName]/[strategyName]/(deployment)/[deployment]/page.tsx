@@ -1,6 +1,6 @@
 import { fetchMetadata } from "frames.js/next";
 import { Metadata } from "next";
-import WebappFrame from "../../../_components/WebappFrame";
+import WebappFrame from "@/app/_components/WebappFrame";
 import fs from "fs";
 import path from "path";
 import yaml from "js-yaml";

@@ -1,8 +1,8 @@
 import { erc20Abi, parseUnits, toHex } from "viem";
 import { FrameState } from "../_types/frame";
 import { YamlData } from "../_types/yamlData";
-import { getPublicClient } from "./frameTransactions";
 import { readContract } from "viem/actions";
+import { getPublicClient } from "./getPublicClient";
 
 export const hasEnoughTokenApproval = async (
   currentState: FrameState,

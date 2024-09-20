@@ -1,41 +1,12 @@
 import { transaction } from "frames.js/core";
-import {
-  Abi,
-  createPublicClient,
-  encodeFunctionData,
-  erc20Abi,
-  http,
-  parseUnits,
-  toHex,
-} from "viem";
+import { Abi, encodeFunctionData, erc20Abi, parseUnits, toHex } from "viem";
 import { YamlData } from "@/app/_types/yamlData";
 import { FrameState } from "@/app/_types/frame";
 import { readContract } from "viem/actions";
 import { orderBookJson } from "@/public/_abis/OrderBook";
 import { getSubmissionTransactionData } from "./transactionData";
-import * as chains from "viem/chains";
 import { getOrderDetailsGivenDeployment } from "./parseDotrainFrontmatter";
-
-export const getPublicClient = (network: any) => {
-  let chain = Object.values(chains).find(
-    (chain) => chain.id === Number(network["chain-id"])
-  );
-  if (chain?.id === 14) {
-    chain = {
-      ...chain,
-      contracts: {
-        multicall3: {
-          address: "0xcA11bde05977b3631167028862bE2a173976CA11",
-          blockCreated: 3002461,
-        },
-      },
-    };
-  }
-  return createPublicClient({
-    chain,
-    transport: http(),
-  });
-};
+import { getPublicClient } from "./getPublicClient";
 
 export const getApprovalTransaction = async (
   currentState: FrameState,

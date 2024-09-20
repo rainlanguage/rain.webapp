@@ -1,8 +1,5 @@
 import type { Config } from "tailwindcss";
 import flowbite from "flowbite-react/tailwind";
-const colors = require("tailwindcss/colors");
-
-console.log(colors);
 
 const config = {
   darkMode: ["class"],

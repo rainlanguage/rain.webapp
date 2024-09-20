@@ -1,6 +1,6 @@
 import { YamlData } from "../_types/yamlData";
 import { Address, erc20Abi, isHex } from "viem";
-import { getPublicClient } from "./frameTransactions";
+import { getPublicClient } from "./getPublicClient";
 
 export interface TokenInfo {
   decimals: number;

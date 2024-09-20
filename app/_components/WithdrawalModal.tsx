@@ -110,7 +110,7 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
       <DialogTrigger>
         <Button>Withdraw</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="bg-white">
         <DialogHeader>
           <DialogTitle>Withdraw</DialogTitle>
           <Form {...form}>

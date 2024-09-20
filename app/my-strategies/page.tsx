@@ -23,7 +23,7 @@ export default function MyStrategies() {
   });
 
   return (
-    <div className="flex-grow w-full flex flex-col items-start justify-items-start p-8 container">
+    <div className="flex-grow w-full flex flex-col items-start justify-items-start md:p-8 p-2 container">
       <h1 className="text-2xl font-semibold mb-4">My Strategies</h1>
       {!account.isConnected && (
         <div>Connect your wallet to view your strategies.</div>

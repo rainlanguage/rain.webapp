@@ -13,10 +13,18 @@ interface props {
   transactionId: string;
 }
 
-const Property = ({ name, value }: { name: string; value: string }) => (
-  <div className="flex justify-between">
+const Property = ({
+  name,
+  value,
+  children,
+}: {
+  name: string;
+  value?: string;
+  children?: React.ReactNode;
+}) => (
+  <div className="flex justify-between flex-col md:flex-row">
     <span className="font-semibold">{name}</span>
-    <span>{value}</span>
+    <span>{value || children}</span>
   </div>
 );
 
@@ -47,68 +55,17 @@ const StrategyAnalytics = ({ transactionId }: props) => {
     query.refetch();
   };
 
-  // const order = transactionAnalyticsData?.data?.events.find(
-  //   (event: any) => event.order
-  // )?.order;
-  // const orderBookAddress = order?.orderbook.id;
-  // const totalTradeCount = order?.trades.length;
-  // const inputVaults = order?.inputs.reduce((acc: any, vault: any) => {
-  //   acc[vault.token.name] = order.trades.reduce(
-  //     (acc: any, trade: any) => {
-  //       if (
-  //         trade.inputVaultBalanceChange.vault.token.name === vault.token.name
-  //       ) {
-  //         acc.totalIn =
-  //           (acc.totalIn || 0) + Number(trade.inputVaultBalanceChange.amount);
-  //       }
-  //       return acc;
-  //     },
-  //     {
-  //       decimals: vault.token.decimals,
-  //       balance: vault.balance,
-  //       address: vault.token.address,
-  //       vaultId: vault.vaultId,
-  //       totalIn: 0,
-  //     }
-  //   );
-
-  //   return acc;
-  // }, {});
-  // const outputVaults = order?.outputs.reduce((acc: any, vault: any) => {
-  //   acc[vault.token.name] = order.trades.reduce(
-  //     (acc: any, trade: any) => {
-  //       if (
-  //         trade.outputVaultBalanceChange.vault.token.name === vault.token.name
-  //       ) {
-  //         acc.totalOut =
-  //           (acc.totalOut || 0) +
-  //           Math.abs(Number(trade.outputVaultBalanceChange.amount));
-  //       }
-  //       return acc;
-  //     },
-  //     {
-  //       decimals: vault.token.decimals,
-  //       balance: vault.balance,
-  //       address: vault.token.address,
-  //       vaultId: vault.vaultId,
-  //       totalOut: 0,
-  //     }
-  //   );
-
-  //   return acc;
-  // }, {});
-
   useEffect(() => {
     console.log(query.data);
   }, [query]);
 
   return (
-    <div className="container flex-grow pt-8">
+    <div className="container flex-grow pt-8 pb-safe">
       {query.isLoading && <div>Loading...</div>}
       {query.isError && <div>{query.error.message}</div>}
       {query.data && (
         <div className="flex flex-col gap-y-4">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex md:flex-row flex-col gap-4 justify-between items-center mb-8">
             <h1 className="text-2xl font-semibold">Strategy Analytics</h1>
             {query.data.order.active && (
               <Button
@@ -120,7 +77,9 @@ const StrategyAnalytics = ({ transactionId }: props) => {
               </Button>
             )}
           </div>
-          <Property name="Transaction ID" value={query.data.transaction.id} />
+          <Property name="Transaction ID">
+            <span className="break-words">{query.data.transaction.id}</span>
+          </Property>
           <Property
             name="Created"
             value={formatTimestampSecondsAsLocal(
@@ -131,14 +90,16 @@ const StrategyAnalytics = ({ transactionId }: props) => {
             name="Active"
             value={query.data.order.active ? "Active" : "Inactive"}
           />
-          <Property name="Owner" value={query.data.order.owner} />
+          <Property name="Owner">
+            <span className="break-words">{query.data.order.owner}</span>
+          </Property>
           <Property
             name="Number of trades"
-            value={query.data.order.trades.length}
+            value={query.data.order.trades?.length || "0"}
           />
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-4">
             {query.data.order.inputs && (
-              <div className="py-2">
+              <div className="flex flex-col gap-2">
                 <h2 className="font-semibold mb-2">Input tokens</h2>
                 {query.data.order.inputs.map((vault: any) => {
                   return (
@@ -150,7 +111,7 @@ const StrategyAnalytics = ({ transactionId }: props) => {
               </div>
             )}
             {query.data.order.inputs && (
-              <div className="py-2">
+              <div className="flex flex-col gap-2">
                 <h2 className="font-semibold mb-2">Output tokens</h2>
                 {query.data.order.outputs.map((vault: any) => {
                   return (

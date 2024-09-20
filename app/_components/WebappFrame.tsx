@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { generateButtonsData } from "../_services/buttonsData";
 import { YamlData } from "../_types/yamlData";
 import { FrameImage } from "./FrameImage";
@@ -14,16 +14,15 @@ import { SubmissionModal } from "./SubmissionModal";
 import { useSearchParams } from "next/navigation";
 import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
 import { TriangleAlert } from "lucide-react";
-import { TokenInfo } from "../_services/getTokenInfo";
+import { TokenInfo, getTokenInfos } from "../_services/getTokenInfo";
 import { Button } from "flowbite-react";
 import ShareStateAsUrl from "./ShareStateAsUrl";
 interface props {
   dotrainText: string;
   deploymentOption: string | null;
-  tokenInfos: TokenInfo[];
 }
 
-const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
+const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
   const yamlData = yaml.load(dotrainText.split("---")[0], {
     schema: FailsafeSchemaWithNumbers,
   }) as YamlData;
@@ -67,15 +66,33 @@ const WebappFrame = ({ dotrainText, deploymentOption, tokenInfos }: props) => {
     })(),
     error: null,
     isWebapp: true,
-    tokenInfos,
+    tokenInfos: [] as TokenInfo[],
   };
 
   const [currentState, setCurrentState] = useState<FrameState>(
     urlState || defaultState
   );
-
+  const [fetchingTokens, setFetchingTokens] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [inputText, setInputText] = useState<string>("");
+
+  useEffect(() => {
+    const fetchTokenInfos = async () => {
+      try {
+        const tokenInfos = await getTokenInfos(yamlData);
+        setCurrentState((prevState) => ({
+          ...prevState,
+          tokenInfos,
+        }));
+      } catch (e) {
+        setError("Failed to fetch token information");
+      } finally {
+        setFetchingTokens(false);
+      }
+    };
+
+    fetchTokenInfos();
+  }, [yamlData]);
 
   const handleButtonClick = async (buttonData: any) => {
     setError(null);

@@ -53,13 +53,5 @@ export default async function Home({ params }: homeProps) {
     schema: FailsafeSchemaWithNumbers,
   }) as YamlData;
 
-  const tokenInfos = await getTokenInfos(yamlData);
-
-  return (
-    <WebappFrame
-      dotrainText={dotrainText}
-      deploymentOption={null}
-      tokenInfos={tokenInfos}
-    />
-  );
+  return <WebappFrame dotrainText={dotrainText} deploymentOption={null} />;
 }

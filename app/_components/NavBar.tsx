@@ -20,7 +20,7 @@ export function Nav() {
   return (
     <Navbar fluid className="sticky top-0 border-b z-[100]">
       <div className="flex items-center gap-x-8">
-        <Navbar.Brand href="/flare">
+        <Navbar.Brand href="/">
           <img src="/_images/raindex-logo.png" className="h-10 mr-2" />
         </Navbar.Brand>
         <Navbar.Collapse className="hidden md:visible">

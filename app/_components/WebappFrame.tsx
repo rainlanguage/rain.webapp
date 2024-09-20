@@ -164,9 +164,11 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
   const buttonsData = generateButtonsData(yamlData, currentState);
 
   return loading.decodingState || loading.fetchingTokens ? (
-    <Spinner />
+    <div className="flex-grow flex items-center justify-center">
+      <Spinner />
+    </div>
   ) : (
-    <div className="flex-grow flex-col flex w-full ">
+    <div className="flex-grow flex-col flex w-full pb-safe">
       <div className="w-full top-0">
         <ProgressBar currentState={currentState} />
       </div>

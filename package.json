@@ -33,6 +33,7 @@
     "rehype-raw": "^7.0.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "tailwindcss-safe-area": "^0.6.0",
     "viem": "^2.19.1",
     "wagmi": "^2.12.4",
     "zod": "^3.23.8"

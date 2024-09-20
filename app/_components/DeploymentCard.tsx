@@ -1,8 +1,8 @@
 "use client";
 
+import { useRouter } from "nextjs-toploader/app";
 import { Button } from "flowbite-react";
 import { YamlData } from "../_types/yamlData";
-import { useRouter } from "next/navigation";
 
 export const DeploymentCard = ({
   deployment,
@@ -11,11 +11,8 @@ export const DeploymentCard = ({
   deployment: YamlData["gui"]["deployments"][0];
   slug: string;
 }) => {
-  console.log({ slug });
   const router = useRouter();
-
   const currentHostname = window.location.hostname;
-
   const handleClick = () => {
     router.push(`${slug}/${deployment.deployment}`);
   };

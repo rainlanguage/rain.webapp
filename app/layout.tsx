@@ -10,6 +10,7 @@ import "@fontsource/dm-sans/500.css";
 import "@fontsource/dm-sans/600.css";
 import "@fontsource/dm-sans/800.css";
 import { Nav } from "./_components/NavBar";
+import NextTopLoader from "nextjs-toploader";
 
 export const metadata: Metadata = {
   title: "Raindex",
@@ -27,6 +28,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.png" />
       </head>
       <body>
+        <NextTopLoader showSpinner={false} />
         <Providers>
           <div className={`flex flex-col min-h-screen`}>
             <Nav />

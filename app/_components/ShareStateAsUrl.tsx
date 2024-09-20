@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FrameState } from "../_types/frame";
 import { cn } from "@/lib/utils";
 import { Button } from "flowbite-react";
+import { compress } from "../_services/compress";
 
 interface ShareStateAsUrlProps {
   currentState: FrameState;
@@ -19,9 +20,11 @@ const ShareStateAsUrl: React.FC<ShareStateAsUrlProps> = ({ currentState }) => {
     }, 5000);
   };
 
-  const getUrlWithState = () => {
+  const getUrlWithState = async () => {
     const url = new URL(window.location.href);
-    url.searchParams.set("currentState", JSON.stringify(currentState));
+    const jsonString = JSON.stringify(currentState);
+    const compressed = await compress(jsonString);
+    url.searchParams.set("currentState", compressed);
     navigator.clipboard.writeText(url.href);
   };
 

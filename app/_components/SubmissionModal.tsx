@@ -238,15 +238,14 @@ export const SubmissionModal = ({
   return (
     <Dialog open={open}>
       {account.isConnected ? (
-        <DialogTrigger onClick={() => setOpen(true)}>
-          <Button
-            color="primary"
-            size="sm"
-            className=" from-blue-600 to-violet-600 bg-gradient-to-br"
-          >
-            {buttonText}
-          </Button>
-        </DialogTrigger>
+        <Button
+          onClick={() => setOpen(true)}
+          color="primary"
+          size="sm"
+          className=" from-blue-600 to-violet-600 bg-gradient-to-br"
+        >
+          {buttonText}
+        </Button>
       ) : (
         <ConnectButton />
       )}

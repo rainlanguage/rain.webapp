@@ -11,68 +11,59 @@ gui:
         - binding: budget-per-day
           name: USDC.e spend per day
           description: How much USDC.e do you want to spend per day to buy WFLR?
-          min: 10
+          min: 0
           presets:
-            - name: $0.01
-              value: 0.01
             - name: $5
               value: 5
             - name: $50
               value: 50
       deposits:
         - token: usdce
-          min: 20
+          min: 0
           presets:
-            - 0.01
             - 5
             - 50
 
     - deployment: sflr-usdc
-      name: Buy sFLR with USDC
+      name: Buy sFLR with USDC.e
       description: sFLR is Flare's staking token. Bridge USDC to Flare and deploy this strategy to buy sFLR over time with USDC.
       fields:
         - binding: budget-per-day
           name: USDC.e spend per day
           description: How much USDC.e do you want to spend per day to buy sFLR?
-          min: 10
+          min: 0
           presets:
-            - name: $0.01
-              value: 0.01
             - name: $5
               value: 5
             - name: $50
               value: 50
       deposits:
         - token: usdce
-          min: 20
+          min: 0
           presets:
-            - 0.01
             - 50
             - 100
 
     - deployment: weth-usdc
-      name: Buy WETH with USDC
+      name: Buy WETH with USDC.e
       description: Bridge USDC to Flare and deploy this strategy to buy WETH over time with USDC.
       fields:
         - binding: budget-per-day
           name: USDC.e spend per day
           description: How much USDC.e do you want to spend per day to buy WETH?
-          min: 10
+          min: 0
           presets:
-            - name: $0.01
-              value: 0.01
             - name: $5
               value: 5
             - name: $50
               value: 50
       deposits:
         - token: usdce
-          min: 20
+          min: 0
           presets:
-            - 0.01
             - 50
             - 100
-            
+         
 networks:
   flare-dca:
     rpc: https://rpc.ankr.com/flare

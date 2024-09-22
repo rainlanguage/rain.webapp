@@ -1,0 +1,1 @@
+A DCA strategy will buy or sell a fixed amount of token over time, based on a fixed budget. Choose the token you want to buy or sell, and the budget you want to spend per day. The strategy will then calculate the amount to buy or sell based on the current price of the token.

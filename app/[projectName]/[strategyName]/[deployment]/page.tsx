@@ -37,11 +37,25 @@ interface homeProps {
 }
 
 export default async function Home({ params }: homeProps) {
+  // get all dirs in the project name and find the one that ends with the project name
+  const allDirs = fs.readdirSync(
+    path.join(process.cwd(), "public", "_strategies", params.projectName)
+  );
+
+  const strategyDir = allDirs.find((dir) => dir.endsWith(params.strategyName));
+
+  if (!strategyDir) {
+    throw new Error(
+      `No directory found for strategy: ${params.strategyName} in project: ${params.projectName}`
+    );
+  }
+
   const filePath = path.join(
     process.cwd(),
     "public",
     "_strategies",
     params.projectName,
+    strategyDir,
     `${params.strategyName}.rain`
   );
   const dotrainText = fs.readFileSync(filePath, "utf8");

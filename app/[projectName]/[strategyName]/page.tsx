@@ -41,6 +41,7 @@ export default async function Home({ params }: homeProps) {
     "public",
     "_strategies",
     params.projectName,
+    params.strategyName,
     `${params.strategyName}.rain`
   );
   const dotrainText = fs.readFileSync(filePath, "utf8");

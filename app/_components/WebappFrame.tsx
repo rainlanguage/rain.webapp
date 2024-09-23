@@ -66,7 +66,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
     fetchingTokens: false,
     decodingState: true,
   });
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | React.ReactElement | null>(null);
   const [inputText, setInputText] = useState<string>("");
 
   const searchParams = useSearchParams();

@@ -11,10 +11,16 @@ export interface Preset {
   value: number;
 }
 
+export interface Referral {
+  name: string;
+  url: string;
+}
+
 export interface Deposit {
   token: string;
   min?: number;
   presets?: number[];
+  referrals?: Referral[];
 }
 
 export interface DeploymentOption {

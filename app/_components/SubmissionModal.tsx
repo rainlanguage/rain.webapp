@@ -24,7 +24,8 @@ import { YamlData } from "../_types/yamlData";
 import { FrameState } from "../_types/frame";
 import { useRouter } from "next/navigation";
 import { TokenInfo } from "../_services/getTokenInfo";
-import { Button } from "flowbite-react";
+import { Alert, Button } from "flowbite-react";
+import { TriangleAlert } from "lucide-react";
 
 interface SubmissionModalProps {
   yamlData: YamlData;
@@ -255,9 +256,42 @@ export const SubmissionModal = ({
             <DialogTitle className="w-full font-light text-2xl">
               Wait!
             </DialogTitle>
-            <div>
-              Before you deploy your strategy, make sure you understand the
-              following:
+            <div className="space-y-4">
+              <Alert color="red" className="text-base">
+                <div className="flex items-center justify-center">
+                  <TriangleAlert color="red" size="40" />
+                  <span className="ml-2">
+                    Before you deploy your strategy, make sure you understand
+                    the following:
+                  </span>
+                </div>
+              </Alert>
+              <ul className="list-disc list-outside space-y-2 text-gray-700">
+                <li className="ml-4">
+                  This front end is provided as a tool to interact with the
+                  Raindex smart contracts.
+                </li>
+                <li className="ml-4">
+                  You are deploying your own strategy and depositing funds to an
+                  immutable smart contract using your own wallet and private
+                  keys.
+                </li>
+                <li className="ml-4">
+                  Nobody is custodying your funds, there is no recourse for
+                  recovery of funds if lost.
+                </li>
+                <li className="ml-4">
+                  There is no endorsement or guarantee provided with these
+                  strategies.
+                </li>
+                <li className="ml-4">
+                  Do not proceed if you do not understand the strategy you are
+                  deploying.
+                </li>
+                <li className="ml-4">
+                  Do not invest unless you are prepared to lose all funds.
+                </li>
+              </ul>
             </div>
             <Button
               size="sm"

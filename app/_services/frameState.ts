@@ -120,7 +120,7 @@ export const getUpdatedFrameState = (
         }
       };
 
-      if (buttonValue === "submit" && currentDeposit.min) {
+      if (buttonValue === "submit" && currentDeposit.min !== undefined) {
         if (inputText && isNaN(Number(inputText))) {
           updatedState.error = "Value must be a number";
         } else if (inputText && parseFloat(inputText) >= currentDeposit.min) {

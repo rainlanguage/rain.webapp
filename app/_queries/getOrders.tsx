@@ -2,7 +2,6 @@ import { getNetworkSubgraphs } from "./subgraphs";
 
 export const getOrders = async (subgraphUrl: string, owner?: string) => {
   const networks = await getNetworkSubgraphs();
-  console.log(networks);
   if (!owner) return;
   const query = `{
         orders(orderBy: timestampAdded, orderDirection: desc, where: { owner: "${owner}" }) {

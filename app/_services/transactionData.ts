@@ -46,10 +46,6 @@ export const getSubmissionTransactionData = async (
         getAddress(io.token) === getAddress(tokenDeposit.tokenInfo.address)
     )?.vaultId;
 
-    console.log(tokenDeposit.tokenInfo.address);
-
-    console.log(decodedAddOrderCalldata);
-
     if (!vaultId) {
       throw new Error("Vault id not found");
     }

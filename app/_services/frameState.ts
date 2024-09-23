@@ -43,10 +43,7 @@ export const getUpdatedFrameState = (
       const fields = updatedState.deploymentOption.fields;
       const currentField = fields[currentBindingsCount];
 
-      console.log("currentField", currentField);
-
       if (currentField.min !== undefined && !currentField.presets) {
-        console.log("should be setting textInputLabel");
         updatedState.textInputLabel = `Enter a number greater than ${currentField.min}`;
       }
 
@@ -58,13 +55,6 @@ export const getUpdatedFrameState = (
       };
 
       if (buttonValue === "submit") {
-        console.log("inputText", inputText);
-        console.log("currentField.min", currentField.min);
-        console.log(
-          "Number(inputText) >= Number(currentField.min)",
-          Number(inputText) >= Number(currentField.min)
-        );
-
         if (inputText && isNaN(Number(inputText))) {
           updatedState.error = "Value must be a number";
         } else if (
@@ -72,11 +62,9 @@ export const getUpdatedFrameState = (
           currentField.min !== undefined &&
           Number(inputText) >= Number(currentField.min)
         ) {
-          console.log("we hit the if");
           setBindingValue(inputText);
           updatedState.textInputLabel = "";
         } else {
-          console.log("we hit the else");
           updatedState.error = `Value must be at least ${currentField.min}`;
         }
       } else if (buttonValue === "back") {

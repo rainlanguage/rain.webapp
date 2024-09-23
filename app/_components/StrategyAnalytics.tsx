@@ -55,10 +55,6 @@ const StrategyAnalytics = ({ transactionId }: props) => {
     query.refetch();
   };
 
-  useEffect(() => {
-    console.log(query.data);
-  }, [query]);
-
   return (
     <div className="container flex-grow pt-8 pb-safe">
       {query.isLoading && <div>Loading...</div>}

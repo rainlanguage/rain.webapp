@@ -1,10 +1,5 @@
 import React, { SetStateAction, useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import {
   useAccount,
@@ -20,7 +15,7 @@ import { orderBookJson } from "@/public/_abis/OrderBook";
 import { getOrderDetailsGivenDeployment } from "../_services/parseDotrainFrontmatter";
 import { getSubmissionTransactionData } from "../_services/transactionData";
 import yaml from "js-yaml";
-import { YamlData } from "../_types/yamlData";
+import { Referral, YamlData } from "../_types/yamlData";
 import { FrameState } from "../_types/frame";
 import { useRouter } from "next/navigation";
 import { TokenInfo } from "../_services/getTokenInfo";
@@ -32,7 +27,7 @@ interface SubmissionModalProps {
   currentState: FrameState;
   buttonText: string;
   dotrainText: string;
-  setError: React.Dispatch<SetStateAction<string | null>>;
+  setError: React.Dispatch<SetStateAction<string | React.ReactElement | null>>;
 }
 
 enum SubmissionStatus {
@@ -46,12 +41,14 @@ export interface TokenDepositWithStatus {
   tokenAddress: Hex;
   tokenInfo: TokenInfo;
   amount: number;
+  referrals?: Referral[] | undefined;
   status: TokenDepositStatus;
 }
 
 export interface TokenDeposit {
   amount: number;
   tokenInfo: TokenInfo;
+  referrals?: Referral[] | undefined;
 }
 
 enum TokenDepositStatus {
@@ -94,6 +91,7 @@ export const SubmissionModal = ({
         (info) => info.address === deposit.tokenInfo.address
       )!,
       amount: deposit.amount,
+      referrals: deposit.referrals,
       status: TokenDepositStatus.Pending,
     }))
   );
@@ -118,6 +116,63 @@ export const SubmissionModal = ({
         await switchChainAsync({ chainId: network["chain-id"] });
       }
 
+      // Check if the user has sufficient funds
+      for (const deposit of tokenDeposits) {
+        if (!deposit.tokenInfo) throw new Error(`Token info not found`);
+
+        const depositAmount = parseUnits(
+          String(deposit.amount),
+          deposit.tokenInfo.decimals
+        );
+
+        const balance = await readContract(config.getClient(), {
+          abi: erc20Abi,
+          address: deposit.tokenInfo.address,
+          functionName: "balanceOf",
+          args: [account.address as `0x${string}`],
+        });
+
+        if (balance < depositAmount) {
+          setError(
+            <>
+              <p className="mb-3">
+                You don't have enough {deposit.tokenInfo.symbol} to cover this
+                deposit.
+              </p>
+              <p className="mb-3">
+                Your balance: {Number(balance)}
+                <br />
+                Deposit amount: {deposit.amount}
+              </p>
+              {deposit.referrals ? (
+                <>
+                  You may be able to get {deposit.tokenInfo.symbol} from:{" "}
+                  <ul>
+                    {deposit.referrals?.map((ref, index) => (
+                      <li key={index}>
+                        <a
+                          href={ref.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ color: "blue", textDecoration: "underline" }}
+                        >
+                          {ref.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                ""
+              )}
+            </>
+          );
+          setOpen(false);
+          return;
+        }
+      }
+
+      // Check if the user has sufficient token approvals
       for (const deposit of tokenDeposits) {
         if (!deposit.tokenInfo) throw new Error(`Token info not found`);
 

@@ -110,6 +110,7 @@ export const getUpdatedFrameState = (
 
         updatedState.deposits.push({
           tokenInfo,
+          referrals: currentDeposit.referrals,
           amount: value,
         });
         updatedState.error = null;

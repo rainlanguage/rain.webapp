@@ -113,6 +113,11 @@ export const SubmissionModal = ({
 
   const submitStrategy = async () => {
     try {
+      // Make sure the user is on the correct chain
+      if (currentWalletChainId !== network["chain-id"]) {
+        await switchChainAsync({ chainId: network["chain-id"] });
+      }
+
       for (const deposit of tokenDeposits) {
         if (!deposit.tokenInfo) throw new Error(`Token info not found`);
 
@@ -194,10 +199,6 @@ export const SubmissionModal = ({
         ...scenario.bindings,
         ...convertedBindings,
       };
-
-      if (currentWalletChainId !== network["chain-id"]) {
-        await switchChainAsync({ chainId: network["chain-id"] });
-      }
 
       // Get multicall data for addOrder and deposit
       const updatedDotrainText =

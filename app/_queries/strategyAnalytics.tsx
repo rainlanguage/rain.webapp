@@ -44,7 +44,9 @@ export const transactionAnalytics = (transactionId: string) => `
       }
       trades {
         tradeEvent {
+          sender
           transaction {
+            id
             timestamp
           }
         }
@@ -53,6 +55,8 @@ export const transactionAnalytics = (transactionId: string) => `
           vault {
             token {
               name
+              symbol
+              decimals
             }
           }
         }
@@ -61,6 +65,8 @@ export const transactionAnalytics = (transactionId: string) => `
           vault {
             token {
               name
+              symbol
+              decimals
             }
           }
         }

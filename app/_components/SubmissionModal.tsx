@@ -322,9 +322,9 @@ export const SubmissionModal = ({
       ) : (
         <ConnectButton />
       )}
-      <DialogContent className="bg-white flex flex-col justify-center w-full font-light gap-y-8">
+      <DialogContent className="bg-white flex flex-col justify-center w-full font-light gap-y-8 h-screen-safe overflow-y-scroll">
         {showDisclaimer && (
-          <div className="flex flex-col items-start gap-y-4">
+          <div className="flex flex-col items-start gap-y-4 h-full">
             <DialogTitle className="w-full font-light text-2xl">
               Wait!
             </DialogTitle>

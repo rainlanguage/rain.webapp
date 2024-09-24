@@ -10,7 +10,7 @@ import {
 import { readContract } from "viem/actions";
 import { waitForTransactionReceipt } from "viem/actions";
 import { config } from "../providers";
-import { Hex, erc20Abi, parseUnits } from "viem";
+import { Hex, erc20Abi, formatUnits, parseUnits } from "viem";
 import { orderBookJson } from "@/public/_abis/OrderBook";
 import { getOrderDetailsGivenDeployment } from "../_services/parseDotrainFrontmatter";
 import { getSubmissionTransactionData } from "../_services/transactionData";
@@ -140,7 +140,8 @@ export const SubmissionModal = ({
                 deposit.
               </p>
               <p className="mb-3">
-                Your balance: {Number(balance)}
+                Your balance:{" "}
+                {formatUnits(BigInt(balance), deposit.tokenInfo.decimals)}
                 <br />
                 Deposit amount: {deposit.amount}
               </p>

@@ -7,6 +7,7 @@ import {
   useSwitchChain,
   useWriteContract,
 } from "wagmi";
+import * as allChains from "wagmi/chains";
 import { readContract } from "viem/actions";
 import { waitForTransactionReceipt } from "viem/actions";
 import { config } from "../providers";
@@ -75,11 +76,12 @@ export const SubmissionModal = ({
   const { switchChainAsync } = useSwitchChain();
   const { writeContractAsync } = useWriteContract();
 
-  const { orderBookAddress, network, tokens, scenario } =
+  const { orderBookAddress, network, scenario } =
     getOrderDetailsGivenDeployment(
       yamlData,
       currentState.deploymentOption?.deployment || ""
     );
+  const { ...chains } = allChains;
 
   const [submissionState, setSubmissionState] = useState<SubmissionStatus>(
     SubmissionStatus.ApprovingTokens
@@ -287,7 +289,20 @@ export const SubmissionModal = ({
 
       setSubmissionState(SubmissionStatus.Done);
     } catch (e: any) {
-      setError(e?.cause?.message || e?.message || "An error occurred");
+      if (
+        e?.cause?.message?.includes("addEthereumChain") ||
+        e?.message?.includes("addEthereumChain")
+      ) {
+        setError(
+          `Your wallet doesn't support switching to ${
+            Object.values(chains).find(
+              (chain) => chain.id === network["chain-id"]
+            )?.name
+          }`
+        );
+      } else {
+        setError(e?.cause?.message || e?.message || "An error occurred");
+      }
       setOpen(false);
       console.error(e);
     }

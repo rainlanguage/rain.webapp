@@ -138,8 +138,26 @@ const StrategyAnalytics = ({ transactionId }: props) => {
                     <Table.Cell>
                       {trade.tradeEvent.transaction.timestamp}
                     </Table.Cell>
-                    <Table.Cell>{trade.tradeEvent.sender}</Table.Cell>
-                    <Table.Cell>{trade.tradeEvent.transaction.id}</Table.Cell>
+                    <Table.Cell
+                      onClick={() =>
+                        navigator.clipboard.writeText(trade.tradeEvent.sender)
+                      }
+                      className="cursor-pointer"
+                    >
+                      {trade.tradeEvent.sender.slice(0, 5)}...
+                      {trade.tradeEvent.sender.slice(-1 * 5)}
+                    </Table.Cell>
+                    <Table.Cell
+                      onClick={() =>
+                        navigator.clipboard.writeText(
+                          trade.tradeEvent.transaction.id
+                        )
+                      }
+                      className="cursor-pointer"
+                    >
+                      {trade.tradeEvent.transaction.id.slice(0, 5)}...
+                      {trade.tradeEvent.transaction.id.slice(-1 * 5)}
+                    </Table.Cell>
                     <Table.Cell>
                       <div className="flex gap-x-2">
                         {formatUnits(

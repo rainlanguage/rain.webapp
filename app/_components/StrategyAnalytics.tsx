@@ -1,14 +1,14 @@
 "use client";
 import { getTransactionAnalyticsData } from "@/app/_queries/strategyAnalytics";
-import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { TokenAndBalance } from "./TokenAndBalance";
 import { formatTimestampSecondsAsLocal } from "../_services/dates";
 import { Button } from "@/components/ui/button";
 import { orderBookJson } from "@/public/_abis/OrderBook";
 import { useWriteContract } from "wagmi";
-import { decodeAbiParameters, formatUnits } from "viem";
-import { Table } from "flowbite-react";
+import { decodeAbiParameters } from "viem";
+import TradesTable from "./TradesTable";
+import QuotesTable from "./QuotesTable";
 
 interface props {
   transactionId: string;
@@ -122,73 +122,8 @@ const StrategyAnalytics = ({ transactionId }: props) => {
               )}
             </div>
           </div>
-          <div className="w-full overflow-x-scroll pt-6">
-            <Table hoverable striped>
-              <Table.Head>
-                <Table.HeadCell>DATE</Table.HeadCell>
-                <Table.HeadCell>SENDER</Table.HeadCell>
-                <Table.HeadCell>TRANSACTION HASH</Table.HeadCell>
-                <Table.HeadCell>INPUT</Table.HeadCell>
-                <Table.HeadCell>OUTPUT</Table.HeadCell>
-                <Table.HeadCell>IO RATIO</Table.HeadCell>
-              </Table.Head>
-              <Table.Body>
-                {query.data.order.trades.map((trade: any, i: number) => (
-                  <Table.Row key={i}>
-                    <Table.Cell>
-                      {trade.tradeEvent.transaction.timestamp}
-                    </Table.Cell>
-                    <Table.Cell
-                      onClick={() =>
-                        navigator.clipboard.writeText(trade.tradeEvent.sender)
-                      }
-                      className="cursor-pointer"
-                    >
-                      {trade.tradeEvent.sender.slice(0, 5)}...
-                      {trade.tradeEvent.sender.slice(-1 * 5)}
-                    </Table.Cell>
-                    <Table.Cell
-                      onClick={() =>
-                        navigator.clipboard.writeText(
-                          trade.tradeEvent.transaction.id
-                        )
-                      }
-                      className="cursor-pointer"
-                    >
-                      {trade.tradeEvent.transaction.id.slice(0, 5)}...
-                      {trade.tradeEvent.transaction.id.slice(-1 * 5)}
-                    </Table.Cell>
-                    <Table.Cell>
-                      <div className="flex gap-x-2">
-                        {formatUnits(
-                          trade.inputVaultBalanceChange.amount,
-                          trade.inputVaultBalanceChange.vault.token.decimals
-                        )}{" "}
-                        {trade.inputVaultBalanceChange.vault.token.symbol}
-                      </div>
-                    </Table.Cell>
-                    <Table.Cell>
-                      <div className="flex gap-x-2">
-                        {formatUnits(
-                          trade.outputVaultBalanceChange.amount,
-                          trade.outputVaultBalanceChange.vault.token.decimals
-                        )}{" "}
-                        {trade.outputVaultBalanceChange.vault.token.symbol}
-                      </div>
-                    </Table.Cell>
-                    <Table.Cell>
-                      {(
-                        trade.inputVaultBalanceChange.amount /
-                        trade.outputVaultBalanceChange.amount
-                      ).toFixed(2)}{" "}
-                      {trade.inputVaultBalanceChange.vault.token.symbol}/
-                      {trade.outputVaultBalanceChange.vault.token.symbol}
-                    </Table.Cell>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table>
-          </div>
+          <QuotesTable order={query.data.order} />
+          <TradesTable trades={query.data.order.trades} />
         </>
       )}
     </div>

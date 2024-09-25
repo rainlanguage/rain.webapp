@@ -96,7 +96,10 @@ export const getTransactionAnalyticsData = async (transactionId: string) => {
       if (result.errors) {
         throw new Error(result.errors[0].message);
       }
-      return result.data.addOrders[0];
+      return {
+        ...result.data.addOrders[0],
+        order: { ...result.data.addOrders[0].order, network, subgraphUrl },
+      };
     } catch (error: any) {
       if (error?.message)
         throw new Error(

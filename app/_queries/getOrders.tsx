@@ -1,6 +1,6 @@
 import { getNetworkSubgraphs } from "./subgraphs";
 
-export const getOrders = async (subgraphUrl: string, owner?: string) => {
+export const getOrders = async (owner?: string) => {
   const networks = await getNetworkSubgraphs();
   if (!owner) return;
   const query = `{
@@ -61,10 +61,12 @@ export const getOrders = async (subgraphUrl: string, owner?: string) => {
         .then((res) => res.json())
         .then((res) => {
           if (res.errors) throw new Error(res.errors[0].message);
-          return res.data.orders.map((order: any) => {
-            order.network = network;
-            return order;
-          });
+          if (res.data && res.data.orders) {
+            return res.data.orders.map((order: any) => {
+              order.network = network;
+              return order;
+            });
+          }
         })
     );
   });

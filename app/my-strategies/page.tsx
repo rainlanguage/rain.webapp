@@ -13,11 +13,7 @@ export default function MyStrategies() {
   const account = useAccount();
   const query = useQuery({
     queryKey: [account.address],
-    queryFn: () =>
-      getOrders(
-        "https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn",
-        account?.address
-      ),
+    queryFn: () => getOrders(account?.address),
     enabled: !!account.address,
     refetchInterval: 10000,
   });

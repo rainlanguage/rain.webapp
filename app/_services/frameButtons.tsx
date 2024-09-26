@@ -10,10 +10,11 @@ export const getFrameButtons = (
     if (button.buttonAction === "link") {
       const projectName = urlContext.pathname.split("/")[2];
       const strategyName = urlContext.pathname.split("/")[3];
+      const deployment = urlContext.pathname.split("/")[4];
       return (
         <Button
           action="link"
-          target={`${urlContext.origin}/${projectName}/${strategyName}?${button.buttonTarget}=${button.buttonValue}`}
+          target={`${urlContext.origin}/${projectName}/${strategyName}/${deployment}/?${button.buttonTarget}=${button.buttonValue}`}
         >
           {button.buttonText}
         </Button>

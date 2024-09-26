@@ -39,7 +39,7 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
           : ""}
         {currentState.currentStep === "fields" &&
         currentState.deploymentOption ? (
-          <div className="flex flex-col gap-y-6">
+          <div className="flex flex-col gap-y-6" tw="flex flex-col">
             <div className="leading-tight">
               {
                 currentState.deploymentOption.fields[
@@ -47,7 +47,7 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
                 ].name
               }
             </div>
-            <div className="text-2xl">
+            <div className="text-2xl" tw="text-2xl">
               {
                 currentState.deploymentOption.fields[
                   Object.keys(currentState.bindings).length

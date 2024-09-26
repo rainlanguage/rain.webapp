@@ -74,12 +74,24 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
   const getUrlState = async () => {
     const encodedState = searchParams.get("currentState");
     if (encodedState) {
-      const decompressedState = await decompress(encodedState);
-      return {
-        ...JSON.parse(decompressedState),
-        requiresTokenApproval: false,
-        isWebapp: true,
-      };
+      try {
+        const decompressedState = await decompress(encodedState);
+        return {
+          ...JSON.parse(decompressedState),
+          requiresTokenApproval: false,
+          isWebapp: true,
+        };
+      } catch (e: any) {
+        // If decompression fails, try decoding the state without decompression
+        if (e.message.includes("not correctly encoded")) {
+          const decodedState = decodeURI(encodedState);
+          return {
+            ...JSON.parse(decodedState),
+            requiresTokenApproval: false,
+            isWebapp: true,
+          };
+        }
+      }
     }
     return null;
   };

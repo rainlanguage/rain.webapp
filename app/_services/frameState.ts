@@ -11,8 +11,8 @@ export const getUpdatedFrameState = (
   switch (currentState.currentStep) {
     case "start":
       const deploymentOptions = Object.values(yamlData.gui.deployments);
-      if (deploymentOptions.length === 1) {
-        // Deployment step can be skipped if there is only one deployment
+      if (deploymentOptions.length === 1 || currentState.deploymentOption) {
+        // Deployment step can be skipped if there is only one deployment or if the deployment is already selected
         updatedState.deploymentOption = deploymentOptions[0];
         updatedState.currentStep = "fields";
         const firstField = updatedState.deploymentOption.fields[0];

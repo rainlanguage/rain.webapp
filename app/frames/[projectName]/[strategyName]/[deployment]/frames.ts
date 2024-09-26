@@ -14,11 +14,24 @@ const dotrainContext: types.FramesMiddleware<
   const projectName = ctx.url.pathname.split("/")[2];
   const strategyName = ctx.url.pathname.split("/")[3];
 
+  const allDirs = fs.readdirSync(
+    path.join(process.cwd(), "public", "_strategies", projectName)
+  );
+
+  const strategyDir = allDirs.find((dir) => dir.endsWith(strategyName));
+
+  if (!strategyDir) {
+    throw new Error(
+      `No directory found for strategy: ${strategyName} in project: ${projectName}`
+    );
+  }
+
   const filePath = path.join(
     process.cwd(),
     "public",
     "_strategies",
     projectName,
+    strategyDir,
     `${strategyName}.rain`
   );
   const dotrainText = fs.readFileSync(filePath, "utf8");
@@ -48,11 +61,12 @@ export const frames = createFrames<FrameState>({
     currentStep: "start",
     deploymentOption: null,
     bindings: {},
-    deposit: null,
+    deposits: [],
     buttonPage: 0,
     textInputLabel: "",
     error: null,
     requiresTokenApproval: true,
     tokensApproved: false,
+    tokenInfos: [],
   },
 });

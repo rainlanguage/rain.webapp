@@ -1,6 +1,6 @@
-import { FrameImage } from "../../../_components/FrameImage";
-import { generateButtonsData } from "../../../_services/buttonsData";
-import { getUpdatedFrameState } from "../../../_services/frameState";
+import { FrameImage } from "../../../../_components/FrameImage";
+import { generateButtonsData } from "../../../../_services/buttonsData";
+import { getUpdatedFrameState } from "../../../../_services/frameState";
 import { frames } from "./frames";
 import { FrameState } from "@/app/_types/frame";
 import {
@@ -12,6 +12,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import yaml from "js-yaml";
 import { FrameState as FrameJsFrameState } from "frames.js/next/types";
+import { getTokenInfos } from "@/app/_services/getTokenInfo";
 
 const handleRequest = frames(async (ctx) => {
   const yamlData = ctx.yamlData;
@@ -28,8 +29,25 @@ const handleRequest = frames(async (ctx) => {
     currentState.strategyName = yamlData.gui.name;
   }
 
+  if (
+    currentState &&
+    !currentState.deploymentOption &&
+    ctx.url.pathname.split("/")[4]
+  ) {
+    currentState.deploymentOption =
+      yamlData.gui.deployments.find(
+        (deployment: any) =>
+          deployment.deployment === ctx.url.pathname.split("/")[4]
+      ) || undefined;
+  }
+
   if (currentState && !currentState.strategyDescription) {
     currentState.strategyDescription = yamlData.gui.description;
+  }
+
+  if (currentState && !currentState.tokenInfos.length) {
+    const tokenInfos = await getTokenInfos(yamlData);
+    currentState.tokenInfos = tokenInfos;
   }
 
   // Handle page navigation
@@ -65,7 +83,7 @@ const handleRequest = frames(async (ctx) => {
   }
 
   // Generate buttons based on current state
-  const buttonsData = generateButtonsData(yamlData, currentState);
+  const buttonsData = await generateButtonsData(yamlData, currentState);
 
   const dmSansLight = fs.readFile(
     path.join(path.resolve(process.cwd(), "public/_fonts"), "DMSans-Light.ttf")

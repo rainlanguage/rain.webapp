@@ -34,13 +34,18 @@ const QuotesTable = ({ order }: props) => {
   const getQuotes = async () => {
     if (orderChainKey === undefined) return;
 
-    const result = await quote.doQuoteSpecs(
-      specs,
-      order.subgraphUrl,
-      (chains as any)[orderChainKey].rpcUrls.default.http[0]
-    );
+    try {
+      const result = await quote.doQuoteSpecs(
+        specs,
+        order.subgraphUrl,
+        (chains as any)[orderChainKey].rpcUrls.default.http[0]
+      );
+      console.log(result);
 
-    setQuotes(result);
+      setQuotes(result);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   if (!quotes.length) {

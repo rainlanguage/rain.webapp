@@ -19,13 +19,29 @@ const QuotesTable = ({ order }: props) => {
     (acc: quote.QuoteSpec[], input: any, inputIndex: number) => {
       return [
         ...acc,
-        ...order.outputs.map((output: any, outputIndex: number) => ({
-          orderHash: order.orderHash,
-          inputIOIndex: inputIndex,
-          outputIOIndex: outputIndex,
-          signedContext: [],
-          orderbook: order.orderbook.id,
-        })),
+        ...order.outputs.reduce(
+          (acc: any[], output: any, outputIndex: number) => {
+            // Prevents TokenSelfTrade error
+            if (
+              order.inputs[inputIndex].token.address ===
+              order.outputs[outputIndex].token.address
+            ) {
+              return acc;
+            }
+
+            return [
+              ...acc,
+              {
+                orderHash: order.orderHash,
+                inputIOIndex: inputIndex,
+                outputIOIndex: outputIndex,
+                signedContext: [],
+                orderbook: order.orderbook.id,
+              },
+            ];
+          },
+          []
+        ),
       ];
     },
     []

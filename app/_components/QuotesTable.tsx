@@ -62,27 +62,30 @@ const QuotesTable = ({ order }: props) => {
           <Table.HeadCell>MAXIMUM INPUT</Table.HeadCell>
         </Table.Head>
         <Table.Body>
-          {quotes.map((quote: any, i: number) => (
-            <Table.Row key={i}>
-              <Table.Cell>
-                {order.inputs[specs[i].inputIOIndex].token.symbol}/
-                {order.outputs[specs[i].outputIOIndex].token.symbol}
-              </Table.Cell>
-              <Table.Cell>
-                {formatEther(fromHex(quote.maxOutput, "bigint"))}
-              </Table.Cell>
-              <Table.Cell>
-                {formatEther(fromHex(quote.ratio, "bigint"))}
-              </Table.Cell>
-              <Table.Cell>
-                {formatUnits(
-                  fromHex(quote.maxOutput, "bigint") *
-                    fromHex(quote.ratio, "bigint"),
-                  36
-                )}
-              </Table.Cell>
-            </Table.Row>
-          ))}
+          {quotes.map((quote: any, i: number) => {
+            if (typeof quote === "string") return;
+            return (
+              <Table.Row key={i}>
+                <Table.Cell>
+                  {order.inputs[specs[i].inputIOIndex].token.symbol}/
+                  {order.outputs[specs[i].outputIOIndex].token.symbol}
+                </Table.Cell>
+                <Table.Cell>
+                  {formatEther(fromHex(quote.maxOutput, "bigint"))}
+                </Table.Cell>
+                <Table.Cell>
+                  {formatEther(fromHex(quote.ratio, "bigint"))}
+                </Table.Cell>
+                <Table.Cell>
+                  {formatUnits(
+                    fromHex(quote.maxOutput, "bigint") *
+                      fromHex(quote.ratio, "bigint"),
+                    36
+                  )}
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
         </Table.Body>
       </Table>
     </div>

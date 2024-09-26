@@ -56,8 +56,6 @@ const QuotesTable = ({ order }: props) => {
         order.subgraphUrl,
         (chains as any)[orderChainKey].rpcUrls.default.http[0]
       );
-      console.log(result);
-
       setQuotes(result);
     } catch (e) {
       console.error(e);

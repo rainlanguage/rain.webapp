@@ -1,7 +1,7 @@
 import globals from 'globals';
 import pluginJs from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import pluginReact from 'eslint-plugin-react';
+import reactPlugin from 'eslint-plugin-react';
 
 export default [
 	{
@@ -24,7 +24,8 @@ export default [
 			eqeqeq: 'off',
 			'no-unused-vars': 'error',
 			'prefer-const': ['error', { ignoreReadBeforeAssign: true }],
-			'react/react-in-jsx-scope': 'off'
+			'react/react-in-jsx-scope': 'off',
+			'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx', '.ts', '.tsx'] }]
 		}
 	},
 
@@ -43,7 +44,9 @@ export default [
 			}
 		}
 	},
+
 	pluginJs.configs.recommended,
 	...tseslint.configs.recommended,
-	pluginReact.configs.flat.recommended
+	reactPlugin.configs.flat.recommended,
+	reactPlugin.configs.flat['jsx-runtime']
 ];

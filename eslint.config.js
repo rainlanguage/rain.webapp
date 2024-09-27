@@ -26,7 +26,8 @@ export default [
 			'no-unused-vars': 'error',
 			'prefer-const': ['error', { ignoreReadBeforeAssign: true }],
 			'react/react-in-jsx-scope': 'off',
-			'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx', '.ts', '.tsx'] }]
+			'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
+			'react/prop-types': 'off'
 		}
 	},
 

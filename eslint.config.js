@@ -14,7 +14,8 @@ export default [
 			'!.env.example',
 			'pnpm-lock.yaml',
 			'package-lock.json',
-			'yarn.lock'
+			'yarn.lock',
+			'.next'
 		]
 	},
 	{

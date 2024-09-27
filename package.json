@@ -57,8 +57,5 @@
         "start": "next start",
         "build": "next build",
         "lint": "next lint"
-    },
-    "engines": {
-        "node": ">=18.17.0"
     }
 }

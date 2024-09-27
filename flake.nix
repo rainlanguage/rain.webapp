@@ -9,7 +9,16 @@
   outputs = { self, flake-utils, rainix }:
     flake-utils.lib.eachDefaultSystem (system:
       {
-        packages = rainix.packages.${system};
+        packages = rec {
+          rainframe-test = rainix.mkTask.${system} {
+            name = "rainframe-test";
+            body = ''
+              set -euxo pipefail
+              npm i
+            '';
+          };
+
+        } // rainix.packages.${system};
         devShells = rainix.devShells.${system};
       }
     );

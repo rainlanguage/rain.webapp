@@ -233,6 +233,11 @@ gui:
 
             This should be greater than the baseline.
           min: 0
+          presets:
+            - name: 50
+              value: 50
+            - name: 100
+              value: 100
 
 ---
 #raindex-subparser !Raindex subparser.

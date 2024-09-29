@@ -93,8 +93,6 @@ gui:
             For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
           min: 1
           presets:
-            - name: Per second (1)
-              value: 1
             - name: Per minute (60)
               value: 60
             - name: Per hour (3600)

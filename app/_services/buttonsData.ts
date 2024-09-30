@@ -7,7 +7,7 @@ export const getPaginatedButtons = (
 	allButtons: Button[],
 	buttonPage: number,
 	buttonMax = 4
-): any[] => {
+): unknown[] => {
 	console.log('all buttons', allButtons);
 	const buttonPageOffset = buttonPage * 3;
 	let buttonEndIndex = buttonPageOffset + buttonMax;

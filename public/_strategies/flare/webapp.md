@@ -4,7 +4,7 @@
 
 ## Want to earn rewards on Flare by running a Raindex strategy?
 
-Raindex empowers you to take full control of your trading strategies. By deploying non-custodial, perpetual, and automated strategies built with **Rainlang**, you can create your own custom strategies and maintain full control of your funds. 
+Raindex empowers you to take full control of your trading strategies. By deploying non-custodial, perpetual, and automated strategies built with **Rainlang**, you can create your own custom strategies and maintain full control of your funds.
 
 Thanks to the **Flare Emissions Program**, you can also earn rewards while running these strategies.
 

@@ -66,6 +66,7 @@
 		"build": "next build",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
+		"format-check": "prettier --list-different .",
 		"format": "prettier --write . --config ./.prettierrc.json"
 	}
 }

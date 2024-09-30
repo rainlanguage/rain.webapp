@@ -1,8 +1,14 @@
 import { formatUnits } from 'viem';
 import { WithdrawalModal } from './WithdrawalModal';
-import { Input } from '../types';
+import { Input, Output } from '../types';
 
-export function TokenAndBalance({ input, withdraw }: { input: Input; withdraw?: boolean }) {
+export function TokenAndBalance({
+	input,
+	withdraw
+}: {
+	input: Input | Output;
+	withdraw?: boolean;
+}) {
 	return (
 		<div className="flex border rounded-xl p-2 gap-x-3 items-center justify-between">
 			<div className="flex flex-col gap-y-1">

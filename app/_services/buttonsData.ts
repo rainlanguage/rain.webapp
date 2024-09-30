@@ -7,8 +7,8 @@ export const getPaginatedButtons = (
 	allButtons: Button[],
 	buttonPage: number,
 	buttonMax = 4
-): unknown[] => {
-	console.log('all buttons', allButtons);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+): any[] => {
 	const buttonPageOffset = buttonPage * 3;
 	let buttonEndIndex = buttonPageOffset + buttonMax;
 	const includeMoreButton = buttonEndIndex < allButtons.length;
@@ -42,7 +42,7 @@ export const getPaginatedButtons = (
 	];
 };
 
-export const getFieldPresetsButtons = (field: Field): any[] => {
+export const getFieldPresetsButtons = (field: Field): Button[] => {
 	return [
 		{
 			buttonTarget: 'buttonValue',
@@ -68,7 +68,7 @@ export const getFieldPresetsButtons = (field: Field): any[] => {
 	];
 };
 
-export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): any[] => {
+export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): Button[] => {
 	return [
 		{
 			buttonTarget: 'buttonValue',
@@ -76,7 +76,8 @@ export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): an
 			buttonText: '←'
 		},
 		...(deposit?.presets
-			? deposit.presets?.map((preset: number) => ({
+			? // eslint-disable-next-line no-unsafe-optional-chaining
+				deposit.presets?.map((preset: number) => ({
 					buttonTarget: 'buttonValue',
 					buttonValue: `${preset}`,
 					buttonText: `${preset} ${token.symbol}`
@@ -94,8 +95,8 @@ export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): an
 	];
 };
 
-export const generateButtonsData = (yamlData: YamlData, currentState: FrameState): any[] => {
-	let buttons: any[] = [];
+export const generateButtonsData = (yamlData: YamlData, currentState: FrameState): Button[] => {
+	let buttons: Button[] = [];
 	if (currentState.textInputLabel) {
 		return [
 			{

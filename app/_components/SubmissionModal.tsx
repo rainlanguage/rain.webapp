@@ -422,7 +422,7 @@ export const SubmissionModal = ({
 					<div className="flex flex-col items-start transition-opacity duration-1500 animate-fade-in gap-y-4">
 						<DialogTitle className="w-full font-light text-2xl">Your strategy is live!</DialogTitle>
 						<div>
-							It will continue to trade until removed. If you're interested in creating your own
+							It will continue to trade until removed. If you are interested in creating your own
 							strategies from scratch, try <a href="https://docs.rainlang.xyz"> Raindex.</a>
 						</div>
 						<Button

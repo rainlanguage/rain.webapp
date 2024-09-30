@@ -2,13 +2,14 @@ export type Button = {
 	buttonTarget: string;
 	buttonValue: string;
 	buttonText: string;
+	buttonAction?: string;
 };
 
 export type PaginatedButton = {
 	buttonTarget: string;
-	buttonValue: string;
+	buttonValue: number | string;
 	buttonText: string;
-	buttonPage: number;
+	buttonPage: string | string;
 	buttonMax: number;
 };
 
@@ -27,16 +28,18 @@ export interface Order {
 	subgraphUrl: string;
 }
 
-export interface Output {
+export interface Input {
+	orderbook: Orderbook;
+	vaultId: bigint;
 	token: Token;
 	balance: bigint;
-	vaultId: bigint;
 }
 
-export interface Input {
+export interface Output {
+	orderbook: Orderbook;
+	vaultId: bigint;
 	token: Token;
 	balance: bigint;
-	vaultId: bigint;
 }
 
 export interface Token {

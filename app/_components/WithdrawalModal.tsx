@@ -23,6 +23,7 @@ import {
 import { useWriteContract } from 'wagmi';
 import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits } from 'viem';
+import type { Output, Input as InputType } from '../types';
 
 const formSchema = z.object({
 	withdrawalAmount: z.preprocess(
@@ -31,15 +32,8 @@ const formSchema = z.object({
 	)
 });
 
-interface Vault {
-	token: any;
-	vaultId: any;
-	balance: any;
-	orderbook: any;
-}
-
 interface WithdrawalModalProps {
-	vault: Vault;
+	vault: InputType | Output;
 }
 
 export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
@@ -57,7 +51,7 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 	}, [rawAmount, vault.balance]);
 
 	// Vault balance in human-readable format (i.e., converted from 18 decimals)
-	const readableBalance = formatUnits(vault.balance, vault.token.decimals);
+	const readableBalance = formatUnits(vault.balance, Number(vault.token.decimals));
 
 	// Define your form.
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -71,7 +65,7 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 		// Send raw value to the contract (no conversion needed here)
 		await writeContractAsync({
 			abi: orderBookJson.abi,
-			address: vault.orderbook.id,
+			address: vault.orderbook.id as `0x${string}`,
 			functionName: 'withdraw2',
 			args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
 		});
@@ -92,7 +86,7 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 		// Update the raw amount based on the user input (convert back to raw value)
 		if (userInput) {
 			try {
-				const parsedRawAmount = parseUnits(userInput, vault.token.decimals).toString();
+				const parsedRawAmount = parseUnits(userInput, Number(vault.token.decimals)).toString();
 				setRawAmount(parsedRawAmount); // Update raw amount on every user change
 			} catch {
 				setRawAmount('0'); // Fallback to 0 if input is invalid

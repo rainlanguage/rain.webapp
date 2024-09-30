@@ -1,6 +1,6 @@
 interface ProgressBarProps {
 	currentState: {
-		currentStep: 'deployment' | 'fields' | 'deposit' | 'review' | 'done';
+		currentStep: string;
 	};
 }
 

@@ -25,4 +25,4 @@ Thanks to the **Flare Emissions Program**, you can also earn rewards while runni
 - At the end of each epoch, points are tallied and you receive a **pro-rata share** of up to **30k rFLR per wallet**.
 - **Sybil accounts are disqualified**, ensuring fairness.
 
-Raindex and Rainlang are both **open source**—see [Github](https://github.com/rainlanguage).
+Raindex and Rainlang are both **open source**—see [Github](https://github.com/rainlanguage). Code is currently un-audited so DYOR and use at your own risk.

@@ -33,5 +33,4 @@ jobs:
 
       - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
-      - run: nix develop -c npm run svelte-lint-format-check
-
+      - run: nix develop -c npm run lint-format-check

@@ -64,8 +64,10 @@
 		"dev": "node ./scripts/dev-script.js",
 		"start": "next start",
 		"build": "next build",
-		"lint": "eslint .",
+		"lint-check": "eslint .",
 		"lint:fix": "eslint . --fix",
-		"format": "prettier --write ./**/*.{js,jsx,ts,tsx,css,md,json} --config ./.prettierrc.json"
+		"format-check": "prettier --list-different .",
+		"format": "prettier --write ./**/*.{js,jsx,ts,tsx,css,md,json} --config ./.prettierrc.json",
+		"lint-format-check": "npm run lint-check && npm run format-check"
 	}
 }

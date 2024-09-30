@@ -1,15 +1,28 @@
 <img style="width:200px;" src="/_images/Flare_dark_bg.png" />
 
-# Raindex strategies on Flare
+# Raindex Strategies on Flare
 
 ## Want to earn rewards on Flare by running a Raindex strategy?
 
-Raindex allows anyone to deploy non-custodial, perpetual, and automated trading strategies on Flare.
+Raindex empowers you to take full control of your trading strategies. By deploying non-custodial, perpetual, and automated strategies built with **Rainlang**, you can create your own custom strategies and maintain full control of your funds. 
 
-Thanks to the Flare Emissions program, you can now earn rewards on Flare by running a Raindex strategy.
+Thanks to the **Flare Emissions Program**, you can also earn rewards while running these strategies.
 
-## How to deploy
+**New strategies will be added weekly.**
 
-1. Choose a strategy - this page has a number of strategies that you can choose from. Choose the strategy that aligns with your convictions.
+## How to deploy:
 
-2. Earn rewards - by running a Raindex strategy on Flare, you can earn rewards in the form of rFLR tokens.
+1. **Choose and Configure Your Strategy** – Select from a variety of strategies and customize one to align with your trading approach. Every strategy you deploy is created with **Rainlang**, our open-source, DeFi-native language.
+2. **Earn Rewards on Your Terms** – Once deployed, your strategy can earn rewards in rFLR tokens while running autonomously in a non-custodial vault that **you control**.
+
+## How to earn emissions:
+
+- **Earn points** based on your daily trading volume:
+  - 1 point for $100 in volume
+  - 2 points for $500 in volume
+  - 3 points for $1,000 in volume
+- You can **earn up to 3 points per day**.
+- At the end of each epoch, points are tallied and you receive a **pro-rata share** of up to **30k rFLR per wallet**.
+- **Sybil accounts are disqualified**, ensuring fairness.
+
+Raindex and Rainlang are both **open source**—see [Github](https://github.com/rainlanguage). Code is currently un-audited so DYOR and use at your own risk.

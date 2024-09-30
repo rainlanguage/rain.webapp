@@ -53,13 +53,30 @@ export interface Orderbook {
 
 export interface Trade {
 	id: string;
+	tradeEvent: TradeEvent;
+	inputVaultBalanceChange: VaultBalanceChange;
+	outputVaultBalanceChange: VaultBalanceChange;
 }
 
+export interface TradeEvent {
+	sender: string;
+	transaction: Transaction;
+}
+
+export interface VaultBalanceChange {
+	amount: bigint;
+	vault: Vault;
+}
 export interface AddEvent {
 	transaction: Transaction;
 }
 
 export interface Transaction {
 	id: string;
+	timestamp: string;
 	blockNumber: string;
+}
+
+export interface Vault {
+	token: Token;
 }

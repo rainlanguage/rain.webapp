@@ -100,8 +100,8 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			try {
 				const urlState = await getUrlState();
 				if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
-			} catch (e) {
-				console.error('Error decoding state:', e);
+			} catch {
+				throw new Error('Error decoding state:');
 			} finally {
 				setLoading((prev) => ({ ...prev, decodingState: false }));
 			}
@@ -119,8 +119,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 						...prevState,
 						tokenInfos
 					}));
-				} catch (e) {
-					console.error(e);
+				} catch {
 					setError('Failed to fetch token information');
 				} finally {
 					setLoading((prev) => ({ ...prev, fetchingTokens: false }));

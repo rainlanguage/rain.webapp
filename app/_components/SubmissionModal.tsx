@@ -284,7 +284,6 @@ export const SubmissionModal = ({
 				setError(e?.cause?.message || e?.message || 'An error occurred');
 			}
 			setOpen(false);
-			console.error(e);
 		}
 	};
 

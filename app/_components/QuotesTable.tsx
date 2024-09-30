@@ -47,8 +47,10 @@ const QuotesTable = ({ order }: props) => {
 				(chains as any)[orderChainKey].rpcUrls.default.http[0]
 			);
 			setQuotes(result);
-		} catch (e) {
-			console.error(e);
+		} catch (e: unknown) {
+			if (e instanceof Error) {
+				throw new Error(e.message);
+			}
 		}
 	};
 

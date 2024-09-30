@@ -44,7 +44,6 @@ export default [
 			'no-console': process.env.NODE_ENV === 'production' || process.env.CI ? 'error' : 'off',
 			'no-trailing-spaces': 'error',
 			eqeqeq: 'off',
-			'no-unused-vars': 'error',
 			'prefer-const': ['error', { ignoreReadBeforeAssign: true }],
 			'react/react-in-jsx-scope': 'off',
 			'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],

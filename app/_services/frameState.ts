@@ -4,12 +4,12 @@ import { YamlData } from '../_types/yamlData';
 export const getUpdatedFrameState = (
 	yamlData: YamlData,
 	currentState: FrameState,
-	buttonValue: any,
+	buttonValue: string,
 	inputText?: string
 ): FrameState => {
 	const updatedState = { ...currentState };
 	switch (currentState.currentStep) {
-		case 'start':
+		case 'start': {
 			const deploymentOptions = Object.values(yamlData.gui.deployments);
 			if (deploymentOptions.length === 1 || currentState.deploymentOption) {
 				// Deployment step can be skipped if there is only one deployment or if the deployment is already selected
@@ -23,6 +23,7 @@ export const getUpdatedFrameState = (
 				updatedState.currentStep = 'deployment';
 			}
 			break;
+		}
 		case 'deployment':
 			if (buttonValue) {
 				updatedState.deploymentOption = JSON.parse(buttonValue);
@@ -36,7 +37,7 @@ export const getUpdatedFrameState = (
 				}
 			}
 			break;
-		case 'fields':
+		case 'fields': {
 			if (!updatedState.deploymentOption) throw new Error('Deployment option is required');
 			let currentBindingsCount = Object.keys(updatedState.bindings).length;
 			const fields = updatedState.deploymentOption.fields;
@@ -88,7 +89,8 @@ export const getUpdatedFrameState = (
 			}
 
 			break;
-		case 'deposit':
+		}
+		case 'deposit': {
 			if (!updatedState.deploymentOption) throw new Error('Deployment option is required');
 
 			let currentDepositCount = updatedState.deposits.length;
@@ -143,6 +145,7 @@ export const getUpdatedFrameState = (
 				setDepositValue(Number(buttonValue));
 			}
 			break;
+		}
 		case 'review':
 			if (buttonValue === 'back') {
 				updatedState.deposits.pop();

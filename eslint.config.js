@@ -47,7 +47,8 @@ export default [
 			'prefer-const': ['error', { ignoreReadBeforeAssign: true }],
 			'react/react-in-jsx-scope': 'off',
 			'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
-			'react/prop-types': 'off'
+			'react/prop-types': 'off',
+			'react/no-unknown-property': ['error', { ignore: ['tw'] }]
 		}
 	}
 ];

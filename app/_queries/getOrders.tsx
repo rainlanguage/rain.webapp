@@ -1,9 +1,10 @@
-import { getNetworkSubgraphs } from "./subgraphs";
+import { Order } from '../types';
+import { getNetworkSubgraphs } from './subgraphs';
 
 export const getOrders = async (owner?: string) => {
-  const networks = await getNetworkSubgraphs();
-  if (!owner) return;
-  const query = `{
+	const networks = await getNetworkSubgraphs();
+	if (!owner) return;
+	const query = `{
         orders(orderBy: timestampAdded, orderDirection: desc, where: { owner: "${owner}" }) {
           orderBytes
           orderHash
@@ -47,33 +48,31 @@ export const getOrders = async (owner?: string) => {
         }
       }`;
 
-  // make a query for each network
-  const promises: Promise<any>[] = [];
-  Object.entries(networks).forEach(([network, subgraphUrl]) => {
-    promises.push(
-      fetch(subgraphUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query }),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.errors) throw new Error(res.errors[0].message);
-          if (res.data && res.data.orders) {
-            return res.data.orders.map((order: any) => {
-              order.network = network;
-              return order;
-            });
-          }
-        })
-    );
-  });
+	// make a query for each network
+	const promises: Promise<Order[]>[] = [];
+	Object.entries(networks).forEach(([network, subgraphUrl]) => {
+		promises.push(
+			fetch(subgraphUrl, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ query })
+			})
+				.then((res) => res.json())
+				.then((res) => {
+					if (res.errors) throw new Error(res.errors[0].message);
+					if (res.data && res.data.orders) {
+						return res.data.orders.map((order: Order) => {
+							order.network = network;
+							return order;
+						});
+					}
+				})
+		);
+	});
 
-  const results = await Promise.all(promises).then((res) => res.flat());
-  const orderedResults = results.sort(
-    (a, b) => b.timestampAdded - a.timestampAdded
-  );
-  return orderedResults;
+	const results = await Promise.all(promises).then((res) => res.flat());
+	const orderedResults = results.sort((a, b) => +b.timestampAdded - +a.timestampAdded);
+	return orderedResults;
 };

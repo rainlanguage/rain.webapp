@@ -138,7 +138,7 @@ export const generateButtonsData = (yamlData: YamlData, currentState: FrameState
 			buttons = getPaginatedButtons(fieldButtons, currentState.buttonPage, currentState.buttonMax);
 			break;
 		}
-		case 'deposit':
+		case 'deposit': {
 			if (!currentState.deploymentOption) {
 				return buttons;
 			}
@@ -157,6 +157,7 @@ export const generateButtonsData = (yamlData: YamlData, currentState: FrameState
 				currentState.buttonMax
 			);
 			break;
+		}
 		case 'review': {
 			buttons = [
 				{

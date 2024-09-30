@@ -18,15 +18,20 @@ const handleRequest = frames(async (ctx) => {
 	const yamlData = ctx.yamlData;
 	let currentState: FrameState = ctx.state as unknown as FrameState;
 
-	// Handle state restoration after transactions
+	// Handle state restoration from URL after transactions
 	if (ctx.url.searchParams.has('currentState')) {
 		currentState = JSON.parse(decodeURI(ctx.url.searchParams.get('currentState')!));
 	}
 
+	// Add strategy name and description to state from YAML
 	if (currentState && !currentState.strategyName) {
 		currentState.strategyName = yamlData.gui.name;
 	}
+	if (currentState && !currentState.strategyDescription) {
+		currentState.strategyDescription = yamlData.gui.description;
+	}
 
+	// Add deployment option to state from URL
 	if (currentState && !currentState.deploymentOption && ctx.url.pathname.split('/')[4]) {
 		currentState.deploymentOption =
 			yamlData.gui.deployments.find(
@@ -34,10 +39,7 @@ const handleRequest = frames(async (ctx) => {
 			) || undefined;
 	}
 
-	if (currentState && !currentState.strategyDescription) {
-		currentState.strategyDescription = yamlData.gui.description;
-	}
-
+	// Get token infos from YAML
 	if (currentState && !currentState.tokenInfos.length) {
 		const tokenInfos = await getTokenInfos(yamlData);
 		currentState.tokenInfos = tokenInfos;
@@ -66,10 +68,10 @@ const handleRequest = frames(async (ctx) => {
 	// Generate buttons based on current state
 	const buttonsData = await generateButtonsData(yamlData, currentState);
 
+	// Load font
 	const dmSansLight = fs.readFile(
 		path.join(path.resolve(process.cwd(), 'public/_fonts'), 'DMSans-Light.ttf')
 	);
-
 	const [dmSansLightData] = await Promise.all([dmSansLight]);
 
 	return {

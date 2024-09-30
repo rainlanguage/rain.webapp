@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export function middleware(req: any) {
+export function middleware(req: NextRequest) {
 	const url = req.nextUrl.clone();
 	const host = req.headers.get('host') || '';
 

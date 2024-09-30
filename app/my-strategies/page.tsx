@@ -17,6 +17,8 @@ export default function MyStrategies() {
 		refetchInterval: 10000
 	});
 
+	console.log('data', query.data);
+
 	return (
 		<div className="flex-grow w-full flex flex-col items-start justify-items-start md:p-8 p-2 container">
 			<h1 className="text-2xl font-semibold mb-4">My Strategies</h1>
@@ -57,14 +59,14 @@ export default function MyStrategies() {
 									<Table.Cell>
 										<div className="flex gap-x-2">
 											{order.inputs.map((input: any) => (
-												<TokenAndBalance input={input} />
+												<TokenAndBalance input={input} key={input.id} />
 											))}
 										</div>
 									</Table.Cell>
 									<Table.Cell>
 										<div className="flex gap-x-2">
 											{order.outputs.map((output: any) => (
-												<TokenAndBalance input={output} />
+												<TokenAndBalance key={output.id} input={output} />
 											))}
 										</div>
 									</Table.Cell>

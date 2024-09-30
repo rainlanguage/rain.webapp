@@ -18,19 +18,6 @@ export default [
 			'.next'
 		]
 	},
-	{
-		rules: {
-			'no-console': process.env.NODE_ENV === 'production' || process.env.CI ? 'error' : 'off',
-			'no-trailing-spaces': 'error',
-			eqeqeq: 'off',
-			'no-unused-vars': 'error',
-			'prefer-const': ['error', { ignoreReadBeforeAssign: true }],
-			'react/react-in-jsx-scope': 'off',
-			'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
-			// The following line is having no effect...
-			'react/prop-types': 'off'
-		}
-	},
 
 	{ files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
 	{
@@ -51,5 +38,17 @@ export default [
 	pluginJs.configs.recommended,
 	...tseslint.configs.recommended,
 	reactPlugin.configs.flat.recommended,
-	reactPlugin.configs.flat['jsx-runtime']
+	reactPlugin.configs.flat['jsx-runtime'],
+	{
+		rules: {
+			'no-console': process.env.NODE_ENV === 'production' || process.env.CI ? 'error' : 'off',
+			'no-trailing-spaces': 'error',
+			eqeqeq: 'off',
+			'no-unused-vars': 'error',
+			'prefer-const': ['error', { ignoreReadBeforeAssign: true }],
+			'react/react-in-jsx-scope': 'off',
+			'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
+			'react/prop-types': 'off'
+		}
+	}
 ];

@@ -11,7 +11,7 @@ import { Button } from "flowbite-react";
 import { DotrainOrder } from "@rainlanguage/orderbook/common";
 import CodeMirror from "@uiw/react-codemirror";
 import { DialogClose, DialogTrigger } from "@radix-ui/react-dialog";
-import { RainlangExtension } from "codemirror-rainlang";
+import { RainlangLR } from "codemirror-rainlang";
 
 interface CodemirrorModalProps {
   yamlData: YamlData;
@@ -37,7 +37,6 @@ export const CodemirrorModal = ({
     );
   };
   getComposedDotrainText();
-  const rainlangCodemirror = new RainlangExtension();
 
   return (
     <Dialog>
@@ -54,7 +53,7 @@ export const CodemirrorModal = ({
         <DialogHeader>Generated Rainlang</DialogHeader>
         <CodeMirror
           value={composedDotrainText}
-          extensions={[rainlangCodemirror]}
+          extensions={[RainlangLR]}
         />
         <DialogFooter className="sm:justify-start">
           <DialogClose asChild>

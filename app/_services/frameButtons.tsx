@@ -27,7 +27,8 @@ export const getFrameButtons = (
 				<Button
 					key={`${button.buttonAction}-${button.buttonTarget}-${button.buttonValue}`}
 					action="link"
-					target={`${urlContext.origin}/${projectName}/${strategyName}/${deployment}/?${button.buttonTarget}=${button.buttonValue}`}>
+					target={`${urlContext.origin}/${projectName}/${strategyName}/${deployment}/?${button.buttonTarget}=${button.buttonValue}`}
+				>
 					{button.buttonText}
 				</Button>
 			);
@@ -45,7 +46,8 @@ export const getFrameButtons = (
 					target={{ query: { [button.buttonTarget]: button.buttonValue } }}
 					post_url={{
 						query: { currentState: encodeURI(JSON.stringify(updatedState)) }
-					}}>
+					}}
+				>
 					{button.buttonText}
 				</Button>
 			);
@@ -54,7 +56,8 @@ export const getFrameButtons = (
 			<Button
 				key={`${button.buttonAction}-${button.buttonTarget}-${button.buttonValue}`}
 				action="post"
-				target={{ query: { [button.buttonTarget]: button.buttonValue } }}>
+				target={{ query: { [button.buttonTarget]: button.buttonValue } }}
+			>
 				{button.buttonText}
 			</Button>
 		);

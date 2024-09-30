@@ -67,7 +67,7 @@
 		"lint-check": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"format-check": "prettier --list-different .",
-		"format": "prettier --write ./**/*.{js,jsx,ts,tsx,css,md,json} --config ./.prettierrc.json",
+		"format": "prettier --write . --config ./.prettierrc.json",
 		"lint-format-check": "npm run lint-check && npm run format-check"
 	}
 }

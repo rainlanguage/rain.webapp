@@ -6,7 +6,7 @@ Raindex empowers you to take full control of your trading strategies. By deployi
 
 **New strategies will be added weekly.**
 
-## How to deploy:
+## How to deploy
 
 Select from a variety of strategies and customize one to align with your trading approach. Every strategy you deploy is created with **Rainlang**, our open-source, DeFi-native language.
 

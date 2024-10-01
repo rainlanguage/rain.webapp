@@ -1,5 +1,5 @@
-import { Button } from "frames.js/next";
-import { FrameState } from "frames.js/next/types";
+import { Button } from 'frames.js/next';
+import { FrameState } from 'frames.js/next/types';
 
 export const getFrameButtons = (
   buttonsData: any[],

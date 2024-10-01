@@ -1,7 +1,7 @@
-import Markdown from "react-markdown";
-import { StrategyFile } from "../_services/buildProjectHome";
-import { DeploymentCard } from "./DeploymentCard";
-import rehypeRaw from "rehype-raw";
+import Markdown from 'react-markdown';
+import { StrategyFile } from '../_services/buildProjectHome';
+import { DeploymentCard } from './DeploymentCard';
+import rehypeRaw from 'rehype-raw';
 
 export const StrategyCard = ({ data }: { data: StrategyFile }) => {
   return (

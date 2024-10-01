@@ -19,12 +19,12 @@ export const compress = (string: string): Promise<string> => {
 
 // Decompresses base64 encoded GZIP string. Returns a string with original text.
 export const decompress = (base64string: string) => {
-  const bytes = Uint8Array.from(atob(base64string), (c) => c.charCodeAt(0));
-  const cs = new DecompressionStream("gzip");
-  const writer = cs.writable.getWriter();
-  writer.write(bytes);
-  writer.close();
-  return new Response(cs.readable).arrayBuffer().then(function (arrayBuffer) {
-    return new TextDecoder().decode(arrayBuffer);
-  });
+	const bytes = Uint8Array.from(atob(base64string), (c) => c.charCodeAt(0));
+	const cs = new DecompressionStream('gzip');
+	const writer = cs.writable.getWriter();
+	writer.write(bytes);
+	writer.close();
+	return new Response(cs.readable).arrayBuffer().then(function (arrayBuffer) {
+		return new TextDecoder().decode(arrayBuffer);
+	});
 };

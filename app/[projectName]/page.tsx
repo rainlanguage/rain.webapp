@@ -1,16 +1,16 @@
-import { retrieveProjectData } from "../_services/buildProjectHome";
-import { StrategyCard } from "../_components/StrategyCard";
-import Markdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
+import { retrieveProjectData } from '../_services/buildProjectHome';
+import { StrategyCard } from '../_components/StrategyCard';
+import Markdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
 
 interface homeProps {
-  params: {
-    projectName: string;
-  };
+	params: {
+		projectName: string;
+	};
 }
 
 export default async function ProjectHome({ params }: homeProps) {
-  const projectData = await retrieveProjectData(params.projectName);
+	const projectData = await retrieveProjectData(params.projectName);
 
   return (
     <div className="flex flex-col lg:grid grid-cols-4 xl:grid-cols-5 flex-grow w-full">

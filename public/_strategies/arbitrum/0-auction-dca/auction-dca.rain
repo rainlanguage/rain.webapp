@@ -267,7 +267,7 @@ last-io:,
 :set(hash(order-hash() initial-time-key) now());
 
 #get-initial-time
-:get(hash(order-hash() initial-time-key));
+_:get(hash(order-hash() initial-time-key));
 
 #get-last-trade
 last-time:get(hash(order-hash() last-trade-time-key)),

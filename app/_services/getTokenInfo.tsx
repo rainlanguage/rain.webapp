@@ -11,7 +11,7 @@ export interface TokenInfo {
 }
 
 export const getTokenInfos = async (yaml: YamlData): Promise<TokenInfo[]> => {
-  let tokenInfos = [];
+  const tokenInfos = [];
 
   for (const [tokenName, token] of Object.entries(yaml.tokens)) {
     if (!isHex(token.address))

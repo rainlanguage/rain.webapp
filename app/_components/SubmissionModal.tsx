@@ -283,7 +283,6 @@ export const SubmissionModal = ({
 		}
 	};
 
-
 	return (
 		<Dialog open={open}>
 			{account.isConnected ? (

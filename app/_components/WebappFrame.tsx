@@ -1,22 +1,22 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { generateButtonsData } from "../_services/buttonsData";
-import { YamlData } from "../_types/yamlData";
-import { FrameImage } from "./FrameImage";
-import { getUpdatedFrameState } from "../_services/frameState";
-import { FrameState } from "../_types/frame";
-import yaml from "js-yaml";
-import { ProgressBar } from "./ProgressBar";
-import { FailsafeSchemaWithNumbers } from "../_schemas/failsafeWithNumbers";
-import { SubmissionModal } from "./SubmissionModal";
-import { useSearchParams } from "next/navigation";
-import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
-import { TriangleAlert } from "lucide-react";
-import { TokenInfo, getTokenInfos } from "../_services/getTokenInfo";
-import { Button, Spinner } from "flowbite-react";
-import ShareStateAsUrl from "./ShareStateAsUrl";
-import { decompress } from "../_services/compress";
+import { useEffect, useState } from 'react';
+import { generateButtonsData } from '../_services/buttonsData';
+import { YamlData } from '../_types/yamlData';
+import { FrameImage } from './FrameImage';
+import { getUpdatedFrameState } from '../_services/frameState';
+import { FrameState } from '../_types/frame';
+import yaml from 'js-yaml';
+import { ProgressBar } from './ProgressBar';
+import { FailsafeSchemaWithNumbers } from '../_schemas/failsafeWithNumbers';
+import { SubmissionModal } from './SubmissionModal';
+import { useSearchParams } from 'next/navigation';
+import { Dialog, DialogClose, DialogContent } from '@/components/ui/dialog';
+import { TriangleAlert } from 'lucide-react';
+import { TokenInfo, getTokenInfos } from '../_services/getTokenInfo';
+import { Button, Spinner } from 'flowbite-react';
+import ShareStateAsUrl from './ShareStateAsUrl';
+import { decompress } from '../_services/compress';
 
 interface props {
 	dotrainText: string;

@@ -1,7 +1,23 @@
 import { Button } from 'frames.js/next';
 import { FrameState } from 'frames.js/next/types';
 
-export const getFrameButtons = (buttonsData: any[], currentState: FrameState, urlContext: any) => {
+interface ButtonData {
+	buttonAction: string;
+	buttonTarget: string;
+	buttonValue: string;
+	buttonText: string;
+}
+
+interface UrlContext {
+	pathname: string;
+	origin: string;
+}
+
+export const getFrameButtons = (
+	buttonsData: ButtonData[],
+	currentState: FrameState,
+	urlContext: UrlContext
+) => {
 	return buttonsData.map((button, i: number) => {
 		if (button.buttonAction === 'link') {
 			const projectName = urlContext.pathname.split('/')[2];

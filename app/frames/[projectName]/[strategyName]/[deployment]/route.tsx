@@ -35,7 +35,8 @@ const handleRequest = frames(async (ctx) => {
 	if (currentState && !currentState.deploymentOption && ctx.url.pathname.split('/')[4]) {
 		currentState.deploymentOption =
 			yamlData.gui.deployments.find(
-				(deployment: any) => deployment.deployment === ctx.url.pathname.split('/')[4]
+				(deployment: { deployment: string }) =>
+					deployment.deployment === ctx.url.pathname.split('/')[4]
 			) || undefined;
 	}
 

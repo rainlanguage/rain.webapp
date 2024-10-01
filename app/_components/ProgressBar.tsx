@@ -1,4 +1,10 @@
-export const ProgressBar = ({ currentState }: any) => {
+interface ProgressBarProps {
+	currentState: {
+		currentStep: string;
+	};
+}
+
+export const ProgressBar = ({ currentState }: ProgressBarProps) => {
 	// Total steps are the number of fields + 4 (deployment, deposit, review, and done)
 	// TODO: calculate this all dynamically based on fields for more accurate progress bar
 	const totalStepCount = 5;

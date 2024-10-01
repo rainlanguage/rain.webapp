@@ -18,7 +18,7 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - name: Install Nix
+      - name: Install Ni
         uses: DeterminateSystems/nix-installer-action@v4
       - uses: DeterminateSystems/magic-nix-cache-action@v2
       - name: Run ${{ matrix.task }}
@@ -34,3 +34,14 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - run: nix develop -c npm run format-check
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - run: nix develop -c npm run lint-check

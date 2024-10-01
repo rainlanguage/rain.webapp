@@ -1,13 +1,13 @@
-import StrategyAnalytics from "@/app/_components/StrategyAnalytics";
+import StrategyAnalytics from '@/app/_components/StrategyAnalytics';
 
 interface props {
-  params: {
-    transactionId: string;
-  };
+	params: {
+		transactionId: string;
+	};
 }
 
 const Home = ({ params: { transactionId } }: props) => {
-  return <StrategyAnalytics transactionId={transactionId} />;
+	return <StrategyAnalytics transactionId={transactionId} />;
 };
 
 export default Home;

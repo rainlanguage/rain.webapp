@@ -1,15 +1,13 @@
 <img style="width:200px;" src="/_images/Flare_dark_bg.png" />
 
-# Raindex strategies on Flare
+# Raindex Strategies on Flare
 
-## Want to earn rewards on Flare by running a Raindex strategy?
+Raindex empowers you to take full control of your trading strategies. By deploying non-custodial, perpetual, and automated strategies built with **Rainlang**, you can create your own custom strategies and maintain full control of your funds.
 
-Raindex allows anyone to deploy non-custodial, perpetual, and automated trading strategies on Flare. 
-
-Thanks to the Flare Emissions program, you can now earn rewards on Flare by running a Raindex strategy.
+**New strategies will be added weekly.**
 
 ## How to deploy
 
-1. Choose a strategy - this page has a number of strategies that you can choose from. Choose the strategy that aligns with your convictions.
+Select from a variety of strategies and customize one to align with your trading approach. Every strategy you deploy is created with **Rainlang**, our open-source, DeFi-native language.
 
-2. Earn rewards - by running a Raindex strategy on Flare, you can earn rewards in the form of rFLR tokens. 
+Raindex and Rainlang are both **open source**—see [Github](https://github.com/rainlanguage). Code is currently un-audited so DYOR and use at your own risk.

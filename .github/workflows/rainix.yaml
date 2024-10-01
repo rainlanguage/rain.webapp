@@ -18,7 +18,7 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - name: Install Nix
+      - name: Install Ni
         uses: DeterminateSystems/nix-installer-action@v4
       - uses: DeterminateSystems/magic-nix-cache-action@v2
       - name: Run ${{ matrix.task }}

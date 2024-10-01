@@ -41,7 +41,10 @@ export default [
 	reactPlugin.configs.flat['jsx-runtime'],
 	{
 		rules: {
-			'no-console': process.env.NODE_ENV === 'production' || process.env.CI ? ["error", { allow: ["warn", "error"] }] : 'off',
+			'no-console':
+				process.env.NODE_ENV === 'production' || process.env.CI
+					? ['error', { allow: ['warn', 'error'] }]
+					: 'off',
 			'no-trailing-spaces': 'error',
 			eqeqeq: 'off',
 			'prefer-const': ['error', { ignoreReadBeforeAssign: true }],
@@ -57,7 +60,6 @@ export default [
 			// 'no-case-declarations': 'off',
 			// 'react/no-unescaped-entities': 'off',
 			// 'no-unsafe-optional-chaining': 'off',
-			// 'prefer-const': 'off',
 		}
 	}
 ];

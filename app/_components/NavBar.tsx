@@ -1,7 +1,7 @@
 'use client';
 
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Navbar } from 'flowbite-react';
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import {  Navbar } from "flowbite-react";
 
 export function NavItems() {
 	return (

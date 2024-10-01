@@ -89,18 +89,21 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 		const userInput = e.target.value;
 		form.setValue('withdrawalAmount', parseFloat(userInput));
 
-		// Update the raw amount based on the user input (convert back to raw value)
-		if (userInput) {
-			try {
-				const parsedRawAmount = parseUnits(userInput, vault.token.decimals).toString();
-				setRawAmount(parsedRawAmount); // Update raw amount on every user change
-			} catch {
-				setRawAmount('0'); // Fallback to 0 if input is invalid
-			}
-		} else {
-			setRawAmount('0'); // Fallback to 0 if input is empty
-		}
-	};
+    // Update the raw amount based on the user input (convert back to raw value)
+    if (userInput) {
+      try {
+        const parsedRawAmount = parseUnits(
+          userInput,
+          vault.token.decimals
+        ).toString();
+        setRawAmount(parsedRawAmount); // Update raw amount on every user change
+      } catch  {
+        setRawAmount("0"); // Fallback to 0 if input is invalid
+      }
+    } else {
+      setRawAmount("0"); // Fallback to 0 if input is empty
+    }
+  };
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>

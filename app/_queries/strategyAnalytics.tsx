@@ -1,4 +1,4 @@
-import { getNetworkSubgraphs } from "./subgraphs";
+import { getNetworkSubgraphs } from './subgraphs';
 
 export const transactionAnalytics = (transactionId: string) => `
 {
@@ -76,37 +76,35 @@ export const transactionAnalytics = (transactionId: string) => `
 }`;
 
 export const getTransactionAnalyticsData = async (transactionId: string) => {
-  const networks = getNetworkSubgraphs();
-  // Find which subgraph has the transaction data by checking each subgraph
-  for (const [network, subgraphUrl] of Object.entries(networks)) {
-    try {
-      const response = await fetch(subgraphUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: transactionAnalytics(transactionId),
-        }),
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const result = await response.json();
-      if (result.errors) {
-        throw new Error(result.errors[0].message);
-      }
-      return {
-        ...result.data.addOrders[0],
-        order: { ...result.data.addOrders[0].order, network, subgraphUrl },
-      };
-    } catch (error: any) {
-      if (error?.message)
-        throw new Error(
-          `Error fetching transaction data from ${network} subgraph: ${
-            error?.message || ""
-          }`
-        );
-    }
-  }
+	const networks = getNetworkSubgraphs();
+	// Find which subgraph has the transaction data by checking each subgraph
+	for (let [network, subgraphUrl] of Object.entries(networks)) {
+		try {
+			const response = await fetch(subgraphUrl, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					query: transactionAnalytics(transactionId)
+				})
+			});
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
+			}
+			const result = await response.json();
+			if (result.errors) {
+				throw new Error(result.errors[0].message);
+			}
+			return {
+				...result.data.addOrders[0],
+				order: { ...result.data.addOrders[0].order, network, subgraphUrl }
+			};
+		} catch (error: any) {
+			if (error?.message)
+				throw new Error(
+					`Error fetching transaction data from ${network} subgraph: ${error?.message || ''}`
+				);
+		}
+	}
 };

@@ -1,42 +1,38 @@
-import { erc20Abi, parseUnits, toHex } from "viem";
-import { FrameState } from "../_types/frame";
-import { YamlData } from "../_types/yamlData";
-import { readContract } from "viem/actions";
-import { getPublicClient } from "./getPublicClient";
+import { erc20Abi, parseUnits, toHex } from 'viem';
+import { FrameState } from '../_types/frame';
+import { YamlData } from '../_types/yamlData';
+import { readContract } from 'viem/actions';
+import { getPublicClient } from './getPublicClient';
 
 export const hasEnoughTokenApproval = async (
-  currentState: FrameState,
-  yamlData: YamlData,
-  requesterCustodyAddress: `0x${string}`
+	currentState: FrameState,
+	yamlData: YamlData,
+	requesterCustodyAddress: `0x${string}`
 ) => {
-  const deployment =
-    yamlData.deployments[currentState.deploymentOption?.deployment || ""];
-  const order = yamlData.orders[deployment.order];
+	const deployment = yamlData.deployments[currentState.deploymentOption?.deployment || ''];
+	const order = yamlData.orders[deployment.order];
 
-  const orderBook = yamlData.orderbooks[order.orderbook];
-  const orderBookAddress = toHex(BigInt(orderBook.address));
+	const orderBook = yamlData.orderbooks[order.orderbook];
+	const orderBookAddress = toHex(BigInt(orderBook.address));
 
-  const network = yamlData.networks[order.network];
+	const network = yamlData.networks[order.network];
 
-  const outputToken = yamlData.tokens[order.outputs[0].token];
-  const outputTokenAddress = toHex(BigInt(outputToken.address));
-  const client = getPublicClient(network);
-  const outputTokenDecimals = await readContract(client, {
-    abi: erc20Abi,
-    address: outputTokenAddress,
-    functionName: "decimals",
-  });
+	const outputToken = yamlData.tokens[order.outputs[0].token];
+	const outputTokenAddress = toHex(BigInt(outputToken.address));
+	const client = getPublicClient(network);
+	const outputTokenDecimals = await readContract(client, {
+		abi: erc20Abi,
+		address: outputTokenAddress,
+		functionName: 'decimals'
+	});
 
-  // Get token approval for output token, if required
-  const depositAmount = parseUnits(
-    String(currentState.deposits[0].amount),
-    outputTokenDecimals
-  );
-  const existingAllowance = await readContract(client, {
-    abi: erc20Abi,
-    address: outputTokenAddress,
-    functionName: "allowance",
-    args: [requesterCustodyAddress, orderBookAddress],
-  });
-  return existingAllowance >= depositAmount;
+	// Get token approval for output token, if required
+	const depositAmount = parseUnits(String(currentState.deposits[0].amount), outputTokenDecimals);
+	const existingAllowance = await readContract(client, {
+		abi: erc20Abi,
+		address: outputTokenAddress,
+		functionName: 'allowance',
+		args: [requesterCustodyAddress, orderBookAddress]
+	});
+	return existingAllowance >= depositAmount;
 };

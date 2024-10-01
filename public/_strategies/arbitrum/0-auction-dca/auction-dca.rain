@@ -37,6 +37,7 @@ tokens:
 orders:
   arbitrum-wbtc-weth:
     orderbook: arbitrum
+    network: arbitrum
     inputs:
       - token: arbitrum-weth
     outputs:

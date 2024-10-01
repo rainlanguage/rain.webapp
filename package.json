@@ -69,5 +69,6 @@
 		"format-check": "prettier --list-different .",
 		"format": "prettier --write . --config ./.prettierrc.json",
 		"lint-format-check": "npm run lint-check && npm run format-check"
+		
 	}
 }

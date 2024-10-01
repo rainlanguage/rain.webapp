@@ -6,13 +6,14 @@ export const getFrameButtons = (
   currentState: FrameState,
   urlContext: any
 ) => {
-  return buttonsData.map((button) => {
+  return buttonsData.map((button,i: number) => {
     if (button.buttonAction === "link") {
       const projectName = urlContext.pathname.split("/")[2];
       const strategyName = urlContext.pathname.split("/")[3];
       const deployment = urlContext.pathname.split("/")[4];
       return (
         <Button
+        key={i}
           action="link"
           target={`${urlContext.origin}/${projectName}/${strategyName}/${deployment}/?${button.buttonTarget}=${button.buttonValue}`}
         >
@@ -31,6 +32,7 @@ export const getFrameButtons = (
       };
       return (
         <Button
+        key={i}
           action="tx"
           target={{ query: { [button.buttonTarget]: button.buttonValue } }}
           post_url={{
@@ -43,6 +45,7 @@ export const getFrameButtons = (
     }
     return (
       <Button
+      key={i}
         action="post"
         target={{ query: { [button.buttonTarget]: button.buttonValue } }}
       >

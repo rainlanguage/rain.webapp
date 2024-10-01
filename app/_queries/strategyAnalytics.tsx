@@ -78,7 +78,7 @@ export const transactionAnalytics = (transactionId: string) => `
 export const getTransactionAnalyticsData = async (transactionId: string) => {
 	const networks = getNetworkSubgraphs();
 	// Find which subgraph has the transaction data by checking each subgraph
-	for (let [network, subgraphUrl] of Object.entries(networks)) {
+	for (const [network, subgraphUrl] of Object.entries(networks)) {
 		try {
 			const response = await fetch(subgraphUrl, {
 				method: 'POST',

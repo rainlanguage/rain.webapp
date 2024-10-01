@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect, useState } from "react";
 import { generateButtonsData } from "../_services/buttonsData";
@@ -21,160 +21,155 @@ import { decompress } from "../_services/compress";
 import { CodemirrorModal } from "./CodemirrorModal";
 
 interface props {
-  dotrainText: string;
-  deploymentOption: string | null;
+	dotrainText: string;
+	deploymentOption: string | null;
 }
 
 const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
-  const yamlData = yaml.load(dotrainText.split("---")[0], {
-    schema: FailsafeSchemaWithNumbers,
-  }) as YamlData;
+	const yamlData = yaml.load(dotrainText.split('---')[0], {
+		schema: FailsafeSchemaWithNumbers
+	}) as YamlData;
 
-  const defaultState: FrameState = {
-    strategyName: yamlData.gui.name,
-    strategyDescription: yamlData.gui.description,
-    currentStep: deploymentOption ? "fields" : "start",
-    deploymentOption:
-      yamlData.gui.deployments.find(
-        (deployment) => deployment.deployment === deploymentOption
-      ) || undefined,
-    bindings: {},
-    deposits: [],
-    buttonPage: 0,
-    buttonMax: 10,
-    textInputLabel: (() => {
-      const deployment =
-        yamlData.gui.deployments.find(
-          (deployment) => deployment.deployment === deploymentOption
-        ) || undefined;
-      if (!deployment) {
-        return "";
-      }
-      const fields = deployment.fields;
-      const currentField = fields[0];
-      if (currentField.min !== undefined && !currentField.presets) {
-        return `Enter a number greater than ${currentField.min}`;
-      }
-      return "";
-    })(),
-    error: null,
-    isWebapp: true,
-    tokenInfos: [] as TokenInfo[],
-  };
+	const defaultState: FrameState = {
+		strategyName: yamlData.gui.name,
+		strategyDescription: yamlData.gui.description,
+		currentStep: deploymentOption ? 'fields' : 'start',
+		deploymentOption:
+			yamlData.gui.deployments.find((deployment) => deployment.deployment === deploymentOption) ||
+			undefined,
+		bindings: {},
+		deposits: [],
+		buttonPage: 0,
+		buttonMax: 10,
+		textInputLabel: (() => {
+			const deployment =
+				yamlData.gui.deployments.find((deployment) => deployment.deployment === deploymentOption) ||
+				undefined;
+			if (!deployment) {
+				return '';
+			}
+			const fields = deployment.fields;
+			const currentField = fields[0];
+			if (currentField.min !== undefined && !currentField.presets) {
+				return `Enter a number greater than ${currentField.min}`;
+			}
+			return '';
+		})(),
+		error: null,
+		isWebapp: true,
+		tokenInfos: [] as TokenInfo[]
+	};
 
-  const [currentState, setCurrentState] = useState<FrameState>(defaultState);
-  const [loading, setLoading] = useState({
-    fetchingTokens: false,
-    decodingState: true,
-  });
-  const [error, setError] = useState<string | React.ReactElement | null>(null);
-  const [inputText, setInputText] = useState<string>("");
+	const [currentState, setCurrentState] = useState<FrameState>(defaultState);
+	const [loading, setLoading] = useState({
+		fetchingTokens: false,
+		decodingState: true
+	});
+	const [error, setError] = useState<string | React.ReactElement | null>(null);
+	const [inputText, setInputText] = useState<string>('');
 
-  const searchParams = useSearchParams();
+	const searchParams = useSearchParams();
 
-  const getUrlState = async () => {
-    const encodedState = searchParams.get("currentState");
-    if (encodedState) {
-      try {
-        const decompressedState = await decompress(encodedState);
-        return {
-          ...JSON.parse(decompressedState),
-          requiresTokenApproval: false,
-          isWebapp: true,
-        };
-      } catch (e: any) {
-        // If decompression fails, try decoding the state without decompression
-        if (e.message.includes("not correctly encoded")) {
-          const decodedState = decodeURI(encodedState);
-          return {
-            ...JSON.parse(decodedState),
-            requiresTokenApproval: false,
-            isWebapp: true,
-          };
-        }
-      }
-    }
-    return null;
-  };
+	const getUrlState = async () => {
+		const encodedState = searchParams.get('currentState');
+		if (encodedState) {
+			try {
+				const decompressedState = await decompress(encodedState);
+				return {
+					...JSON.parse(decompressedState),
+					requiresTokenApproval: false,
+					isWebapp: true
+				};
+			} catch (e: any) {
+				// If decompression fails, try decoding the state without decompression
+				if (e.message.includes('not correctly encoded')) {
+					const decodedState = decodeURI(encodedState);
+					return {
+						...JSON.parse(decodedState),
+						requiresTokenApproval: false,
+						isWebapp: true
+					};
+				}
+			}
+		}
+		return null;
+	};
 
-  useEffect(() => {
-    const initializeState = async () => {
-      try {
-        const urlState = await getUrlState();
-        if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
-      } catch (e) {
-        console.error("Error decoding state:", e);
-      } finally {
-        setLoading((prev) => ({ ...prev, decodingState: false }));
-      }
-    };
-    initializeState();
-  }, [searchParams]); // Run only when searchParams change
+	useEffect(() => {
+		const initializeState = async () => {
+			try {
+				const urlState = await getUrlState();
+				if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
+			} catch (e) {
+				console.error('Error decoding state:', e);
+			} finally {
+				setLoading((prev) => ({ ...prev, decodingState: false }));
+			}
+		};
+		initializeState();
+	}, [searchParams]); // Run only when searchParams change
 
-  useEffect(() => {
-    const fetchTokenInfos = async () => {
-      if (currentState.tokenInfos.length === 0 && !loading.fetchingTokens) {
-        try {
-          setLoading((prev) => ({ ...prev, fetchingTokens: true }));
-          const tokenInfos = await getTokenInfos(yamlData);
-          setCurrentState((prevState) => ({
-            ...prevState,
-            tokenInfos,
-          }));
-        } catch (e) {
-          console.error(e);
-          setError("Failed to fetch token information");
-        } finally {
-          setLoading((prev) => ({ ...prev, fetchingTokens: false }));
-        }
-      }
-    };
+	useEffect(() => {
+		const fetchTokenInfos = async () => {
+			if (currentState.tokenInfos.length === 0 && !loading.fetchingTokens) {
+				try {
+					setLoading((prev) => ({ ...prev, fetchingTokens: true }));
+					const tokenInfos = await getTokenInfos(yamlData);
+					setCurrentState((prevState) => ({
+						...prevState,
+						tokenInfos
+					}));
+				} catch (e) {
+					console.error(e);
+					setError('Failed to fetch token information');
+				} finally {
+					setLoading((prev) => ({ ...prev, fetchingTokens: false }));
+				}
+			}
+		};
 
-    if (!loading.decodingState) {
-      fetchTokenInfos();
-    }
-  }, [yamlData, currentState.tokenInfos.length, loading.decodingState]); // Dependent on decodingState to ensure token fetch happens after decoding
+		if (!loading.decodingState) {
+			fetchTokenInfos();
+		}
+	}, [yamlData, currentState.tokenInfos.length, loading.decodingState]); // Dependent on decodingState to ensure token fetch happens after decoding
 
-  const handleButtonClick = async (buttonData: any) => {
-    setError(null);
-    // Handle page navigation
-    if (buttonData.buttonTarget === "textInputLabel") {
-      setCurrentState((prevState) => ({
-        ...prevState,
-        textInputLabel: buttonData.buttonValue,
-      }));
-      return;
-    } else if (buttonData.buttonTarget === "buttonPage") {
-      setCurrentState((prevState) => ({
-        ...prevState,
-        buttonPage: buttonData.buttonValue,
-      }));
-      return;
-    } else if (
-      buttonData.buttonTarget === "buttonValue" &&
-      buttonData.buttonValue === "back"
-    ) {
-      setCurrentState((prevState) => ({
-        ...prevState,
-        textInputLabel: "",
-      }));
-    }
+	const handleButtonClick = async (buttonData: any) => {
+		setError(null);
+		// Handle page navigation
+		if (buttonData.buttonTarget === 'textInputLabel') {
+			setCurrentState((prevState) => ({
+				...prevState,
+				textInputLabel: buttonData.buttonValue
+			}));
+			return;
+		} else if (buttonData.buttonTarget === 'buttonPage') {
+			setCurrentState((prevState) => ({
+				...prevState,
+				buttonPage: buttonData.buttonValue
+			}));
+			return;
+		} else if (buttonData.buttonTarget === 'buttonValue' && buttonData.buttonValue === 'back') {
+			setCurrentState((prevState) => ({
+				...prevState,
+				textInputLabel: ''
+			}));
+		}
 
-    const updatedState = getUpdatedFrameState(
-      yamlData,
-      currentState,
-      buttonData.buttonValue,
-      inputText
-    );
+		const updatedState = getUpdatedFrameState(
+			yamlData,
+			currentState,
+			buttonData.buttonValue,
+			inputText
+		);
 
-    setCurrentState({ ...updatedState });
+		setCurrentState({ ...updatedState });
 
-    if (inputText) {
-      setInputText("");
-    }
-  };
+		if (inputText) {
+			setInputText('');
+		}
+	};
 
-  const buttonsData = generateButtonsData(yamlData, currentState);
+	const buttonsData = generateButtonsData(yamlData, currentState);
 
   return loading.decodingState || loading.fetchingTokens ? (
     <div className="flex-grow flex items-center justify-center">

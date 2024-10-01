@@ -1,34 +1,31 @@
-import { toHex } from "viem";
-import { YamlData } from "../_types/yamlData";
-import _ from "lodash";
+import { toHex } from 'viem';
+import { YamlData } from '../_types/yamlData';
+import _ from 'lodash';
 
-export const getOrderDetailsGivenDeployment = (
-  yamlData: YamlData,
-  deploymentOption: string
-) => {
-  const deployment = yamlData.deployments[deploymentOption];
-  const order = yamlData.orders[deployment.order];
-  const orderBook = yamlData.orderbooks[order.orderbook];
-  const orderBookAddress = toHex(BigInt(orderBook.address));
-  const network = yamlData.networks[order.network];
+export const getOrderDetailsGivenDeployment = (yamlData: YamlData, deploymentOption: string) => {
+	const deployment = yamlData.deployments[deploymentOption];
+	const order = yamlData.orders[deployment.order];
+	const orderBook = yamlData.orderbooks[order.orderbook];
+	const orderBookAddress = toHex(BigInt(orderBook.address));
+	const network = yamlData.networks[order.network];
 
-  const tokens = yamlData.tokens;
+	const tokens = yamlData.tokens;
 
-  const fullScenarioPath = deployment.scenario
-    .split(".")
-    .map((scenario, index, array) =>
-      index === array.length - 1 ? scenario : scenario + ".scenarios"
-    )
-    .join(".");
-  const scenario = _.get(yamlData.scenarios, fullScenarioPath);
+	const fullScenarioPath = deployment.scenario
+		.split('.')
+		.map((scenario, index, array) =>
+			index === array.length - 1 ? scenario : scenario + '.scenarios'
+		)
+		.join('.');
+	const scenario = _.get(yamlData.scenarios, fullScenarioPath);
 
-  return {
-    deployment,
-    order,
-    orderBook,
-    orderBookAddress,
-    network,
-    tokens,
-    scenario,
-  };
+	return {
+		deployment,
+		order,
+		orderBook,
+		orderBookAddress,
+		network,
+		tokens,
+		scenario
+	};
 };

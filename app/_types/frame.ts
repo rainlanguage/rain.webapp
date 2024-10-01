@@ -7,7 +7,7 @@ export type FrameState = {
 	strategyDescription: string | null;
 	currentStep: string;
 	deploymentOption?: YamlData['gui']['deployments'][0];
-	bindings: Record<string, unknown>;
+	bindings: { [key: string]: string | number };
 	deposits: TokenDeposit[];
 	buttonPage: number;
 	buttonMax?: number;

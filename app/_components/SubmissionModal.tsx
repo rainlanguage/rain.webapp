@@ -138,8 +138,8 @@ export const SubmissionModal = ({
           setError(
             <>
               <p className="mb-3">
-                You don't have enough {deposit.tokenInfo.symbol} to cover this
-                deposit.
+                You don&apos;t have enough {deposit.tokenInfo.symbol} to cover this deposit.
+
               </p>
               <p className="mb-3">
                 Your balance:{" "}
@@ -474,7 +474,7 @@ export const SubmissionModal = ({
               Your strategy is live!
             </DialogTitle>
             <div>
-              It will continue to trade until removed. If you're interested in
+              It will continue to trade until removed. If you&apos;re interested in
               creating your own strategies from scratch, try{" "}
               <a href="https://docs.rainlang.xyz"> Raindex.</a>
             </div>

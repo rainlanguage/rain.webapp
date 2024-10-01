@@ -95,8 +95,6 @@ export const SubmissionModal = ({
 	const [open, setOpen] = useState(false);
 	const [showFinalMessage, setShowFinalMessage] = useState(false);
 
-	const [hash, setHash] = useState<string | null>(null);
-
 	useEffect(() => {
 		if (submissionState === SubmissionStatus.Done) {
 			setTimeout(() => {
@@ -266,8 +264,6 @@ export const SubmissionModal = ({
 				confirmations: 4
 			});
 
-			setHash(deployTx);
-
 			setSubmissionState(SubmissionStatus.Done);
 		} catch (e: any) {
 			if (
@@ -426,8 +422,8 @@ export const SubmissionModal = ({
 					<div className="flex flex-col items-start transition-opacity duration-1500 animate-fade-in gap-y-4">
 						<DialogTitle className="w-full font-light text-2xl">Your strategy is live!</DialogTitle>
 						<div>
-							It will continue to trade until removed. If you&apos;re interested in creating your own
-							strategies from scratch, try <a href="https://docs.rainlang.xyz"> Raindex.</a>
+							It will continue to trade until removed. If you&apos;re interested in creating your
+							own strategies from scratch, try <a href="https://docs.rainlang.xyz"> Raindex.</a>
 						</div>
 						<Button
 							className="mt-4"

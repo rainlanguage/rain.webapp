@@ -111,7 +111,7 @@ export const SubmissionModal = ({
 		setShowFinalMessage(false);
 		setShowDisclaimer(true);
 		setHash(null);
-	}
+	};
 
 	const submitStrategy = async () => {
 		try {
@@ -296,7 +296,7 @@ export const SubmissionModal = ({
 	};
 
 	return (
-		<Dialog open={open} >
+		<Dialog open={open}>
 			{account.isConnected ? (
 				<Button
 					onClick={() => setOpen(true)}
@@ -309,7 +309,10 @@ export const SubmissionModal = ({
 			) : (
 				<ConnectButton />
 			)}
-			<DialogContent onInteractOutside={resetSubmissionState} className="bg-white flex flex-col justify-center w-full font-light gap-y-8">
+			<DialogContent
+				onInteractOutside={resetSubmissionState}
+				className="bg-white flex flex-col justify-center w-full font-light gap-y-8"
+			>
 				{showDisclaimer && (
 					<div className="flex flex-col items-start gap-y-4">
 						<DialogTitle className="w-full font-light text-2xl">Wait!</DialogTitle>

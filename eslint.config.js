@@ -51,8 +51,8 @@ export default [
 			'react/no-unknown-property': ['error', { ignore: ['tw'] }],
 			// Disabled for PRs to be merged
 			'react/jsx-key': 'off',
-			'@typescript-eslint/no-unused-vars': 'off',
-			// '@typescript-eslint/no-explicit-any': 'off',
+			// '@typescript-eslint/no-unused-vars': 'off',
+			'@typescript-eslint/no-explicit-any': 'off',
 			// '@typescript-eslint/no-empty-object-type': 'off',
 			// 'no-case-declarations': 'off',
 			// 'react/no-unescaped-entities': 'off',

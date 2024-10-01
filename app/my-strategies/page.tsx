@@ -6,7 +6,7 @@ import { Spinner, Table } from 'flowbite-react';
 import { formatTimestampSecondsAsLocal } from '../_services/dates';
 import { useRouter } from 'next/navigation';
 import { TokenAndBalance } from '../_components/TokenAndBalance';
-import { Order } from '../types';
+import { Input, Order, Output } from '../types';
 
 export default function MyStrategies() {
 	const router = useRouter();
@@ -58,14 +58,14 @@ export default function MyStrategies() {
 									</Table.Cell>
 									<Table.Cell>
 										<div className="flex gap-x-2">
-											{order.inputs.map((input: any, i: number) => (
+											{order.inputs.map((input: Input, i: number) => (
 												<TokenAndBalance input={input} key={i} />
 											))}
 										</div>
 									</Table.Cell>
 									<Table.Cell>
 										<div className="flex gap-x-2">
-											{order.outputs.map((output: any, i: number) => (
+											{order.outputs.map((output: Output, i: number) => (
 												<TokenAndBalance input={output} key={i} />
 											))}
 										</div>

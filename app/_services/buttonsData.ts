@@ -68,7 +68,7 @@ export const getFieldPresetsButtons = (field: Field): Button[] => {
 	];
 };
 
-export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): any[] => {
+export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): Button[] => {
 	if (!deposit) {
 		return [];
 	}

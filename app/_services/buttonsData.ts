@@ -66,14 +66,10 @@ export const getFieldPresetsButtons = (field: Field): any[] => {
 	];
 };
 
-export const getDepositPresetsButtons = (
-	deposit: Deposit | undefined | null,
-	token: TokenInfo
-): any[] => {
+export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): any[] => {
 	if (!deposit) {
 		return [];
 	}
-
 	return [
 		{
 			buttonTarget: 'buttonValue',
@@ -125,7 +121,7 @@ export const generateButtonsData = (yamlData: YamlData, currentState: FrameState
 				}
 			];
 			break;
-		case 'deployment':
+		case 'deployment': {
 			const allButtons = yamlData.gui.deployments.map((deploymentOption: DeploymentOption) => ({
 				buttonTarget: 'buttonValue',
 				buttonValue: JSON.stringify(deploymentOption),
@@ -133,7 +129,8 @@ export const generateButtonsData = (yamlData: YamlData, currentState: FrameState
 			}));
 			buttons = getPaginatedButtons(allButtons, currentState.buttonPage, currentState.buttonMax);
 			break;
-		case 'fields':
+		}
+		case 'fields': {
 			if (!currentState.deploymentOption) {
 				return buttons;
 			}
@@ -141,7 +138,8 @@ export const generateButtonsData = (yamlData: YamlData, currentState: FrameState
 			const fieldButtons = getFieldPresetsButtons(field);
 			buttons = getPaginatedButtons(fieldButtons, currentState.buttonPage, currentState.buttonMax);
 			break;
-		case 'deposit':
+		}
+		case 'deposit': {
 			if (!currentState.deploymentOption) {
 				return buttons;
 			}
@@ -160,7 +158,8 @@ export const generateButtonsData = (yamlData: YamlData, currentState: FrameState
 				currentState.buttonMax
 			);
 			break;
-		case 'review':
+		}
+		case 'review': {
 			buttons = [
 				{
 					buttonTarget: 'buttonValue',
@@ -197,6 +196,7 @@ export const generateButtonsData = (yamlData: YamlData, currentState: FrameState
 				});
 			}
 			break;
+		}
 		case 'done':
 			buttons = [
 				{

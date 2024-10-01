@@ -37,6 +37,7 @@ tokens:
 orders:
   arbitrum-wbtc-weth:
     orderbook: arbitrum
+    network: arbitrum
     inputs:
       - token: arbitrum-weth
     outputs:
@@ -48,9 +49,6 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
-
-charts:
-  arbitrum:
 
 deployments:
   arbitrum-wbtc-weth:
@@ -114,12 +112,12 @@ gui:
             For example, if the budget is daily and this is 0.01 then 0.01 WBTC will be sold for WETH each day.
           min: 0
         - binding: max-trade-amount
-          name: Maximum trade size
+          name: Maximum trade size (WBTC)
           description: >
             The maximum amount of WBTC to sell in a single auction.
           min: 0
         - binding: min-trade-amount
-          name: Minimum trade size
+          name: Minimum trade size (WBTC)
           description: >
             The minimum amount of WBTC to sell in a single auction.
           min: 0
@@ -153,7 +151,7 @@ gui:
             - name: Every 24 hours (86400)
               value: 86400
         - binding: baseline
-          name: Baseline price
+          name: Baseline WETH per WBTC
           description: >
             The absolute minimum amount of WETH per WBTC that the auction will
             trade at.
@@ -269,7 +267,7 @@ last-io:,
 :set(hash(order-hash() initial-time-key) now());
 
 #get-initial-time
-:get(hash(order-hash() initial-time-key));
+_:get(hash(order-hash() initial-time-key));
 
 #get-last-trade
 last-time:get(hash(order-hash() last-trade-time-key)),

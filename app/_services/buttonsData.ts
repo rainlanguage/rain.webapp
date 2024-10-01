@@ -66,21 +66,28 @@ export const getFieldPresetsButtons = (field: Field): any[] => {
 	];
 };
 
-export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): any[] => {
+export const getDepositPresetsButtons = (
+	deposit: Deposit | undefined | null,
+	token: TokenInfo
+): any[] => {
+	if (!deposit) {
+		return [];
+	}
+
 	return [
 		{
 			buttonTarget: 'buttonValue',
 			buttonValue: 'back',
 			buttonText: '←'
 		},
-		...(deposit?.presets
-			? deposit.presets?.map((preset: number) => ({
+		...(deposit.presets
+			? deposit.presets.map((preset: number) => ({
 					buttonTarget: 'buttonValue',
 					buttonValue: `${preset}`,
 					buttonText: `${preset} ${token.symbol}`
 				}))
 			: []),
-		...(deposit?.min !== undefined
+		...(deposit.min !== undefined
 			? [
 					{
 						buttonTarget: 'textInputLabel',

@@ -104,7 +104,6 @@ export const getDepositPresetsButtons = (
   ];
 };
 
-
 export const generateButtonsData = (
   yamlData: YamlData,
   currentState: FrameState
@@ -134,7 +133,7 @@ export const generateButtonsData = (
         },
       ];
       break;
-    case "deployment":
+    case "deployment": {
       const allButtons = yamlData.gui.deployments.map(
         (deploymentOption: DeploymentOption) => ({
           buttonTarget: "buttonValue",
@@ -148,7 +147,8 @@ export const generateButtonsData = (
         currentState.buttonMax
       );
       break;
-    case "fields":
+    }
+    case "fields": {
       if (!currentState.deploymentOption) {
         return buttons;
       }
@@ -163,7 +163,8 @@ export const generateButtonsData = (
         currentState.buttonMax
       );
       break;
-    case "deposit":
+    }
+    case "deposit": {
       if (!currentState.deploymentOption) {
         return buttons;
       }
@@ -189,7 +190,8 @@ export const generateButtonsData = (
         currentState.buttonMax
       );
       break;
-    case "review":
+    }
+    case "review": {
       buttons = [
         {
           buttonTarget: "buttonValue",
@@ -230,6 +232,7 @@ export const generateButtonsData = (
         });
       }
       break;
+    }
     case "done":
       buttons = [
         {

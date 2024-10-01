@@ -23,7 +23,7 @@ jobs:
       - uses: DeterminateSystems/magic-nix-cache-action@v2
       - name: Run ${{ matrix.task }}
         run: nix develop -c ${{ matrix.task }}
-  lint:
+  format-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

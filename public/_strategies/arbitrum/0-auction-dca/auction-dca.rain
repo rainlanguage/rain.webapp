@@ -115,12 +115,12 @@ gui:
             For example, if the budget is daily and this is 0.01 then 0.01 WBTC will be sold for WETH each day.
           min: 0
         - binding: max-trade-amount
-          name: Maximum trade size
+          name: Maximum trade size (WBTC)
           description: >
             The maximum amount of WBTC to sell in a single auction.
           min: 0
         - binding: min-trade-amount
-          name: Minimum trade size
+          name: Minimum trade size (WBTC)
           description: >
             The minimum amount of WBTC to sell in a single auction.
           min: 0
@@ -154,7 +154,7 @@ gui:
             - name: Every 24 hours (86400)
               value: 86400
         - binding: baseline
-          name: Baseline price
+          name: Baseline WETH per WBTC
           description: >
             The absolute minimum amount of WETH per WBTC that the auction will
             trade at.

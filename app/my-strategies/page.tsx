@@ -6,7 +6,7 @@ import { Spinner, Table } from 'flowbite-react';
 import { formatTimestampSecondsAsLocal } from '../_services/dates';
 import { useRouter } from 'next/navigation';
 import { TokenAndBalance } from '../_components/TokenAndBalance';
-import { Input, Order, Output } from '../types';
+import { Order } from '../types';
 
 export default function MyStrategies() {
 	const router = useRouter();

@@ -17,7 +17,7 @@ import { TokenInfo, getTokenInfos } from '../_services/getTokenInfo';
 import { Button, Spinner } from 'flowbite-react';
 import ShareStateAsUrl from './ShareStateAsUrl';
 import { decompress } from '../_services/compress';
-import { PaginatedButton } from '../types';
+import { Button as ButtonType } from '../types';
 
 interface props {
 	dotrainText: string;
@@ -132,9 +132,9 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		}
 	}, [yamlData, currentState.tokenInfos.length, loading.decodingState]); // Dependent on decodingState to ensure token fetch happens after decoding
 
-	const handleButtonClick = async (buttonData: PaginatedButton) => {
+	const handleButtonClick = async (buttonData: ButtonType) => {
 		setError(null);
-		// Handle page navigation
+
 		if (buttonData.buttonTarget === 'textInputLabel') {
 			setCurrentState((prevState) => ({
 				...prevState,
@@ -193,9 +193,9 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 				</div>
 			)}
 			<div className="flex flex-wrap gap-2 justify-center md:pb-20 pb-8 px-8 pt-10">
-				{buttonsData.map((buttonData) => {
+				{buttonsData.map((buttonData, i: number) => {
 					return buttonData.buttonValue === 'finalSubmit' ? (
-						<div key={buttonData} className="flex gap-2 flex-wrap justify-center">
+						<div key={i} className="flex gap-2 flex-wrap justify-center">
 							<SubmissionModal
 								key={buttonData.buttonText}
 								buttonText={buttonData.buttonText}

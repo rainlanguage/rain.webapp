@@ -56,7 +56,7 @@ export default [
 			'@typescript-eslint/no-empty-object-type': 'off',
 			'no-case-declarations': 'off',
 			'react/no-unescaped-entities': 'off',
-			'no-unsafe-optional-chaining': 'off',
+			// 'no-unsafe-optional-chaining': 'off',
 			// 'prefer-const': 'off',
 		}
 	}

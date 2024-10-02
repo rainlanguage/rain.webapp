@@ -25,7 +25,7 @@ import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits, erc20Abi } from 'viem';
 import { waitForTransactionReceipt } from 'viem/actions';
 import { config } from '../providers';
-import { readContract } from 'viem/actions';
+import { readContract } from '@wagmi/core';
 
 const formSchema = z.object({
 	depositAmount: z.preprocess(
@@ -66,7 +66,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 		abi: erc20Abi,
 		functionName: 'balanceOf',
 		args: [address as `0x${string}`]
-	});
+	}).data;
 
 	useEffect(() => {
 		console.log('connectedWalletBalance', connectedWalletBalance);
@@ -82,7 +82,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 	const deposit = async (amount: string) => {
 		try {
 			console.log('VAULT', vault);
-			const existingAllowance = await readContract(config.getClient(), {
+			const existingAllowance = await readContract(config, {
 				abi: erc20Abi,
 				address: vault.token.address,
 				functionName: 'allowance',
@@ -94,7 +94,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 			console.log('amount', amount);
 
 			// If the allowance is less than the deposit amount, approve more tokens
-			if (existingAllowance < parsedAmount) {
+			if (existingAllowance < amount) {
 				console.log(`Existing allowance is ${existingAllowance.toString()}, approving more...`);
 
 				// Send the approve transaction
@@ -123,7 +123,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 				abi: orderBookJson.abi,
 				address: vault.orderbook.id,
 				functionName: 'deposit2',
-				args: [vault.token.address, BigInt(vault.vaultId), parsedAmount, []]
+				args: [vault.token.address, BigInt(vault.vaultId), amount, []]
 			});
 
 			console.log(`Deposit transaction sent: ${depositTx.hash}`);

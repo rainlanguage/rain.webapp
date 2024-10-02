@@ -42,8 +42,7 @@ export default function MyStrategies() {
 										router.push(
 											`${window.location.origin}/my-strategies/${order.addEvents[0].transaction.id}`
 										);
-									}}
-								>
+									}}>
 									<Table.Cell>{order.network}</Table.Cell>
 									<Table.Cell>
 										{order.active ? (
@@ -64,8 +63,8 @@ export default function MyStrategies() {
 									</Table.Cell>
 									<Table.Cell>
 										<div className="flex gap-x-2">
-											{order.outputs.map((output: any) => (
-												<TokenAndBalance input={output} />
+											{order.outputs.map((output: any, i: number) => (
+												<TokenAndBalance key={i} input={output} />
 											))}
 										</div>
 									</Table.Cell>

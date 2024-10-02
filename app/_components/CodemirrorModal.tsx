@@ -7,6 +7,7 @@ import { DotrainOrder } from '@rainlanguage/orderbook/common';
 import CodeMirror from '@uiw/react-codemirror';
 import { DialogClose, DialogTrigger } from '@radix-ui/react-dialog';
 import { RainlangLR } from 'codemirror-rainlang';
+import scroll from '@uiw/react-codemirror/';
 
 interface CodemirrorModalProps {
 	yamlData: YamlData;
@@ -46,7 +47,7 @@ export const CodemirrorModal = ({
 			</DialogTrigger>
 			<DialogContent className="bg-white flex flex-col justify-center w-full font-light gap-y-8">
 				<DialogHeader>Generated Rainlang</DialogHeader>
-				<CodeMirror value={composedDotrainText} extensions={[RainlangLR]} />
+				<CodeMirror height="50vh" value={composedDotrainText} extensions={[RainlangLR]} />
 				<DialogFooter className="sm:justify-start">
 					<DialogClose asChild>
 						<Button type="button">Close</Button>

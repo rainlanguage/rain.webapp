@@ -37,6 +37,7 @@ export default function MyStrategies() {
 						<Table.Body>
 							{query.data.map((order: any, i: number) => (
 								<Table.Row
+									className="cursor-pointer"
 									key={i}
 									onClick={() => {
 										router.push(

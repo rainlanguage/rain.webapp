@@ -1,7 +1,16 @@
 import { formatUnits } from 'viem';
 import { WithdrawalModal } from './WithdrawalModal';
+import { DepositModal } from './DepositModal';
 
-export function TokenAndBalance({ input, withdraw }: { input: any; withdraw?: boolean }) {
+export function TokenAndBalance({
+	input,
+	withdraw,
+	deposit
+}: {
+	input: any;
+	withdraw?: boolean;
+	deposit?: boolean;
+}) {
 	return (
 		<div className="flex border rounded-xl p-2 gap-x-3 items-center justify-between">
 			<div className="flex flex-col gap-y-1">
@@ -10,7 +19,10 @@ export function TokenAndBalance({ input, withdraw }: { input: any; withdraw?: bo
 					Balance: {Number(Number(formatUnits(input.balance, input.token.decimals)).toFixed(8))}
 				</div>
 			</div>
-			{withdraw && <WithdrawalModal vault={input} />}
+			<div className="flex gap-4">
+				{deposit && <DepositModal vault={input} />}
+				{withdraw && <WithdrawalModal vault={input} />}
+			</div>
 		</div>
 	);
 }

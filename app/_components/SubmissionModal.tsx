@@ -110,7 +110,6 @@ export const SubmissionModal = ({
 		setSubmissionState(SubmissionStatus.ApprovingTokens);
 		setShowFinalMessage(false);
 		setShowDisclaimer(true);
-		setHash(null);
 	};
 
 	const submitStrategy = async () => {
@@ -273,8 +272,6 @@ export const SubmissionModal = ({
 				hash: deployTx,
 				confirmations: 4
 			});
-
-			// setHash(deployTx);
 
 			setSubmissionState(SubmissionStatus.Done);
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any

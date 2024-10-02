@@ -20,22 +20,12 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '@/components/ui/dialog';
-import { useWriteContract, useReadContract, useContractRead, useAccount } from 'wagmi';
+import { useWriteContract, useReadContract, useAccount } from 'wagmi';
 import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits, erc20Abi } from 'viem';
 import { waitForTransactionReceipt } from 'viem/actions';
 import { config } from '../providers';
 import { readContract } from 'viem/actions';
-
-const ERC20_ABI = [
-	{
-		constant: true,
-		inputs: [{ name: 'owner', type: 'address' }],
-		name: 'balanceOf',
-		outputs: [{ name: '', type: 'uint256' }],
-		type: 'function'
-	}
-];
 
 const formSchema = z.object({
 	depositAmount: z.preprocess(
@@ -76,7 +66,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 		abi: erc20Abi,
 		functionName: 'balanceOf',
 		args: [address as `0x${string}`]
-	}).data;
+	});
 
 	useEffect(() => {
 		console.log('connectedWalletBalance', connectedWalletBalance);

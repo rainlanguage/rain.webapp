@@ -63,7 +63,7 @@ const handleRequest = frames(async (ctx) => {
 		}
 		// Handle state transitions
 		const inputText = ctx.message?.inputText;
-		currentState = getUpdatedFrameState(yamlData, currentState, buttonValue, inputText);
+		currentState = getUpdatedFrameState(yamlData, currentState, buttonValue as string, inputText);
 	}
 
 	// Generate buttons based on current state

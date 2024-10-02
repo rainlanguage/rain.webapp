@@ -1,12 +1,7 @@
 import { Button } from 'frames.js/next';
 import { FrameState } from 'frames.js/next/types';
+import { Button as ButtonType } from '../types';
 
-interface ButtonData {
-	buttonAction: string;
-	buttonTarget: string;
-	buttonValue: string;
-	buttonText: string;
-}
 
 interface UrlContext {
 	pathname: string;
@@ -14,7 +9,7 @@ interface UrlContext {
 }
 
 export const getFrameButtons = (
-	buttonsData: ButtonData[],
+	buttonsData: ButtonType[],
 	currentState: FrameState,
 	urlContext: UrlContext
 ) => {

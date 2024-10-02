@@ -2,7 +2,6 @@ import { Button } from 'frames.js/next';
 import { FrameState } from 'frames.js/next/types';
 import { Button as ButtonType } from '../types';
 
-
 interface UrlContext {
 	pathname: string;
 	origin: string;

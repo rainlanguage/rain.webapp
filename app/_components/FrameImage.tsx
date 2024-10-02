@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import { FrameState } from '../_types/frame';
 import { ProgressBar } from './ProgressBar';
 
 export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
+
 	return (
 		<div
 			className={`flex flex-col md:justify-center items-center md:text-[50px] text-center text-[30px] relative flex-grow px-8`}
@@ -12,7 +14,7 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 			</div>
 			{currentState.deploymentOption ? (
 				<div
-					className="top-0 md:text-xl text-sm border rounded-full bg-gray-100 px-6 py-3 my-4 md:mb-0"
+					className="top-0 md:text-xl text-sm border rounded-full bg-gray-100 px-6 py-3 my-4 md:mb-0 "
 					tw="absolute top-12 text-[30px] border rounded-full bg-gray-100 px-6 py-3"
 				>
 					{currentState.deploymentOption.name}
@@ -38,9 +40,10 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 				{currentState.currentStep === 'fields' && currentState.deploymentOption ? (
 					<div className="flex flex-col gap-y-6" tw="flex flex-col">
 						<div className="leading-tight">
+
 							{currentState.deploymentOption.fields[Object.keys(currentState.bindings).length].name}
 						</div>
-						<div className="text-2xl" tw="text-2xl">
+						<div className="text-2xl whitespace-pre-line" tw="text-2xl whitespace-pre-line">
 							{
 								currentState.deploymentOption.fields[Object.keys(currentState.bindings).length]
 									.description

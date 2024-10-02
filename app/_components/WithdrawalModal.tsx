@@ -75,7 +75,7 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 		// Set the form field to the readable max balance for display
 		form.setValue('withdrawalAmount', parseFloat(readableBalance));
 		// Set the raw balance directly
-		setRawAmount(vault.balance); // Use raw vault balance directly
+		setRawAmount(vault.balance.toString()); // Use raw vault balance directly
 		form.setFocus('withdrawalAmount'); // Optional: focus the field after setting value
 	};
 

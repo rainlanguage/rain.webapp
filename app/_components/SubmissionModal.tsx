@@ -81,15 +81,17 @@ export const SubmissionModal = ({
 		SubmissionStatus.ApprovingTokens
 	);
 	const [tokenDeposits, setTokenDeposits] = useState<TokenDepositWithStatus[]>(
-		currentState.deposits.map((deposit) => ({
-			tokenAddress: deposit.tokenInfo.address as Hex,
-			tokenInfo: currentState.tokenInfos.find(
-				(info) => info.address === deposit.tokenInfo.address
-			)!,
-			amount: deposit.amount,
-			referrals: deposit.referrals,
-			status: TokenDepositStatus.Pending
-		}))
+		currentState.deposits
+			.map((deposit) => ({
+				tokenAddress: deposit.tokenInfo.address as Hex,
+				tokenInfo: currentState.tokenInfos.find(
+					(info) => info.address === deposit.tokenInfo.address
+				)!,
+				amount: deposit.amount,
+				referrals: deposit.referrals,
+				status: TokenDepositStatus.Pending
+			}))
+			.filter((deposit) => deposit.amount > 0)
 	);
 
 	const [open, setOpen] = useState(false);
@@ -414,7 +416,7 @@ export const SubmissionModal = ({
 													: 'bg-gray-400 w-10 h-10'
 									}`}
 								>
-									{currentState.deposits.length + 1}
+									{tokenDeposits.length + 1}
 								</div>
 								<div className="text-lg">
 									{submissionState === SubmissionStatus.DeployingStrategy ? (

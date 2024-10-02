@@ -48,10 +48,10 @@ export const getFieldPresetsButtons = (field: Field): any[] => {
 			buttonText: '←'
 		},
 		...(field.presets
-			? field.presets.map((preset: Preset) => ({
+			? field.presets.map((preset: Preset, i: number) => ({
 					buttonTarget: 'buttonValue',
 					buttonValue: `${preset.value}`,
-					buttonText: `${preset.name}`
+					buttonText: `${preset.name || preset.value || `Option ${i + 1}`}`
 				}))
 			: []),
 		...(field.min !== undefined

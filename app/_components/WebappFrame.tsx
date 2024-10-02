@@ -150,14 +150,10 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			}));
 			return;
 		} else if (buttonData.buttonTarget === 'buttonValue' && buttonData.buttonValue === 'back') {
-			console.log('going back', buttonData);
-
 			setCurrentState((prevState) => ({
 				...prevState,
 				textInputLabel: ''
 			}));
-
-			
 		}
 
 		const updatedState = getUpdatedFrameState(
@@ -175,22 +171,18 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	const buttonsData = generateButtonsData(yamlData, currentState);
-	useEffect(() => {
-		console.log('buttons data', buttonsData);
-		console.log('state', currentState);
-	}, [buttonsData]);
 
-	// useEffect(() => {
-	// 	const filteredButtons = buttonsData.filter(
-	// 		(buttonData) => buttonData.buttonValue !== 'back' && buttonData.buttonValue !== 'finalSubmit'
-	// 	);
-	// 	if (filteredButtons.length === 1 && filteredButtons[0].buttonText === 'Custom') {
-	// 		setCurrentState((prevState) => ({
-	// 			...prevState,
-	// 			textInputLabel: filteredButtons[0].buttonValue
-	// 		}));
-	// 	}
-	// }, [buttonsData]);
+	useEffect(() => {
+		const filteredButtons = buttonsData.filter(
+			(buttonData) => buttonData.buttonValue !== 'back' && buttonData.buttonValue !== 'finalSubmit'
+		);
+		if (filteredButtons.length === 1 && filteredButtons[0].buttonText === 'Custom') {
+			setCurrentState((prevState) => ({
+				...prevState,
+				textInputLabel: filteredButtons[0].buttonValue
+			}));
+		}
+	}, [buttonsData]);
 
 	return loading.decodingState || loading.fetchingTokens ? (
 		<div className="flex-grow flex items-center justify-center">

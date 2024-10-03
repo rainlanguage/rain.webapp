@@ -329,7 +329,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 												? 'bg-amber-500 w-12 h-12'
 												: depositState === TokenDepositStatus.WaitingForDepositConfirmation
 													? 'bg-amber-500 w-12 h-12'
-													: depositState === TokenDepositStatus.Done
+													: depositState === TokenDepositStatus.TokensDeposited
 														? 'bg-emerald-600 w-10 h-10'
 														: 'bg-gray-400 w-10 h-10'
 										}`}>
@@ -342,7 +342,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 											</span>
 										) : depositState === TokenDepositStatus.WaitingForDepositConfirmation ? (
 											<span className="animate-pulse">Waiting for deposit confirmation...</span>
-										) : depositState === TokenDepositStatus.Done ? (
+										) : depositState === TokenDepositStatus.TokensDeposited ? (
 											'Deposit complete.'
 										) : (
 											<span className="text-gray-500">

@@ -1,4 +1,5 @@
 'use client';
+import { config } from '../providers';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,9 +24,19 @@ import {
 import { useWriteContract, useReadContract, useAccount } from 'wagmi';
 import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits, erc20Abi } from 'viem';
-import { waitForTransactionReceipt } from 'viem/actions';
-import { config } from '../providers';
-import { readContract } from '@wagmi/core';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { readContract } from 'viem/actions';
+
+const ERC20_ABI = [
+	{
+		constant: true,
+		inputs: [{ name: 'owner', type: 'address' }],
+		name: 'balanceOf',
+		outputs: [{ name: '', type: 'uint256' }],
+		type: 'function'
+	}
+];
 
 const formSchema = z.object({
 	depositAmount: z.preprocess(
@@ -50,27 +61,28 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 	const [rawAmount, setRawAmount] = useState<string>('0');
 
 	const [error, setError] = useState<string | null>(null);
+	const [connectedWalletBalance, setConnectedWalletBalance] = useState<BigInt | null>(null);
 
 	useEffect(() => {
 		setError(null);
 	}, []);
 
-	useEffect(() => {
-		console.log('vault', vault);
-	}, [vault]);
-
 	const address = useAccount().address;
 
-	const connectedWalletBalance = useReadContract({
-		address: vault.token.address,
-		abi: erc20Abi,
-		functionName: 'balanceOf',
-		args: [address as `0x${string}`]
-	}).data;
-
 	useEffect(() => {
-		console.log('connectedWalletBalance', connectedWalletBalance);
-	}, [connectedWalletBalance]);
+		const fetchBalance = async () => {
+			console.log(address);
+			const balance = await readContract(config.getClient(), {
+				abi: erc20Abi,
+				address: vault.token.address,
+				functionName: 'balanceOf',
+				args: [address as `0x${string}`]
+			});
+			setConnectedWalletBalance(balance);
+			console.log(balance);
+		};
+		fetchBalance();
+	}, [vault.token.address, address]);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -80,64 +92,12 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 	});
 
 	const deposit = async (amount: string) => {
-		try {
-			console.log('VAULT', vault);
-			const existingAllowance = await readContract(config, {
-				abi: erc20Abi,
-				address: vault.token.address,
-				functionName: 'allowance',
-				args: [address as `0x${string}`, vault.orderbook.id]
-			});
-
-			console.log(existingAllowance, 'existingAllowance');
-
-			console.log('amount', amount);
-
-			// If the allowance is less than the deposit amount, approve more tokens
-			if (existingAllowance < amount) {
-				console.log(`Existing allowance is ${existingAllowance.toString()}, approving more...`);
-
-				// Send the approve transaction
-				const approveTx = await writeContractAsync({
-					address: vault.token.address,
-					abi: erc20Abi,
-					functionName: 'approve',
-					args: [vault.orderbook.id, amount]
-				});
-
-				console.log(`Approval transaction sent: ${approveTx.hash}`);
-
-				// Wait for the approval transaction to be confirmed
-				const receipt = await waitForTransactionReceipt(config.getClient(), {
-					hash: approveTx.hash,
-					confirmations: 1 // Optional: Number of confirmations to wait for
-				});
-
-				console.log(`Approval confirmed in block ${receipt.blockNumber}`);
-			} else {
-				console.log('Sufficient allowance, no need to approve.');
-			}
-
-			//  call the deposit2 function
-			const depositTx = await writeContractAsync({
-				abi: orderBookJson.abi,
-				address: vault.orderbook.id,
-				functionName: 'deposit2',
-				args: [vault.token.address, BigInt(vault.vaultId), amount, []]
-			});
-
-			console.log(`Deposit transaction sent: ${depositTx.hash}`);
-
-			// wait for the deposit transaction receipt
-			const depositReceipt = await waitForTransactionReceipt(config.getClient(), {
-				hash: depositTx.hash,
-				confirmations: 1
-			});
-
-			console.log(`Deposit confirmed in block ${depositReceipt.blockNumber}`);
-		} catch (error) {
-			console.error('Error during deposit process:', error);
-		}
+		await writeContractAsync({
+			abi: orderBookJson.abi,
+			address: vault.orderbook.id,
+			functionName: 'deposit2',
+			args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
+		});
 	};
 
 	const handleMaxClick = () => {
@@ -171,8 +131,14 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger>
-				<Button>Deposit</Button>
+			<DialogTrigger asChild={true}>
+				<span
+					className={cn(
+						buttonVariants(),
+						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
+					)}>
+					Deposit
+				</span>
 			</DialogTrigger>
 			<DialogContent className="bg-white">
 				<DialogHeader>

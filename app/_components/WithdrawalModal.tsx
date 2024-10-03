@@ -2,7 +2,7 @@
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
 	Form,
 	FormControl,
@@ -23,6 +23,7 @@ import {
 import { useWriteContract } from 'wagmi';
 import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits } from 'viem';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
 	withdrawalAmount: z.preprocess(
@@ -105,7 +106,13 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger>
-				<Button>Withdraw</Button>
+				<span
+					className={cn(
+						buttonVariants(),
+						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
+					)}>
+					Deposit
+				</span>
 			</DialogTrigger>
 			<DialogContent className="bg-white">
 				<DialogHeader>
@@ -117,8 +124,7 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 								await withdraw(rawAmount);
 								setOpen(false);
 							})}
-							className="space-y-8"
-						>
+							className="space-y-8">
 							<FormField
 								control={form.control}
 								name="withdrawalAmount"

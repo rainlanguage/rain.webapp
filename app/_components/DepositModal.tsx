@@ -247,7 +247,10 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 											<FormLabel>Amount</FormLabel>
 											{connectedWalletBalance && (
 												<div className="text-sm text-gray-500">
-													Balance: {formatUnits(connectedWalletBalance, vault.token.decimals)}
+													Your {vault.token.symbol} Balance:{' '}
+													<strong>
+														{formatUnits(connectedWalletBalance, vault.token.decimals)}
+													</strong>
 												</div>
 											)}
 											<FormControl>

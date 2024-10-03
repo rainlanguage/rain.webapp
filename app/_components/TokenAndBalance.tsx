@@ -16,7 +16,8 @@ export function TokenAndBalance({
 			<div className="flex flex-col gap-y-1">
 				<div>{withdraw ? input.token.name : input.token.symbol}</div>
 				<div className="text-gray-500">
-					Balance: {Number(Number(formatUnits(input.balance, input.token.decimals)).toFixed(8))}
+					Strategy Balance:{' '}
+					{Number(Number(formatUnits(input.balance, input.token.decimals)).toFixed(8))}
 				</div>
 			</div>
 			<div className="flex gap-2">

@@ -116,7 +116,6 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 
 			const parsedAmount = parseUnits(depositAmount, vault.token.decimals);
 
-			// Step 1: Check current allowance
 			setDepositState(TokenDepositStatus.CheckingAllowance);
 			const existingAllowance = await readContract(config.getClient(), {
 				abi: erc20Abi,
@@ -127,7 +126,6 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 
 			console.log(`Current allowance: ${existingAllowance}`);
 
-			// Step 2: If allowance is insufficient, approve the necessary amount
 			if (existingAllowance < parsedAmount) {
 				console.log(`Insufficient allowance (${existingAllowance}), approving...`);
 				setDepositState(TokenDepositStatus.ApprovingTokens);
@@ -142,7 +140,6 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 				console.log(`Approval transaction sent: ${approveTx.hash}`);
 				setDepositState(TokenDepositStatus.WaitingForApprovalConfirmation);
 
-				// Step 3: Wait for the approval to be mined
 				const receipt = await waitForTransactionReceipt(config, {
 					hash: approveTx,
 					confirmations: 1
@@ -155,7 +152,6 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 				setDepositState(TokenDepositStatus.TokensApproved);
 			}
 
-			// Step 4: Proceed with the deposit after approval
 			setDepositState(TokenDepositStatus.DepositingTokens);
 			const depositTx = await writeContractAsync({
 				abi: orderBookJson.abi,
@@ -167,7 +163,6 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 			console.log(`Deposit transaction sent: ${depositTx}`);
 			setDepositState(TokenDepositStatus.WaitingForDepositConfirmation);
 
-			// Step 5: Optionally, wait for the deposit transaction to be mined
 			const depositReceipt = await waitForTransactionReceipt(config, {
 				hash: depositTx,
 				confirmations: 1

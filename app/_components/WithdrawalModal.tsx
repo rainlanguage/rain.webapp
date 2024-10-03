@@ -111,7 +111,7 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 						buttonVariants(),
 						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
 					)}>
-					Deposit
+					Withdraw
 				</span>
 			</DialogTrigger>
 			<DialogContent className="bg-white">

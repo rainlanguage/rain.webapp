@@ -93,12 +93,12 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 		setError(null);
 	};
 
-	const connectedWalletBalance: bigint | unknown = useReadContract({
+	const connectedWalletBalance: bigint = useReadContract({
 		abi: ERC20_ABI,
 		address: vault.token.address,
 		functionName: 'balanceOf',
 		args: [address as `0x${string}`]
-	}).data;
+	}).data as bigint;
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -121,7 +121,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 				abi: erc20Abi,
 				address: vault.token.address,
 				functionName: 'allowance',
-				args: [address, vault.orderbook.id]
+				args: [address as `0x${string}`, vault.orderbook.id]
 			});
 
 			console.log(`Current allowance: ${existingAllowance}`);
@@ -137,7 +137,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 					args: [vault.orderbook.id, parsedAmount]
 				});
 
-				console.log(`Approval transaction sent: ${approveTx.hash}`);
+				console.log(`Approval transaction sent: ${approveTx}`);
 				setDepositState(TokenDepositStatus.WaitingForApprovalConfirmation);
 
 				const receipt = await waitForTransactionReceipt(config, {

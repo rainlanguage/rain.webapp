@@ -19,7 +19,7 @@ export function TokenAndBalance({
 					Balance: {Number(Number(formatUnits(input.balance, input.token.decimals)).toFixed(8))}
 				</div>
 			</div>
-			<div className="flex gap-4">
+			<div className="flex gap-2">
 				{deposit && <DepositModal vault={input} />}
 				{withdraw && <WithdrawalModal vault={input} />}
 			</div>

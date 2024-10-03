@@ -76,6 +76,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 	const [rawAmount, setRawAmount] = useState<string>('0');
 	const [depositState, setDepositState] = useState<TokenDepositStatus>(TokenDepositStatus.Idle);
 	const [error, setError] = useState<string | null>(null);
+	const [depositTxHash, setDepositTxHash] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (!open) {
@@ -89,6 +90,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 
 	const handleDismiss = () => {
 		setOpen(false);
+		setDepositTxHash(null);
 		setDepositState(TokenDepositStatus.Idle);
 		setError(null);
 	};
@@ -123,32 +125,34 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 				functionName: 'allowance',
 				args: [address as `0x${string}`, vault.orderbook.id]
 			});
-
-			console.log(`Current allowance: ${existingAllowance}`);
-
 			if (existingAllowance < parsedAmount) {
-				console.log(`Insufficient allowance (${existingAllowance}), approving...`);
 				setDepositState(TokenDepositStatus.ApprovingTokens);
+				try {
+					const approveTx = await writeContractAsync({
+						address: vault.token.address,
+						abi: erc20Abi,
+						functionName: 'approve',
+						args: [vault.orderbook.id, parsedAmount]
+					});
 
-				const approveTx = await writeContractAsync({
-					address: vault.token.address,
-					abi: erc20Abi,
-					functionName: 'approve',
-					args: [vault.orderbook.id, parsedAmount]
-				});
+					setDepositState(TokenDepositStatus.WaitingForApprovalConfirmation);
 
-				console.log(`Approval transaction sent: ${approveTx}`);
-				setDepositState(TokenDepositStatus.WaitingForApprovalConfirmation);
+					const receipt = await waitForTransactionReceipt(config, {
+						hash: approveTx,
+						confirmations: 1
+					});
+				} catch (error: unknown) {
+					setDepositState(TokenDepositStatus.Error);
+					if (
+						(error as Error)?.message &&
+						(error as Error).message.includes('User rejected the request')
+					) {
+						setError('User rejected the approval request.');
+					} else setError('Error during approval process');
+				}
 
-				const receipt = await waitForTransactionReceipt(config, {
-					hash: approveTx,
-					confirmations: 1
-				});
-
-				console.log(`Approval confirmed in block ${receipt.blockNumber}`);
 				setDepositState(TokenDepositStatus.TokensApproved);
 			} else {
-				console.log('Sufficient allowance, no approval needed.');
 				setDepositState(TokenDepositStatus.TokensApproved);
 			}
 
@@ -160,7 +164,6 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 				args: [vault.token.address, BigInt(vault.vaultId), parsedAmount, []]
 			});
 
-			console.log(`Deposit transaction sent: ${depositTx}`);
 			setDepositState(TokenDepositStatus.WaitingForDepositConfirmation);
 
 			const depositReceipt = await waitForTransactionReceipt(config, {
@@ -168,7 +171,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 				confirmations: 1
 			});
 
-			console.log(`Deposit confirmed in block ${depositReceipt.blockNumber}`);
+			setDepositTxHash(depositReceipt.transactionHash);
 			setDepositState(TokenDepositStatus.Done);
 		} catch (error: unknown) {
 			setDepositState(TokenDepositStatus.Error);
@@ -176,7 +179,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 				(error as Error)?.message &&
 				(error as Error).message.includes('User rejected the request')
 			) {
-				setError('User rejected the request.');
+				setError('User rejected the deposit request.');
 			} else setError('Error during deposit process');
 		}
 	};
@@ -199,10 +202,9 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 		form.setValue('depositAmount', parseFloat(userInput));
 
 		if (userInput) {
-			console.log('input!', userInput);
 			try {
 				const parsedRawAmount = parseUnits(userInput, vault.token.decimals).toString();
-				console.log('parsedRawAmount', parsedRawAmount);
+
 				if (BigInt(parsedRawAmount) > connectedWalletBalance) {
 					setError('Amount exceeds wallet balance');
 				} else {
@@ -225,7 +227,8 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 					className={cn(
 						buttonVariants(),
 						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
-					)}>
+					)}
+				>
 					Deposit
 				</span>
 			</DialogTrigger>
@@ -238,7 +241,8 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 								onSubmit={form.handleSubmit(async () => {
 									await deposit();
 								})}
-								className="space-y-8">
+								className="space-y-8"
+							>
 								<FormField
 									control={form.control}
 									name="depositAmount"
@@ -297,9 +301,18 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 								<div className="bg-green-200 text-black p-4 rounded-lg flex flex-col gap-2">
 									<p>Deposit completed successfully!</p>
 								</div>
-								<Button className="w-fit" onClick={handleDismiss}>
-									Dismiss
-								</Button>
+								<div className="flex gap-2">
+									<a
+										href={(chain?.blockExplorers.default.url as string) + '/tx/' + depositTxHash}
+										target="_blank"
+										rel="noreferrer"
+									>
+										<Button className="w-fit">View Transaction</Button>
+									</a>
+									<Button className="w-fit" onClick={handleDismiss}>
+										Dismiss
+									</Button>
+								</div>
 							</div>
 						) : (
 							<div className={`transition-opacity duration-1000 flex flex-col`}>
@@ -313,7 +326,8 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 													  depositState === TokenDepositStatus.WaitingForApprovalConfirmation
 													? 'bg-amber-500 w-12 h-12'
 													: 'bg-emerald-600 w-10 h-10'
-										}`}>
+										}`}
+									>
 										{1}
 									</div>
 									<div className="text-lg">
@@ -345,7 +359,8 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 													: depositState === TokenDepositStatus.TokensDeposited
 														? 'bg-emerald-600 w-10 h-10'
 														: 'bg-gray-400 w-10 h-10'
-										}`}>
+										}`}
+									>
 										{2}
 									</div>
 									<div className="text-lg">

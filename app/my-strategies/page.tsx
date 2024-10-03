@@ -42,7 +42,8 @@ export default function MyStrategies() {
 										router.push(
 											`${window.location.origin}/my-strategies/${order.addEvents[0].transaction.id}`
 										);
-									}}>
+									}}
+								>
 									<Table.Cell>{order.network}</Table.Cell>
 									<Table.Cell>
 										{order.active ? (

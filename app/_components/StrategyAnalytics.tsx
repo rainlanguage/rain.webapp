@@ -66,7 +66,8 @@ const StrategyAnalytics = ({ transactionId }: props) => {
 								<Button
 									onClick={() => {
 										removeOrder();
-									}}>
+									}}
+								>
 									Remove strategy
 								</Button>
 							)}

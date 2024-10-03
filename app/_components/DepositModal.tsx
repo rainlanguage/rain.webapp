@@ -283,17 +283,23 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 							Depositing your tokens
 						</DialogTitle>
 						{depositState === TokenDepositStatus.Error ? (
-							<>
-								<div className="bg-red-200  text-black p-4 rounded-xl mb-4">
+							<div className="flex flex-col gap-4  justify-center">
+								<div className="bg-red-200  text-black p-4 rounded-lg flex flex-col gap-2">
 									<p>Failed to deposit.</p>
 									<p>{error}</p>
 								</div>
-								<Button onClick={handleDismiss}>Dismiss</Button>
-							</>
+								<Button className="w-fit" onClick={handleDismiss}>
+									Dismiss
+								</Button>
+							</div>
 						) : depositState === TokenDepositStatus.Done ? (
-							<div className="bg-green-200 text-black p-4 rounded-xl flex flex-col gap-2">
-								<p>Deposit completed successfully!</p>
-								<Button onClick={handleDismiss}>Dismiss</Button>
+							<div className="flex flex-col gap-4  justify-center">
+								<div className="bg-green-200 text-black p-4 rounded-lg flex flex-col gap-2">
+									<p>Deposit completed successfully!</p>
+								</div>
+								<Button className="w-fit" onClick={handleDismiss}>
+									Dismiss
+								</Button>
 							</div>
 						) : (
 							<div className={`transition-opacity duration-1000 flex flex-col`}>

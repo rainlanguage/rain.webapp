@@ -170,10 +170,14 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 
 			console.log(`Deposit confirmed in block ${depositReceipt.blockNumber}`);
 			setDepositState(TokenDepositStatus.Done);
-		} catch (error) {
-			console.error('Error during deposit process:', error);
+		} catch (error: unknown) {
 			setDepositState(TokenDepositStatus.Error);
-			setError('User denied the transaction. Please try again.');
+			if (
+				(error as Error)?.message &&
+				(error as Error).message.includes('User rejected the request')
+			) {
+				setError('User rejected the request.');
+			} else setError('Error during deposit process');
 		}
 	};
 
@@ -284,7 +288,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 								<Button onClick={handleDismiss}>Dismiss</Button>
 							</>
 						) : depositState === TokenDepositStatus.Done ? (
-							<div className="bg-green-200 text-black p-4 rounded-xl mb-4">
+							<div className="bg-green-200 text-black p-4 rounded-xl flex flex-col gap-2">
 								<p>Deposit completed successfully!</p>
 								<Button onClick={handleDismiss}>Dismiss</Button>
 							</div>

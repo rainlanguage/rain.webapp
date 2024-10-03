@@ -163,6 +163,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 				functionName: 'deposit2',
 				args: [vault.token.address, BigInt(vault.vaultId), parsedAmount, []]
 			});
+			setDepositTxHash(depositTx);
 
 			setDepositState(TokenDepositStatus.WaitingForDepositConfirmation);
 
@@ -171,7 +172,6 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 				confirmations: 1
 			});
 
-			setDepositTxHash(depositReceipt.transactionHash);
 			setDepositState(TokenDepositStatus.Done);
 		} catch (error: unknown) {
 			setDepositState(TokenDepositStatus.Error);
@@ -383,6 +383,17 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 								</div>
 							</div>
 						)}
+						{chain?.blockExplorers?.default.url &&
+							depositTxHash &&
+							depositState !== TokenDepositStatus.Done && (
+								<a
+									href={(chain?.blockExplorers.default.url as string) + '/tx/' + depositTxHash}
+									target="_blank"
+									rel="noreferrer"
+								>
+									<Button className="w-fit">View Transaction</Button>
+								</a>
+							)}
 					</div>
 				)}
 			</DialogContent>

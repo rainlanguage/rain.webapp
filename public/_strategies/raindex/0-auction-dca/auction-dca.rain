@@ -274,9 +274,9 @@ last-time:get(hash(order-hash() last-trade-time-key)),
 last-io:get(hash(order-hash() last-trade-io-key));
 
 #get-epoch
-last-time _: call<'get-last-trade>(),
-duration: sub(now() last-time),
 initial-time: call<'get-initial-time>(),
+last-time _: call<'get-last-trade>(),
+duration: sub(now() any(last-time initial-time)),
 total-duration: sub(now() initial-time),
 amount-epochs: div(total-duration time-per-amount-epoch),
 trade-epochs: div(duration time-per-trade-epoch);
@@ -324,7 +324,7 @@ val:
 #io-for-epoch
 epoch:,
 last-io: call<'get-last-trade>(),
-max-next-trade: mul(last-io next-trade-multiplier),
+max-next-trade: any(mul(last-io next-trade-multiplier) initial-io),
 baseline-next-trade: mul(last-io next-trade-baseline-multiplier),
 real-baseline: max(baseline-next-trade baseline),
 variable-component: saturating-sub(max-next-trade real-baseline),
@@ -333,7 +333,6 @@ _: add(real-baseline above-baseline);
 
 #handle-add-order
 using-words-from raindex-subparser
-:call<'set-last-trade>(initial-io),
 :call<'set-initial-time>();
 
 #calculate-io

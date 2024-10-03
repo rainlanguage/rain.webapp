@@ -29,6 +29,20 @@ import { cn } from '@/lib/utils';
 import { readContract } from 'viem/actions';
 import { waitForTransactionReceipt } from '@wagmi/core';
 
+export enum TokenDepositStatus {
+	Idle,
+	Pending = 'Pending',
+	CheckingAllowance = 'CheckingAllowance',
+	ApprovingTokens = 'ApprovingTokens',
+	WaitingForApprovalConfirmation = 'WaitingForApprovalConfirmation',
+	TokensApproved = 'TokensApproved',
+	DespositingTokens = 'DepositingTokens',
+	WaitingForDepositConfirmation = 'WaitingForDepositConfirmation',
+	TokensDeposited = 'TokensDeposited',
+	Error = 'Error',
+	Done = 'Done'
+}
+
 const ERC20_ABI = [
 	{
 		constant: true,
@@ -60,9 +74,9 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 	const { writeContractAsync } = useWriteContract();
 	const [open, setOpen] = useState(false);
 	const [rawAmount, setRawAmount] = useState<string>('0');
-
+	const [depositState, setDepositState] = useState<TokenDepositStatus>(TokenDepositStatus.Idle);
 	const [error, setError] = useState<string | null>(null);
-	const [connectedWalletBalance, setConnectedWalletBalance] = useState<BigInt | null>(null);
+	const [connectedWalletBalance, setConnectedWalletBalance] = useState<bigint | null>(null);
 
 	useEffect(() => {
 		if (!open) {
@@ -157,15 +171,6 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 		}
 	};
 
-	// const deposit = async (amount: string) => {
-	// 	await writeContractAsync({
-	// 		abi: orderBookJson.abi,
-	// 		address: vault.orderbook.id,
-	// 		functionName: 'deposit2',
-	// 		args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
-	// 	});
-	// };
-
 	const handleMaxClick = () => {
 		if (connectedWalletBalance === BigInt(0)) {
 			return setError('Insuficient balance');
@@ -212,7 +217,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 					<Form {...form}>
 						<form
 							onSubmit={form.handleSubmit(async () => {
-								await deposit(rawAmount);
+								await deposit();
 							})}
 							className="space-y-8">
 							<FormField
@@ -249,6 +254,75 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 						</form>
 					</Form>
 				</DialogHeader>
+				{depositState !== TokenDepositStatus.Idle && (
+					<div>
+						<DialogTitle className="w-full font-light text-2xl mb-4">
+							Depositing your tokens
+						</DialogTitle>
+						<div
+							className={`transition-opacity duration-1000 flex flex-col ${
+								depositState === TokenDepositStatus.Done ? 'opacity-0' : 'opacity-100'
+							}`}>
+							<div key={i} className="flex items-center my-4">
+								<div
+									className={`text-2xl text-white rounded-full flex items-center justify-center mr-4 transition-all ${
+										depositState === TokenDepositStatus.Pending
+											? 'bg-gray-400 w-10 h-10'
+											: depositState === TokenDepositStatus.CheckingAllowance ||
+												  depositState === TokenDepositStatus.ApprovingTokens ||
+												  depositState === TokenDepositStatus.WaitingForApprovalConfirmation
+												? 'bg-amber-500 w-12 h-12'
+												: 'bg-emerald-600 w-10 h-10'
+									}`}>
+									{i + 1}
+								</div>
+								<div className="text-lg">
+									{depositState === TokenDepositStatus.Pending ? (
+										<span className="text-gray-500">Approve {vault.token.symbol}</span>
+									) : depositState === TokenDepositStatus.CheckingAllowance ? (
+										<span className="animate-pulse">
+											Checking allowance for {vault.token.symbol}...
+										</span>
+									) : depositState === TokenDepositStatus.ApprovingTokens ? (
+										<span className="animate-pulse">
+											Approving allowance for {vault.token.symbol}...
+										</span>
+									) : depositState === TokenDepositStatus.WaitingForApprovalConfirmation ? (
+										<span className="animate-pulse">Waiting for approval confirmation...</span>
+									) : (
+										`${vault.token.symbol} allowance approved`
+									)}
+								</div>
+							</div>
+
+							<div className="flex items-center my-4">
+								<div
+									className={`text-2xl text-white rounded-full transition-all flex items-center justify-center mr-4 ${
+										depositState === TransactionStatus.DeployingStrategy
+											? 'bg-amber-500 w-12 h-12'
+											: depositState === TransactionStatus.WaitingForDeploymentConfirmation
+												? 'bg-amber-500 w-12 h-12'
+												: depositState === TransactionStatus.Done
+													? 'bg-emerald-600 w-10 h-10'
+													: 'bg-gray-400 w-10 h-10'
+									}`}>
+									{tokenDeposits.length + 1}
+								</div>
+								<div className="text-lg">
+									{depositState === TransactionStatus.DeployingStrategy ? (
+										<span className="animate-pulse">Deploying strategy...</span>
+									) : depositState === TransactionStatus.WaitingForDeploymentConfirmation ? (
+										<span className="animate-pulse">Waiting for deployment confirmation...</span>
+									) : depositState === TransactionStatus.Done ? (
+										'Strategy deployed'
+									) : (
+										<span className="text-gray-500">Deploy strategy</span>
+									)}
+								</div>
+							</div>
+						</div>
+					</div>
+				)}
 			</DialogContent>
 		</Dialog>
 	);

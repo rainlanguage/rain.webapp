@@ -74,7 +74,6 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 	const { writeContractAsync } = useWriteContract();
 	const [open, setOpen] = useState(false);
 	const [rawAmount, setRawAmount] = useState<string>('0');
-	const [readableAmount, setReadableAmount] = useState<string>('0');
 	const [depositState, setDepositState] = useState<TokenDepositStatus>(TokenDepositStatus.Idle);
 	const [error, setError] = useState<string | null>(null);
 

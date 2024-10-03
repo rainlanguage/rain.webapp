@@ -7,13 +7,33 @@ export function middleware(req: NextRequest) {
 	// Split the host into its subdomains
 	const domains = host.split('.');
 
-	// Handle root domain, accounting for localhost and Vercel deployments
-	const isLocalhostWithSubdomain = host.includes('localhost') && domains.length > 1;
-	const isVercelWithSubdomain =
-		(host.includes('rainframe.xyz') || host.includes('raindex.finance')) && domains.length > 2;
-	if (isLocalhostWithSubdomain || isVercelWithSubdomain) {
-		// Add logic to handle different subdomains
-		const subdomain = domains[0];
+	// Initialize subdomain
+	let subdomain = '';
+
+	// Determine if the request is from localhost or your production domains
+	const isLocalhost = host.includes('localhost');
+	const isProductionDomain = host.includes('rainframe.xyz') || host.includes('raindex.finance');
+
+	if (isLocalhost) {
+		if (domains.length > 1) {
+			// localhost with subdomain
+			subdomain = domains[0];
+		} else {
+			// localhost without subdomain
+			subdomain = 'raindex';
+		}
+	} else if (isProductionDomain) {
+		if (domains.length > 2) {
+			// Production domain with subdomain
+			subdomain = domains[0];
+		} else {
+			// Production root domain
+			subdomain = 'raindex';
+		}
+	}
+
+	if (subdomain) {
+		// Exclude certain paths from rewriting
 		if (
 			url.pathname.startsWith('/_images') ||
 			url.pathname.startsWith('/my-strategies') ||
@@ -22,7 +42,6 @@ export function middleware(req: NextRequest) {
 			return NextResponse.next();
 		}
 		url.pathname = `/${subdomain}${url.pathname}`;
-
 		return NextResponse.rewrite(url);
 	}
 

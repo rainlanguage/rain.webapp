@@ -27,6 +27,7 @@ import { parseUnits, formatUnits, erc20Abi } from 'viem';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { readContract } from 'viem/actions';
+import { waitForTransactionReceipt } from '@wagmi/core';
 
 const ERC20_ABI = [
 	{
@@ -64,16 +65,19 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 	const [connectedWalletBalance, setConnectedWalletBalance] = useState<BigInt | null>(null);
 
 	useEffect(() => {
-		setError(null);
-	}, []);
+		if (!open) {
+			setError(null);
+		}
+	}, [open]);
 
 	const address = useAccount().address;
+	const chain = useAccount().chain;
 
 	useEffect(() => {
 		const fetchBalance = async () => {
-			console.log(address);
+			console.log(address, chain);
 			const balance = await readContract(config.getClient(), {
-				abi: erc20Abi,
+				abi: ERC20_ABI,
 				address: vault.token.address,
 				functionName: 'balanceOf',
 				args: [address as `0x${string}`]
@@ -91,14 +95,76 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 		}
 	});
 
-	const deposit = async (amount: string) => {
-		await writeContractAsync({
-			abi: orderBookJson.abi,
-			address: vault.orderbook.id,
-			functionName: 'deposit2',
-			args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
-		});
+	const deposit = async () => {
+		try {
+			const depositAmount = form.getValues('depositAmount').toString();
+			const parsedAmount = parseUnits(depositAmount, vault.token.decimals);
+
+			// Step 1: Check current allowance
+			const existingAllowance = await readContract(config.getClient(), {
+				abi: erc20Abi,
+				address: vault.token.address,
+				functionName: 'allowance',
+				args: [address, vault.orderbook.id]
+			});
+
+			console.log(`Current allowance: ${existingAllowance}`);
+
+			// Step 2: If allowance is insufficient, approve the necessary amount
+			if (existingAllowance < parsedAmount) {
+				console.log(`Insufficient allowance (${existingAllowance}), approving...`);
+
+				const approveTx = await writeContractAsync({
+					address: vault.token.address,
+					abi: erc20Abi,
+					functionName: 'approve',
+					args: [vault.orderbook.id, parsedAmount]
+				});
+
+				console.log(`Approval transaction sent: ${approveTx.hash}`);
+
+				// Step 3: Wait for the approval to be mined
+				const receipt = await waitForTransactionReceipt(config, {
+					hash: approveTx.hash,
+					confirmations: 1
+				});
+
+				console.log(`Approval confirmed in block ${receipt.blockNumber}`);
+			} else {
+				console.log('Sufficient allowance, no approval needed.');
+			}
+
+			// Step 4: Proceed with the deposit after approval
+			const depositTx = await writeContractAsync({
+				abi: orderBookJson.abi,
+				address: vault.orderbook.id,
+				functionName: 'deposit2',
+				args: [vault.token.address, BigInt(vault.vaultId), parsedAmount, []]
+			});
+
+			console.log(`Deposit transaction sent: ${depositTx}`);
+
+			// Step 5: Optionally, wait for the deposit transaction to be mined
+			const depositReceipt = await waitForTransactionReceipt(config, {
+				hash: depositTx,
+				confirmations: 1
+			});
+
+			console.log(`Deposit confirmed in block ${depositReceipt.blockNumber}`);
+		} catch (error) {
+			console.error('Error during deposit process:', error);
+			return setError('Failed to deposit. Please try again.');
+		}
 	};
+
+	// const deposit = async (amount: string) => {
+	// 	await writeContractAsync({
+	// 		abi: orderBookJson.abi,
+	// 		address: vault.orderbook.id,
+	// 		functionName: 'deposit2',
+	// 		args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
+	// 	});
+	// };
 
 	const handleMaxClick = () => {
 		if (connectedWalletBalance === BigInt(0)) {
@@ -147,7 +213,6 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 						<form
 							onSubmit={form.handleSubmit(async () => {
 								await deposit(rawAmount);
-								setOpen(false);
 							})}
 							className="space-y-8">
 							<FormField

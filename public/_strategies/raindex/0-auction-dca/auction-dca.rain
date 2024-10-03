@@ -233,6 +233,8 @@ gui:
             This should be greater than the baseline.
           min: 0
           presets:
+            - name: 30
+              value: 30
             - name: 50
               value: 50
             - name: 100

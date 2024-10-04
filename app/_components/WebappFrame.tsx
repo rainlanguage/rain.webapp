@@ -8,7 +8,7 @@ import { getUpdatedFrameState } from '../_services/frameState';
 import { FrameState } from '../_types/frame';
 import yaml from 'js-yaml';
 import { ProgressBar } from './ProgressBar';
-import _ from 'lodash';
+
 import { FailsafeSchemaWithNumbers } from '../_schemas/failsafeWithNumbers';
 import { SubmissionModal } from './SubmissionModal';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -68,7 +68,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	const [error, setError] = useState<string | React.ReactElement | null>(null);
 	const [inputText, setInputText] = useState<string>('');
-
+	const [previousValue, setPreviousValue] = useState<string | number>(''); // New state for previous value
 	const searchParams = useSearchParams();
 	const router = useRouter(); // Hook call inside the component body
 
@@ -102,6 +102,15 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
+		const lastDeposit =
+			currentState.deposits.length > 0
+				? currentState.deposits[currentState.deposits.length - 1].amount
+				: null;
+		const lastBindingValue = Object.values(currentState.bindings)[
+			Object.keys(currentState.bindings).length - 1
+		];
+		console.log(lastDeposit, lastBindingValue);
+		setPreviousValue(lastDeposit || lastBindingValue || '');
 		const updateUrlWithState = async () => {
 			try {
 				const { bindings, deposits, currentStep } = currentState;
@@ -195,7 +204,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		setCurrentState({ ...updatedState });
 
 		if (inputText) {
-			setInputText('');
+			setInputText('1');
 		}
 	};
 

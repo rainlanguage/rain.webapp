@@ -24,42 +24,39 @@ interface props {
 	deploymentOption: string | null;
 }
 
+const getDefaultState = (yamlData: YamlData, deploymentOption: string | null): FrameState => {
+	console.log('getting default state');
+	const deployment =
+		yamlData.gui.deployments.find((deployment) => deployment.deployment === deploymentOption) ||
+		undefined;
+
+	return {
+		strategyName: yamlData.gui.name,
+		strategyDescription: yamlData.gui.description,
+		currentStep: deploymentOption ? 'fields' : 'start',
+		deploymentOption: deployment,
+		bindings: {},
+		deposits: [],
+		buttonPage: 0,
+		buttonMax: 10,
+		textInputLabel:
+			deployment && deployment.fields[0]?.min !== undefined && !deployment.fields[0]?.presets
+				? `Enter a number greater than ${deployment.fields[0].min}`
+				: '',
+		error: null,
+		isWebapp: true,
+		tokenInfos: [] as TokenInfo[]
+	};
+};
+
 const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	const yamlData = yaml.load(dotrainText.split('---')[0], {
 		schema: FailsafeSchemaWithNumbers
 	}) as YamlData;
 
-	const defaultState: FrameState = {
-		strategyName: yamlData.gui.name,
-		strategyDescription: yamlData.gui.description,
-		currentStep: deploymentOption ? 'fields' : 'start',
-		deploymentOption:
-			yamlData.gui.deployments.find((deployment) => deployment.deployment === deploymentOption) ||
-			undefined,
-		bindings: {},
-		deposits: [],
-		buttonPage: 0,
-		buttonMax: 10,
-		textInputLabel: (() => {
-			const deployment =
-				yamlData.gui.deployments.find((deployment) => deployment.deployment === deploymentOption) ||
-				undefined;
-			if (!deployment) {
-				return '';
-			}
-			const fields = deployment.fields;
-			const currentField = fields[0];
-			if (currentField.min !== undefined && !currentField.presets) {
-				return `Enter a number greater than ${currentField.min}`;
-			}
-			return '';
-		})(),
-		error: null,
-		isWebapp: true,
-		tokenInfos: [] as TokenInfo[]
-	};
-
-	const [currentState, setCurrentState] = useState<FrameState>(defaultState);
+	const [currentState, setCurrentState] = useState<FrameState>(() =>
+		getDefaultState(yamlData, deploymentOption)
+	);
 
 	const [loading, setLoading] = useState({
 		fetchingTokens: false,
@@ -68,13 +65,13 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	const [error, setError] = useState<string | React.ReactElement | null>(null);
 	const [inputText, setInputText] = useState<string>('');
-	const [previousValue, setPreviousValue] = useState<string | number>(''); // New state for previous value
 	const searchParams = useSearchParams();
-	const router = useRouter(); // Hook call inside the component body
+	const router = useRouter();
+
+	const buttonsData = generateButtonsData(yamlData, currentState);
 
 	const getUrlState = async () => {
 		const encodedState = searchParams.get('currentState');
-		console.log(encodedState);
 		if (encodedState) {
 			try {
 				const decompressedState = await decompress(encodedState);
@@ -86,9 +83,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			} catch (e: any) {
 				// If decompression fails, try decoding the state without decompression
 				if (e.message.includes('not correctly encoded')) {
-					console.error('Decompression failed trying URI');
 					const decodedState = decodeURI(encodedState);
-					console.log('decoded state', decodedState);
 					console.log('parsed!', await JSON.parse(decodedState));
 					return {
 						...JSON.parse(decodedState),
@@ -102,15 +97,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
-		const lastDeposit =
-			currentState.deposits.length > 0
-				? currentState.deposits[currentState.deposits.length - 1].amount
-				: null;
-		const lastBindingValue = Object.values(currentState.bindings)[
-			Object.keys(currentState.bindings).length - 1
-		];
-		console.log(lastDeposit, lastBindingValue);
-		setPreviousValue(lastDeposit || lastBindingValue || '');
 		const updateUrlWithState = async () => {
 			try {
 				const { bindings, deposits, currentStep } = currentState;
@@ -131,7 +117,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			}
 		};
 		updateUrlWithState();
-	}, [currentState]);
+	}, [currentState.bindings, currentState.deposits, currentState.currentStep]); // Run only when bindings, deposits or currentStep change
 
 	useEffect(() => {
 		const initializeState = async () => {
@@ -188,6 +174,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			}));
 			return;
 		} else if (buttonData.buttonTarget === 'buttonValue' && buttonData.buttonValue === 'back') {
+			console.log('going back!');
 			setCurrentState((prevState) => ({
 				...prevState,
 				textInputLabel: ''
@@ -207,8 +194,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			setInputText('1');
 		}
 	};
-
-	const buttonsData = generateButtonsData(yamlData, currentState);
 
 	useEffect(() => {
 		const filteredButtons = buttonsData.filter(

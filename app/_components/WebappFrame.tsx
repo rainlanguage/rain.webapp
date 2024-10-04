@@ -100,17 +100,15 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
-		console.log(buttonsData);
-
-		console.log({ ...currentState });
-
+		console.log('currentState', currentState);
 		const updateUrlWithState = async () => {
 			try {
-				const { bindings, deposits } = currentState;
+				const { bindings, deposits, currentStep } = currentState;
 
 				const stateToSerialize = {
 					bindings,
 					deposits,
+					currentStep,
 					isWebapp: true
 				};
 

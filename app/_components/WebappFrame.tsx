@@ -11,7 +11,7 @@ import { ProgressBar } from './ProgressBar';
 import _ from 'lodash';
 import { FailsafeSchemaWithNumbers } from '../_schemas/failsafeWithNumbers';
 import { SubmissionModal } from './SubmissionModal';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Dialog, DialogClose, DialogContent } from '@/components/ui/dialog';
 import { TriangleAlert } from 'lucide-react';
 import { TokenInfo, getTokenInfos } from '../_services/getTokenInfo';
@@ -68,9 +68,11 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	const [inputText, setInputText] = useState<string>('');
 
 	const searchParams = useSearchParams();
+	const router = useRouter(); // Hook call inside the component body
 
 	const getUrlState = async () => {
 		const encodedState = searchParams.get('currentState');
+		console.log(encodedState);
 		if (encodedState) {
 			try {
 				const decompressedState = await decompress(encodedState);
@@ -82,7 +84,10 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			} catch (e: any) {
 				// If decompression fails, try decoding the state without decompression
 				if (e.message.includes('not correctly encoded')) {
+					console.error('Decompression failed trying URI');
 					const decodedState = decodeURI(encodedState);
+					console.log('decoded state', decodedState);
+					console.log('parsed!', await JSON.parse(decodedState));
 					return {
 						...JSON.parse(decodedState),
 						requiresTokenApproval: false,
@@ -95,9 +100,36 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
+		console.log(buttonsData);
+
+		console.log({ ...currentState });
+
+		const updateUrlWithState = async () => {
+			try {
+				const { bindings, deposits } = currentState;
+
+				const stateToSerialize = {
+					bindings,
+					deposits,
+					isWebapp: true
+				};
+
+				const serializedState = JSON.stringify(stateToSerialize);
+				const url = new URL(window.location.href);
+				url.searchParams.set('currentState', serializedState);
+				router.replace(url.toString(), undefined);
+			} catch (e) {
+				console.error('Failed to update URL with state:', e);
+			}
+		};
+		updateUrlWithState();
+	}, [currentState]);
+
+	useEffect(() => {
 		const initializeState = async () => {
 			try {
 				const urlState = await getUrlState();
+				console.log('urlState', urlState);
 				if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
 			} catch (e) {
 				console.error('Error decoding state:', e);
@@ -213,8 +245,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							key={buttonData.buttonText}
 							onClick={async () => {
 								await handleButtonClick(buttonData);
-							}}
-						>
+							}}>
 							{buttonData.buttonText}
 						</Button>
 					);
@@ -236,8 +267,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					<DialogClose asChild>
 						<button
 							className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
-							onClick={() => setError(null)}
-						>
+							onClick={() => setError(null)}>
 							Close
 						</button>
 					</DialogClose>

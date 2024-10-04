@@ -100,7 +100,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
-		console.log('currentState', currentState);
 		const updateUrlWithState = async () => {
 			try {
 				const { bindings, deposits, currentStep } = currentState;

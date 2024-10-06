@@ -82,7 +82,8 @@ gui:
 
       fields:
         - binding: fixed-io
-          name: WETH price in USDC
+          name: WETH price in USDC ($ per ETH)
+          min: 1000
 ---
 #raindex-subparser !The subparser to use.
 

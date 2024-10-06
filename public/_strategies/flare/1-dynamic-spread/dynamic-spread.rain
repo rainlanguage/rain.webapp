@@ -11,7 +11,7 @@ gui:
       fields:
         - binding: initial-io
           name: Initial price (USDC per sFLR)
-          description: This should be the USD price you see for sFLR on Dextools (e.g.).
+          description: This should be the USD price you see for sFLR on Dextools (e.g. 0.0172).
           min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier

@@ -61,8 +61,19 @@ gui:
               value: 50
             - name: $100
               value: 100
-            - name: $1000
-              value: 1000
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 10
+            - 50
+            - 100
+        - token: base-toshi
+          min: 0
+          presets:
+            - 50000
+            - 100000
+            - 500000
     - deployment: flare-usdc-sflr
       name: USDC.e<>sFLR on Flare.
       description: Rotate USDC.e (Bridged USDC on Stargate) and sFLR on Flare.
@@ -110,22 +121,24 @@ gui:
           description: The maximum amount of USDC.e that can be traded in a single auction.
           min: 0
           presets:
+            - name: $10
+              value: 10
+            - name: $20
+              value: 20
+            - name: $50
+              value: 50
             - name: $100
               value: 100
-            - name: $1000
-              value: 1000
-            - name: $10000
-              value: 10000
 
       deposits:
-        - token: usdce
-          min: 20
+        - token: flare-usdce
+          min: 0
           presets:
             - 0.01
             - 50
             - 100
-        - token: sflr
-          min: 20
+        - token: flare-sflr
+          min: 0
           presets:
             - 0.01
             - 50

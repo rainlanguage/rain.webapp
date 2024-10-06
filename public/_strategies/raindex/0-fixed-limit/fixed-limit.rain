@@ -88,6 +88,7 @@ gui:
 #raindex-subparser !The subparser to use.
 
 #fixed-io !The io ratio to hard sell at.
+#output-token !The expected output token.
 
 #calculate-io
 using-words-from raindex-subparser

@@ -54,7 +54,7 @@ scenarios:
       weth-usdc:
         runs: 1
         bindings:
-          output-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+          expected-output-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
 
 deployments:
   base-weth-usdc:
@@ -88,14 +88,15 @@ gui:
 #raindex-subparser !The subparser to use.
 
 #fixed-io !The io ratio to hard sell at.
+#expected-output-token !The expected output token.
 
 #calculate-io
 using-words-from raindex-subparser
 max-output: max-value(),
 io: if(
   equal-to(
-    vault-output-token()
-    output-token
+    output-token()
+    expected-output-token
   )
   fixed-io
   inv(fixed-io)

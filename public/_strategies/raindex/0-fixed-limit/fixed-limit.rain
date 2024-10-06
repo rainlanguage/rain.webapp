@@ -50,6 +50,13 @@ orders:
       - token: base-weth
     outputs:
       - token: base-usdc
+  flare-wflr-eusdt:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-wflr
+    outputs:
+      - token: flare-eusdt
 
 scenarios:
   base:
@@ -62,11 +69,24 @@ scenarios:
         runs: 1
         bindings:
           fixed-io-output-token: 0x4200000000000000000000000000000000000006
+  flare:
+    orderbook: flare
+    runs: 1
+    bindings:
+      raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
+    scenarios:
+      wflr-eusdt:
+        runs: 1
+        bindings:
+          fixed-io-output-token: 0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d
 
 deployments:
   base-weth-usdc:
     order: base-weth-usdc
     scenario: base.weth-usdc
+  flare-wflr-eusdt:
+    order: flare-wflr-eusdt
+    scenario: flare.wflr-eusdt
 
 gui:
   name: Fixed limit

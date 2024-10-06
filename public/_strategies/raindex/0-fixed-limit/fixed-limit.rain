@@ -67,9 +67,9 @@ gui:
     Fixed limit order strategy
   deployments:
     - deployment: base-weth-usdc
-      name: Buy WETH with USDC.
+      name: Buy WETH with USDC on Base.
       description:
-        Buy WETH with USDC for fixed price.
+        Buy WETH with USDC for fixed price on Base network.
       deposits:
         - token: base-usdc
           min: 0

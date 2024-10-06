@@ -4,14 +4,14 @@ gui:
   name: Two-sided dynamic spread strategies
   description: The dynamic spread strategy for market-making uses time-based adjustments to maintain liquidity by narrowing spreads as market conditions stabilize, while recalculating averages and trade sizes to mitigate risks during trends.
   deployments:
-    - deployment: flare-usdc-sflr
-      name: USDC.e<>sFLR on Flare.
-      description: This will rotate USDC.e (Bridged USDC on Stargate) and sFLR on Flare.
+    - deployment: base-usdc-toshi
+      name: USDC<>TOSHI on Base.
+      description: Rotate USDC and TOSHI on Base.
 
       fields:
         - binding: initial-io
-          name: Initial price (USDC.e per sFLR)
-          description: This should be the USD price you see for sFLR on Dextools (e.g. 0.0172).
+          name: Initial price (USDC per TOSHI)
+          description: The rough USDC price you see for TOSHI on Dextools (e.g. 0.000175)
           min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier
@@ -25,15 +25,74 @@ gui:
             - name: 1.05x
               value: 1.05
         - binding: time-per-epoch
-          name: Time per epoch
+          name: Time per halving (seconds)
           description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
           min: 0
           presets:
-            - name: 1 hour
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
               value: 7200
-            - name: 4 hours
+            - name: 4 hours (14400)
               value: 14400
-            - name: 8 hours
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: min-trade-amount
+          name: Minimum trade amount (USDC)
+          description: The minimum amount of USDC that can be traded in a single auction.
+          min: 0
+          presets:
+            - name: $1
+              value: 1
+            - name: $5
+              value: 5
+            - name: $10
+              value: 10
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of USDC that can be traded in a single auction.
+          min: 0
+          presets:
+            - name: $10
+              value: 10
+            - name: $20
+              value: 20
+            - name: $50
+              value: 50
+            - name: $100
+              value: 100
+            - name: $1000
+              value: 1000
+    - deployment: flare-usdc-sflr
+      name: USDC.e<>sFLR on Flare.
+      description: Rotate USDC.e (Bridged USDC on Stargate) and sFLR on Flare.
+
+      fields:
+        - binding: initial-io
+          name: Initial price (USDC.e per sFLR)
+          description: The rough USD price you see for sFLR on Dextools (e.g. 0.0172).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 0
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 0
+          presets:
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
               value: 28800
         - binding: min-trade-amount
           name: Minimum trade amount
@@ -94,31 +153,57 @@ networks:
     chain-id: 14
     network-id: 14
     currency: FLR
+  base:
+    rpc: https://mainnet.base.org
+    chain-id: 8453
+    network-id: 8453
+    currency: ETH
+
 metaboards:
   flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
+  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
+
 subgraphs:
   flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
+  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
+
 orderbooks:
   flare:
     address: 0xCEe8Cd002F151A536394E564b84076c41bBBcD4d
+  base:
+    address: 0xd2938e7c9fe3597f78832ce780feb61945c377d7
+    network: base
+    subgraph: base
+
 deployers:
   flare:
     address: 0xE3989Ea7486c0F418C764e6c511e86f6E8830FAb
+  base:
+    address: 0xC1A14cE2fd58A3A2f99deCb8eDd866204eE07f8D
+    network: base
 
 tokens:
-  usdce:
+  base-toshi:
+    network: base
+    address: 0xac1bd2486aaf3b5c0fc3fd868558b082a531b2b4
+    decimals: 18
+  base-usdc:
+    network: base
+    address: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+    decimals: 6
+  flare-usdce:
     network: flare
     address: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
     decimals: 6
-  wflr:
+  flare-wflr:
     network: flare
     address: 0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d
     decimals: 18
-  sflr:
+  flare-sflr:
     network: flare
     address: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
     decimals: 18
-  weth:
+  flare-weth:
     network: flare
     address: 0x1502FA4be69d526124D453619276FacCab275d3D
     decimals: 18

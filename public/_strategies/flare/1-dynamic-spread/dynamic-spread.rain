@@ -25,15 +25,17 @@ gui:
             - name: 1.05x
               value: 1.05
         - binding: time-per-epoch
-          name: Time per epoch
+          name: Time per price halving (seconds)
           description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
           min: 0
           presets:
-            - name: 1 hour
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
               value: 7200
-            - name: 4 hours
+            - name: 4 hours (14400)
               value: 14400
-            - name: 8 hours
+            - name: 8 hours (28800)
               value: 28800
         - binding: min-trade-amount
           name: Minimum trade amount

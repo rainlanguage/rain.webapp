@@ -6,23 +6,37 @@ networks:
     chain-id: 8453
     network-id: 8453
     currency: ETH
+  flare:
+    rpc: https://rpc.ankr.com/flare
+    chain-id: 14
+    network-id: 14
+    currency: FLR
 
 metaboards:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
+  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
 
 subgraphs:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
+  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
 
 orderbooks:
   base:
     address: 0xd2938e7c9fe3597f78832ce780feb61945c377d7
     network: base
     subgraph: base
+  flare:
+    address: 0xCEe8Cd002F151A536394E564b84076c41bBBcD4d
+    network: flare
+    subgraph: flare
 
 deployers:
   base:
     address: 0xC1A14cE2fd58A3A2f99deCb8eDd866204eE07f8D
     network: base
+  flare:
+    address: 0xE3989Ea7486c0F418C764e6c511e86f6E8830FAb
+    network: flare
 
 tokens:
   base-weth:

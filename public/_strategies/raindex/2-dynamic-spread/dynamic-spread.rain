@@ -5,12 +5,12 @@ gui:
   description: The dynamic spread strategy for market-making uses time-based adjustments to maintain liquidity by narrowing spreads as market conditions stabilize, while recalculating averages and trade sizes to mitigate risks during trends.
   deployments:
     - deployment: flare-usdc-sflr
-      name: USDC<>sFLR on Flare.
-      description: This will rotate USDC and sFLR on Flare.
+      name: USDC.e<>sFLR on Flare.
+      description: This will rotate USDC.e (Bridged USDC on Stargate) and sFLR on Flare.
 
       fields:
         - binding: initial-io
-          name: Initial price (USDC per sFLR)
+          name: Initial price (USDC.e per sFLR)
           description: This should be the USD price you see for sFLR on Dextools (e.g. 0.0172).
           min: 0
         - binding: next-trade-multiplier

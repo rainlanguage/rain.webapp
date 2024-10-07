@@ -76,6 +76,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		if (encodedState) {
 			try {
 				const decompressedState = await decompress(encodedState);
+				console.log(decompressedState);
 				return {
 					...JSON.parse(decompressedState),
 					requiresTokenApproval: false,
@@ -116,6 +117,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 				try {
 					setLoading((prev) => ({ ...prev, fetchingTokens: true }));
 					const tokenInfos = await getTokenInfos(yamlData);
+					console.log(tokenInfos);
 					setCurrentState((prevState) => ({
 						...prevState,
 						tokenInfos
@@ -228,8 +230,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							key={buttonData.buttonText}
 							onClick={async () => {
 								await handleButtonClick(buttonData);
-							}}
-						>
+							}}>
 							{buttonData.buttonText}
 						</Button>
 					);
@@ -251,8 +252,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					<DialogClose asChild>
 						<button
 							className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
-							onClick={() => setError(null)}
-						>
+							onClick={() => setError(null)}>
 							Close
 						</button>
 					</DialogClose>

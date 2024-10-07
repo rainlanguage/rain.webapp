@@ -16,7 +16,7 @@ gui:
         - binding: next-trade-multiplier
           name: Next trade multiplier
           description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
-          min: 0
+          min: 1
           presets:
             - name: 1.01x
               value: 1.01
@@ -27,7 +27,7 @@ gui:
         - binding: time-per-epoch
           name: Time per halving (seconds)
           description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
-          min: 0
+          min: 600
           presets:
             - name: 1 hour (3600)
               value: 3600
@@ -74,7 +74,80 @@ gui:
             - 50000
             - 100000
             - 500000
-    - deployment: flare-usdc-sflr
+    - deployment: flare-sflr-wflr
+      name: SFLR<>WFLR on Flare.
+      description: Rotate sFLR (Sceptre staked FLR) and WFLR on Flare.
+
+      fields:
+        - binding: initial-io
+          name: Initial price (WFLR per sFLR)
+          description: The rough initial WFLR to sFLR ratio (e.g. 1.11).
+          min: 1
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.001x
+              value: 1.001
+            - name: 1.002x
+              value: 1.002
+            - name: 1.005x
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: min-trade-amount
+          name: Minimum trade amount
+          description: The minimum amount of sFLR that can be traded in a single auction.
+          min: 0
+          presets:
+            - name: 10
+              value: 10
+            - name: 100
+              value: 100
+            - name: 1000
+              value: 1000
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of sFLR that can be traded in a single auction.
+          min: 0
+          presets:
+            - name: 100
+              value: 100
+            - name: 1000
+              value: 1000
+            - name: 10000
+              value: 10000
+            - name: 100000
+              value: 100000
+
+      deposits:
+        - token: flare-sflr
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+        - token: flare-wflr
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+    - deployment: flare-usdce-sflr
       name: USDC.e<>sFLR on Flare.
       description: Rotate USDC.e (Bridged USDC on Stargate) and sFLR on Flare.
 
@@ -86,7 +159,7 @@ gui:
         - binding: next-trade-multiplier
           name: Next trade multiplier
           description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
-          min: 0
+          min: 1
           presets:
             - name: 1.01x
               value: 1.01
@@ -97,7 +170,7 @@ gui:
         - binding: time-per-epoch
           name: Time per halving (seconds)
           description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
-          min: 0
+          min: 600
           presets:
             - name: 2 hours (7200)
               value: 7200
@@ -134,31 +207,55 @@ gui:
         - token: flare-usdce
           min: 0
           presets:
+            - 0
             - 0.01
             - 50
             - 100
         - token: flare-sflr
           min: 0
           presets:
+            - 0
             - 0.01
             - 50
             - 100
 
 scenarios:
+  base:
+    orderbook: base
+    runs: 1
+    bindings:
+      history-cap: '1e50'
+    scenarios:
+      usdc-toshi:
+        runs: 1
+        bindings:
+          amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+          initial-output-token: 0xac1bd2486aaf3b5c0fc3fd868558b082a531b2b4
+          initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
   flare:
     orderbook: flare
     runs: 1
     bindings:
-      max-amount: 100
-      min-amount: 1
-      min-trade-amount: 0.1
-      time-per-epoch: 7200
-      next-trade-multiplier: 1.01
       history-cap: '1e50'
-      amount-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
-      initial-io: 2412
-      initial-output-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
-      initial-input-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
+    scenarios:
+      sflr-wflr:
+        runs: 1
+        bindings:
+          amount-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
+          initial-output-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
+          initial-input-token: 0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d
+      wflr-eusdt:
+        runs: 1
+        bindings:
+          amount-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
+          initial-output-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
+          initial-input-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
+      usdce-sflr:
+        runs: 1
+        bindings:
+          amount-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
+          initial-output-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
+          initial-input-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
 
 networks:
   flare:
@@ -222,20 +319,44 @@ tokens:
     decimals: 18
 
 orders:
-  flare:
+  base-usdc-toshi:
+    network: base
+    orderbook: base
+    inputs:
+      - token: base-usdc
+      - token: base-toshi
+    outputs:
+      - token: base-usdc
+      - token: base-toshi
+  flare-usdce-sflr:
     network: flare
     orderbook: flare
     inputs:
-      - token: sflr
-      - token: usdce
+      - token: flare-sflr
+      - token: flare-usdce
     outputs:
-      - token: sflr
-      - token: usdce
+      - token: flare-sflr
+      - token: flare-usdce
+  flare-sflr-wflr:
+    network: flare
+    orderbook: flare
+    inputs:
+      - token: flare-sflr
+      - token: flare-wflr
+    outputs:
+      - token: flare-sflr
+      - token: flare-wflr
 
 deployments:
-  flare:
-    order: flare
-    scenario: flare
+  base-usdc-toshi:
+    order: base-usdc-toshi
+    scenario: base.usdc-toshi
+  flare-usdce-sflr:
+    order: flare-usdce-sflr
+    scenario: flare.usdce-sflr
+  flare-sflr-wflr:
+    order: flare-sflr-wflr
+    scenario: flare.sflr-wflr
 ---
 #raindex-subparser 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
 

@@ -205,12 +205,14 @@ gui:
         - token: flare-usdce
           min: 0
           presets:
+            - 0
             - 0.01
             - 50
             - 100
         - token: flare-sflr
           min: 0
           presets:
+            - 0
             - 0.01
             - 50
             - 100
@@ -246,7 +248,12 @@ scenarios:
           amount-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
           initial-output-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
           initial-input-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
-
+      usdce-sflr:
+        runs: 1
+        bindings:
+          amount-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
+          initial-output-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
+          initial-input-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
 
 networks:
   flare:

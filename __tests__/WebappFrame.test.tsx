@@ -14,6 +14,7 @@ vi.mock('@/app/_services/buttonsData', () => ({
 
 describe('WebappFrame Component', () => {
 	beforeEach(() => {
+		vi.resetAllMocks();
 		vi.clearAllMocks();
 	});
 

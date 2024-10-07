@@ -92,7 +92,7 @@ const StrategyAnalytics = ({ transactionId }: props) => {
 									{query.data.order.inputs.map((vault: Input, i: number) => {
 										return (
 											<div key={i}>
-												<TokenAndBalance input={vault} withdraw />
+												<TokenAndBalance input={vault} deposit withdraw />
 											</div>
 										);
 									})}
@@ -104,7 +104,7 @@ const StrategyAnalytics = ({ transactionId }: props) => {
 									{query.data.order.outputs.map((vault: Output, i: number) => {
 										return (
 											<div key={i}>
-												<TokenAndBalance input={vault} withdraw />
+												<TokenAndBalance input={vault} deposit withdraw />
 											</div>
 										);
 									})}

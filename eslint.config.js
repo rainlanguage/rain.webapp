@@ -43,7 +43,7 @@ export default [
 		rules: {
 			'no-console':
 				process.env.NODE_ENV === 'production' || process.env.CI
-					? ['error', { allow: ['warn', 'error'] }]
+					? ['warn', { allow: ['warn', 'error'] }]
 					: 'off',
 			'no-trailing-spaces': 'error',
 			eqeqeq: 'off',

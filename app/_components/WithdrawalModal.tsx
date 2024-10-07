@@ -2,7 +2,7 @@
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
 	Form,
 	FormControl,
@@ -24,6 +24,7 @@ import { useWriteContract } from 'wagmi';
 import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits } from 'viem';
 import type { Output, Input as InputType } from '../types';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
 	withdrawalAmount: z.preprocess(
@@ -62,6 +63,7 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 	});
 
 	const withdraw = async (amount: string) => {
+		console.log('Withdraw', amount);
 		// Send raw value to the contract (no conversion needed here)
 		await writeContractAsync({
 			abi: orderBookJson.abi,
@@ -85,6 +87,7 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 
 		// Update the raw amount based on the user input (convert back to raw value)
 		if (userInput) {
+			console.log(userInput);
 			try {
 				const parsedRawAmount = parseUnits(userInput, Number(vault.token.decimals)).toString();
 				setRawAmount(parsedRawAmount); // Update raw amount on every user change
@@ -99,7 +102,14 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger>
-				<Button>Withdraw</Button>
+				<span
+					className={cn(
+						buttonVariants(),
+						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
+					)}
+				>
+					Withdraw
+				</span>
 			</DialogTrigger>
 			<DialogContent className="bg-white">
 				<DialogHeader>

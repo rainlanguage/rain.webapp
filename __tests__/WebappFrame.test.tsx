@@ -3,8 +3,6 @@ import { render, screen, waitFor } from '@testing-library/react';
 import WebappFrame from '@/app/_components/WebappFrame';
 import { Mock, vi } from 'vitest';
 import { generateButtonsData } from '@/app/_services/buttonsData';
-import { getUpdatedFrameState } from '@/app/_services/frameState';
-import { decompress } from '@/app/_services/compress';
 import { mockFixedLimit } from '@/__mocks__/fixed-limit';
 import userEvent from '@testing-library/user-event';
 

@@ -28,6 +28,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { readContract } from 'viem/actions';
 import { waitForTransactionReceipt } from '@wagmi/core';
+import { Orderbook, Token } from '../types';
 
 export enum TokenDepositStatus {
 	Idle,
@@ -61,9 +62,9 @@ const formSchema = z.object({
 });
 
 interface Vault {
-	token: any;
-	vaultId: any;
-	orderbook: any;
+	token: Token;
+	vaultId: string;
+	orderbook: Orderbook;
 }
 
 interface DepositModalProps {
@@ -97,7 +98,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 
 	const connectedWalletBalance: bigint = useReadContract({
 		abi: ERC20_ABI,
-		address: vault.token.address,
+		address: vault.token.address as `0x${string}`,
 		functionName: 'balanceOf',
 		args: [address as `0x${string}`]
 	}).data as bigint;
@@ -116,28 +117,28 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 			const depositAmount = form.getValues('depositAmount').toString();
 			setRawAmount(depositAmount);
 
-			const parsedAmount = parseUnits(depositAmount, vault.token.decimals);
+			const parsedAmount = parseUnits(depositAmount, Number(vault.token.decimals));
 
 			setDepositState(TokenDepositStatus.CheckingAllowance);
 			const existingAllowance = await readContract(config.getClient(), {
 				abi: erc20Abi,
-				address: vault.token.address,
+				address: vault.token.address as `0x${string}`,
 				functionName: 'allowance',
-				args: [address as `0x${string}`, vault.orderbook.id]
+				args: [address as `0x${string}`, vault.orderbook.id as `0x${string}`]
 			});
 			if (existingAllowance < parsedAmount) {
 				setDepositState(TokenDepositStatus.ApprovingTokens);
 				try {
 					const approveTx = await writeContractAsync({
-						address: vault.token.address,
+						address: vault.token.address as `0x${string}`,
 						abi: erc20Abi,
 						functionName: 'approve',
-						args: [vault.orderbook.id, parsedAmount]
+						args: [vault.orderbook.id as `0x${string}`, parsedAmount]
 					});
 
 					setDepositState(TokenDepositStatus.WaitingForApprovalConfirmation);
 
-					const receipt = await waitForTransactionReceipt(config, {
+					await waitForTransactionReceipt(config, {
 						hash: approveTx,
 						confirmations: 1
 					});
@@ -159,7 +160,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 			setDepositState(TokenDepositStatus.DepositingTokens);
 			const depositTx = await writeContractAsync({
 				abi: orderBookJson.abi,
-				address: vault.orderbook.id,
+				address: vault.orderbook.id as `0x${string}`,
 				functionName: 'deposit2',
 				args: [vault.token.address, BigInt(vault.vaultId), parsedAmount, []]
 			});
@@ -167,7 +168,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 
 			setDepositState(TokenDepositStatus.WaitingForDepositConfirmation);
 
-			const depositReceipt = await waitForTransactionReceipt(config, {
+			await waitForTransactionReceipt(config, {
 				hash: depositTx,
 				confirmations: 1
 			});
@@ -191,7 +192,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 			return setError('No balance found');
 		}
 		const userMaxBalance = connectedWalletBalance?.toString();
-		const readableMaxBalance = formatUnits(BigInt(userMaxBalance), vault.token.decimals);
+		const readableMaxBalance = formatUnits(BigInt(userMaxBalance), Number(vault.token.decimals));
 		form.setValue('depositAmount', parseFloat(readableMaxBalance));
 		setRawAmount(userMaxBalance);
 		form.setFocus('depositAmount');
@@ -203,7 +204,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 
 		if (userInput) {
 			try {
-				const parsedRawAmount = parseUnits(userInput, vault.token.decimals).toString();
+				const parsedRawAmount = parseUnits(userInput, Number(vault.token.decimals)).toString();
 
 				if (BigInt(parsedRawAmount) > connectedWalletBalance) {
 					setError('Amount exceeds wallet balance');
@@ -211,7 +212,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 					setError(null);
 				}
 				setRawAmount(parsedRawAmount); // Update raw amount on every user change
-			} catch (err) {
+			} catch {
 				// TODO: Allow decimals
 				setRawAmount('0'); // Fallback to 0 if input is invalid
 			}
@@ -253,7 +254,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 												<div className="text-sm text-gray-500">
 													Your {vault.token.symbol} Balance:{' '}
 													<strong>
-														{formatUnits(connectedWalletBalance, vault.token.decimals)}
+														{formatUnits(connectedWalletBalance, Number(vault.token.decimals))}
 													</strong>
 												</div>
 											)}

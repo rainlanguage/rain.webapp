@@ -1,17 +1,17 @@
-raindex-version: 8898591f3bcaa21dc91dc3b8584330fc405eadfa
+raindex-version: ef0670ae29fa4f03fa04e1cb0252714209392699
 
 gui:
   name: Two-sided dynamic spread strategies
   description: The dynamic spread strategy for market-making uses time-based adjustments to maintain liquidity by narrowing spreads as market conditions stabilize, while recalculating averages and trade sizes to mitigate risks during trends.
-  deployments:
-    - deployment: flare-usdc-sflr
-      name: USDC<>sFLR on Flare.
-      description: This will rotate USDC and sFLR on Flare.
+  deployments: 
+    - deployment: clip-weth
+      name: CLIP/WETH
+      description: This will rotate CLIP and WETH.
 
       fields:
         - binding: initial-io
-          name: Initial price (USDC per sFLR)
-          description: This should be the USD price you see for sFLR on Dextools (e.g. 0.0172).
+          name: Initial price
+          description: This should be the amount of CLIP you get for 1 WETH on Lynex.
           min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier
@@ -25,123 +25,127 @@ gui:
             - name: 1.05x
               value: 1.05
         - binding: time-per-epoch
-          name: Time per price halving (seconds)
+          name: Time per epoch
           description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
           min: 0
           presets:
-            - name: 1 hour (3600)
+            - name: 30 minutes
+              value: 1800
+            - name: 1 hour
               value: 3600
-            - name: 2 hours (7200)
-              value: 7200
-            - name: 4 hours (14400)
+            - name: 4 hours
               value: 14400
-            - name: 8 hours (28800)
+            - name: 8 hours
               value: 28800
-        - binding: min-trade-amount
-          name: Minimum trade amount
-          description: The minimum amount of USDC.e that can be traded in a single auction.
+        - binding: min-amount
+          name: Min amount
+          description: The minimum amount of WETH that can be traded in a single auction.
           min: 0
           presets:
-            - name: $0.1
-              value: 0.1
-            - name: $1
-              value: 1
-            - name: $10
-              value: 10
+            - name: 0.0001
+              value: 0.0001
+            - name: 0.001
+              value: 0.001
         - binding: max-amount
           name: Max amount
-          description: The maximum amount of USDC.e that can be traded in a single auction.
+          description: The maximum amount of WETH that can be traded in a single auction.
           min: 0
           presets:
-            - name: $100
+            - name: 100
               value: 100
-            - name: $1000
+            - name: 1000
               value: 1000
-            - name: $10000
+            - name: 10000
               value: 10000
+        - binding: min-trade-amount
+          name: Minimum trade amount
+          description: The minimum amount of WETH that can be output in a single trade.
+          min: 0
+          presets:
+            - name: 0.00001
+              value: 0.00001
+            - name: 0.0001
+              value: 0.0001
+            - name: 0.001
+              value: 0.001
 
       deposits:
-        - token: usdce
-          min: 20
+        - token: linea-clip
+          min: 0
           presets:
             - 0.01
             - 50
             - 100
-        - token: sflr
-          min: 20
+        - token: linea-weth
+          min: 0
           presets:
             - 0.01
             - 50
             - 100
-
-scenarios:
-  flare:
-    orderbook: flare
-    runs: 1
-    bindings:
-      max-amount: 100
-      min-amount: 1
-      min-trade-amount: 0.1
-      time-per-epoch: 7200
-      next-trade-multiplier: 1.01
-      history-cap: '1e50'
-      amount-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
-      initial-io: 2412
-      initial-output-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
-      initial-input-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
 
 networks:
-  flare:
-    rpc: https://rpc.ankr.com/flare
-    chain-id: 14
-    network-id: 14
-    currency: FLR
-metaboards:
-  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
+  linea: 
+    rpc: https://rpc.linea.build
+    chain-id: 59144
+    network-id: 59144
+    currency: ETH
 subgraphs:
-  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
+  linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-linea/0.1/gn
+metaboards:
+  linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-linea-0xed7d6156/1.0.0/gn
 orderbooks:
-  flare:
-    address: 0xCEe8Cd002F151A536394E564b84076c41bBBcD4d
+  linea: 
+    address: 0x22410e2a46261a1B1e3899a072f303022801C764
+    network: linea
+    subgraph: linea
 deployers:
-  flare:
-    address: 0xE3989Ea7486c0F418C764e6c511e86f6E8830FAb
+  linea:
+    address: 0xA2f56F8F74B7d04d61f281BE6576b6155581dcBA
+    network: linea
 
 tokens:
-  usdce:
-    network: flare
-    address: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
-    decimals: 6
-  wflr:
-    network: flare
-    address: 0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d
+  linea-clip:
+    network: linea
+    address: 0x4Ea77a86d6E70FfE8Bb947FC86D68a7F086f198a
     decimals: 18
-  sflr:
-    network: flare
-    address: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
-    decimals: 18
-  weth:
-    network: flare
-    address: 0x1502FA4be69d526124D453619276FacCab275d3D
+  linea-weth:
+    network: linea
+    address: 0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f
     decimals: 18
 
 orders:
-  flare:
-    network: flare
-    orderbook: flare
+  linea:
+    orderbook: linea
+    network: linea
     inputs:
-      - token: sflr
-      - token: usdce
+      - token: linea-weth
+      - token: linea-clip
     outputs:
-      - token: sflr
-      - token: usdce
+      - token: linea-weth
+      - token: linea-clip
+
+scenarios:
+  linea:
+    orderbook: linea
+    runs: 1
+    bindings:
+      max-amount: 0.02
+      min-amount: 0.00001
+      min-trade-amount: 0.0002
+      time-per-epoch: 1800
+      next-trade-multiplier: 1.01
+      history-cap: '1e50'
+      amount-token: 0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f
+      initial-io: 19569 # this needs to be the price on lynex at the time of deploy
+      initial-output-token: 0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f
+      initial-input-token: 0x4Ea77a86d6E70FfE8Bb947FC86D68a7F086f198a
 
 deployments:
-  flare:
-    order: flare
-    scenario: flare
+  clip-weth:
+    order: linea
+    scenario: linea
 ---
-#raindex-subparser 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
+#raindex-subparser 0xF77b3c3f61af5a3cE7f7CE3cfFc117491104432E
 
 #min-amount !Amount will decay down to this number each epoch.
 #max-amount !Amount will decay down from this number each epoch.

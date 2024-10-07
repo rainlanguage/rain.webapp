@@ -17,7 +17,7 @@ describe('WebappFrame Component', () => {
 		vi.clearAllMocks();
 	});
 
-	it.only('shows input field when only one "Custom" button is present', async () => {
+	it('shows input field when only one "Custom" button is present', async () => {
 		(generateButtonsData as Mock).mockReturnValue([
 			{ buttonValue: 'customValue', buttonText: 'Custom' }
 		]);
@@ -26,7 +26,7 @@ describe('WebappFrame Component', () => {
 			expect(screen.getByTestId('input')).toBeInTheDocument();
 		});
 	});
-	it.only('shows preset buttons when there are multiple choices', async () => {
+	it('shows preset buttons when there are multiple choices', async () => {
 		(generateButtonsData as Mock).mockReturnValue([
 			{
 				buttonTarget: 'buttonValue',

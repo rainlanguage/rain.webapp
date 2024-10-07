@@ -1,0 +1,351 @@
+raindex-version: 8898591f3bcaa21dc91dc3b8584330fc405eadfa
+
+networks:
+  arbitrum:
+    rpc: https://rpc.ankr.com/arbitrum
+    chain-id: 42161
+    network-id: 42161
+    currency: ETH
+
+metaboards:
+  arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-arbitrum/0.1/gn
+
+subgraphs:
+  arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
+
+orderbooks:
+  arbitrum:
+    address: 0x550878091b2B1506069F61ae59e3A5484Bca9166
+    network: arbitrum
+    subgraph: arbitrum
+
+deployers:
+  arbitrum:
+    address: 0x9B0D254bd858208074De3d2DaF5af11b3D2F377F
+    network: arbitrum
+
+tokens:
+  arbitrum-wbtc:
+    network: arbitrum
+    address: 0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f
+    decimals: 8
+  arbitrum-weth:
+    network: arbitrum
+    address: 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1
+    decimals: 18
+
+orders:
+  arbitrum-wbtc-weth:
+    orderbook: arbitrum
+    network: arbitrum
+    inputs:
+      - token: arbitrum-weth
+    outputs:
+      - token: arbitrum-wbtc
+
+scenarios:
+  arbitrum:
+    orderbook: arbitrum
+    runs: 1
+    bindings:
+      raindex-subparser: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
+
+deployments:
+  arbitrum-wbtc-weth:
+    order: arbitrum-wbtc-weth
+    scenario: arbitrum
+
+gui:
+  name: Auction based cost averaging
+  description: >
+    Swap some token for another token regularly over time, using a preset budget.
+
+    This is called "cost averaging" because spreading out a single large swap
+    into many smaller swaps over time reduces the impact of temporary market
+    movements.
+
+    The strategy works by repeatedly auctioning off tokens with an exponential
+    decay in the price, that resets each trade.
+  deployments:
+    - deployment: arbitrum-wbtc-weth
+      name: Sell WBTC for WETH on Arbitrum.
+      description: >
+        Participate in [the flippening](https://ultrasound.money/#flippening) by swapping WBTC for WETH on Arbitrum.
+      deposits:
+        - token: arbitrum-wbtc
+          min: 0
+          presets:
+            - 0
+            - 0.0001
+            - 0.001
+            - 0.01
+            - 0.1
+            - 0.2
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (WBTC per period)
+          description: >
+            The amount of WBTC to spend each budget period.
+
+            For example, if the budget is daily and this is 0.01 then 0.01 WBTC will be sold for WETH each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (WBTC)
+          description: >
+            The maximum amount of WBTC to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (WBTC)
+          description: >
+            The minimum amount of WBTC to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+
+            As the auction is an exponential decay, the price will halve every time this period passes.
+
+            For example, if the auction period is 1 hour then this is 3600 seconds (60 * 60).
+            If this hourly auction starts at 30 WETH per WBTC, and the baseline is 10 WETH per WBTC,
+            then the price will be 20 WETH per WBTC after 1 hour (halfway between 30 and 10),
+            15 WETH per WBTC after 2 hours (halfway between 20 and 10),
+            and so on.
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline WETH per WBTC
+          description: >
+            The absolute minimum amount of WETH per WBTC that the auction will
+            trade at.
+
+            This is the inverse (i.e. `1 / x`) of the ETH/BTC ratio.
+
+            For example, 20 WETH per WBTC would mean never selling WBTC when the
+            ETH/BTC ratio is worse than 0.05.
+
+            This can be set to 0 to disable the baseline.
+          presets:
+            - name: 10
+              value: 10
+            - name: 20
+              value: 20
+            - name: 25
+              value: 25
+            - name: 30
+              value: 30
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+
+            For example, if this is 1.1 and the last trade was at 20 WETH per WBTC,
+            then the next auction will start at 22 WETH per WBTC.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+
+            For example, if this is 0.9 and the last trade was at 20 WETH per WBTC,
+            then the next auction will end at 18 WETH per WBTC.
+
+            Note that this moving baseline is ignored if it goes below the baseline.
+            I.e. the absolute minimum baseline overrides this if necessary.
+
+            This can be set to 0 to disable the moving baseline, and should be less than 1.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff WETH per WBTC
+          description: >
+            The initial WETH per WBTC to kickoff the first auction.
+
+            The strategy will pretend that a trade was made at this price before
+            the first auction, so that everything else can be calculated from there.
+
+            This is WETH per WBTC, so if the ETH/BTC ratio is 0.05 then this should be 20.
+
+            You can set this much higher than the market rates to start the strategy
+            off easily, for example you could set it at 50 if the market was around 20-25.
+
+            There is no need for this to be exact, it just has to be ballpark and
+            definitely higher than the market. Any number within 1-10x the real
+            price should be fine.
+
+            This should be greater than the baseline.
+          min: 0
+          presets:
+            - name: 30
+              value: 30
+            - name: 50
+              value: 50
+            - name: 100
+              value: 100
+
+---
+#raindex-subparser !Raindex subparser.
+
+#time-per-amount-epoch !Duration of one unit of streaming amount halflife.
+#amount-per-epoch !Amount of output token to approve for buying per epoch.
+#min-trade-amount !Each trade must be at least this many output tokens.
+#max-trade-amount !Each trade will be capped at this many tokens.
+
+#time-per-trade-epoch !Duration of one unit of io ratio halflife.
+#baseline !Minimum io ratio. This component of the io ratio is ignored by the halflife calculations.
+
+#next-trade-multiplier !Start next auction at this x the last trade.
+#next-trade-baseline-multiplier !Lifts the baseline to here relative to the previous trade.
+#initial-io !Strat will be initialized with this as the starting last trade. Must be larger than baseline.
+
+#last-trade-time-key "last-trade-time"
+#last-trade-io-key "last-trade-io"
+#initial-time-key "initial-time"
+#amount-used-key "amount-used"
+
+#set-last-trade
+last-io:,
+:set(hash(order-hash() last-trade-time-key) now()),
+:set(hash(order-hash() last-trade-io-key) last-io);
+
+#set-initial-time
+:set(hash(order-hash() initial-time-key) now());
+
+#get-initial-time
+_:get(hash(order-hash() initial-time-key));
+
+#get-last-trade
+last-time:get(hash(order-hash() last-trade-time-key)),
+last-io:get(hash(order-hash() last-trade-io-key));
+
+#get-epoch
+initial-time: call<'get-initial-time>(),
+last-time _: call<'get-last-trade>(),
+duration: sub(now() any(last-time initial-time)),
+total-duration: sub(now() initial-time),
+amount-epochs: div(total-duration time-per-amount-epoch),
+trade-epochs: div(duration time-per-trade-epoch);
+
+#amount-for-epoch
+amount-epochs:,
+total-available: linear-growth(0 amount-per-epoch amount-epochs),
+used: get(hash(order-hash() amount-used-key)),
+unused: sub(total-available used),
+capped-unused: min(unused max-trade-amount);
+
+#halflife
+max-val epoch:,
+/**
+ * Shrinking the multiplier like this
+ * then applying it 10 times allows for
+ * better precision when max-io-ratio
+ * is very large, e.g. ~1e10 or ~1e20+
+ *
+ * This works because `power` loses
+ * precision on base `0.5` when the
+ * exponent is large and can even go
+ * to `0` while the io-ratio is still
+ * large. Better to keep the multiplier
+ * higher precision and drop the io-ratio
+ * smoothly for as long as we can.
+ */
+multiplier:
+  power(0.5 div(epoch 10)),
+val:
+  mul(
+    max-val
+    multiplier
+    multiplier
+    multiplier
+    multiplier
+    multiplier
+    multiplier
+    multiplier
+    multiplier
+    multiplier
+    multiplier
+  );
+
+#io-for-epoch
+epoch:,
+last-io: call<'get-last-trade>(),
+max-next-trade: any(mul(last-io next-trade-multiplier) initial-io),
+baseline-next-trade: mul(last-io next-trade-baseline-multiplier),
+real-baseline: max(baseline-next-trade baseline),
+variable-component: saturating-sub(max-next-trade real-baseline),
+above-baseline: call<'halflife>(variable-component epoch),
+_: add(real-baseline above-baseline);
+
+#handle-add-order
+using-words-from raindex-subparser
+:call<'set-initial-time>();
+
+#calculate-io
+using-words-from raindex-subparser
+amount-epochs
+trade-epochs:call<'get-epoch>(),
+max-output: call<'amount-for-epoch>(amount-epochs),
+io: call<'io-for-epoch>(trade-epochs),
+:call<'set-last-trade>(io);
+
+#handle-io
+:ensure(greater-than-or-equal-to(output-vault-decrease() min-trade-amount) "Min trade amount."),
+used: get(hash(order-hash() amount-used-key)),
+:set(hash(order-hash() amount-used-key) add(used output-vault-decrease()));

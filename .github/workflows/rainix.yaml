@@ -1,0 +1,47 @@
+name: Rainix CI
+on: [push]
+
+concurrency:
+  group: ${{ github.ref }}-rainix
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  standard-tests:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        task: [rainframe-test]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v4
+      - uses: DeterminateSystems/magic-nix-cache-action@v2
+      - name: Run ${{ matrix.task }}
+        run: nix develop -c ${{ matrix.task }}
+  format-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - run: nix develop -c npm run format-check
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - run: nix develop -c npm run lint-check

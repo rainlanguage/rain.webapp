@@ -13,7 +13,7 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 			</div>
 			{currentState.deploymentOption ? (
 				<div
-					className="top-0 md:text-xl text-sm border rounded-full bg-gray-100 px-6 py-3 my-4 md:mb-0 "
+					className="top-0 md:text-xl text-sm border rounded-full bg-gray-100 px-6 py-3 my-4 md:mb-0"
 					tw="absolute top-12 text-[30px] border rounded-full bg-gray-100 px-6 py-3"
 				>
 					{currentState.deploymentOption.name}

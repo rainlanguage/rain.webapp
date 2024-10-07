@@ -136,12 +136,14 @@ gui:
         - token: flare-sflr
           min: 0
           presets:
+            - 0
             - 100
             - 1000
             - 10000
         - token: flare-wflr
           min: 0
           presets:
+            - 0
             - 100
             - 1000
             - 10000

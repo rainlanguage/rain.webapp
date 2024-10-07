@@ -76,7 +76,7 @@ gui:
             - 500000
     - deployment: flare-sflr-wflr
       name: SFLR<>WFLR on Flare.
-      description: Rotate sFLR (Spectre staked FLR) and WFLR on Flare.
+      description: Rotate sFLR (Sceptre staked FLR) and WFLR on Flare.
 
       fields:
         - binding: initial-io

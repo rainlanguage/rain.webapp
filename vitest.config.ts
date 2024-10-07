@@ -1,16 +1,20 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
 	plugins: [react()],
+	resolve: {
+		alias: {
+			'@': path.resolve(__dirname, './') // Adjust './src' if your source folder is different
+		}
+	},
 
 	test: {
-		// Jest like globals
-		includeSource: ['src/**/*.{js,ts}'],
+		includeSource: ['./**/*.{js, ts, tsx}'],
 		globals: true,
 		environment: 'jsdom',
-		include: ['src/**/*.{test,spec}.ts'],
-		// Extend jest-dom matchers
-		setupFiles: ['./setupTest.ts']
+		include: ['./**/*.{test,spec}.{tsx, ts}'],
+		setupFiles: ['./__tests__/vitest.setup.ts']
 	}
 });

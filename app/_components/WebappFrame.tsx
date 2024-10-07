@@ -197,6 +197,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			{currentState.textInputLabel && (
 				<div className="flex justify-center mb-4">
 					<input
+						data-testid="input"
 						className="border-gray-200 rounded-lg border p-2 w-full max-w-96"
 						type="number"
 						placeholder={currentState.textInputLabel}
@@ -221,15 +222,13 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							<ShareStateAsUrl currentState={currentState} />
 						</div>
 					) : (
-						// If there are only two buttons
 						<Button
 							color="primary"
 							size="sm"
 							key={buttonData.buttonText}
 							onClick={async () => {
 								await handleButtonClick(buttonData);
-							}}
-						>
+							}}>
 							{buttonData.buttonText}
 						</Button>
 					);
@@ -251,8 +250,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					<DialogClose asChild>
 						<button
 							className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
-							onClick={() => setError(null)}
-						>
+							onClick={() => setError(null)}>
 							Close
 						</button>
 					</DialogClose>

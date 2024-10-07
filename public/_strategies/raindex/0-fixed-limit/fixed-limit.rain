@@ -107,7 +107,7 @@ scenarios:
       sflr-wflr:
         runs: 1
         bindings:
-          fixed-io-output-token: 0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d
+          fixed-io-output-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
 
 deployments:
   base-weth-usdc:

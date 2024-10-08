@@ -47,7 +47,7 @@ export interface TokenDeposit {
 	referrals?: Referral[] | undefined;
 }
 
-enum TokenDepositStatus {
+export enum TokenDepositStatus {
 	Pending = 'Pending',
 	CheckingAllowance = 'CheckingAllowance',
 	ApprovingTokens = 'ApprovingTokens',

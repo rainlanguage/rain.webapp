@@ -71,11 +71,9 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		const encodedState = searchParams.get('currentState');
 		if (encodedState) {
 			try {
-				// Attempt decompression first
 				const decompressedState = await decompress(encodedState);
 				return JSON.parse(decompressedState);
 			} catch (e: any) {
-				// Handle the case where the encodedState is not compressed
 				if (e.message.includes('not correctly encoded')) {
 					try {
 						// Split key-value pairs manually
@@ -84,10 +82,8 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 						params.forEach((value, key) => {
 							try {
-								// Parse JSON values if they are JSON strings
 								state[key] = JSON.parse(decodeURIComponent(value));
 							} catch {
-								// For simple strings or numbers, just decode directly
 								state[key] = decodeURIComponent(value);
 							}
 						});

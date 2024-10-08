@@ -199,9 +199,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			}));
 			return;
 		} else if (buttonData.buttonTarget === 'buttonValue' && buttonData.buttonValue === 'back') {
-			console.log('Back button clicked');
 			setInputText(currentState.previousValue || '');
-
 			setCurrentState((prevState) => ({
 				...prevState,
 				textInputLabel: ''

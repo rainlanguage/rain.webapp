@@ -39,7 +39,10 @@ const getDefaultState = (yamlData: YamlData, deploymentOption: string | null): F
 		deposits: [],
 		buttonPage: 0,
 		buttonMax: 10,
-		textInputLabel: '',
+		textInputLabel:
+			deployment && deployment.fields[0]?.min !== undefined && !deployment.fields[0]?.presets
+				? `Enter a number greater than ${deployment.fields[0].min}`
+				: '',
 		error: null,
 		isWebapp: true,
 		tokenInfos: [] as TokenInfo[]
@@ -76,7 +79,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			} catch (e: any) {
 				if (e.message.includes('not correctly encoded')) {
 					try {
-						// Split key-value pairs manually
 						const params = new URLSearchParams(encodedState);
 						const state: any = {};
 
@@ -103,7 +105,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
-		console.log(currentState);
+		console.log('STATE', currentState);
 		const updateUrlWithState = async () => {
 			try {
 				const { bindings, deposits, currentStep } = currentState;
@@ -129,7 +131,11 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			}
 		};
 		updateUrlWithState();
-	}, [currentState.bindings, currentState.deposits, currentState.currentStep]); // Run only when bindings, deposits or currentStep change
+	}, [
+		JSON.stringify(currentState.bindings),
+		JSON.stringify(currentState.deposits),
+		currentState.currentStep
+	]); // Run only when bindings, deposits or currentStep change
 
 	useEffect(() => {
 		const initializeState = async () => {
@@ -187,7 +193,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			return;
 		} else if (buttonData.buttonTarget === 'buttonValue' && buttonData.buttonValue === 'back') {
 			console.log('going back!');
-
 			setCurrentState((prevState) => ({
 				...prevState,
 				textInputLabel: ''
@@ -209,6 +214,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
+		console.log(buttonsData);
 		const filteredButtons = buttonsData.filter(
 			(buttonData) => buttonData.buttonValue !== 'back' && buttonData.buttonValue !== 'finalSubmit'
 		);
@@ -228,6 +234,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		<div className="flex-grow flex-col flex w-full pb-safe">
 			<div className="w-full top-0">
 				<ProgressBar currentState={currentState} />
+				<Button onClick={() => console.log(currentState)}>Log State</Button>
 			</div>
 			<FrameImage currentState={currentState} />
 			{currentState.textInputLabel && (
@@ -264,8 +271,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							key={buttonData.buttonText}
 							onClick={async () => {
 								await handleButtonClick(buttonData);
-							}}
-						>
+							}}>
 							{buttonData.buttonText}
 						</Button>
 					);
@@ -287,8 +293,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					<DialogClose asChild>
 						<button
 							className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
-							onClick={() => setError(null)}
-						>
+							onClick={() => setError(null)}>
 							Close
 						</button>
 					</DialogClose>

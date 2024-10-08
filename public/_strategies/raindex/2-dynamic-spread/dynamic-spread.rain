@@ -318,15 +318,12 @@ orderbooks:
     address: 0xCEe8Cd002F151A536394E564b84076c41bBBcD4d
   base:
     address: 0xd2938e7c9fe3597f78832ce780feb61945c377d7
-    network: base
-    subgraph: base
 
 deployers:
   flare:
     address: 0xE3989Ea7486c0F418C764e6c511e86f6E8830FAb
   base:
     address: 0xC1A14cE2fd58A3A2f99deCb8eDd866204eE07f8D
-    network: base
 
 tokens:
   base-toshi:

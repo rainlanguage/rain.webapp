@@ -25,7 +25,6 @@ interface props {
 }
 
 const getDefaultState = (yamlData: YamlData, deploymentOption: string | null): FrameState => {
-	console.log('getting default state');
 	const deployment =
 		yamlData.gui.deployments.find((deployment) => deployment.deployment === deploymentOption) ||
 		undefined;
@@ -103,17 +102,13 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
-		// Capture the latest values for previousValue
 		const lastBindingValue = Object.values(currentState.bindings).slice(-1)[0] || '';
 		const lastDepositValue = currentState.deposits.slice(-1)[0]?.amount || '';
 
-		// Update previousValue based on the latest binding or deposit
 		setCurrentState((prevState) => ({
 			...prevState,
-			previousValue: lastDepositValue || lastBindingValue
+			previousValue: String(lastDepositValue || lastBindingValue || '')
 		}));
-
-		console.log('STATE CHANGED', currentState.previousValue);
 
 		const updateUrlWithState = async () => {
 			try {
@@ -150,7 +145,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		const initializeState = async () => {
 			try {
 				const urlState = await getUrlState();
-				console.log('urlState', urlState);
 				if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
 			} catch (e) {
 				console.error('Error decoding state:', e);
@@ -201,7 +195,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			}));
 			return;
 		} else if (buttonData.buttonTarget === 'buttonValue' && buttonData.buttonValue === 'back') {
-			console.log('going back!');
 			setInputText(currentState.previousValue || '');
 
 			setCurrentState((prevState) => ({
@@ -225,7 +218,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
-		console.log(buttonsData);
 		const filteredButtons = buttonsData.filter(
 			(buttonData) => buttonData.buttonValue !== 'back' && buttonData.buttonValue !== 'finalSubmit'
 		);
@@ -245,7 +237,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		<div className="flex-grow flex-col flex w-full pb-safe">
 			<div className="w-full top-0">
 				<ProgressBar currentState={currentState} />
-				<Button onClick={() => console.log(currentState)}>Log State</Button>
 			</div>
 			<FrameImage currentState={currentState} />
 			{currentState.textInputLabel && (

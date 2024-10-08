@@ -106,4 +106,41 @@ describe('WebappFrame Component', () => {
 			expect(screen.getByTestId('input')).toBeInTheDocument();
 		});
 	});
+
+	it.only('preserves previousValue through Custom -> Submit -> Back -> Custom actions', async () => {
+		(generateButtonsData as Mock).mockReturnValue([
+			{
+				buttonTarget: 'textInputLabel',
+				buttonValue: 'Enter a custom amount',
+				buttonText: 'Custom'
+			},
+			{ buttonTarget: 'buttonValue', buttonValue: 'submit', buttonText: 'Submit' },
+			{ buttonTarget: 'buttonValue', buttonValue: 'back', buttonText: 'Back' }
+		]);
+
+		render(<WebappFrame dotrainText={mockFixedLimit} deploymentOption="" />);
+
+		// Step 1: Click "Custom" button
+		const customButton = await waitFor(() => screen.getByText('Custom'));
+		await userEvent.click(customButton);
+		const inputField = screen.getByPlaceholderText('Enter a custom amount');
+		await userEvent.type(inputField, '100');
+
+		// Step 2: Click "Submit" button
+		const submitButton = screen.getByText('Submit');
+		await userEvent.click(submitButton);
+
+		// Verify that previousValue is now '100' after submission
+		await waitFor(() => {
+			expect(inputField).toHaveValue(''); // Verify input field is cleared after submission
+		});
+
+		// Step 3: Click "Back" button to restore previous value
+		const backButton = screen.getByText('Back');
+		await userEvent.click(backButton);
+
+		// Step 4: Click "Custom" again and check if previous value is preserved
+		await userEvent.click(customButton);
+		expect(inputField).toHaveValue('100'); // previousValue should be restored
+	});
 });

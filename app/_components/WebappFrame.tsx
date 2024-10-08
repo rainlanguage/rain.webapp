@@ -42,6 +42,7 @@ const getDefaultState = (yamlData: YamlData, deploymentOption: string | null): F
 		error: null,
 		isWebapp: true,
 		tokenInfos: [] as TokenInfo[],
+		buttonsData: [],
 		previousValue: '' // Initialize previousValue
 	};
 };
@@ -62,7 +63,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	const [error, setError] = useState<string | React.ReactElement | null>(null);
 	const [inputText, setInputText] = useState<string>('');
-	const [buttonsData, setButtonsData] = useState<any[]>([]);
+
 	const searchParams = useSearchParams();
 	const router = useRouter();
 
@@ -101,13 +102,13 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
-		setButtonsData(generateButtonsData(yamlData, currentState));
 		const lastBindingValue = Object.values(currentState.bindings).slice(-1)[0] || '';
 		const lastDepositValue = currentState.deposits.slice(-1)[0]?.amount || '';
 
 		setCurrentState((prevState) => ({
 			...prevState,
-			previousValue: String(lastDepositValue || lastBindingValue || '')
+			previousValue: String(lastDepositValue || lastBindingValue || ''),
+			buttonsData: generateButtonsData(yamlData, currentState)
 		}));
 
 		const updateUrlWithState = async () => {
@@ -138,7 +139,8 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	}, [
 		JSON.stringify(currentState.bindings),
 		JSON.stringify(currentState.deposits),
-		JSON.stringify(currentState.currentStep)
+		JSON.stringify(currentState.currentStep),
+		JSON.stringify(currentState.textInputLabel)
 	]); // Run only when bindings, deposits or currentStep change
 
 	useEffect(() => {
@@ -161,7 +163,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 				try {
 					setLoading((prev) => ({ ...prev, fetchingTokens: true }));
 					const tokenInfos = await getTokenInfos(yamlData);
-					console.log(tokenInfos);
+
 					setCurrentState((prevState) => ({
 						...prevState,
 						tokenInfos
@@ -192,10 +194,12 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		} else if (buttonData.buttonTarget === 'buttonPage') {
 			setCurrentState((prevState) => ({
 				...prevState,
-				buttonPage: buttonData.buttonValue
+				buttonPage: buttonData.buttonValue,
+				textInputLabel: ''
 			}));
 			return;
 		} else if (buttonData.buttonTarget === 'buttonValue' && buttonData.buttonValue === 'back') {
+			console.log('Back button clicked');
 			setInputText(currentState.previousValue || '');
 
 			setCurrentState((prevState) => ({
@@ -219,7 +223,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
-		const filteredButtons = buttonsData.filter(
+		const filteredButtons = currentState.buttonsData.filter(
 			(buttonData) => buttonData.buttonValue !== 'back' && buttonData.buttonValue !== 'finalSubmit'
 		);
 		if (filteredButtons.length === 1 && filteredButtons[0].buttonText === 'Custom') {
@@ -228,7 +232,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 				textInputLabel: filteredButtons[0].buttonValue
 			}));
 		}
-	}, [buttonsData]);
+	}, [JSON.stringify(currentState.buttonsData)]);
 
 	return loading.decodingState || loading.fetchingTokens ? (
 		<div className="flex-grow flex items-center justify-center">
@@ -254,7 +258,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 				</div>
 			)}
 			<div className="flex flex-wrap gap-2 justify-center md:pb-20 pb-8 px-8 pt-10">
-				{buttonsData.map((buttonData) => {
+				{currentState.buttonsData.map((buttonData) => {
 					return buttonData.buttonValue === 'finalSubmit' ? (
 						<div key={buttonData} className="flex gap-2 flex-wrap justify-center">
 							<SubmissionModal

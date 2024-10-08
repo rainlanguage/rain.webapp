@@ -57,74 +57,79 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 							)?.symbol
 						}.`
 					: ''}
-
-				<table className="min-w-full bg-white text-left text-[20px] lg:text-[25px]" tw="text-left">
-					<tbody tw="flex flex-col text-[40px] w-full">
-						<tr>
-							<td
-								className="p-2 lg:p-3 text-2xl font-bold text-gray-800"
-								tw="px-4 py-2 text-[50px] font-bold text-gray-800">
-								Review choices
-							</td>
-						</tr>
-						<tr className="border-t border-gray-300 table-row py-3" tw="border-t border-gray-300">
-							<td
-								className="lg:p-3 p-2 font-regular text-gray-700"
-								tw="px-4 py-4 font-regular text-gray-700 w-[300px]">
-								Deployment
-							</td>
-							<td className="p-4 text-gray-600" tw="px-4 py-2 text-gray-600">
-								{currentState.deploymentOption.name}
-							</td>
-						</tr>
-						{Object.keys(currentState.bindings).map((binding: string) => {
-							if (!currentState.deploymentOption) return;
-							const field = currentState.deploymentOption.fields.find(
-								(field: any) => field.binding === binding
-							);
-							if (!field) return;
-							return (
-								<tr
-									key={binding}
-									className="border-t border-gray-300 table-row py-3"
-									tw="border-t border-gray-300">
-									<td
-										className="lg:p-3 p-2 font-regular text-gray-700"
-										tw="p-4 font-semibold text-gray-700 w-[300px] leading-tight">
-										{field.name}
-									</td>
-									<td className="px-4 text-gray-600 " tw="px-4 py-2 text-gray-600">
-										{currentState.bindings[binding]}
-									</td>
-								</tr>
-							);
-						})}
-						<tr className="flex flex-col lg:table-row py-3" tw="border-t border-gray-300">
-							<td
-								className="lg:p-3 p-2 text-2xl font-bold text-gray-800"
-								tw="px-4 py-2 text-[30px] font-bold text-gray-800">
-								Deposits
-							</td>
-						</tr>
-						{currentState.deposits.map(({ tokenInfo, amount }) => {
-							return (
-								<tr
-									key={tokenInfo.address}
-									className="border-t border-gray-300 table-row"
-									tw="border-t border-gray-300">
-									<td
-										className="p-2 lg:p-3 font-regular text-gray-700"
-										tw="px-4 py-4 font-semibold text-gray-700 w-[300px] leading-tight">
-										{tokenInfo.symbol}
-									</td>
-									<td className="px-4 text-gray-600" tw="px-4 py-2 text-gray-600">
-										{amount}
-									</td>
-								</tr>
-							);
-						})}
-					</tbody>
-				</table>
+				{currentState.currentStep === 'review' && currentState.deploymentOption ? (
+					<table
+						className="min-w-full bg-white text-left text-[20px] lg:text-[25px]"
+						tw="text-left">
+						<tbody tw="flex flex-col text-[40px] w-full">
+							<tr>
+								<td
+									className="p-2 lg:p-3 text-2xl font-bold text-gray-800"
+									tw="px-4 py-2 text-[50px] font-bold text-gray-800">
+									Review choices
+								</td>
+							</tr>
+							<tr className="border-t border-gray-300 table-row py-3" tw="border-t border-gray-300">
+								<td
+									className="lg:p-3 p-2 font-regular text-gray-700"
+									tw="px-4 py-4 font-regular text-gray-700 w-[300px]">
+									Deployment
+								</td>
+								<td className="p-4 text-gray-600" tw="px-4 py-2 text-gray-600">
+									{currentState.deploymentOption?.name}
+								</td>
+							</tr>
+							{Object.keys(currentState.bindings).map((binding: string) => {
+								if (!currentState.deploymentOption) return;
+								const field = currentState.deploymentOption.fields.find(
+									(field: any) => field.binding === binding
+								);
+								if (!field) return;
+								return (
+									<tr
+										key={binding}
+										className="border-t border-gray-300 table-row py-3"
+										tw="border-t border-gray-300">
+										<td
+											className="lg:p-3 p-2 font-regular text-gray-700"
+											tw="p-4 font-semibold text-gray-700 w-[300px] leading-tight">
+											{field.name}
+										</td>
+										<td className="px-4 text-gray-600 " tw="px-4 py-2 text-gray-600">
+											{currentState.bindings[binding]}
+										</td>
+									</tr>
+								);
+							})}
+							<tr className="flex flex-col lg:table-row py-3" tw="border-t border-gray-300">
+								<td
+									className="lg:p-3 p-2 text-2xl font-bold text-gray-800"
+									tw="px-4 py-2 text-[30px] font-bold text-gray-800">
+									Deposits
+								</td>
+							</tr>
+							{currentState.deposits.map(({ tokenInfo, amount }) => {
+								return (
+									<tr
+										key={tokenInfo.address}
+										className="border-t border-gray-300 table-row"
+										tw="border-t border-gray-300">
+										<td
+											className="p-2 lg:p-3 font-regular text-gray-700"
+											tw="px-4 py-4 font-semibold text-gray-700 w-[300px] leading-tight">
+											{tokenInfo.symbol}
+										</td>
+										<td className="px-4 text-gray-600" tw="px-4 py-2 text-gray-600">
+											{amount}
+										</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</table>
+				) : (
+					''
+				)}
 
 				{currentState.currentStep === 'done' ? 'Done!' : ''}
 			</div>

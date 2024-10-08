@@ -39,10 +39,7 @@ const getDefaultState = (yamlData: YamlData, deploymentOption: string | null): F
 		deposits: [],
 		buttonPage: 0,
 		buttonMax: 10,
-		textInputLabel:
-			deployment && deployment.fields[0]?.min !== undefined && !deployment.fields[0]?.presets
-				? `Enter a number greater than ${deployment.fields[0].min}`
-				: '',
+		textInputLabel: '',
 		error: null,
 		isWebapp: true,
 		tokenInfos: [] as TokenInfo[]
@@ -74,22 +71,35 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		const encodedState = searchParams.get('currentState');
 		if (encodedState) {
 			try {
+				// Attempt decompression first
 				const decompressedState = await decompress(encodedState);
-				return {
-					...JSON.parse(decompressedState),
-					requiresTokenApproval: false,
-					isWebapp: true
-				};
+				return JSON.parse(decompressedState);
 			} catch (e: any) {
-				// If decompression fails, try decoding the state without decompression
+				// Handle the case where the encodedState is not compressed
 				if (e.message.includes('not correctly encoded')) {
-					const decodedState = decodeURI(encodedState);
-					console.log('parsed!', await JSON.parse(decodedState));
-					return {
-						...JSON.parse(decodedState),
-						requiresTokenApproval: false,
-						isWebapp: true
-					};
+					try {
+						// Split key-value pairs manually
+						const params = new URLSearchParams(encodedState);
+						const state: any = {};
+
+						params.forEach((value, key) => {
+							try {
+								// Parse JSON values if they are JSON strings
+								state[key] = JSON.parse(decodeURIComponent(value));
+							} catch {
+								// For simple strings or numbers, just decode directly
+								state[key] = decodeURIComponent(value);
+							}
+						});
+
+						return {
+							...state,
+							requiresTokenApproval: false,
+							isWebapp: true
+						};
+					} catch (decodeError) {
+						console.error('Failed to parse URL state:', decodeError);
+					}
 				}
 			}
 		}
@@ -97,6 +107,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
+		console.log(currentState);
 		const updateUrlWithState = async () => {
 			try {
 				const { bindings, deposits, currentStep } = currentState;
@@ -180,6 +191,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			return;
 		} else if (buttonData.buttonTarget === 'buttonValue' && buttonData.buttonValue === 'back') {
 			console.log('going back!');
+
 			setCurrentState((prevState) => ({
 				...prevState,
 				textInputLabel: ''

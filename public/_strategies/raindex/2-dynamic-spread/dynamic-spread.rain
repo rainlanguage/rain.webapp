@@ -39,7 +39,7 @@ gui:
               value: 28800
         - binding: max-amount
           name: Max amount
-          description: The maximum amount of USDC that can be traded in a single auction.
+          description: The maximum amount of USDC that will be offered in a single auction.
           min: 0
           presets:
             - name: $10
@@ -52,7 +52,7 @@ gui:
               value: 100
         - binding: min-amount
           name: Minimum amount
-          description: The minimum amount of USDC that can be traded in a single auction.
+          description: The minimum amount of USDC that will be offered in a single auction.
           min: 0
           presets:
             - name: $1

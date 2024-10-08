@@ -39,13 +39,11 @@ const getDefaultState = (yamlData: YamlData, deploymentOption: string | null): F
 		deposits: [],
 		buttonPage: 0,
 		buttonMax: 10,
-		textInputLabel:
-			deployment && deployment.fields[0]?.min !== undefined && !deployment.fields[0]?.presets
-				? `Enter a number greater than ${deployment.fields[0].min}`
-				: '',
+		textInputLabel: '',
 		error: null,
 		isWebapp: true,
-		tokenInfos: [] as TokenInfo[]
+		tokenInfos: [] as TokenInfo[],
+		previousValue: '' // Initialize previousValue
 	};
 };
 
@@ -105,7 +103,18 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
-		console.log('STATE', currentState);
+		// Capture the latest values for previousValue
+		const lastBindingValue = Object.values(currentState.bindings).slice(-1)[0] || '';
+		const lastDepositValue = currentState.deposits.slice(-1)[0]?.amount || '';
+
+		// Update previousValue based on the latest binding or deposit
+		setCurrentState((prevState) => ({
+			...prevState,
+			previousValue: lastDepositValue || lastBindingValue
+		}));
+
+		console.log('STATE CHANGED', currentState.previousValue);
+
 		const updateUrlWithState = async () => {
 			try {
 				const { bindings, deposits, currentStep } = currentState;
@@ -209,7 +218,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		setCurrentState({ ...updatedState });
 
 		if (inputText) {
-			setInputText('1');
+			setInputText('');
 		}
 	};
 

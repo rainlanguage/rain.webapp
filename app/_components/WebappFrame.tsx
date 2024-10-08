@@ -161,6 +161,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 				try {
 					setLoading((prev) => ({ ...prev, fetchingTokens: true }));
 					const tokenInfos = await getTokenInfos(yamlData);
+					console.log(tokenInfos);
 					setCurrentState((prevState) => ({
 						...prevState,
 						tokenInfos
@@ -242,6 +243,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			{currentState.textInputLabel && (
 				<div className="flex justify-center mb-4">
 					<input
+						data-testid="input"
 						className="border-gray-200 rounded-lg border p-2 w-full max-w-96"
 						type="number"
 						placeholder={currentState.textInputLabel}
@@ -266,7 +268,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							<ShareStateAsUrl currentState={currentState} />
 						</div>
 					) : (
-						// If there are only two buttons
 						<Button
 							color="primary"
 							size="sm"

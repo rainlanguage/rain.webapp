@@ -62,10 +62,9 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	const [error, setError] = useState<string | React.ReactElement | null>(null);
 	const [inputText, setInputText] = useState<string>('');
+	const [buttonsData, setButtonsData] = useState<any[]>([]);
 	const searchParams = useSearchParams();
 	const router = useRouter();
-
-	const buttonsData = generateButtonsData(yamlData, currentState);
 
 	const getUrlState = async () => {
 		const encodedState = searchParams.get('currentState');
@@ -102,6 +101,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
+		setButtonsData(generateButtonsData(yamlData, currentState));
 		const lastBindingValue = Object.values(currentState.bindings).slice(-1)[0] || '';
 		const lastDepositValue = currentState.deposits.slice(-1)[0]?.amount || '';
 
@@ -138,7 +138,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	}, [
 		JSON.stringify(currentState.bindings),
 		JSON.stringify(currentState.deposits),
-		currentState.currentStep
+		JSON.stringify(currentState.currentStep)
 	]); // Run only when bindings, deposits or currentStep change
 
 	useEffect(() => {

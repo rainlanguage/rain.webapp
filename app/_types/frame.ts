@@ -16,4 +16,5 @@ export type FrameState = {
 	isWebapp?: boolean;
 	tokenInfos: TokenInfo[];
 	inputText?: string;
+	previousValue: string;
 };

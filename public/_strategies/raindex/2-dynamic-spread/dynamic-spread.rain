@@ -77,12 +77,14 @@ gui:
         - token: base-usdc
           min: 0
           presets:
+            - 0
             - 10
             - 50
             - 100
         - token: base-toshi
           min: 0
           presets:
+            - 0
             - 50000
             - 100000
             - 500000

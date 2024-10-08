@@ -108,7 +108,12 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					isWebapp: true
 				};
 
-				const serializedState = JSON.stringify(stateToSerialize);
+				const serializedState = Object.entries(stateToSerialize)
+					.map(
+						([key, value]) =>
+							`${encodeURIComponent(key)}=${encodeURIComponent(JSON.stringify(value))}`
+					)
+					.join('&');
 				const url = new URL(window.location.href);
 				url.searchParams.set('currentState', serializedState);
 				router.replace(url.toString(), undefined);

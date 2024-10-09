@@ -130,7 +130,7 @@ export const WithdrawalModal = ({ vault, networkStatus }: WithdrawalModalProps) 
 								await withdraw(rawAmount);
 								setOpen(false);
 							})}
-							className="space-y-8">
+							className="space-y-2">
 							<FormField
 								control={form.control}
 								name="withdrawalAmount"

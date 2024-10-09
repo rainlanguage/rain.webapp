@@ -17,5 +17,5 @@ export type FrameState = {
 	tokenInfos: TokenInfo[];
 	inputText?: string;
 	buttonsData: any[];
-	previousValue: string;
+	previousCustomInputValue: string;
 };

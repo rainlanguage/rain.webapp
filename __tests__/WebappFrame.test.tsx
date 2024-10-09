@@ -53,9 +53,74 @@ vi.mock('../_services/getTokenInfo', () => ({
 	getTokenInfos: vi.fn().mockResolvedValue(mockTokenInfos)
 }));
 
+vi.mock('../_services/compress', () => ({
+	decompress: vi.fn().mockResolvedValue(
+		JSON.stringify({
+			bindings: { someKey: 'someValue' },
+			deposits: [{ amount: '100' }],
+			currentStep: 'fields',
+			isWebapp: true,
+			buttonsData: [
+				{
+					buttonTarget: 'buttonValue',
+					buttonValue: 'back',
+					buttonText: '←'
+				},
+				{
+					buttonTarget: 'buttonValue',
+					buttonValue: '0',
+					buttonText: '0 USDC'
+				},
+				{
+					buttonTarget: 'buttonValue',
+					buttonValue: '10',
+					buttonText: '10 USDC'
+				},
+				{
+					buttonTarget: 'textInputLabel',
+					buttonValue: 'Enter a number greater than 0',
+					buttonText: 'Custom'
+				}
+			]
+		})
+	)
+}));
+
+const { useRouter, useSearchParams } = vi.hoisted(() => {
+	const mockedRouterReplace = vi.fn();
+	const mockedGetSearchParams = vi.fn((param) => {
+		if (param === 'currentState') return 'mockEncodedStateString';
+		return null;
+	});
+
+	return {
+		useRouter: () => ({ replace: mockedRouterReplace }),
+		useSearchParams: () => ({ get: mockedGetSearchParams })
+	};
+});
+
+vi.mock('next/navigation', async () => {
+	const actual = await vi.importActual('next/navigation');
+	return {
+		...actual,
+		useRouter,
+		useSearchParams
+	};
+});
+
 describe('WebappFrame Component', () => {
 	beforeEach(() => {
 		vi.resetAllMocks();
+	});
+
+	it.only('renders WebappFrame without Spinner once state is initialized', async () => {
+		render(<WebappFrame dotrainText={mockFixedLimit} deploymentOption="" />);
+
+		// Ensure Spinner is not in the document after loading completes
+		await waitFor(() => expect(screen.queryByRole('status')).not.toBeInTheDocument());
+
+		// Add more assertions here to verify the correct UI elements are displayed
+		expect(screen.getByText(/someValue/i)).toBeInTheDocument(); // Adjust based on UI display of the `bindings`
 	});
 
 	it('shows input field when only one "Custom" button is present', async () => {
@@ -107,7 +172,7 @@ describe('WebappFrame Component', () => {
 		});
 	});
 
-	it.only('preserves previousValue through Custom -> Submit -> Back -> Custom actions', async () => {
+	it('preserves previousValue through Custom -> Submit -> Back -> Custom actions', async () => {
 		(generateButtonsData as Mock).mockReturnValue([
 			{
 				buttonTarget: 'buttonValue',
@@ -130,22 +195,15 @@ describe('WebappFrame Component', () => {
 				buttonText: 'Custom'
 			}
 		]);
-		const replace = vi.fn();
 
-		render(
-			<AppRouterContextProviderMock router={{ replace }}>
-				<WebappFrame dotrainText={mockFixedLimit} deploymentOption="" />
-			</AppRouterContextProviderMock>
-		);
+		render(<WebappFrame dotrainText={mockFixedLimit} deploymentOption="" />);
 
 		// Step 1: Click "Custom" button
 		await waitFor(async () => {
 			expect(screen.getByText('Custom')).toBeInTheDocument();
 			const customButton = screen.getByText('Custom');
-			screen.debug();
-			console.log(customButton);
 			await userEvent.click(customButton);
-			// const inputField = await screen.getByPlaceholderText('Enter a custom amount');
+			screen.debug();
 		});
 		// const customButton = screen.getByText('Custom');
 		// await userEvent.click(customButton);

@@ -96,7 +96,7 @@ export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): an
 };
 
 export const generateButtonsData = (yamlData: YamlData, currentState: FrameState): any[] => {
-	console.log('generating buttons');
+	console.log('GENERATING');
 	let buttons: any[] = [];
 	if (currentState.textInputLabel) {
 		return [
@@ -208,6 +208,6 @@ export const generateButtonsData = (yamlData: YamlData, currentState: FrameState
 			];
 			break;
 	}
-	console.log('buttons', buttons);
+
 	return buttons;
 };

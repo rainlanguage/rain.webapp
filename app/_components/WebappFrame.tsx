@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { generateButtonsData } from '../_services/buttonsData';
 import { YamlData } from '../_types/yamlData';
 import { FrameImage } from './FrameImage';
@@ -43,7 +43,7 @@ const getDefaultState = (yamlData: YamlData, deploymentOption: string | null): F
 		isWebapp: true,
 		tokenInfos: [] as TokenInfo[],
 		buttonsData: [],
-		previousValue: '' // Initialize previousValue
+		previousCustomInputValue: ''
 	};
 };
 
@@ -66,6 +66,15 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	const searchParams = useSearchParams();
 	const router = useRouter();
+
+	const buttonsData = useMemo(() => {
+		return generateButtonsData(yamlData, currentState);
+	}, [
+		currentState.bindings,
+		currentState.deposits,
+		currentState.currentStep,
+		currentState.textInputLabel
+	]);
 
 	const getUrlState = async () => {
 		const encodedState = searchParams.get('currentState');
@@ -104,11 +113,9 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	useEffect(() => {
 		const lastBindingValue = Object.values(currentState.bindings).slice(-1)[0] || '';
 		const lastDepositValue = currentState.deposits.slice(-1)[0]?.amount || '';
-
 		setCurrentState((prevState) => ({
 			...prevState,
-			previousValue: String(lastDepositValue || lastBindingValue || ''),
-			buttonsData: generateButtonsData(yamlData, currentState)
+			previousCustomInputValue: String(lastDepositValue || lastBindingValue || '')
 		}));
 
 		const updateUrlWithState = async () => {
@@ -199,7 +206,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			}));
 			return;
 		} else if (buttonData.buttonTarget === 'buttonValue' && buttonData.buttonValue === 'back') {
-			setInputText(currentState.previousValue || '');
+			setInputText(currentState.previousCustomInputValue || '');
 			setCurrentState((prevState) => ({
 				...prevState,
 				textInputLabel: ''
@@ -221,7 +228,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
-		const filteredButtons = currentState.buttonsData.filter(
+		const filteredButtons = buttonsData.filter(
 			(buttonData) => buttonData.buttonValue !== 'back' && buttonData.buttonValue !== 'finalSubmit'
 		);
 		if (filteredButtons.length === 1 && filteredButtons[0].buttonText === 'Custom') {
@@ -230,7 +237,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 				textInputLabel: filteredButtons[0].buttonValue
 			}));
 		}
-	}, [JSON.stringify(currentState.buttonsData)]);
+	}, [JSON.stringify(buttonsData)]);
 
 	return loading.decodingState || loading.fetchingTokens ? (
 		<div className="flex-grow flex items-center justify-center">
@@ -256,7 +263,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 				</div>
 			)}
 			<div className="flex flex-wrap gap-2 justify-center md:pb-20 pb-8 px-8 pt-10">
-				{currentState.buttonsData.map((buttonData) => {
+				{buttonsData.map((buttonData) => {
 					return buttonData.buttonValue === 'finalSubmit' ? (
 						<div key={buttonData} className="flex gap-2 flex-wrap justify-center">
 							<SubmissionModal

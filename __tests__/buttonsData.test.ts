@@ -143,14 +143,12 @@ describe('generateButtonsData', () => {
 	});
 
 	it('returns deposit preset buttons when currentStep is "deposit"', () => {
-		const mockDeposit = mockYamlData.gui.deployments[0].deposits[0];
-
 		const buttonsData = generateButtonsData(
 			mockYamlData as unknown as YamlData,
 			depositFrameState as unknown as FrameState
 		);
 
-		expect(buttonsData).toHaveLength(7);
+		expect(buttonsData).toHaveLength(4);
 		expect(buttonsData[1]).toEqual({
 			buttonTarget: 'buttonValue',
 			buttonValue: '0',

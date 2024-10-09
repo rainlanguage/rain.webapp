@@ -28,7 +28,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { readContract } from 'viem/actions';
 import { waitForTransactionReceipt } from '@wagmi/core';
-import useWrongNetwork from '../_services/useWrongNetwork';
+import useNetworkStatus from '../_services/useNetworkStatus';
 import { Network } from '../_queries/subgraphs';
 
 export enum TokenDepositStatus {

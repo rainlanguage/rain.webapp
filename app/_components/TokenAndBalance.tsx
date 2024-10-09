@@ -3,7 +3,7 @@ import { WithdrawalModal } from './WithdrawalModal';
 import { DepositModal } from './DepositModal';
 import { Network } from '../_queries/subgraphs';
 import { useAccount } from 'wagmi';
-import useWrongNetwork from '../_services/useWrongNetwork';
+import useNetworkStatus from '../_services/useNetworkStatus';
 
 export function TokenAndBalance({
 	input,
@@ -17,7 +17,7 @@ export function TokenAndBalance({
 	network: Network;
 }) {
 	const account = useAccount();
-	const networkStatus = useWrongNetwork(account.chainId, network.chainId);
+	const networkStatus = useNetworkStatus(account.chainId, network.chainId);
 	return (
 		<div className="flex border rounded-xl p-2 gap-x-3 items-center justify-between">
 			<div className="flex flex-col gap-y-1">

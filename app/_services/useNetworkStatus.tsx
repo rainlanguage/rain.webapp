@@ -3,7 +3,7 @@ import { getNetworkSubgraphs } from '../_queries/subgraphs';
 
 const compatibleNetworks = getNetworkSubgraphs();
 
-const useWrongNetwork = (connectedChainId?: number, targetChainId?: number) => {
+const useNetworkStatus = (connectedChainId?: number, targetChainId?: number) => {
 	const [wrongNetwork, setWrongNetwork] = useState(false);
 	const [targetNetworkName, setTargetNetworkName] = useState<string | undefined>(undefined);
 	console.log('connectedChainId', connectedChainId);
@@ -21,4 +21,4 @@ const useWrongNetwork = (connectedChainId?: number, targetChainId?: number) => {
 	return { wrongNetwork, targetNetworkName };
 };
 
-export default useWrongNetwork;
+export default useNetworkStatus;

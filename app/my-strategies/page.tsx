@@ -6,7 +6,6 @@ import { Spinner, Table } from 'flowbite-react';
 import { formatTimestampSecondsAsLocal } from '../_services/dates';
 import { useRouter } from 'next/navigation';
 import { TokenAndBalance } from '../_components/TokenAndBalance';
-import { useEffect } from 'react';
 
 export default function MyStrategies() {
 	const router = useRouter();
@@ -43,9 +42,8 @@ export default function MyStrategies() {
 										router.push(
 											`${window.location.origin}/my-strategies/${order.addEvents[0].transaction.id}`
 										);
-									}}
-								>
-									<Table.Cell>{order.network}</Table.Cell>
+									}}>
+									<Table.Cell>{order.network.name}</Table.Cell>
 									<Table.Cell>
 										{order.active ? (
 											<div className="text-emerald-500">Active</div>
@@ -59,14 +57,14 @@ export default function MyStrategies() {
 									<Table.Cell>
 										<div className="flex gap-x-2">
 											{order.inputs.map((input: any) => (
-												<TokenAndBalance input={input} />
+												<TokenAndBalance input={input} network={order.network} />
 											))}
 										</div>
 									</Table.Cell>
 									<Table.Cell>
 										<div className="flex gap-x-2">
 											{order.outputs.map((output: any, i: number) => (
-												<TokenAndBalance key={i} input={output} />
+												<TokenAndBalance key={i} input={output} network={order.network} />
 											))}
 										</div>
 									</Table.Cell>

@@ -24,6 +24,7 @@ import { useWriteContract } from 'wagmi';
 import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits } from 'viem';
 import { cn } from '@/lib/utils';
+import { Network } from '../_queries/subgraphs';
 
 const formSchema = z.object({
 	withdrawalAmount: z.preprocess(
@@ -41,9 +42,10 @@ interface Vault {
 
 interface WithdrawalModalProps {
 	vault: Vault;
+	networkStatus: { wrongNetwork: boolean; targetNetworkName: string | undefined };
 }
 
-export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
+export const WithdrawalModal = ({ vault, networkStatus }: WithdrawalModalProps) => {
 	const { writeContractAsync } = useWriteContract();
 	const [open, setOpen] = useState(false);
 	const [rawAmount, setRawAmount] = useState<string>('0'); // Store the raw 18-decimal amount
@@ -52,10 +54,12 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 
 	useEffect(() => {
 		setError(null);
-		if (BigInt(rawAmount) > BigInt(vault.balance)) {
+		if (networkStatus.wrongNetwork) {
+			setError(`Please connect to ${networkStatus.targetNetworkName} in order to make withdrawals`);
+		} else if (BigInt(rawAmount) > BigInt(vault.balance)) {
 			setError('Amount exceeds vault balance');
 		}
-	}, [rawAmount, vault.balance]);
+	}, [rawAmount, vault.balance, networkStatus.wrongNetwork]);
 
 	// Vault balance in human-readable format (i.e., converted from 18 decimals)
 	const readableBalance = formatUnits(vault.balance, vault.token.decimals);
@@ -112,8 +116,7 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 					className={cn(
 						buttonVariants(),
 						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
-					)}
-				>
+					)}>
 					Withdraw
 				</span>
 			</DialogTrigger>
@@ -127,8 +130,7 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 								await withdraw(rawAmount);
 								setOpen(false);
 							})}
-							className="space-y-8"
-						>
+							className="space-y-8">
 							<FormField
 								control={form.control}
 								name="withdrawalAmount"

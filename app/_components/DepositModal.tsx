@@ -28,6 +28,8 @@ import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { readContract } from 'viem/actions';
 import { waitForTransactionReceipt } from '@wagmi/core';
+import useWrongNetwork from '../_services/useWrongNetwork';
+import { Network } from '../_queries/subgraphs';
 
 export enum TokenDepositStatus {
 	Idle,
@@ -68,9 +70,10 @@ interface Vault {
 
 interface DepositModalProps {
 	vault: Vault;
+	networkStatus: { wrongNetwork: boolean; targetNetworkName: string | undefined };
 }
 
-export const DepositModal = ({ vault }: DepositModalProps) => {
+export const DepositModal = ({ vault, networkStatus }: DepositModalProps) => {
 	const { writeContractAsync } = useWriteContract();
 	const [open, setOpen] = useState(false);
 	const [rawAmount, setRawAmount] = useState<string>('0');
@@ -79,11 +82,15 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 	const [depositTxHash, setDepositTxHash] = useState<string | null>(null);
 
 	useEffect(() => {
-		if (!open) {
+		if (networkStatus.wrongNetwork) {
+			setError(`Please connect to ${networkStatus.targetNetworkName} in order to make deposits.`);
+		} else if (!open) {
 			setDepositState(TokenDepositStatus.Idle);
 			setError(null);
 		}
-	}, [open]);
+	}, [open, networkStatus.wrongNetwork]);
+
+	console.log(networkStatus);
 
 	const address = useAccount().address;
 	const chain = useAccount().chain;
@@ -227,8 +234,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 					className={cn(
 						buttonVariants(),
 						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
-					)}
-				>
+					)}>
 					Deposit
 				</span>
 			</DialogTrigger>
@@ -241,8 +247,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 								onSubmit={form.handleSubmit(async () => {
 									await deposit();
 								})}
-								className="space-y-8"
-							>
+								className="space-y-2">
 								<FormField
 									control={form.control}
 									name="depositAmount"
@@ -274,7 +279,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 										</FormItem>
 									)}
 								/>
-								<Button type="submit" disabled={!!error}>
+								<Button type="submit" className="disabled:cursor-not-allowed" disabled={!!error}>
 									Submit
 								</Button>
 							</form>
@@ -306,8 +311,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 										<a
 											href={(chain?.blockExplorers.default.url as string) + '/tx/' + depositTxHash}
 											target="_blank"
-											rel="noreferrer"
-										>
+											rel="noreferrer">
 											<Button className="w-fit">View Transaction</Button>
 										</a>
 									)}
@@ -328,8 +332,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 													  depositState === TokenDepositStatus.WaitingForApprovalConfirmation
 													? 'bg-amber-500 w-12 h-12'
 													: 'bg-emerald-600 w-10 h-10'
-										}`}
-									>
+										}`}>
 										{1}
 									</div>
 									<div className="text-lg">
@@ -361,8 +364,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 													: depositState === TokenDepositStatus.TokensDeposited
 														? 'bg-emerald-600 w-10 h-10'
 														: 'bg-gray-400 w-10 h-10'
-										}`}
-									>
+										}`}>
 										{2}
 									</div>
 									<div className="text-lg">
@@ -389,8 +391,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 								<a
 									href={(chain?.blockExplorers.default.url as string) + '/tx/' + depositTxHash}
 									target="_blank"
-									rel="noreferrer"
-								>
+									rel="noreferrer">
 									<Button className="w-fit">View Transaction</Button>
 								</a>
 							)}

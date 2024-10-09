@@ -6,8 +6,6 @@ const compatibleNetworks = getNetworkSubgraphs();
 const useNetworkStatus = (connectedChainId?: number, targetChainId?: number) => {
 	const [wrongNetwork, setWrongNetwork] = useState(false);
 	const [targetNetworkName, setTargetNetworkName] = useState<string | undefined>(undefined);
-	console.log('connectedChainId', connectedChainId);
-	console.log('targetChainId', targetChainId);
 
 	useEffect(() => {
 		if (connectedChainId !== targetChainId) {

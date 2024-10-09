@@ -127,7 +127,8 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 								await withdraw(rawAmount);
 								setOpen(false);
 							})}
-							className="space-y-8">
+							className="space-y-8"
+						>
 							<FormField
 								control={form.control}
 								name="withdrawalAmount"

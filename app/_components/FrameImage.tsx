@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { FrameState } from '../_types/frame';
 import { ProgressBar } from './ProgressBar';
 
@@ -40,7 +41,7 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 						<div className="leading-tight">
 							{currentState.deploymentOption.fields[Object.keys(currentState.bindings).length].name}
 						</div>
-						<div className="text-2xl" tw="text-2xl">
+						<div className="text-2xl whitespace-pre-line" tw="text-2xl whitespace-pre-line">
 							{
 								currentState.deploymentOption.fields[Object.keys(currentState.bindings).length]
 									.description

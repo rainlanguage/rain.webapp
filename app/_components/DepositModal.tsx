@@ -28,8 +28,6 @@ import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { readContract } from 'viem/actions';
 import { waitForTransactionReceipt } from '@wagmi/core';
-import useNetworkStatus from '../_services/useNetworkStatus';
-import { Network } from '../_queries/subgraphs';
 
 export enum TokenDepositStatus {
 	Idle,
@@ -90,8 +88,6 @@ export const DepositModal = ({ vault, networkStatus }: DepositModalProps) => {
 		}
 	}, [open, networkStatus.wrongNetwork]);
 
-	console.log(networkStatus);
-
 	const address = useAccount().address;
 	const chain = useAccount().chain;
 
@@ -119,12 +115,9 @@ export const DepositModal = ({ vault, networkStatus }: DepositModalProps) => {
 	const deposit = async () => {
 		try {
 			setDepositState(TokenDepositStatus.Pending);
-
 			const depositAmount = form.getValues('depositAmount').toString();
 			setRawAmount(depositAmount);
-
 			const parsedAmount = parseUnits(depositAmount, vault.token.decimals);
-
 			setDepositState(TokenDepositStatus.CheckingAllowance);
 			const existingAllowance = await readContract(config.getClient(), {
 				abi: erc20Abi,
@@ -187,7 +180,9 @@ export const DepositModal = ({ vault, networkStatus }: DepositModalProps) => {
 				(error as Error).message.includes('User rejected the request')
 			) {
 				setError('User rejected the deposit request.');
-			} else setError('Error during deposit process');
+			} else {
+				setError('Error during deposit process');
+			}
 		}
 	};
 

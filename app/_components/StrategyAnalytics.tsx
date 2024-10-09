@@ -38,10 +38,6 @@ const StrategyAnalytics = ({ transactionId }: props) => {
 		refetchInterval: 10000
 	});
 
-	useEffect(() => {
-		console.log(query.data);
-	}, [query.data]);
-
 	const { writeContractAsync } = useWriteContract();
 
 	const removeOrder = async () => {

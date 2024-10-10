@@ -76,8 +76,9 @@ export const transactionAnalytics = (transactionId: string) => `
 }`;
 
 export const getTransactionAnalyticsData = async (transactionId: string, network: string) => {
-	const subgraphUrl = getNetworkSubgraphs()[network as keyof ReturnType<typeof getNetworkSubgraphs>];
-  if (subgraphUrl) {
+	const subgraphUrl =
+		getNetworkSubgraphs()[network as keyof ReturnType<typeof getNetworkSubgraphs>];
+	if (subgraphUrl) {
 		try {
 			const response = await fetch(subgraphUrl, {
 				method: 'POST',
@@ -112,6 +113,6 @@ export const getTransactionAnalyticsData = async (transactionId: string, network
 			} else throw new Error('Unknown error fetching transaction data from subgraph');
 		}
 	} else {
-    throw new Error(`Found no subgraph for ${network} network`);
-  }
+		throw new Error(`Found no subgraph for ${network} network`);
+	}
 };

@@ -75,7 +75,9 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 							)}
 						</div>
 						<Property name="Chain">
-							<span className="break-words">{network[0].toUpperCase() + network.substring(1).toLowerCase()}</span>
+							<span className="break-words">
+								{network[0].toUpperCase() + network.substring(1).toLowerCase()}
+							</span>
 						</Property>
 						<Property name="Transaction ID">
 							<span className="break-words">{query.data.transaction.id}</span>

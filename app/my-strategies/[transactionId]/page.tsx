@@ -7,7 +7,7 @@ interface props {
 }
 
 const Home = ({ params: { transactionId } }: props) => {
-	const [id, network] = transactionId.split("-");
+	const [id, network] = transactionId.split('-');
 	return <StrategyAnalytics transactionId={id} network={network} />;
 };
 

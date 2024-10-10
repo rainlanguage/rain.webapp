@@ -4,6 +4,148 @@ gui:
   name: Two-sided dynamic spread strategies
   description: The dynamic spread strategy for market-making uses time-based adjustments to maintain liquidity by narrowing spreads as market conditions stabilize, while recalculating averages and trade sizes to mitigate risks during trends.
   deployments:
+    - deployment: polygon-quick-old-quick
+      name: QUICK (old)<>QUICK on Polygon.
+      description: Rotate QUICK (old) and QUICK on Polygon.
+
+      fields:
+        - binding: initial-io
+          name: Initial price (QUICK per QUICK (old))
+          description: The rough price ratio for new QUICK to old QUICK (e.g. 1088).
+          min: 1000
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.001x
+              value: 1.001
+            - name: 1.002x
+              value: 1.002
+            - name: 1.005x
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of QUICK (new) that will be offered in a single auction.
+          min: 0
+          presets:
+            - name: 200
+              value: 200
+            - name: 500
+              value: 500
+            - name: 1000
+              value: 1000
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of QUICK (new) that will be offered in a single auction.
+          min: 0
+          presets:
+            - name: 100
+              value: 100
+            - name: 200
+              value: 200
+            - name: 500
+              value: 500
+
+      deposits:
+        - token: polygon-quick-old
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+        - token: polygon-quick
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+
+    - deployment: arbitrum-wbtc-weth
+      name: WBTC<>WETH on Arbitrum.
+      description: This will rotate WBTC and WETH on Arbitrum.
+
+      fields:
+        - binding: initial-io
+          name: Initial price (WBTC per WETH)
+          description: This should be the WETH price you see for WBTC on Dextools (e.g. 0.038).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 0
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: time-per-epoch
+          name: Time per price halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of WBTC that will be offered in a single auction.
+          min: 0
+          presets:
+            - name: 0.001
+              value: 0.001
+            - name: 0.01
+              value: 0.01
+            - name: 0.1
+              value: 0.1
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of WBTC that will be offered in a single auction.
+          min: 0
+          presets:
+            - name: 0.0001
+              value: 0.0001
+            - name: 0.001
+              value: 0.001
+            - name: 0.01
+              value: 0.01
+
+      deposits:
+        - token: arbitrum-wbtc
+          min: 0
+          presets:
+            - 0
+            - 0.01
+            - 0.1
+        - token: arbitrum-weth
+          min: 0
+          presets:
+            - 0
+            - 0.01
+            - 0.1
+
     - deployment: base-usdc-toshi
       name: USDC<>TOSHI on Base.
       description: Rotate USDC and TOSHI on Base.
@@ -37,20 +179,9 @@ gui:
               value: 14400
             - name: 8 hours (28800)
               value: 28800
-        - binding: min-trade-amount
-          name: Minimum trade amount (USDC)
-          description: The minimum amount of USDC that can be traded in a single auction.
-          min: 0
-          presets:
-            - name: $1
-              value: 1
-            - name: $5
-              value: 5
-            - name: $10
-              value: 10
         - binding: max-amount
           name: Max amount
-          description: The maximum amount of USDC that can be traded in a single auction.
+          description: The maximum amount of USDC that will be offered in a single auction.
           min: 0
           presets:
             - name: $10
@@ -61,16 +192,30 @@ gui:
               value: 50
             - name: $100
               value: 100
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of USDC that will be offered in a single auction.
+          min: 0
+          presets:
+            - name: $1
+              value: 1
+            - name: $5
+              value: 5
+            - name: $10
+              value: 10
+
       deposits:
         - token: base-usdc
           min: 0
           presets:
+            - 0
             - 10
             - 50
             - 100
         - token: base-toshi
           min: 0
           presets:
+            - 0
             - 50000
             - 100000
             - 500000
@@ -107,20 +252,9 @@ gui:
               value: 14400
             - name: 8 hours (28800)
               value: 28800
-        - binding: min-trade-amount
-          name: Minimum trade amount
-          description: The minimum amount of sFLR that can be traded in a single auction.
-          min: 0
-          presets:
-            - name: 10
-              value: 10
-            - name: 100
-              value: 100
-            - name: 1000
-              value: 1000
         - binding: max-amount
           name: Max amount
-          description: The maximum amount of sFLR that can be traded in a single auction.
+          description: The maximum amount of sFLR that will be offered in a single auction.
           min: 0
           presets:
             - name: 100
@@ -131,6 +265,17 @@ gui:
               value: 10000
             - name: 100000
               value: 100000
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of sFLR that will be offered in a single auction.
+          min: 0
+          presets:
+            - name: 10
+              value: 10
+            - name: 100
+              value: 100
+            - name: 1000
+              value: 1000
 
       deposits:
         - token: flare-sflr
@@ -178,20 +323,9 @@ gui:
               value: 14400
             - name: 8 hours (28800)
               value: 28800
-        - binding: min-trade-amount
-          name: Minimum trade amount
-          description: The minimum amount of USDC.e that can be traded in a single auction.
-          min: 0
-          presets:
-            - name: $0.1
-              value: 0.1
-            - name: $1
-              value: 1
-            - name: $10
-              value: 10
         - binding: max-amount
           name: Max amount
-          description: The maximum amount of USDC.e that can be traded in a single auction.
+          description: The maximum amount of USDC.e that will be offered in a single auction.
           min: 0
           presets:
             - name: $10
@@ -202,6 +336,17 @@ gui:
               value: 50
             - name: $100
               value: 100
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of USDC.e that will be offered in a single auction.
+          min: 0
+          presets:
+            - name: $0.1
+              value: 0.1
+            - name: $1
+              value: 1
+            - name: $10
+              value: 10
 
       deposits:
         - token: flare-usdce
@@ -220,10 +365,24 @@ gui:
             - 100
 
 scenarios:
+  arbitrum:
+    orderbook: arbitrum
+    runs: 1
+    bindings:
+      raindex-subparser: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
+      history-cap: '1e50'
+    scenarios:
+      wbtc-weth:
+        runs: 1
+        bindings:
+          amount-token: 0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f
+          initial-output-token: 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1
+          initial-input-token: 0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f
   base:
     orderbook: base
     runs: 1
     bindings:
+      raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       history-cap: '1e50'
     scenarios:
       usdc-toshi:
@@ -236,6 +395,7 @@ scenarios:
     orderbook: flare
     runs: 1
     bindings:
+      raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
       history-cap: '1e50'
     scenarios:
       sflr-wflr:
@@ -256,6 +416,19 @@ scenarios:
           amount-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
           initial-output-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
           initial-input-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
+  polygon:
+    orderbook: polygon
+    runs: 1
+    bindings:
+      raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
+      history-cap: '1e50'
+    scenarios:
+      quick-old-quick:
+        runs: 1
+        bindings:
+          amount-token: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
+          initial-output-token: 0x831753dd7087cac61ab5644b308642cc1c33dc13
+          initial-input-token: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
 
 networks:
   flare:
@@ -268,14 +441,28 @@ networks:
     chain-id: 8453
     network-id: 8453
     currency: ETH
+  arbitrum:
+    rpc: https://rpc.ankr.com/arbitrum
+    chain-id: 42161
+    network-id: 42161
+    currency: ETH
+  polygon:
+    rpc: https://rpc.ankr.com/polygon
+    chain-id: 137
+    network-id: 137
+    currency: POL
 
 metaboards:
   flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
+  arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-arbitrum/0.1/gn
+  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-polygon/0.1/gn
 
 subgraphs:
   flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
+  arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
+  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
 
 orderbooks:
   flare:
@@ -284,6 +471,10 @@ orderbooks:
     address: 0xd2938e7c9fe3597f78832ce780feb61945c377d7
     network: base
     subgraph: base
+  arbitrum:
+    address: 0x550878091b2B1506069F61ae59e3A5484Bca9166
+    network: arbitrum
+    subgraph: arbitrum
 
 deployers:
   flare:
@@ -291,8 +482,23 @@ deployers:
   base:
     address: 0xC1A14cE2fd58A3A2f99deCb8eDd866204eE07f8D
     network: base
+  arbitrum:
+    address: 0x9B0D254bd858208074De3d2DaF5af11b3D2F377F
+    network: arbitrum
+  polygon:
+    address: 0x7D2f700b1f6FD75734824EA4578960747bdF269A
+    network: polygon
+    subgraph: polygon
 
 tokens:
+  arbitrum-wbtc:
+    network: arbitrum
+    address: 0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f
+    decimals: 8
+  arbitrum-weth:
+    network: arbitrum
+    address: 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1
+    decimals: 18
   base-toshi:
     network: base
     address: 0xac1bd2486aaf3b5c0fc3fd868558b082a531b2b4
@@ -317,8 +523,25 @@ tokens:
     network: flare
     address: 0x1502FA4be69d526124D453619276FacCab275d3D
     decimals: 18
+  polygon-quick-old:
+    network: polygon
+    address: 0x831753dd7087cac61ab5644b308642cc1c33dc13
+    decimals: 18
+  polygon-quick:
+    network: polygon
+    address: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
+    decimals: 18
 
 orders:
+  arbitrum-wbtc-weth:
+    network: arbitrum
+    orderbook: arbitrum
+    inputs:
+      - token: arbitrum-wbtc
+      - token: arbitrum-weth
+    outputs:
+      - token: arbitrum-wbtc
+      - token: arbitrum-weth
   base-usdc-toshi:
     network: base
     orderbook: base
@@ -346,8 +569,20 @@ orders:
     outputs:
       - token: flare-sflr
       - token: flare-wflr
+  polygon-quick-old-quick:
+    network: polygon
+    orderbook: polygon
+    inputs:
+      - token: polygon-quick-old
+      - token: polygon-quick
+    outputs:
+      - token: polygon-quick-old
+      - token: polygon-quick
 
 deployments:
+  arbitrum-wbtc-weth:
+    order: arbitrum-wbtc-weth
+    scenario: arbitrum.wbtc-weth
   base-usdc-toshi:
     order: base-usdc-toshi
     scenario: base.usdc-toshi
@@ -357,12 +592,14 @@ deployments:
   flare-sflr-wflr:
     order: flare-sflr-wflr
     scenario: flare.sflr-wflr
+  polygon-quick-old-quick:
+    order: polygon-quick-old-quick
+    scenario: polygon.quick-old-quick
 ---
-#raindex-subparser 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
+#raindex-subparser !Subparser for the Raindex.
 
 #min-amount !Amount will decay down to this number each epoch.
 #max-amount !Amount will decay down from this number each epoch.
-#min-trade-amount !Each trade must be at least this many output tokens.
 #time-per-epoch !Duration of one unit of streaming amount and io ratio halflife.
 #next-trade-multiplier !Start next auction at this x the last trade.
 #history-cap !The max amount of trade history kept for cost basis tracking (denominated in same token as tranche size).
@@ -495,5 +732,6 @@ _: io,
 :call<'set-last-trade>(io);
 
 #handle-io
+min-trade-amount: mul(min-amount 0.9),
 :ensure(greater-than-or-equal-to(if(call<'amount-is-output>() output-vault-decrease() input-vault-increase()) min-trade-amount) "Min trade amount."),
 :call<'set-cost-basis-io-ratio>();

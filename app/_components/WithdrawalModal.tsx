@@ -69,7 +69,6 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 	});
 
 	const withdraw = async (amount: string) => {
-		console.log('Withdraw', amount);
 		// Send raw value to the contract (no conversion needed here)
 		await writeContractAsync({
 			abi: orderBookJson.abi,
@@ -93,7 +92,6 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 
 		// Update the raw amount based on the user input (convert back to raw value)
 		if (userInput) {
-			console.log(userInput);
 			try {
 				const parsedRawAmount = parseUnits(userInput, vault.token.decimals).toString();
 				setRawAmount(parsedRawAmount); // Update raw amount on every user change

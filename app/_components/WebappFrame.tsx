@@ -76,7 +76,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		if (encodedState) {
 			try {
 				const decompressedState = await decompress(encodedState);
-				console.log(decompressedState);
+
 				return {
 					...JSON.parse(decompressedState),
 					requiresTokenApproval: false,
@@ -117,7 +117,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 				try {
 					setLoading((prev) => ({ ...prev, fetchingTokens: true }));
 					const tokenInfos = await getTokenInfos(yamlData);
-					console.log(tokenInfos);
+
 					setCurrentState((prevState) => ({
 						...prevState,
 						tokenInfos

@@ -54,9 +54,11 @@ export const WithdrawalModal = ({ vault, networkStatus }: WithdrawalModalProps) 
 	useEffect(() => {
 		setError(null);
 		if (networkStatus.wrongNetwork) {
-			setError(`Please connect to ${networkStatus.targetNetworkName} in order to make withdrawals`);
+			setError(
+				`Please connect to ${networkStatus.targetNetworkName} in order to make withdrawals.`
+			);
 		} else if (BigInt(rawAmount) > BigInt(vault.balance)) {
-			setError('Amount exceeds vault balance');
+			setError('Amount exceeds vault balance.');
 		}
 	}, [rawAmount, vault.balance, networkStatus.wrongNetwork]);
 
@@ -113,8 +115,7 @@ export const WithdrawalModal = ({ vault, networkStatus }: WithdrawalModalProps) 
 					className={cn(
 						buttonVariants(),
 						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
-					)}
-				>
+					)}>
 					Withdraw
 				</span>
 			</DialogTrigger>
@@ -128,8 +129,7 @@ export const WithdrawalModal = ({ vault, networkStatus }: WithdrawalModalProps) 
 								await withdraw(rawAmount);
 								setOpen(false);
 							})}
-							className="space-y-2"
-						>
+							className="space-y-2">
 							<FormField
 								control={form.control}
 								name="withdrawalAmount"

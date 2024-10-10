@@ -25,7 +25,7 @@ export default function MyStrategies() {
 			{query.isError && <div>Error: {query.error.message}</div>}
 			{query.data && (
 				<div className="w-full overflow-x-scroll">
-					<Table hoverable striped>
+					<Table hoverable>
 						<Table.Head>
 							<Table.HeadCell>Network</Table.HeadCell>
 							<Table.HeadCell>Active</Table.HeadCell>
@@ -37,13 +37,13 @@ export default function MyStrategies() {
 						<Table.Body>
 							{query.data.map((order: any, i: number) => (
 								<Table.Row
+									className="cursor-pointer"
 									key={i}
 									onClick={() => {
 										router.push(
 											`${window.location.origin}/my-strategies/${order.addEvents[0].transaction.id}`
 										);
-									}}
-								>
+									}}>
 									<Table.Cell>{order.network.name}</Table.Cell>
 									<Table.Cell>
 										{order.active ? (
@@ -57,7 +57,7 @@ export default function MyStrategies() {
 									</Table.Cell>
 									<Table.Cell>
 										<div className="flex gap-x-2">
-											{order.inputs.map((input: any) => (
+											{order.inputs.map((input: any, i: number) => (
 												<TokenAndBalance input={input} network={order.network} />
 											))}
 										</div>

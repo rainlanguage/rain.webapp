@@ -101,11 +101,16 @@ export const getTransactionAnalyticsData = async (transactionId: string) => {
 					order: { ...result.data.addOrders[0].order, network, subgraphUrl }
 				};
 			}
-		} catch (error: any) {
-			if (error?.message)
+			return {
+				...result.data.addOrders[0],
+				order: { ...result.data.addOrders[0].order, network, subgraphUrl }
+			};
+		} catch (error: unknown) {
+			if (error instanceof Error) {
 				throw new Error(
-					`Error fetching transaction data from ${network} subgraph: ${error?.message || ''}`
+					`Error fetching transaction data from ${network} subgraph: ${error.message || ''}`
 				);
+			} else throw new Error('Unknown error fetching transaction data from subgraph');
 		}
 	}
 };

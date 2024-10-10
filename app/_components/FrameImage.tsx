@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { FrameState } from '../_types/frame';
 import { ProgressBar } from './ProgressBar';
 
@@ -6,16 +5,14 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 	return (
 		<div
 			className={`flex flex-col md:justify-center items-center md:text-[50px] text-center text-[30px] relative flex-grow px-8`}
-			tw={`flex flex-col items-center justify-center h-full w-full text-center`}
-		>
+			tw={`flex flex-col items-center justify-center h-full w-full text-center`}>
 			<div tw="absolute top-0 flex w-full" className="hidden">
 				<ProgressBar currentState={currentState} />
 			</div>
 			{currentState.deploymentOption ? (
 				<div
 					className="top-0 md:text-xl text-sm border rounded-full bg-gray-100 px-6 py-3 my-4 md:mb-0"
-					tw="absolute top-12 text-[30px] border rounded-full bg-gray-100 px-6 py-3"
-				>
+					tw="absolute top-12 text-[30px] border rounded-full bg-gray-100 px-6 py-3">
 					{currentState.deploymentOption.name}
 				</div>
 			) : (
@@ -23,8 +20,7 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 			)}
 			<div
 				tw="text-[60px] font-light flex px-28 "
-				className="font-light md:px-32 max-w-[1200px] w-full flex flex-col justify-center flex-grow"
-			>
+				className="font-light md:px-32 max-w-[1200px] w-full flex flex-col justify-center flex-grow">
 				{currentState.currentStep === 'start' ? (
 					<div className="flex flex-col gap-y-8" tw="flex flex-col">
 						<div className="text-1xl">{currentState.strategyName}</div>
@@ -64,22 +60,19 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 				{currentState.currentStep === 'review' && currentState.deploymentOption ? (
 					<table
 						className="min-w-full bg-white text-left text-[20px] lg:text-[25px]"
-						tw="text-left"
-					>
+						tw="text-left">
 						<tbody tw="flex flex-col text-[40px] w-full">
 							<tr>
 								<td
 									className="p-2 lg:p-3 text-2xl font-bold text-gray-800"
-									tw="px-4 py-2 text-[50px] font-bold text-gray-800"
-								>
+									tw="px-4 py-2 text-[50px] font-bold text-gray-800">
 									Review choices
 								</td>
 							</tr>
 							<tr className="border-t border-gray-300 table-row py-3" tw="border-t border-gray-300">
 								<td
 									className="lg:p-3 p-2 font-regular text-gray-700"
-									tw="px-4 py-4 font-regular text-gray-700 w-[300px]"
-								>
+									tw="px-4 py-4 font-regular text-gray-700 w-[300px]">
 									Deployment
 								</td>
 								<td className="p-4 text-gray-600" tw="px-4 py-2 text-gray-600">
@@ -96,12 +89,10 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 									<tr
 										key={binding}
 										className="border-t border-gray-300 table-row py-3"
-										tw="border-t border-gray-300"
-									>
+										tw="border-t border-gray-300">
 										<td
 											className="lg:p-3 p-2 font-regular text-gray-700"
-											tw="p-4 font-semibold text-gray-700 w-[300px] leading-tight"
-										>
+											tw="p-4 font-semibold text-gray-700 w-[300px] leading-tight">
 											{field.name}
 										</td>
 										<td className="px-4 text-gray-600 " tw="px-4 py-2 text-gray-600">
@@ -113,8 +104,7 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 							<tr className="flex flex-col lg:table-row py-3" tw="border-t border-gray-300">
 								<td
 									className="lg:p-3 p-2 text-2xl font-bold text-gray-800"
-									tw="px-4 py-2 text-[30px] font-bold text-gray-800"
-								>
+									tw="px-4 py-2 text-[30px] font-bold text-gray-800">
 									Deposits
 								</td>
 							</tr>
@@ -123,12 +113,10 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 									<tr
 										key={tokenInfo.address}
 										className="border-t border-gray-300 table-row"
-										tw="border-t border-gray-300"
-									>
+										tw="border-t border-gray-300">
 										<td
 											className="p-2 lg:p-3 font-regular text-gray-700"
-											tw="px-4 py-4 font-semibold text-gray-700 w-[300px] leading-tight"
-										>
+											tw="px-4 py-4 font-semibold text-gray-700 w-[300px] leading-tight">
 											{tokenInfo.symbol}
 										</td>
 										<td className="px-4 text-gray-600" tw="px-4 py-2 text-gray-600">
@@ -151,8 +139,7 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 					height="139"
 					viewBox="0 0 860 139"
 					fill="none"
-					xmlns="http://www.w3.org/2000/svg"
-				>
+					xmlns="http://www.w3.org/2000/svg">
 					<path
 						d="M235.036 84.1922V73.2862L225.688 55.4922H229.583L236.758 70.0062L243.933 55.4922H247.787L238.48 73.2862V84.1922H235.036Z"
 						fill="#181818"

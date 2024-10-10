@@ -26,7 +26,7 @@ export default function MyStrategies() {
 			{query.isError && <div>Error: {query.error.message}</div>}
 			{query.data && (
 				<div className="w-full overflow-x-scroll">
-					<Table hoverable striped>
+					<Table hoverable>
 						<Table.Head>
 							<Table.HeadCell>Network</Table.HeadCell>
 							<Table.HeadCell>Active</Table.HeadCell>
@@ -38,6 +38,7 @@ export default function MyStrategies() {
 						<Table.Body>
 							{query.data.map((order: Order, i: number) => (
 								<Table.Row
+									className="cursor-pointer"
 									key={i}
 									onClick={() => {
 										router.push(

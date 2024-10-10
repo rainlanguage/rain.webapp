@@ -8,7 +8,7 @@ import fs from 'fs';
 import { FailsafeSchemaWithNumbers } from '@/app/_schemas/failsafeWithNumbers';
 
 const dotrainContext: types.FramesMiddleware<
-	any,
+	{ url: { pathname: string } },
 	{ dotrainText: string; yamlData: YamlData }
 > = async (ctx, next) => {
 	const projectName = ctx.url.pathname.split('/')[2];

@@ -475,6 +475,10 @@ orderbooks:
     address: 0x550878091b2B1506069F61ae59e3A5484Bca9166
     network: arbitrum
     subgraph: arbitrum
+  polygon:
+    address: 0x7D2f700b1f6FD75734824EA4578960747bdF269A
+    network: polygon
+    subgraph: polygon
 
 deployers:
   flare:

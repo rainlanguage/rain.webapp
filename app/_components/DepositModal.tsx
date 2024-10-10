@@ -145,10 +145,10 @@ export const DepositModal = ({ vault, networkStatus }: DepositModalProps) => {
 					setDepositState(TokenDepositStatus.Error);
 					if (
 						(error as Error)?.message &&
-						(error as Error).message.includes('User rejected the request')
+						(error as Error).message.includes('User rejected the request.')
 					) {
 						setError('User rejected the approval request.');
-					} else setError('Error during approval process');
+					} else setError('Error during approval process.');
 				}
 
 				setDepositState(TokenDepositStatus.TokensApproved);
@@ -177,11 +177,11 @@ export const DepositModal = ({ vault, networkStatus }: DepositModalProps) => {
 			setDepositState(TokenDepositStatus.Error);
 			if (
 				(error as Error)?.message &&
-				(error as Error).message.includes('User rejected the request')
+				(error as Error).message.includes('User rejected the request.')
 			) {
 				setError('User rejected the deposit request.');
 			} else {
-				setError('Error during deposit process');
+				setError('Error during deposit process.');
 			}
 		}
 	};
@@ -208,7 +208,7 @@ export const DepositModal = ({ vault, networkStatus }: DepositModalProps) => {
 				const parsedRawAmount = parseUnits(userInput, vault.token.decimals).toString();
 
 				if (BigInt(parsedRawAmount) > connectedWalletBalance) {
-					setError('Amount exceeds wallet balance');
+					setError('Amount exceeds wallet balance.');
 				} else {
 					setError(null);
 				}

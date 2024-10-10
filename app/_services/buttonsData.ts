@@ -1,11 +1,13 @@
 import { FrameState } from '../_types/frame';
 import { DeploymentOption, Deposit, Preset, YamlData, Field } from '../_types/yamlData';
+import { Button } from '../types';
 import { TokenInfo } from './getTokenInfo';
 
 export const getPaginatedButtons = (
-	allButtons: any[],
+	allButtons: Button[],
 	buttonPage: number,
 	buttonMax = 4
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any[] => {
 	const buttonPageOffset = buttonPage * 3;
 	let buttonEndIndex = buttonPageOffset + buttonMax;
@@ -40,7 +42,7 @@ export const getPaginatedButtons = (
 	];
 };
 
-export const getFieldPresetsButtons = (field: Field): any[] => {
+export const getFieldPresetsButtons = (field: Field): Button[] => {
 	return [
 		{
 			buttonTarget: 'buttonValue',
@@ -66,7 +68,7 @@ export const getFieldPresetsButtons = (field: Field): any[] => {
 	];
 };
 
-export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): any[] => {
+export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): Button[] => {
 	if (!deposit) {
 		return [];
 	}
@@ -95,8 +97,8 @@ export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): an
 	];
 };
 
-export const generateButtonsData = (yamlData: YamlData, currentState: FrameState): any[] => {
-	let buttons: any[] = [];
+export const generateButtonsData = (yamlData: YamlData, currentState: FrameState): Button[] => {
+	let buttons: Button[] = [];
 	if (currentState.textInputLabel) {
 		return [
 			{

@@ -11,8 +11,7 @@ vi.mock('@rainlanguage/orderbook/common', () => ({
 	}
 }));
 
-// Mock props for testing
-const mockYamlData = {} as any; // Minimal mock data for YamlData
+const mockYamlData = {} as any;
 const mockCurrentState = { deploymentOption: { deployment: 'base-weth-usdc' } } as any;
 const mockDotrainText = 'Sample dotrain text';
 const mockSetError = vi.fn();

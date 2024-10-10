@@ -1,12 +1,23 @@
 The dynamic spread strategy for market-making uses time-based adjustments to maintain liquidity by narrowing spreads as market conditions stabilize, while recalculating averages and trade sizes to mitigate risks during trends.
 
 <div class="video-container">
-  <iframe 
-    src="https://www.youtube.com/embed/ChKAr9uGrUY?si=3trkoeRJXFCvprPz" 
-    title="YouTube video player" 
-    frameborder="0" 
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-    referrerpolicy="strict-origin-when-cross-origin" 
+  <iframe
+    src="https://www.youtube.com/embed/ChKAr9uGrUY?si=3trkoeRJXFCvprPz"
+    title="YouTube video player"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen>
+  </iframe>
+</div>
+
+<div class="video-container">
+  <iframe
+    src="https://www.youtube.com/embed/2KRAJreUA64?si=JupJH4CbiiCEp3MF"
+    title="YouTube video player"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
     allowfullscreen>
   </iframe>
 </div>

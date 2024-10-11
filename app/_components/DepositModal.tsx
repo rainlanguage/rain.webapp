@@ -116,10 +116,6 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 		chainId: chain.id as (typeof config.chains)[number]['id']
 	}).data as bigint;
 
-	useEffect(() => {
-		console.log('connectedWalletBalance', connectedWalletBalance);
-	});
-
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -209,7 +205,6 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 	};
 
 	const handleMaxClick = () => {
-		console.log('max');
 		if (connectedWalletBalance === BigInt(0)) {
 			return;
 		} else if (!connectedWalletBalance) {
@@ -218,7 +213,6 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 		const formattedBalance = formatUnits(connectedWalletBalance, Number(vault.token.decimals));
 		form.setValue('depositAmount', formattedBalance as unknown as number);
 		setRawAmount(formattedBalance);
-		console.log('rawAmount', rawAmount);
 		form.setFocus('depositAmount');
 	};
 

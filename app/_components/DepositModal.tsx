@@ -116,6 +116,10 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 		chainId: chain.id as (typeof config.chains)[number]['id']
 	}).data as bigint;
 
+	useEffect(() => {
+		console.log('connectedWalletBalance', connectedWalletBalance);
+	});
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -205,20 +209,21 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 	};
 
 	const handleMaxClick = () => {
+		console.log('max');
 		if (connectedWalletBalance === BigInt(0)) {
 			return setError('Insuficient balance');
 		} else if (!connectedWalletBalance) {
 			return setError('No balance found');
 		}
 		const formattedBalance = formatUnits(connectedWalletBalance, Number(vault.token.decimals));
-		form.setValue('depositAmount', Number(formattedBalance));
+		form.setValue('depositAmount', formattedBalance);
 		setRawAmount(formattedBalance);
+		console.log('rawAmount', rawAmount);
 		form.setFocus('depositAmount');
 	};
 
 	const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const userInput = e.target.value;
-		console.log(userInput);
 		form.setValue('depositAmount', parseFloat(userInput));
 
 		if (userInput) {
@@ -273,7 +278,7 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Amount</FormLabel>
-											{connectedWalletBalance && (
+											{connectedWalletBalance !== undefined && (
 												<div className="text-sm text-gray-500">
 													Your {vault.token.symbol} Balance:{' '}
 													<strong>

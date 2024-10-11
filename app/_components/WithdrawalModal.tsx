@@ -151,13 +151,12 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 									<FormItem>
 										<FormLabel>Amount</FormLabel>
 										<FormControl>
-											{/* Use onChange to listen to user typing */}
 											<Input
 												placeholder="0"
 												{...field}
 												type="number"
-												step="0.000000000000000001" // 18 decimals
-												onChange={handleUserChange} // Listen for user typing
+												step="0.1"
+												onChange={handleUserChange}
 											/>
 										</FormControl>
 										<FormMessage>{error}</FormMessage>

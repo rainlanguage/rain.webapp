@@ -1,7 +1,7 @@
 'use client';
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Button, Navbar } from 'flowbite-react';
+import { Navbar } from 'flowbite-react';
 
 export function NavItems() {
 	return (
@@ -28,7 +28,7 @@ export function Nav() {
 				</Navbar.Collapse>
 			</div>
 			<div className="flex gap-x-2 md:order-1">
-				<ConnectButton label="Connect" chainStatus="none" />
+				<ConnectButton label="Connect" chainStatus="full" />
 				<Navbar.Toggle />
 			</div>
 			<Navbar.Collapse className="md:hidden visible">

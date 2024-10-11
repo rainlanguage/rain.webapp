@@ -3,13 +3,13 @@ import * as React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
 import { getDefaultConfig, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { mainnet, polygon, optimism, arbitrum, base, flare, linea } from 'wagmi/chains';
 import { CustomFlowbiteTheme, Flowbite } from 'flowbite-react';
+import { SupportedChainsList } from './_types/chains';
 
 export const config = getDefaultConfig({
 	appName: 'RainFrame',
 	projectId: 'ba29a4b0642a94fd4dbc754841c2decb',
-	chains: [mainnet, polygon, optimism, arbitrum, base, flare, linea],
+	chains: SupportedChainsList,
 	ssr: true // If your dApp uses server side rendering (SSR)
 });
 

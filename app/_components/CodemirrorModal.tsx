@@ -31,7 +31,7 @@ export const CodemirrorModal = ({
 
 		setComposedDotrainText(
 			await dotrainOrder.composeDeploymentToRainlang(
-				currentState.deploymentOption?.deployment || 'hi!'
+				currentState.deploymentOption?.deployment || ''
 			)
 		);
 	};

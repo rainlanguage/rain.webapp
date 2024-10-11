@@ -93,11 +93,15 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 	};
 
 	const handleMaxClick = () => {
-		// Set the form field to the readable max balance for display
-		form.setValue('withdrawalAmount', parseFloat(readableBalance));
-		// Set the raw balance directly
-		setRawAmount(vault.balance.toString()); // Use raw vault balance directly
-		form.setFocus('withdrawalAmount'); // Optional: focus the field after setting value
+		if (vault.balance === BigInt(0)) {
+			return setError('Insuficient balance');
+		} else if (!vault.balance) {
+			return setError('No balance found');
+		}
+		const formattedBalance = formatUnits(vault.balance, Number(vault.token.decimals));
+		form.setValue('withdrawalAmount', Number(formattedBalance));
+		setRawAmount(vault.balance.toString());
+		form.setFocus('withdrawalAmount');
 	};
 
 	const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,8 +129,7 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 					className={cn(
 						buttonVariants(),
 						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
-					)}
-				>
+					)}>
 					Withdraw
 				</span>
 			</DialogTrigger>
@@ -140,8 +143,7 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 								await withdraw(rawAmount);
 								setOpen(false);
 							})}
-							className="space-y-8"
-						>
+							className="space-y-8">
 							<FormField
 								control={form.control}
 								name="withdrawalAmount"

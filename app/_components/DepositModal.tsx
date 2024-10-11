@@ -125,10 +125,6 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 
 	const deposit = async () => {
 		try {
-			if (!address && !connectModalOpen) {
-				openConnectModal?.();
-				return;
-			}
 			await switchChain();
 			setDepositState(TokenDepositStatus.Pending);
 
@@ -244,8 +240,15 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 		}
 	};
 
+	const connect = async (open: boolean) => {
+		if (!address && !connectModalOpen) {
+			openConnectModal?.();
+		}
+		if (address) setOpen(open);
+	};
+
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog open={open} onOpenChange={connect}>
 			<DialogTrigger asChild={true}>
 				<span
 					className={cn(

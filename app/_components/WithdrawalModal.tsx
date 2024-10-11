@@ -20,13 +20,13 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '@/components/ui/dialog';
-import { useAccount, useConnect, useSwitchChain, useWriteContract } from 'wagmi';
+import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
 import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits } from 'viem';
 import type { Output, Input as InputType } from '../types';
 import { cn } from '@/lib/utils';
 import { SupportedChains } from '../_types/chains';
-import { injected } from 'wagmi/connectors';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 const formSchema = z.object({
 	withdrawalAmount: z.preprocess(
@@ -41,10 +41,10 @@ interface WithdrawalModalProps {
 }
 
 export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
-	const { connectAsync } = useConnect();
+	const [open, setOpen] = useState(false);
 	const { switchChainAsync } = useSwitchChain();
 	const { writeContractAsync } = useWriteContract();
-	const [open, setOpen] = useState(false);
+	const { connectModalOpen, openConnectModal } = useConnectModal();
 	const [rawAmount, setRawAmount] = useState<string>('0'); // Store the raw 18-decimal amount
 
 	const [error, setError] = useState<string | null>(null);
@@ -115,10 +115,10 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 	};
 
 	const connect = async (open: boolean) => {
-		if (!address) {
-			await connectAsync({ connector: injected() });
+		if (!address && !connectModalOpen) {
+			openConnectModal?.();
 		}
-		setOpen(open);
+		if (address) setOpen(open);
 	};
 
 	return (

@@ -5,13 +5,13 @@ import { TokenAndBalance } from './TokenAndBalance';
 import { formatTimestampSecondsAsLocal } from '../_services/dates';
 import { Button } from '@/components/ui/button';
 import { orderBookJson } from '@/public/_abis/OrderBook';
-import { useAccount, useConnect, useSwitchChain, useWriteContract } from 'wagmi';
+import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
 import { decodeAbiParameters } from 'viem';
 import TradesTable from './TradesTable';
 import QuotesTable from './QuotesTable';
 import { Input, Output } from '../types';
 import { SupportedChains } from '../_types/chains';
-import { injected } from 'wagmi/connectors';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 interface props {
 	transactionId: string;
@@ -34,8 +34,8 @@ const Property = ({
 );
 
 const StrategyAnalytics = ({ transactionId, network }: props) => {
-	const { connectAsync } = useConnect();
 	const { switchChainAsync } = useSwitchChain();
+	const { connectModalOpen, openConnectModal } = useConnectModal();
 	const query = useQuery({
 		queryKey: [transactionId],
 		queryFn: () => getTransactionAnalyticsData(transactionId, network),
@@ -50,8 +50,8 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 	const chain = SupportedChains[network as keyof typeof SupportedChains];
 
 	const switchChain = async () => {
-		if (!address) {
-			await connectAsync({ connector: injected() });
+		if (!address && !connectModalOpen) {
+			openConnectModal?.();
 		}
 		if (userchain && chain.id !== userchain.id) {
 			await switchChainAsync({ chainId: chain.id });
@@ -60,6 +60,7 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 
 	const removeOrder = async () => {
 		await switchChain();
+		if (!address) return;
 		const orderStruct = [orderBookJson.abi[17].inputs[2]];
 		const order = decodeAbiParameters(orderStruct, query.data.order.orderBytes)[0];
 

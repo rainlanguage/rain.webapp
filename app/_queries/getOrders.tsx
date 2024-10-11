@@ -73,8 +73,8 @@ export const getOrders = async (owner?: string) => {
 	});
 
 	return (await Promise.allSettled(promises))
-    .filter(v => v.status === "fulfilled")
-    .map(v => v.value)
-    .flat()
-    .sort((a, b) => +b.timestampAdded - +a.timestampAdded);
+		.filter((v) => v.status === 'fulfilled')
+		.map((v) => v.value)
+		.flat()
+		.sort((a, b) => +b.timestampAdded - +a.timestampAdded);
 };

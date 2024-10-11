@@ -50,17 +50,17 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 	const chain = SupportedChains[network as keyof typeof SupportedChains];
 
 	const switchChain = async () => {
-		if (!address && !connectModalOpen) {
-			openConnectModal?.();
-		}
 		if (userchain && chain.id !== userchain.id) {
 			await switchChainAsync({ chainId: chain.id });
 		}
 	};
 
 	const removeOrder = async () => {
+		if (!address && !connectModalOpen) {
+			openConnectModal?.();
+			return;
+		}
 		await switchChain();
-		if (!address) return;
 		const orderStruct = [orderBookJson.abi[17].inputs[2]];
 		const order = decodeAbiParameters(orderStruct, query.data.order.orderBytes)[0];
 

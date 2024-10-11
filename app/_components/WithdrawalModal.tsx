@@ -77,6 +77,10 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 	});
 
 	const withdraw = async (amount: string) => {
+		if (!address && !connectModalOpen) {
+			openConnectModal?.();
+			return;
+		}
 		await switchChain();
 		console.log('Withdraw', amount);
 		// Send raw value to the contract (no conversion needed here)
@@ -114,15 +118,8 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 		}
 	};
 
-	const connect = async (open: boolean) => {
-		if (!address && !connectModalOpen) {
-			openConnectModal?.();
-		}
-		if (address) setOpen(open);
-	};
-
 	return (
-		<Dialog open={open} onOpenChange={connect}>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger>
 				<span
 					className={cn(

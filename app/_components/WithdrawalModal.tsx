@@ -20,11 +20,12 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '@/components/ui/dialog';
-import { useWriteContract } from 'wagmi';
+import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
 import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits } from 'viem';
 import type { Output, Input as InputType } from '../types';
 import { cn } from '@/lib/utils';
+import { SupportedChains } from '../_types/chains';
 
 const formSchema = z.object({
 	withdrawalAmount: z.preprocess(
@@ -35,9 +36,11 @@ const formSchema = z.object({
 
 interface WithdrawalModalProps {
 	vault: InputType | Output;
+	network: string;
 }
 
-export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
+export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
+	const { switchChainAsync } = useSwitchChain();
 	const { writeContractAsync } = useWriteContract();
 	const [open, setOpen] = useState(false);
 	const [rawAmount, setRawAmount] = useState<string>('0'); // Store the raw 18-decimal amount
@@ -54,6 +57,14 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 	// Vault balance in human-readable format (i.e., converted from 18 decimals)
 	const readableBalance = formatUnits(vault.balance, Number(vault.token.decimals));
 
+	const userchain = useAccount().chain;
+	const chain = SupportedChains[network as keyof typeof SupportedChains];
+	const switchChain = async () => {
+		if (userchain && chain.id !== userchain.id) {
+			await switchChainAsync({ chainId: chain.id });
+		}
+	};
+
 	// Define your form.
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -63,6 +74,7 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 	});
 
 	const withdraw = async (amount: string) => {
+		await switchChain();
 		console.log('Withdraw', amount);
 		// Send raw value to the contract (no conversion needed here)
 		await writeContractAsync({

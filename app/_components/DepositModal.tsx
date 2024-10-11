@@ -21,7 +21,7 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '@/components/ui/dialog';
-import { useWriteContract, useReadContract, useAccount } from 'wagmi';
+import { useWriteContract, useReadContract, useAccount, useSwitchChain } from 'wagmi';
 import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits, erc20Abi } from 'viem';
 import { buttonVariants } from '@/components/ui/button';
@@ -29,6 +29,7 @@ import { cn } from '@/lib/utils';
 import { readContract } from 'viem/actions';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { Orderbook, Token } from '../types';
+import { SupportedChains } from '../_types/chains';
 
 export enum TokenDepositStatus {
 	Idle,
@@ -69,9 +70,11 @@ interface Vault {
 
 interface DepositModalProps {
 	vault: Vault;
+	network: string;
 }
 
-export const DepositModal = ({ vault }: DepositModalProps) => {
+export const DepositModal = ({ vault, network }: DepositModalProps) => {
+	const { switchChainAsync } = useSwitchChain();
 	const { writeContractAsync } = useWriteContract();
 	const [open, setOpen] = useState(false);
 	const [rawAmount, setRawAmount] = useState<string>('0');
@@ -87,7 +90,14 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 	}, [open]);
 
 	const address = useAccount().address;
-	const chain = useAccount().chain;
+	const userchain = useAccount().chain;
+	const chain = SupportedChains[network as keyof typeof SupportedChains];
+
+	const switchChain = async () => {
+		if (userchain && chain.id !== userchain.id) {
+			await switchChainAsync({ chainId: chain.id });
+		}
+	};
 
 	const handleDismiss = () => {
 		setOpen(false);
@@ -100,7 +110,8 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 		abi: ERC20_ABI,
 		address: vault.token.address as `0x${string}`,
 		functionName: 'balanceOf',
-		args: [address as `0x${string}`]
+		args: [address as `0x${string}`],
+		chainId: chain.id as (typeof config.chains)[number]['id']
 	}).data as bigint;
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -112,6 +123,7 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 
 	const deposit = async () => {
 		try {
+			await switchChain();
 			setDepositState(TokenDepositStatus.Pending);
 
 			const depositAmount = form.getValues('depositAmount').toString();
@@ -120,12 +132,15 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 			const parsedAmount = parseUnits(depositAmount, Number(vault.token.decimals));
 
 			setDepositState(TokenDepositStatus.CheckingAllowance);
-			const existingAllowance = await readContract(config.getClient(), {
-				abi: erc20Abi,
-				address: vault.token.address as `0x${string}`,
-				functionName: 'allowance',
-				args: [address as `0x${string}`, vault.orderbook.id as `0x${string}`]
-			});
+			const existingAllowance = await readContract(
+				config.getClient({ chainId: chain.id as (typeof config.chains)[number]['id'] }),
+				{
+					abi: erc20Abi,
+					address: vault.token.address as `0x${string}`,
+					functionName: 'allowance',
+					args: [address as `0x${string}`, vault.orderbook.id as `0x${string}`]
+				}
+			);
 			if (existingAllowance < parsedAmount) {
 				setDepositState(TokenDepositStatus.ApprovingTokens);
 				try {
@@ -133,7 +148,8 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 						address: vault.token.address as `0x${string}`,
 						abi: erc20Abi,
 						functionName: 'approve',
-						args: [vault.orderbook.id as `0x${string}`, parsedAmount]
+						args: [vault.orderbook.id as `0x${string}`, parsedAmount],
+						chainId: chain.id as (typeof config.chains)[number]['id']
 					});
 
 					setDepositState(TokenDepositStatus.WaitingForApprovalConfirmation);
@@ -162,7 +178,8 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 				abi: orderBookJson.abi,
 				address: vault.orderbook.id as `0x${string}`,
 				functionName: 'deposit2',
-				args: [vault.token.address, BigInt(vault.vaultId), parsedAmount, []]
+				args: [vault.token.address, BigInt(vault.vaultId), parsedAmount, []],
+				chainId: chain.id as (typeof config.chains)[number]['id']
 			});
 			setDepositTxHash(depositTx);
 

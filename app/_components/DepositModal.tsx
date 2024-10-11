@@ -21,7 +21,7 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '@/components/ui/dialog';
-import { useWriteContract, useReadContract, useAccount, useSwitchChain } from 'wagmi';
+import { useWriteContract, useReadContract, useAccount, useSwitchChain, useConnect } from 'wagmi';
 import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits, erc20Abi } from 'viem';
 import { buttonVariants } from '@/components/ui/button';
@@ -30,6 +30,7 @@ import { readContract } from 'viem/actions';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { Orderbook, Token } from '../types';
 import { SupportedChains } from '../_types/chains';
+import { injected } from 'wagmi/connectors';
 
 export enum TokenDepositStatus {
 	Idle,
@@ -74,6 +75,7 @@ interface DepositModalProps {
 }
 
 export const DepositModal = ({ vault, network }: DepositModalProps) => {
+	const { connectAsync } = useConnect();
 	const { switchChainAsync } = useSwitchChain();
 	const { writeContractAsync } = useWriteContract();
 	const [open, setOpen] = useState(false);
@@ -238,8 +240,15 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 		}
 	};
 
+	const connect = async (open: boolean) => {
+		if (!address) {
+			await connectAsync({ connector: injected() });
+		}
+		setOpen(open);
+	};
+
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog open={open} onOpenChange={connect}>
 			<DialogTrigger asChild={true}>
 				<span
 					className={cn(

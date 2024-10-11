@@ -5,12 +5,13 @@ import { TokenAndBalance } from './TokenAndBalance';
 import { formatTimestampSecondsAsLocal } from '../_services/dates';
 import { Button } from '@/components/ui/button';
 import { orderBookJson } from '@/public/_abis/OrderBook';
-import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
+import { useAccount, useConnect, useSwitchChain, useWriteContract } from 'wagmi';
 import { decodeAbiParameters } from 'viem';
 import TradesTable from './TradesTable';
 import QuotesTable from './QuotesTable';
 import { Input, Output } from '../types';
 import { SupportedChains } from '../_types/chains';
+import { injected } from 'wagmi/connectors';
 
 interface props {
 	transactionId: string;
@@ -33,6 +34,7 @@ const Property = ({
 );
 
 const StrategyAnalytics = ({ transactionId, network }: props) => {
+	const { connectAsync } = useConnect();
 	const { switchChainAsync } = useSwitchChain();
 	const query = useQuery({
 		queryKey: [transactionId],
@@ -43,10 +45,14 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 
 	const { writeContractAsync } = useWriteContract();
 
+	const address = useAccount().address;
 	const userchain = useAccount().chain;
 	const chain = SupportedChains[network as keyof typeof SupportedChains];
 
 	const switchChain = async () => {
+		if (!address) {
+			await connectAsync({ connector: injected() });
+		}
 		if (userchain && chain.id !== userchain.id) {
 			await switchChainAsync({ chainId: chain.id });
 		}

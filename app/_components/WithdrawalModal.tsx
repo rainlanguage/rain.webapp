@@ -20,12 +20,13 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '@/components/ui/dialog';
-import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
+import { useAccount, useConnect, useSwitchChain, useWriteContract } from 'wagmi';
 import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits } from 'viem';
 import type { Output, Input as InputType } from '../types';
 import { cn } from '@/lib/utils';
 import { SupportedChains } from '../_types/chains';
+import { injected } from 'wagmi/connectors';
 
 const formSchema = z.object({
 	withdrawalAmount: z.preprocess(
@@ -40,6 +41,7 @@ interface WithdrawalModalProps {
 }
 
 export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
+	const { connectAsync } = useConnect();
 	const { switchChainAsync } = useSwitchChain();
 	const { writeContractAsync } = useWriteContract();
 	const [open, setOpen] = useState(false);
@@ -57,6 +59,7 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 	// Vault balance in human-readable format (i.e., converted from 18 decimals)
 	const readableBalance = formatUnits(vault.balance, Number(vault.token.decimals));
 
+	const address = useAccount().address;
 	const userchain = useAccount().chain;
 	const chain = SupportedChains[network as keyof typeof SupportedChains];
 	const switchChain = async () => {
@@ -111,8 +114,15 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 		}
 	};
 
+	const connect = async (open: boolean) => {
+		if (!address) {
+			await connectAsync({ connector: injected() });
+		}
+		setOpen(open);
+	};
+
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog open={open} onOpenChange={connect}>
 			<DialogTrigger>
 				<span
 					className={cn(

@@ -79,7 +79,6 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 			return;
 		}
 		await switchChain();
-		console.log('Withdraw', amount);
 		// Send raw value to the contract (no conversion needed here)
 		await writeContractAsync({
 			abi: orderBookJson.abi,
@@ -107,7 +106,6 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 
 		// Update the raw amount based on the user input (convert back to raw value)
 		if (userInput) {
-			console.log(userInput);
 			try {
 				const parsedRawAmount = parseUnits(userInput, Number(vault.token.decimals)).toString();
 				setRawAmount(parsedRawAmount); // Update raw amount on every user change
@@ -126,8 +124,7 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 					className={cn(
 						buttonVariants(),
 						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
-					)}
-				>
+					)}>
 					Withdraw
 				</span>
 			</DialogTrigger>
@@ -141,8 +138,7 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 								await withdraw(rawAmount);
 								setOpen(false);
 							})}
-							className="space-y-8"
-						>
+							className="space-y-8">
 							<FormField
 								control={form.control}
 								name="withdrawalAmount"

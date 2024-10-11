@@ -7,7 +7,6 @@ import { DotrainOrder } from '@rainlanguage/orderbook/common';
 import CodeMirror from '@uiw/react-codemirror';
 import { DialogClose, DialogTrigger } from '@radix-ui/react-dialog';
 import { RainlangLR } from 'codemirror-rainlang';
-import scroll from '@uiw/react-codemirror/';
 
 interface CodemirrorModalProps {
 	yamlData: YamlData;
@@ -25,10 +24,14 @@ export const CodemirrorModal = ({
 	const [composedDotrainText, setComposedDotrainText] = useState<string>('');
 
 	const getComposedDotrainText = async () => {
+		console.log('dotrainText', dotrainText);
+		console.log(currentState.deploymentOption?.deployment);
 		const dotrainOrder = await DotrainOrder.create(dotrainText);
+		console.log('ORDER', dotrainOrder);
+
 		setComposedDotrainText(
 			await dotrainOrder.composeDeploymentToRainlang(
-				currentState.deploymentOption?.deployment || ''
+				currentState.deploymentOption?.deployment || 'hi!'
 			)
 		);
 	};
@@ -40,8 +43,7 @@ export const CodemirrorModal = ({
 				<Button
 					color="primary"
 					size="sm"
-					className=" from-blue-600 to-violet-600 bg-gradient-to-br"
-				>
+					className=" from-blue-600 to-violet-600 bg-gradient-to-br">
 					Show Rainlang
 				</Button>
 			</DialogTrigger>

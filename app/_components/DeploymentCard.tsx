@@ -13,6 +13,7 @@ export const DeploymentCard = ({
 	slug: string;
 }) => {
 	const router = useRouter();
+
 	const handleClick = () => {
 		router.push(`${slug}/${deployment.deployment}`);
 	};

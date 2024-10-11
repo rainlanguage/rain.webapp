@@ -4,7 +4,7 @@ import { YamlData } from '../_types/yamlData';
 export const getUpdatedFrameState = (
 	yamlData: YamlData,
 	currentState: FrameState,
-	buttonValue: any,
+	buttonValue: string,
 	inputText?: string
 ): FrameState => {
 	const updatedState = { ...currentState };

@@ -38,7 +38,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Maximum amount per auction (QUICK new)
           description: The maximum amount of QUICK (new) that will be offered in a single auction.
           min: 0
           presets:
@@ -49,7 +49,7 @@ gui:
             - name: 1000
               value: 1000
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount per auction (QUICK new)
           description: The minimum amount of QUICK (new) that will be offered in a single auction.
           min: 0
           presets:
@@ -475,6 +475,10 @@ orderbooks:
     address: 0x550878091b2B1506069F61ae59e3A5484Bca9166
     network: arbitrum
     subgraph: arbitrum
+  polygon:
+    address: 0x7D2f700b1f6FD75734824EA4578960747bdF269A
+    network: polygon
+    subgraph: polygon
 
 deployers:
   flare:
@@ -486,9 +490,8 @@ deployers:
     address: 0x9B0D254bd858208074De3d2DaF5af11b3D2F377F
     network: arbitrum
   polygon:
-    address: 0x7D2f700b1f6FD75734824EA4578960747bdF269A
+    address: 0xE7116BC05C8afe25e5B54b813A74F916B5D42aB1
     network: polygon
-    subgraph: polygon
 
 tokens:
   arbitrum-wbtc:

@@ -17,6 +17,7 @@ import { TokenInfo, getTokenInfos } from '../_services/getTokenInfo';
 import { Button, Spinner } from 'flowbite-react';
 import ShareStateAsUrl from './ShareStateAsUrl';
 import { decompress } from '../_services/compress';
+import { Button as ButtonType } from '../types';
 
 interface props {
 	dotrainText: string;
@@ -78,6 +79,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					requiresTokenApproval: false,
 					isWebapp: true
 				};
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (e: any) {
 				// If decompression fails, try decoding the state without decompression
 				if (e.message.includes('not correctly encoded')) {
@@ -98,8 +100,8 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			try {
 				const urlState = await getUrlState();
 				if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
-			} catch (e) {
-				console.error('Error decoding state:', e);
+			} catch {
+				throw new Error('Error decoding state:');
 			} finally {
 				setLoading((prev) => ({ ...prev, decodingState: false }));
 			}
@@ -117,8 +119,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 						...prevState,
 						tokenInfos
 					}));
-				} catch (e) {
-					console.error(e);
+				} catch {
 					setError('Failed to fetch token information');
 				} finally {
 					setLoading((prev) => ({ ...prev, fetchingTokens: false }));
@@ -131,19 +132,19 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		}
 	}, [yamlData, currentState.tokenInfos.length, loading.decodingState]); // Dependent on decodingState to ensure token fetch happens after decoding
 
-	const handleButtonClick = async (buttonData: any) => {
+	const handleButtonClick = async (buttonData: ButtonType) => {
 		setError(null);
-		// Handle page navigation
+
 		if (buttonData.buttonTarget === 'textInputLabel') {
 			setCurrentState((prevState) => ({
 				...prevState,
-				textInputLabel: buttonData.buttonValue
+				textInputLabel: buttonData.toString()
 			}));
 			return;
 		} else if (buttonData.buttonTarget === 'buttonPage') {
 			setCurrentState((prevState) => ({
 				...prevState,
-				buttonPage: buttonData.buttonValue
+				buttonPage: Number(buttonData)
 			}));
 			return;
 		} else if (buttonData.buttonTarget === 'buttonValue' && buttonData.buttonValue === 'back') {
@@ -156,7 +157,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		const updatedState = getUpdatedFrameState(
 			yamlData,
 			currentState,
-			buttonData.buttonValue,
+			buttonData.buttonValue.toString(),
 			inputText
 		);
 
@@ -192,9 +193,9 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 				</div>
 			)}
 			<div className="flex flex-wrap gap-2 justify-center md:pb-20 pb-8 px-8 pt-10">
-				{buttonsData.map((buttonData) => {
+				{buttonsData.map((buttonData, i: number) => {
 					return buttonData.buttonValue === 'finalSubmit' ? (
-						<div key={buttonData} className="flex gap-2 flex-wrap justify-center">
+						<div key={i} className="flex gap-2 flex-wrap justify-center">
 							<SubmissionModal
 								key={buttonData.buttonText}
 								buttonText={buttonData.buttonText}

@@ -6,9 +6,11 @@ import { Input, Output } from '../types';
 export function TokenAndBalance({
 	input,
 	withdraw,
-	deposit
+	deposit,
+	network
 }: {
 	input: Input | Output;
+	network: string;
 	withdraw?: boolean;
 	deposit?: boolean;
 }) {
@@ -22,8 +24,8 @@ export function TokenAndBalance({
 				</div>
 			</div>
 			<div className="flex gap-2">
-				{deposit && <DepositModal vault={input} />}
-				{withdraw && <WithdrawalModal vault={input} />}
+				{deposit && <DepositModal vault={input} network={network} />}
+				{withdraw && <WithdrawalModal vault={input} network={network} />}
 			</div>
 		</div>
 	);

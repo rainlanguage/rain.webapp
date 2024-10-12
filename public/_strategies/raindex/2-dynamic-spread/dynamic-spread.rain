@@ -663,7 +663,7 @@ orders:
     outputs:
       - token: polygon-quick-old
       - token: polygon-quick
-    polygon-quick-wmatic:
+  polygon-quick-wmatic:
     network: polygon
     orderbook: polygon
     inputs:

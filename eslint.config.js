@@ -51,7 +51,8 @@ export default [
 			'react/react-in-jsx-scope': 'off',
 			'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
 			'react/prop-types': 'off',
-			'react/no-unknown-property': ['error', { ignore: ['tw'] }]
+			'react/no-unknown-property': ['error', { ignore: ['tw'] }],
+			'@typescript-eslint/no-explicit-any': 'off'
 		}
 	}
 ];

@@ -127,8 +127,6 @@ describe('generateButtonsData', () => {
 	});
 
 	it('returns field preset buttons when currentStep is "fields"', () => {
-		const mockField = mockYamlData.gui.deployments[0].fields[0];
-
 		const buttonsData = generateButtonsData(
 			mockYamlData as unknown as YamlData,
 			fieldsFrameState as unknown as FrameState

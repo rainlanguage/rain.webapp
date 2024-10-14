@@ -64,7 +64,7 @@ const QuotesTable = ({ order }: props) => {
 				<Table.Head>
 					<Table.HeadCell>PAIR</Table.HeadCell>
 					<Table.HeadCell>MAXIMUM OUTPUT</Table.HeadCell>
-					<Table.HeadCell>PRICE</Table.HeadCell>
+					<Table.HeadCell>IO RATIO</Table.HeadCell>
 					<Table.HeadCell>MAXIMUM INPUT</Table.HeadCell>
 				</Table.Head>
 				<Table.Body>

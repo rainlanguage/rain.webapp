@@ -73,6 +73,21 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 		}
 	});
 
+	const withdrawalAmount = form.watch('withdrawalAmount');
+
+	useEffect(() => {
+		const parsedRawAmount = parseUnits(
+			withdrawalAmount.toString(),
+			Number(vault.token.decimals)
+		).toString();
+		setRawAmount(parsedRawAmount);
+		if (BigInt(parsedRawAmount) > vault.balance) {
+			setError('Amount exceeds vault balance');
+		} else {
+			setError(null);
+		}
+	}, [withdrawalAmount]);
+
 	const withdraw = async (amount: string) => {
 		if (!address && !connectModalOpen) {
 			openConnectModal?.();
@@ -100,23 +115,6 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 		form.setFocus('withdrawalAmount');
 	};
 
-	const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const userInput = e.target.value;
-		form.setValue('withdrawalAmount', parseFloat(userInput));
-
-		// Update the raw amount based on the user input (convert back to raw value)
-		if (userInput) {
-			try {
-				const parsedRawAmount = parseUnits(userInput, Number(vault.token.decimals)).toString();
-				setRawAmount(parsedRawAmount); // Update raw amount on every user change
-			} catch {
-				setRawAmount('0'); // Fallback to 0 if input is invalid
-			}
-		} else {
-			setRawAmount('0'); // Fallback to 0 if input is empty
-		}
-	};
-
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger>
@@ -124,8 +122,7 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 					className={cn(
 						buttonVariants(),
 						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
-					)}
-				>
+					)}>
 					Withdraw
 				</span>
 			</DialogTrigger>
@@ -139,8 +136,7 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 								await withdraw(rawAmount);
 								setOpen(false);
 							})}
-							className="space-y-8"
-						>
+							className="space-y-8">
 							<FormField
 								control={form.control}
 								name="withdrawalAmount"
@@ -148,13 +144,7 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 									<FormItem>
 										<FormLabel>Amount</FormLabel>
 										<FormControl>
-											<Input
-												placeholder="0"
-												{...field}
-												type="number"
-												step="0.1"
-												onChange={handleUserChange}
-											/>
+											<Input placeholder="0" {...field} type="number" step="0.1" />
 										</FormControl>
 										<FormMessage>{error}</FormMessage>
 										<Button size="sm" type="button" onClick={handleMaxClick}>

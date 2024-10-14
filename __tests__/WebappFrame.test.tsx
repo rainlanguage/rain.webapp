@@ -5,6 +5,7 @@ import { generateButtonsData } from '@/app/_services/buttonsData';
 import { fixturedTokenInfos } from '@/__fixtures__/tokenInfos';
 import { mockFixedLimit } from '@/__fixtures__/fixed-limit';
 import userEvent from '@testing-library/user-event';
+import { getTokenInfos } from '@/app/_services/getTokenInfo';
 
 const { useRouter, useSearchParams } = vi.hoisted(() => {
 	const mockedRouterReplace = vi.fn();
@@ -28,6 +29,10 @@ vi.mock('next/navigation', async (importActual) => {
 	};
 });
 
+vi.mock('@/app/_services/getTokenInfo', () => ({
+	getTokenInfos: vi.fn() // Mock with async to match actual behavior
+}));
+
 vi.mock('@/app/_services/buttonsData', () => ({
 	generateButtonsData: vi.fn()
 }));
@@ -47,7 +52,8 @@ describe('WebappFrame Component', () => {
 			expect(screen.getByTestId('input')).toBeInTheDocument();
 		});
 	});
-	it.only('shows preset buttons when there are multiple choices', async () => {
+	it('shows preset buttons when there are multiple choices', async () => {
+		(getTokenInfos as Mock).mockReturnValue(fixturedTokenInfos);
 		(generateButtonsData as Mock).mockReturnValue([
 			{
 				buttonTarget: 'buttonValue',

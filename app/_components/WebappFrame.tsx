@@ -117,6 +117,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			if (currentState.tokenInfos.length === 0 && !loading.fetchingTokens) {
 				try {
 					setLoading((prev) => ({ ...prev, fetchingTokens: true }));
+
 					const tokenInfos = await getTokenInfos(yamlData);
 
 					setCurrentState((prevState) => ({

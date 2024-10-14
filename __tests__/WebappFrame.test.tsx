@@ -1,9 +1,8 @@
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import WebappFrame from '@/app/_components/WebappFrame';
 import { Mock, vi } from 'vitest';
 import { generateButtonsData } from '@/app/_services/buttonsData';
-import { mockFixedLimit } from '@/__mocks__/fixed-limit';
+import { mockFixedLimit } from '@/__fixtures__/fixed-limit';
 import userEvent from '@testing-library/user-event';
 
 const mockTokenInfos = [
@@ -44,6 +43,28 @@ const mockTokenInfos = [
 	}
 ];
 
+const { useRouter, useSearchParams } = vi.hoisted(() => {
+	const mockedRouterReplace = vi.fn();
+	const mockedGetSearchParams = vi.fn((param) => {
+		if (param === 'currentState') return 'mockEncodedStateString';
+		return null;
+	});
+
+	return {
+		useRouter: () => ({ replace: mockedRouterReplace }),
+		useSearchParams: () => ({ get: mockedGetSearchParams })
+	};
+});
+
+vi.mock('next/navigation', async () => {
+	const actual = await vi.importActual('next/navigation');
+	return {
+		...actual,
+		useRouter,
+		useSearchParams
+	};
+});
+
 vi.mock('@/app/_services/buttonsData', () => ({
 	generateButtonsData: vi.fn()
 }));
@@ -55,7 +76,6 @@ vi.mock('../_services/getTokenInfo', () => ({
 describe('WebappFrame Component', () => {
 	beforeEach(() => {
 		vi.resetAllMocks();
-		vi.clearAllMocks();
 	});
 
 	it('shows input field when only one "Custom" button is present', async () => {

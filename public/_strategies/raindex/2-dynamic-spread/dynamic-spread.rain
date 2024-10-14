@@ -184,10 +184,12 @@ gui:
         - binding: max-amount
           name: Max amount
           description: The maximum amount of WBTC that will be offered in a single auction.
-          min: 0
+          min: 0.00005
           presets:
             - name: 0.001
               value: 0.001
+            - name: 0.002
+              value: 0.002
             - name: 0.01
               value: 0.01
             - name: 0.1
@@ -195,10 +197,12 @@ gui:
         - binding: min-amount
           name: Minimum amount
           description: The minimum amount of WBTC that will be offered in a single auction.
-          min: 0
+          min: 0.00005
           presets:
             - name: 0.0001
               value: 0.0001
+            - name: 0.0002
+              value: 0.0002
             - name: 0.001
               value: 0.001
             - name: 0.01

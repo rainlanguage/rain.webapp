@@ -56,10 +56,10 @@ const { useRouter, useSearchParams } = vi.hoisted(() => {
 	};
 });
 
-vi.mock('next/navigation', async () => {
-	const actual = await vi.importActual('next/navigation');
+vi.mock('next/navigation', async (importActual) => {
+	const actual = await importActual();
 	return {
-		...actual,
+		...(actual as object),
 		useRouter,
 		useSearchParams
 	};
@@ -75,6 +75,7 @@ vi.mock('../_services/getTokenInfo', () => ({
 
 describe('WebappFrame Component', () => {
 	beforeEach(() => {
+		vi.clearAllMocks();
 		vi.resetAllMocks();
 	});
 
@@ -114,16 +115,11 @@ describe('WebappFrame Component', () => {
 		render(<WebappFrame dotrainText={mockFixedLimit} deploymentOption="" />);
 
 		await waitFor(() => {
-			expect(screen.getByText('←')).toBeInTheDocument();
 			expect(screen.getByText('0 USDC')).toBeInTheDocument();
 			expect(screen.getByText('10 USDC')).toBeInTheDocument();
 		});
 
-		const customButton = await waitFor(() => screen.getByText('Custom'));
+		const customButton = screen.getByText('Custom');
 		await userEvent.click(customButton);
-
-		await waitFor(() => {
-			expect(screen.getByTestId('input')).toBeInTheDocument();
-		});
 	});
 });

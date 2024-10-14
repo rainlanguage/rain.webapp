@@ -175,6 +175,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	const buttonsData = generateButtonsData(yamlData, currentState);
 
 	useEffect(() => {
+		console.log(buttonsData);
 		const filteredButtons = buttonsData.filter(
 			(buttonData) => buttonData.buttonValue !== 'back' && buttonData.buttonValue !== 'finalSubmit'
 		);

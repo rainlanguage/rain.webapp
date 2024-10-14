@@ -38,9 +38,10 @@ const formSchema = z.object({
 interface WithdrawalModalProps {
 	vault: InputType | Output;
 	network: string;
+	onSuccess?: () => void;
 }
 
-export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
+export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalProps) => {
 	const [open, setOpen] = useState(false);
 	const { switchChainAsync } = useSwitchChain();
 	const { writeContractAsync } = useWriteContract();
@@ -86,6 +87,7 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 			functionName: 'withdraw2',
 			args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
 		});
+		onSuccess?.();
 	};
 
 	const handleMaxClick = () => {
@@ -124,8 +126,7 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 					className={cn(
 						buttonVariants(),
 						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
-					)}
-				>
+					)}>
 					Withdraw
 				</span>
 			</DialogTrigger>
@@ -139,8 +140,7 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 								await withdraw(rawAmount);
 								setOpen(false);
 							})}
-							className="space-y-8"
-						>
+							className="space-y-8">
 							<FormField
 								control={form.control}
 								name="withdrawalAmount"

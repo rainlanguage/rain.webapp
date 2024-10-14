@@ -88,8 +88,7 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 								<Button
 									onClick={() => {
 										removeOrder();
-									}}
-								>
+									}}>
 									Remove strategy
 								</Button>
 							)}

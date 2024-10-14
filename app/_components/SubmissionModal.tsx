@@ -274,7 +274,7 @@ export const SubmissionModal = ({
 
 			setSubmissionState(SubmissionStatus.Done);
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		} catch (e: unkown) {
+		} catch (e: any) {
 			if (
 				e?.cause?.message?.includes('addEthereumChain') ||
 				e?.message?.includes('addEthereumChain')

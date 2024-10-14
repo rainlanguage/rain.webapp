@@ -56,9 +56,6 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 		}
 	}, [rawAmount, vault.balance]);
 
-	// Vault balance in human-readable format (i.e., converted from 18 decimals)
-	const readableBalance = formatUnits(vault.balance, Number(vault.token.decimals));
-
 	const address = useAccount().address;
 	const userchain = useAccount().chain;
 	const chain = SupportedChains[network as keyof typeof SupportedChains];
@@ -82,7 +79,6 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 			return;
 		}
 		await switchChain();
-		console.log('Withdraw', amount);
 		// Send raw value to the contract (no conversion needed here)
 		await writeContractAsync({
 			abi: orderBookJson.abi,
@@ -93,11 +89,15 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 	};
 
 	const handleMaxClick = () => {
-		// Set the form field to the readable max balance for display
-		form.setValue('withdrawalAmount', parseFloat(readableBalance));
-		// Set the raw balance directly
-		setRawAmount(vault.balance.toString()); // Use raw vault balance directly
-		form.setFocus('withdrawalAmount'); // Optional: focus the field after setting value
+		if (vault.balance === BigInt(0)) {
+			return setError('Insuficient balance');
+		} else if (!vault.balance) {
+			return setError('No balance found');
+		}
+		const formattedBalance = formatUnits(vault.balance, Number(vault.token.decimals));
+		form.setValue('withdrawalAmount', Number(formattedBalance));
+		setRawAmount(vault.balance.toString());
+		form.setFocus('withdrawalAmount');
 	};
 
 	const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -106,7 +106,6 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 
 		// Update the raw amount based on the user input (convert back to raw value)
 		if (userInput) {
-			console.log(userInput);
 			try {
 				const parsedRawAmount = parseUnits(userInput, Number(vault.token.decimals)).toString();
 				setRawAmount(parsedRawAmount); // Update raw amount on every user change
@@ -149,13 +148,12 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 									<FormItem>
 										<FormLabel>Amount</FormLabel>
 										<FormControl>
-											{/* Use onChange to listen to user typing */}
 											<Input
 												placeholder="0"
 												{...field}
 												type="number"
-												step="0.000000000000000001" // 18 decimals
-												onChange={handleUserChange} // Listen for user typing
+												step="0.1"
+												onChange={handleUserChange}
 											/>
 										</FormControl>
 										<FormMessage>{error}</FormMessage>

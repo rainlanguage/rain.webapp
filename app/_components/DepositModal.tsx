@@ -206,14 +206,13 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 
 	const handleMaxClick = () => {
 		if (connectedWalletBalance === BigInt(0)) {
-			return setError('Insuficient balance');
+			return;
 		} else if (!connectedWalletBalance) {
 			return setError('No balance found');
 		}
-		const userMaxBalance = connectedWalletBalance?.toString();
-		const readableMaxBalance = formatUnits(BigInt(userMaxBalance), Number(vault.token.decimals));
-		form.setValue('depositAmount', parseFloat(readableMaxBalance));
-		setRawAmount(userMaxBalance);
+		const formattedBalance = formatUnits(connectedWalletBalance, Number(vault.token.decimals));
+		form.setValue('depositAmount', formattedBalance as unknown as number);
+		setRawAmount(formattedBalance);
 		form.setFocus('depositAmount');
 	};
 
@@ -224,7 +223,6 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 		if (userInput) {
 			try {
 				const parsedRawAmount = parseUnits(userInput, Number(vault.token.decimals)).toString();
-
 				if (BigInt(parsedRawAmount) > connectedWalletBalance) {
 					setError('Amount exceeds wallet balance');
 				} else {
@@ -276,7 +274,7 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Amount</FormLabel>
-											{connectedWalletBalance && (
+											{connectedWalletBalance !== undefined && (
 												<div className="text-sm text-gray-500">
 													Your {vault.token.symbol} Balance:{' '}
 													<strong>

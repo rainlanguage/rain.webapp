@@ -4,6 +4,78 @@ gui:
   name: Two-sided dynamic spread strategies
   description: The dynamic spread strategy for market-making uses time-based adjustments to maintain liquidity by narrowing spreads as market conditions stabilize, while recalculating averages and trade sizes to mitigate risks during trends.
   deployments:
+    - deployment: polygon-quick-wmatic
+      name: QUICK<>WPOL (WMATIC) on Polygon.
+      description: Rotate QUICK and WPOL (WMATIC) on Polygon.
+
+      fields:
+        - binding: initial-io
+          name: Initial price (QUICK per WPOL/WMATIC)
+          description: The rough price ratio for QUICK to WPOL/WMATIC (e.g. 0.1).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Maximum amount per auction (WPOL)
+          description: The maximum amount of WPOL that will be offered in a single auction.
+          min: 0
+          presets:
+            - name: 50
+              value: 50
+            - name: 100
+              value: 100
+            - name: 500
+              value: 500
+        - binding: min-amount
+          name: Minimum amount per auction (WPOL)
+          description: The minimum amount of WPOL that will be offered in a single auction.
+          min: 0
+          presets:
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+            - name: 100
+              value: 100
+
+      deposits:
+        - token: polygon-quick
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+        - token: polygon-wmatic
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+
     - deployment: polygon-quick-old-quick
       name: QUICK (old)<>QUICK on Polygon.
       description: Rotate QUICK (old) and QUICK on Polygon.
@@ -65,9 +137,9 @@ gui:
           min: 0
           presets:
             - 0
-            - 100
-            - 500
-            - 1000
+            - 0.1
+            - 0.5
+            - 1
         - token: polygon-quick
           min: 0
           presets:
@@ -429,6 +501,12 @@ scenarios:
           amount-token: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
           initial-output-token: 0x831753dd7087cac61ab5644b308642cc1c33dc13
           initial-input-token: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
+      quick-wmatic:
+        runs: 1
+        bindings:
+          amount-token: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
+          initial-output-token: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
+          initial-input-token: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
 
 networks:
   flare:
@@ -526,6 +604,10 @@ tokens:
     network: flare
     address: 0x1502FA4be69d526124D453619276FacCab275d3D
     decimals: 18
+  polygon-wmatic:
+    network: polygon
+    address: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
+    decimals: 18
   polygon-quick-old:
     network: polygon
     address: 0x831753dd7087cac61ab5644b308642cc1c33dc13
@@ -581,6 +663,15 @@ orders:
     outputs:
       - token: polygon-quick-old
       - token: polygon-quick
+  polygon-quick-wmatic:
+    network: polygon
+    orderbook: polygon
+    inputs:
+      - token: polygon-quick
+      - token: polygon-wmatic
+    outputs:
+      - token: polygon-quick
+      - token: polygon-wmatic
 
 deployments:
   arbitrum-wbtc-weth:
@@ -598,6 +689,9 @@ deployments:
   polygon-quick-old-quick:
     order: polygon-quick-old-quick
     scenario: polygon.quick-old-quick
+  polygon-quick-wmatic:
+    order: polygon-quick-wmatic
+    scenario: polygon.quick-wmatic
 ---
 #raindex-subparser !Subparser for the Raindex.
 

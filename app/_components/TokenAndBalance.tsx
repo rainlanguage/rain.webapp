@@ -1,13 +1,16 @@
 import { formatUnits } from 'viem';
 import { WithdrawalModal } from './WithdrawalModal';
 import { DepositModal } from './DepositModal';
+import { Input, Output } from '../types';
 
 export function TokenAndBalance({
 	input,
 	withdraw,
-	deposit
+	deposit,
+	network
 }: {
-	input: any;
+	input: Input | Output;
+	network: string;
 	withdraw?: boolean;
 	deposit?: boolean;
 }) {
@@ -17,12 +20,12 @@ export function TokenAndBalance({
 				<div>{withdraw ? input.token.name : input.token.symbol}</div>
 				<div className="text-gray-500">
 					Strategy Balance:{' '}
-					{Number(Number(formatUnits(input.balance, input.token.decimals)).toFixed(8))}
+					{Number(Number(formatUnits(input.balance, Number(input.token.decimals))).toFixed(8))}
 				</div>
 			</div>
 			<div className="flex gap-2">
-				{deposit && <DepositModal vault={input} />}
-				{withdraw && <WithdrawalModal vault={input} />}
+				{deposit && <DepositModal vault={input} network={network} />}
+				{withdraw && <WithdrawalModal vault={input} network={network} />}
 			</div>
 		</div>
 	);

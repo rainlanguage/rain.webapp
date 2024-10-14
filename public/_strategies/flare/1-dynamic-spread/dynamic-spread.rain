@@ -3,15 +3,15 @@ raindex-version: 8898591f3bcaa21dc91dc3b8584330fc405eadfa
 gui:
   name: Two-sided dynamic spread strategies
   description: The dynamic spread strategy for market-making uses time-based adjustments to maintain liquidity by narrowing spreads as market conditions stabilize, while recalculating averages and trade sizes to mitigate risks during trends.
-  deployments: 
-    - deployment: flare
-      name: USDC/sFLR
-      description: This will rotate USDC and sFLR.
+  deployments:
+    - deployment: flare-usdc-sflr
+      name: USDC<>sFLR on Flare.
+      description: This will rotate USDC and sFLR on Flare.
 
       fields:
         - binding: initial-io
-          name: Initial price
-          description: This should be the USD price you see for sFLR on Dextools.
+          name: Initial price (USDC per sFLR)
+          description: This should be the USD price you see for sFLR on Dextools (e.g. 0.0172).
           min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier
@@ -25,15 +25,17 @@ gui:
             - name: 1.05x
               value: 1.05
         - binding: time-per-epoch
-          name: Time per epoch
+          name: Time per price halving (seconds)
           description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
           min: 0
           presets:
-            - name: 1 hour
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
               value: 7200
-            - name: 4 hours
+            - name: 4 hours (14400)
               value: 14400
-            - name: 8 hours
+            - name: 8 hours (28800)
               value: 28800
         - binding: min-trade-amount
           name: Minimum trade amount
@@ -91,16 +93,16 @@ scenarios:
 networks:
   flare:
     rpc: https://rpc.ankr.com/flare
-    chain-id: 14 
-    network-id: 14 
+    chain-id: 14
+    network-id: 14
     currency: FLR
 metaboards:
   flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
 subgraphs:
   flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
 orderbooks:
-  flare: 
-    address: 0xCEe8Cd002F151A536394E564b84076c41bBBcD4d 
+  flare:
+    address: 0xCEe8Cd002F151A536394E564b84076c41bBBcD4d
 deployers:
   flare:
     address: 0xE3989Ea7486c0F418C764e6c511e86f6E8830FAb

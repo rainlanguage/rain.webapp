@@ -1,7 +1,11 @@
 import * as chains from 'viem/chains';
 import { createPublicClient, http } from 'viem';
 
-export const getPublicClient = (network: any) => {
+interface Network {
+	'chain-id': number;
+}
+
+export const getPublicClient = (network: Network) => {
 	let chain = Object.values(chains).find((chain) => chain.id === Number(network['chain-id']));
 	if (chain?.id === 14) {
 		chain = {

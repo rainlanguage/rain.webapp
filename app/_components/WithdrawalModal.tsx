@@ -20,10 +20,13 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '@/components/ui/dialog';
-import { useWriteContract } from 'wagmi';
+import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
 import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits } from 'viem';
+import type { Output, Input as InputType } from '../types';
 import { cn } from '@/lib/utils';
+import { SupportedChains } from '../_types/chains';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 const formSchema = z.object({
 	withdrawalAmount: z.preprocess(
@@ -32,20 +35,16 @@ const formSchema = z.object({
 	)
 });
 
-interface Vault {
-	token: any;
-	vaultId: any;
-	balance: any;
-	orderbook: any;
-}
-
 interface WithdrawalModalProps {
-	vault: Vault;
+	vault: InputType | Output;
+	network: string;
 }
 
-export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
-	const { writeContractAsync } = useWriteContract();
+export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 	const [open, setOpen] = useState(false);
+	const { switchChainAsync } = useSwitchChain();
+	const { writeContractAsync } = useWriteContract();
+	const { connectModalOpen, openConnectModal } = useConnectModal();
 	const [rawAmount, setRawAmount] = useState<string>('0'); // Store the raw 18-decimal amount
 
 	const [error, setError] = useState<string | null>(null);
@@ -57,8 +56,14 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 		}
 	}, [rawAmount, vault.balance]);
 
-	// Vault balance in human-readable format (i.e., converted from 18 decimals)
-	const readableBalance = formatUnits(vault.balance, vault.token.decimals);
+	const address = useAccount().address;
+	const userchain = useAccount().chain;
+	const chain = SupportedChains[network as keyof typeof SupportedChains];
+	const switchChain = async () => {
+		if (userchain && chain.id !== userchain.id) {
+			await switchChainAsync({ chainId: chain.id });
+		}
+	};
 
 	// Define your form.
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -69,22 +74,30 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 	});
 
 	const withdraw = async (amount: string) => {
-		console.log('Withdraw', amount);
+		if (!address && !connectModalOpen) {
+			openConnectModal?.();
+			return;
+		}
+		await switchChain();
 		// Send raw value to the contract (no conversion needed here)
 		await writeContractAsync({
 			abi: orderBookJson.abi,
-			address: vault.orderbook.id,
+			address: vault.orderbook.id as `0x${string}`,
 			functionName: 'withdraw2',
 			args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
 		});
 	};
 
 	const handleMaxClick = () => {
-		// Set the form field to the readable max balance for display
-		form.setValue('withdrawalAmount', parseFloat(readableBalance));
-		// Set the raw balance directly
-		setRawAmount(vault.balance); // Use raw vault balance directly
-		form.setFocus('withdrawalAmount'); // Optional: focus the field after setting value
+		if (vault.balance === BigInt(0)) {
+			return setError('Insuficient balance');
+		} else if (!vault.balance) {
+			return setError('No balance found');
+		}
+		const formattedBalance = formatUnits(vault.balance, Number(vault.token.decimals));
+		form.setValue('withdrawalAmount', Number(formattedBalance));
+		setRawAmount(vault.balance.toString());
+		form.setFocus('withdrawalAmount');
 	};
 
 	const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,11 +106,10 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 
 		// Update the raw amount based on the user input (convert back to raw value)
 		if (userInput) {
-			console.log(userInput);
 			try {
-				const parsedRawAmount = parseUnits(userInput, vault.token.decimals).toString();
+				const parsedRawAmount = parseUnits(userInput, Number(vault.token.decimals)).toString();
 				setRawAmount(parsedRawAmount); // Update raw amount on every user change
-			} catch (err) {
+			} catch {
 				setRawAmount('0'); // Fallback to 0 if input is invalid
 			}
 		} else {
@@ -136,13 +148,12 @@ export const WithdrawalModal = ({ vault }: WithdrawalModalProps) => {
 									<FormItem>
 										<FormLabel>Amount</FormLabel>
 										<FormControl>
-											{/* Use onChange to listen to user typing */}
 											<Input
 												placeholder="0"
 												{...field}
 												type="number"
-												step="0.000000000000000001" // 18 decimals
-												onChange={handleUserChange} // Listen for user typing
+												step="0.1"
+												onChange={handleUserChange}
 											/>
 										</FormControl>
 										<FormMessage>{error}</FormMessage>

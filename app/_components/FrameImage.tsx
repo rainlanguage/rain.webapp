@@ -40,7 +40,7 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 						<div className="leading-tight">
 							{currentState.deploymentOption.fields[Object.keys(currentState.bindings).length].name}
 						</div>
-						<div className="text-2xl" tw="text-2xl">
+						<div className="text-2xl whitespace-pre-line" tw="text-2xl whitespace-pre-line">
 							{
 								currentState.deploymentOption.fields[Object.keys(currentState.bindings).length]
 									.description
@@ -88,7 +88,7 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 							{Object.keys(currentState.bindings).map((binding: string) => {
 								if (!currentState.deploymentOption) return;
 								const field = currentState.deploymentOption.fields.find(
-									(field: any) => field.binding === binding
+									(field: { binding: string }) => field.binding === binding
 								);
 								if (!field) return;
 								return (

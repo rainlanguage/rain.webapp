@@ -97,8 +97,6 @@ export const SubmissionModal = ({
 	const [open, setOpen] = useState(false);
 	const [showFinalMessage, setShowFinalMessage] = useState(false);
 
-	const [hash, setHash] = useState<string | null>(null);
-
 	useEffect(() => {
 		if (submissionState === SubmissionStatus.Done) {
 			setTimeout(() => {
@@ -112,7 +110,6 @@ export const SubmissionModal = ({
 		setSubmissionState(SubmissionStatus.ApprovingTokens);
 		setShowFinalMessage(false);
 		setShowDisclaimer(true);
-		setHash(null);
 	};
 
 	const submitStrategy = async () => {
@@ -139,7 +136,7 @@ export const SubmissionModal = ({
 					setError(
 						<>
 							<p className="mb-3">
-								You don&apos;t have enough {deposit.tokenInfo.symbol} to cover this deposit.
+								You do not have enough {deposit.tokenInfo.symbol} to cover this deposit.
 							</p>
 							<p className="mb-3">
 								Your balance: {formatUnits(BigInt(balance), deposit.tokenInfo.decimals)}
@@ -241,7 +238,7 @@ export const SubmissionModal = ({
 
 			const convertedBindings = Object.keys(currentState.bindings).reduce((acc, key) => {
 				const value = currentState.bindings[key];
-				if (isNaN(value)) {
+				if (typeof value !== 'number' || isNaN(value)) {
 					return { ...acc, [key]: value };
 				}
 				return { ...acc, [key]: Number(value) };
@@ -276,8 +273,8 @@ export const SubmissionModal = ({
 				confirmations: 4
 			});
 
-			setHash(deployTx);
 			setSubmissionState(SubmissionStatus.Done);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (e: any) {
 			if (
 				e?.cause?.message?.includes('addEthereumChain') ||
@@ -292,7 +289,6 @@ export const SubmissionModal = ({
 				setError(e?.cause?.message || e?.message || 'An error occurred');
 			}
 			setOpen(false);
-			console.error(e);
 		}
 	};
 

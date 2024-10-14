@@ -15,6 +15,7 @@ const TradesTable = ({ trades }: props) => {
 	const sortedTrades = trades.sort(sortByTimestamp);
 	return (
 		<div className="w-full overflow-x-scroll pt-6">
+			<h1 className="text-2xl mb-2 font-semibold">Trades</h1>
 			<Table hoverable striped>
 				<Table.Head>
 					<Table.HeadCell>DATE</Table.HeadCell>
@@ -32,13 +33,15 @@ const TradesTable = ({ trades }: props) => {
 							</Table.Cell>
 							<Table.Cell
 								onClick={() => navigator.clipboard.writeText(trade.tradeEvent.sender)}
-								className="cursor-pointer">
+								className="cursor-pointer"
+							>
 								{trade.tradeEvent.sender.slice(0, 5)}...
 								{trade.tradeEvent.sender.slice(-1 * 5)}
 							</Table.Cell>
 							<Table.Cell
 								onClick={() => navigator.clipboard.writeText(trade.tradeEvent.transaction.id)}
-								className="cursor-pointer">
+								className="cursor-pointer"
+							>
 								{trade.tradeEvent.transaction.id.slice(0, 5)}...
 								{trade.tradeEvent.transaction.id.slice(-1 * 5)}
 							</Table.Cell>

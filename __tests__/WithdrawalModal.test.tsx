@@ -37,7 +37,7 @@ describe('WithdrawalModal', () => {
 		const maxButton = await screen.findByRole('button', { name: /Max/i });
 		fireEvent.click(maxButton);
 
-		const input = screen.getByPlaceholderText('0') as HTMLInputElement;
+		const input = screen.getByTestId('withdrawal-input') as HTMLInputElement;
 		const expectedValue = formatUnits(mockVault.balance, Number(mockVault.token.decimals));
 		expect(input.value).toBe(expectedValue);
 		expect(input.value).toBe('0.156879426436436');
@@ -48,7 +48,7 @@ describe('WithdrawalModal', () => {
 		const triggerButton = screen.getByText(/Withdraw/i);
 		fireEvent.click(triggerButton);
 
-		const input = screen.getByPlaceholderText('0') as HTMLInputElement;
+		const input = screen.getByTestId('withdrawal-input') as HTMLInputElement;
 
 		fireEvent.change(input, { target: { value: '123.456' } });
 
@@ -60,7 +60,7 @@ describe('WithdrawalModal', () => {
 		const triggerButton = screen.getByText(/Withdraw/i);
 		fireEvent.click(triggerButton);
 
-		const input = screen.getByPlaceholderText('0') as HTMLInputElement;
+		const input = screen.getByTestId('withdrawal-input') as HTMLInputElement;
 
 		const exceededValue = '1000';
 		fireEvent.change(input, { target: { value: exceededValue } });

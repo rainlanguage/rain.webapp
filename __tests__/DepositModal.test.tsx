@@ -36,7 +36,7 @@ describe('DepositModal', () => {
 		const maxButton = await screen.findByRole('button', { name: /Max/i });
 		fireEvent.click(maxButton);
 
-		const input = screen.getByPlaceholderText('0') as HTMLInputElement;
+		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
 		const expectedValue = formatUnits(BigInt('156879426436436000'), mockVault.token.decimals);
 		expect(input.value).toBe(expectedValue);
 		expect(input.value).toBe('0.156879426436436');
@@ -47,7 +47,7 @@ describe('DepositModal', () => {
 		const triggerButton = screen.getByText(/Deposit/i);
 		fireEvent.click(triggerButton);
 
-		const input = screen.getByPlaceholderText('0') as HTMLInputElement;
+		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
 		fireEvent.change(input, { target: { value: '123.456' } });
 
 		expect(input.value).toBe('123.456');
@@ -59,7 +59,7 @@ describe('DepositModal', () => {
 		const triggerButton = screen.getByText(/Deposit/i);
 		fireEvent.click(triggerButton);
 
-		const input = screen.getByPlaceholderText('0') as HTMLInputElement;
+		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
 
 		const exceededValue = '1000';
 		fireEvent.change(input, { target: { value: exceededValue } });

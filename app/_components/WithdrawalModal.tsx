@@ -144,7 +144,13 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 									<FormItem>
 										<FormLabel>Amount</FormLabel>
 										<FormControl>
-											<Input placeholder="0" {...field} type="number" step="0.1" />
+											<Input
+												data-testid={'withdrawal-input'}
+												placeholder="0"
+												{...field}
+												type="number"
+												step="0.1"
+											/>
 										</FormControl>
 										<FormMessage>{error}</FormMessage>
 										<Button size="sm" type="button" onClick={handleMaxClick}>

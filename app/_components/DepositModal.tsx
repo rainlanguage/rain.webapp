@@ -274,7 +274,13 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 												</div>
 											)}
 											<FormControl>
-												<Input placeholder="0" {...field} type="number" step="0.1" />
+												<Input
+													data-testid={'deposit-input'}
+													placeholder="0"
+													{...field}
+													type="number"
+													step="0.1"
+												/>
 											</FormControl>
 											<FormMessage>{error}</FormMessage>
 											<Button size="sm" type="button" onClick={handleMaxClick}>

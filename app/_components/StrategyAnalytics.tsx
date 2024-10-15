@@ -8,10 +8,11 @@ import { orderBookJson } from '@/public/_abis/OrderBook';
 import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
 import { decodeAbiParameters } from 'viem';
 import TradesTable from './TradesTable';
-import QuotesTable from './QuotesTable';
+import QuotesTable, { QuotesTableRef } from './QuotesTable';
 import { Input, Output } from '../types';
 import { SupportedChains } from '../_types/chains';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { useRef } from 'react';
 
 interface props {
 	transactionId: string;
@@ -75,6 +76,12 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 		query.refetch();
 	};
 
+	const quotesTableRef = useRef<QuotesTableRef>(null);
+
+	const refetchQuotes = () => {
+		quotesTableRef.current?.getQuotes();
+	};
+
 	return (
 		<div className="container flex-grow pt-8 pb-safe">
 			{query.isLoading && <div>Loading...</div>}
@@ -118,7 +125,13 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 									{query.data.order.inputs.map((vault: Input, i: number) => {
 										return (
 											<div key={i}>
-												<TokenAndBalance input={vault} deposit withdraw network={network} />
+												<TokenAndBalance
+													input={vault}
+													deposit
+													withdraw
+													network={network}
+													onDepositWithdrawSuccess={refetchQuotes}
+												/>
 											</div>
 										);
 									})}
@@ -130,7 +143,13 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 									{query.data.order.outputs.map((vault: Output, i: number) => {
 										return (
 											<div key={i}>
-												<TokenAndBalance input={vault} deposit withdraw network={network} />
+												<TokenAndBalance
+													input={vault}
+													deposit
+													withdraw
+													network={network}
+													onDepositWithdrawSuccess={refetchQuotes}
+												/>
 											</div>
 										);
 									})}
@@ -138,7 +157,7 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 							)}
 						</div>
 					</div>
-					<QuotesTable order={query.data.order} />
+					<QuotesTable order={query.data.order} ref={quotesTableRef} />
 					<TradesTable trades={query.data.order.trades} />
 				</>
 			)}

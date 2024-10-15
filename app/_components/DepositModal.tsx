@@ -207,6 +207,7 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: any) {
 			setDepositState(TokenDepositStatus.Error);
+			console.log('ERROR!', error.message);
 			setError(error.details || 'An error occured while confirming your deposit.');
 		}
 	};
@@ -237,8 +238,7 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 					className={cn(
 						buttonVariants(),
 						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
-					)}
-				>
+					)}>
 					Deposit
 				</span>
 			</DialogTrigger>
@@ -251,8 +251,7 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 								onSubmit={form.handleSubmit(async () => {
 									await deposit();
 								})}
-								className="space-y-8"
-							>
+								className="space-y-8">
 								<FormField
 									control={form.control}
 									name="depositAmount"
@@ -316,8 +315,7 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 										<a
 											href={(chain?.blockExplorers.default.url as string) + '/tx/' + depositTxHash}
 											target="_blank"
-											rel="noreferrer"
-										>
+											rel="noreferrer">
 											<Button className="w-fit">View Transaction</Button>
 										</a>
 									)}
@@ -338,8 +336,7 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 													  depositState === TokenDepositStatus.WaitingForApprovalConfirmation
 													? 'bg-amber-500 w-12 h-12'
 													: 'bg-emerald-600 w-10 h-10'
-										}`}
-									>
+										}`}>
 										{1}
 									</div>
 									<div className="text-lg">
@@ -371,8 +368,7 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 													: depositState === TokenDepositStatus.TokensDeposited
 														? 'bg-emerald-600 w-10 h-10'
 														: 'bg-gray-400 w-10 h-10'
-										}`}
-									>
+										}`}>
 										{2}
 									</div>
 									<div className="text-lg">
@@ -399,8 +395,7 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 								<a
 									href={(chain?.blockExplorers.default.url as string) + '/tx/' + depositTxHash}
 									target="_blank"
-									rel="noreferrer"
-								>
+									rel="noreferrer">
 									<Button className="w-fit">View Transaction</Button>
 								</a>
 							)}

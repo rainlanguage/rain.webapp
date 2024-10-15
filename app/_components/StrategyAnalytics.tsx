@@ -14,7 +14,7 @@ import { SupportedChains } from '../_types/chains';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 interface props {
-	transactionId: string;
+	orderHash: string;
 	network: string;
 }
 
@@ -33,13 +33,13 @@ const Property = ({
 	</div>
 );
 
-const StrategyAnalytics = ({ transactionId, network }: props) => {
+const StrategyAnalytics = ({ orderHash, network }: props) => {
 	const { switchChainAsync } = useSwitchChain();
 	const { connectModalOpen, openConnectModal } = useConnectModal();
 	const query = useQuery({
-		queryKey: [transactionId],
-		queryFn: () => getTransactionAnalyticsData(transactionId, network),
-		enabled: !!transactionId,
+		queryKey: [orderHash],
+		queryFn: () => getTransactionAnalyticsData(orderHash, network),
+		enabled: !!orderHash,
 		refetchInterval: 10000
 	});
 
@@ -88,8 +88,7 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 								<Button
 									onClick={() => {
 										removeOrder();
-									}}
-								>
+									}}>
 									Remove strategy
 								</Button>
 							)}

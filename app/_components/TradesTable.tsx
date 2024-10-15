@@ -1,14 +1,21 @@
 import { formatUnits } from 'viem';
 import { Table } from 'flowbite-react';
 import { Trade } from '../types';
+import { formatTimestampSecondsAsLocal } from '../_services/dates';
 
 interface props {
 	trades: Trade[];
 }
 
 const TradesTable = ({ trades }: props) => {
+	const sortByTimestamp = (a: Trade, b: Trade) => {
+		return +b.tradeEvent.transaction.timestamp - +a.tradeEvent.transaction.timestamp;
+	};
+
+	const sortedTrades = trades.sort(sortByTimestamp);
 	return (
 		<div className="w-full overflow-x-scroll pt-6">
+			<h1 className="text-2xl mb-2 font-semibold">Trades</h1>
 			<Table hoverable striped>
 				<Table.Head>
 					<Table.HeadCell>DATE</Table.HeadCell>
@@ -19,9 +26,11 @@ const TradesTable = ({ trades }: props) => {
 					<Table.HeadCell>IO RATIO</Table.HeadCell>
 				</Table.Head>
 				<Table.Body>
-					{trades.map((trade: Trade, i: number) => (
+					{sortedTrades.map((trade: Trade, i: number) => (
 						<Table.Row key={i}>
-							<Table.Cell>{trade.tradeEvent.transaction.timestamp}</Table.Cell>
+							<Table.Cell>
+								{formatTimestampSecondsAsLocal(BigInt(trade.tradeEvent.transaction.timestamp))}
+							</Table.Cell>
 							<Table.Cell
 								onClick={() => navigator.clipboard.writeText(trade.tradeEvent.sender)}
 								className="cursor-pointer"

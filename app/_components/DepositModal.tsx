@@ -178,6 +178,7 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				} catch (error: any) {
 					setDepositState(TokenDepositStatus.Error);
+					console.error(error.message);
 					setError((error.details as string) || 'An error occured while approving your deposit.');
 				}
 
@@ -207,7 +208,7 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: any) {
 			setDepositState(TokenDepositStatus.Error);
-			console.log('ERROR!', error.message);
+			console.error(error.message);
 			setError(error.details || 'An error occured while confirming your deposit.');
 		}
 	};

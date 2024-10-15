@@ -93,7 +93,6 @@ export const getTransactionAnalyticsData = async (orderHash: string, network: st
 				throw new Error(`HTTP error! Status: ${response.status}`);
 			}
 			const result = await response.json();
-			console.log(result);
 			if (result.errors) {
 				throw new Error(result.errors[0].message);
 			} else if (result.data?.addOrders.length) {

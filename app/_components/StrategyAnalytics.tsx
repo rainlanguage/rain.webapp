@@ -3,19 +3,26 @@ import { getTransactionAnalyticsData } from '@/app/_queries/strategyAnalytics';
 import { useQuery } from '@tanstack/react-query';
 import { TokenAndBalance } from './TokenAndBalance';
 import { formatTimestampSecondsAsLocal } from '../_services/dates';
-import { Button } from '@/components/ui/button';
-import { orderBookJson } from '@/public/_abis/OrderBook';
-import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
-import { decodeAbiParameters } from 'viem';
+import { useAccount, useSwitchChain } from 'wagmi';
 import TradesTable from './TradesTable';
 import QuotesTable from './QuotesTable';
 import { Input, Output } from '../types';
 import { SupportedChains } from '../_types/chains';
-import { useConnectModal } from '@rainbow-me/rainbowkit';
+
+import { RemoveModal } from './RemoveModal';
 
 interface props {
 	transactionId: string;
 	network: string;
+}
+
+export enum StrategyRemoveStatus {
+	Idle,
+	Pending,
+	Removing,
+	WaitingForConfirmation,
+	Completed,
+	Error
 }
 
 const Property = ({
@@ -35,7 +42,6 @@ const Property = ({
 
 const StrategyAnalytics = ({ transactionId, network }: props) => {
 	const { switchChainAsync } = useSwitchChain();
-	const { connectModalOpen, openConnectModal } = useConnectModal();
 	const query = useQuery({
 		queryKey: [transactionId],
 		queryFn: () => getTransactionAnalyticsData(transactionId, network),
@@ -43,37 +49,9 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 		refetchInterval: 10000
 	});
 
-	const { writeContractAsync } = useWriteContract();
-
 	const address = useAccount().address;
 	const userchain = useAccount().chain;
 	const chain = SupportedChains[network as keyof typeof SupportedChains];
-
-	const switchChain = async () => {
-		if (userchain && chain.id !== userchain.id) {
-			await switchChainAsync({ chainId: chain.id });
-		}
-	};
-
-	const removeOrder = async () => {
-		if (!address && !connectModalOpen) {
-			openConnectModal?.();
-			return;
-		}
-		await switchChain();
-		const orderStruct = [orderBookJson.abi[17].inputs[2]];
-		const order = decodeAbiParameters(orderStruct, query.data.order.orderBytes)[0];
-
-		await writeContractAsync({
-			abi: orderBookJson.abi,
-			address: query.data.order.orderbook.id,
-			functionName: 'removeOrder2',
-			args: [order, []],
-			chainId: chain.id
-		});
-
-		query.refetch();
-	};
 
 	return (
 		<div className="container flex-grow pt-8 pb-safe">
@@ -85,13 +63,9 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 						<div className="flex md:flex-row flex-col gap-4 justify-between items-center mb-8">
 							<h1 className="text-2xl font-semibold">Strategy Analytics</h1>
 							{query.data.order.active && (
-								<Button
-									onClick={() => {
-										removeOrder();
-									}}
-								>
-									Remove strategy
-								</Button>
+								<>
+									<RemoveModal vault={query.data.order} network={network} />
+								</>
 							)}
 						</div>
 						<Property name="Chain">

@@ -48,8 +48,6 @@ export const RemoveModal = ({ vault, network, onComplete }: RemoveModalProps) =>
 		setDialogOpen(false);
 	};
 
-	console.log(vault);
-
 	const removeOrder = async () => {
 		if (!address && !connectModalOpen) {
 			openConnectModal?.();
@@ -60,6 +58,7 @@ export const RemoveModal = ({ vault, network, onComplete }: RemoveModalProps) =>
 			await switchChain();
 
 			const orderStruct = [orderBookJson.abi[17].inputs[2]];
+
 			const order = decodeAbiParameters(orderStruct, vault.orderBytes)[0];
 
 			const removeTx = await writeContractAsync({
@@ -72,6 +71,7 @@ export const RemoveModal = ({ vault, network, onComplete }: RemoveModalProps) =>
 			setRemoveStatus(StrategyRemoveStatus.Removing);
 
 			try {
+				console.log('awaiting transaction receipt');
 				await waitForTransactionReceipt(config, {
 					hash: removeTx,
 					confirmations: 1
@@ -112,8 +112,7 @@ export const RemoveModal = ({ vault, network, onComplete }: RemoveModalProps) =>
 						: isCompleted
 							? 'bg-emerald-600 w-10 h-10'
 							: 'bg-gray-400 w-10 h-10'
-				}`}
-			>
+				}`}>
 				{step}
 			</div>
 			<div className="text-lg">
@@ -148,7 +147,7 @@ export const RemoveModal = ({ vault, network, onComplete }: RemoveModalProps) =>
 						</div>
 					) : removeStatus === StrategyRemoveStatus.Idle ? (
 						<div className="flex flex-col items-center space-y-4">
-							<p className="text-red-600 font-semibold text-center">
+							<p className="text-red-600 font-semibold text-center" data-testid="confirm-warning">
 								Are you sure you want to remove the strategy? This action cannot be undone.
 							</p>
 							<Button onClick={handleRemoveOrder} className="w-full bg-blue-500 hover:bg-blue-700">

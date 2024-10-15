@@ -84,16 +84,16 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 	const [error, setError] = useState<string | null>(null);
 	const [depositTxHash, setDepositTxHash] = useState<string | null>(null);
 
+	const address = useAccount().address;
+	const userchain = useAccount().chain;
+	const chain = SupportedChains[network as keyof typeof SupportedChains];
+
 	useEffect(() => {
 		if (!open) {
 			setDepositState(TokenDepositStatus.Idle);
 			setError(null);
 		}
 	}, [open]);
-
-	const address = useAccount().address;
-	const userchain = useAccount().chain;
-	const chain = SupportedChains[network as keyof typeof SupportedChains];
 
 	const switchChain = async () => {
 		if (userchain && chain.id !== userchain.id) {
@@ -122,6 +122,21 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 			depositAmount: 0
 		}
 	});
+
+	const depositAmount = form.watch('depositAmount');
+
+	useEffect(() => {
+		const parsedRawAmount = parseUnits(
+			depositAmount.toString(),
+			Number(vault.token.decimals)
+		).toString();
+		setRawAmount(parsedRawAmount);
+		if (BigInt(parsedRawAmount) > connectedWalletBalance) {
+			setError('Amount exceeds wallet balance');
+		} else {
+			setError(null);
+		}
+	}, [depositAmount]);
 
 	const deposit = async () => {
 		try {
@@ -216,28 +231,6 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 		form.setFocus('depositAmount');
 	};
 
-	const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const userInput = e.target.value;
-		form.setValue('depositAmount', parseFloat(userInput));
-
-		if (userInput) {
-			try {
-				const parsedRawAmount = parseUnits(userInput, Number(vault.token.decimals)).toString();
-				if (BigInt(parsedRawAmount) > connectedWalletBalance) {
-					setError('Amount exceeds wallet balance');
-				} else {
-					setError(null);
-				}
-				setRawAmount(parsedRawAmount); // Update raw amount on every user change
-			} catch {
-				// TODO: Allow decimals
-				setRawAmount('0'); // Fallback to 0 if input is invalid
-			}
-		} else {
-			setRawAmount('0'); // Fallback to 0 if input is empty
-		}
-	};
-
 	const connect = async (open: boolean) => {
 		if (!address && !connectModalOpen) {
 			openConnectModal?.();
@@ -284,11 +277,11 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 											)}
 											<FormControl>
 												<Input
+													data-testid={'deposit-input'}
 													placeholder="0"
 													{...field}
 													type="number"
 													step="0.1"
-													onChange={handleUserChange}
 												/>
 											</FormControl>
 											<FormMessage>{error}</FormMessage>

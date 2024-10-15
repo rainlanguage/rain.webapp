@@ -88,7 +88,8 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 								<Button
 									onClick={() => {
 										removeOrder();
-									}}>
+									}}
+								>
 									Remove strategy
 								</Button>
 							)}

@@ -112,7 +112,8 @@ export const RemoveModal = ({ vault, network, onComplete }: RemoveModalProps) =>
 						: isCompleted
 							? 'bg-emerald-600 w-10 h-10'
 							: 'bg-gray-400 w-10 h-10'
-				}`}>
+				}`}
+			>
 				{step}
 			</div>
 			<div className="text-lg">

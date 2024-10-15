@@ -95,12 +95,17 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 		}
 		await switchChain();
 		// Send raw value to the contract (no conversion needed here)
-		await writeContractAsync({
-			abi: orderBookJson.abi,
-			address: vault.orderbook.id as `0x${string}`,
-			functionName: 'withdraw2',
-			args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
-		});
+		try {
+			await writeContractAsync({
+				abi: orderBookJson.abi,
+				address: vault.orderbook.id as `0x${string}`,
+				functionName: 'withdraw2',
+				args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
+			});
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (error: any) {
+			console.error(error.message);
+		}
 	};
 
 	const handleMaxClick = () => {
@@ -122,8 +127,7 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 					className={cn(
 						buttonVariants(),
 						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
-					)}
-				>
+					)}>
 					Withdraw
 				</span>
 			</DialogTrigger>
@@ -137,8 +141,7 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 								await withdraw(rawAmount);
 								setOpen(false);
 							})}
-							className="space-y-8"
-						>
+							className="space-y-8">
 							<FormField
 								control={form.control}
 								name="withdrawalAmount"

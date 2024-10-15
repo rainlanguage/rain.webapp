@@ -1,3 +1,5 @@
+import { Hex } from 'viem';
+
 export type Button = {
 	buttonTarget: string;
 	buttonValue: string;
@@ -30,6 +32,7 @@ export interface Order {
 
 export interface Input {
 	orderbook: Orderbook;
+	orderBytes: Hex;
 	vaultId: bigint;
 	token: Token;
 	balance: bigint;

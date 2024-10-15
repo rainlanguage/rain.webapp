@@ -11,17 +11,19 @@ import { useState } from 'react';
 import { orderBookJson } from '@/public/_abis/OrderBook';
 import { config } from '../providers';
 import { decodeAbiParameters } from 'viem';
-import { waitForTransactionReceipt } from 'viem/actions';
+import { waitForTransactionReceipt } from '@wagmi/core';
 import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { SupportedChains } from '../_types/chains';
+import { Input } from '../types';
 
 interface RemoveModalProps {
-	vault: any; // Adjust the type to match your vault type if available
+	vault: Input;
 	network: string;
+	onComplete: () => void;
 }
 
-export const RemoveModal = ({ vault, network }: RemoveModalProps) => {
+export const RemoveModal = ({ vault, network, onComplete }: RemoveModalProps) => {
 	const { switchChainAsync } = useSwitchChain();
 	const { connectModalOpen, openConnectModal } = useConnectModal();
 
@@ -46,12 +48,13 @@ export const RemoveModal = ({ vault, network }: RemoveModalProps) => {
 		setDialogOpen(false);
 	};
 
+	console.log(vault);
+
 	const removeOrder = async () => {
 		if (!address && !connectModalOpen) {
 			openConnectModal?.();
 			return;
 		}
-
 		try {
 			setRemoveStatus(StrategyRemoveStatus.WaitingForConfirmation);
 			await switchChain();
@@ -61,22 +64,32 @@ export const RemoveModal = ({ vault, network }: RemoveModalProps) => {
 
 			const removeTx = await writeContractAsync({
 				abi: orderBookJson.abi,
-				address: vault.orderbook.id,
+				address: vault.orderbook.id as `0x${string}`,
 				functionName: 'removeOrder2',
 				args: [order, []],
 				chainId: chain.id
 			});
 			setRemoveStatus(StrategyRemoveStatus.Removing);
 
-			await waitForTransactionReceipt(config, {
-				hash: removeTx,
-				confirmations: 1
-			});
+			try {
+				await waitForTransactionReceipt(config, {
+					hash: removeTx,
+					confirmations: 1
+				});
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			} catch (e: any) {
+				setRemoveStatus(StrategyRemoveStatus.Error);
+
+				console.error(e.message);
+				setError(e.details || 'An error occurred while removing the strategy.');
+			}
 			setRemoveStatus(StrategyRemoveStatus.Completed);
-		} catch (e) {
+			onComplete();
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (e: any) {
 			setRemoveStatus(StrategyRemoveStatus.Error);
 			console.error(e.message);
-			setError(e.details || 'An error occured while removing the strategy.');
+			setError(e.details || 'An error occurred while removing the strategy.');
 		}
 	};
 
@@ -99,7 +112,8 @@ export const RemoveModal = ({ vault, network }: RemoveModalProps) => {
 						: isCompleted
 							? 'bg-emerald-600 w-10 h-10'
 							: 'bg-gray-400 w-10 h-10'
-				}`}>
+				}`}
+			>
 				{step}
 			</div>
 			<div className="text-lg">
@@ -132,13 +146,22 @@ export const RemoveModal = ({ vault, network }: RemoveModalProps) => {
 								Dismiss
 							</Button>
 						</div>
+					) : removeStatus === StrategyRemoveStatus.Idle ? (
+						<div className="flex flex-col items-center space-y-4">
+							<p className="text-red-600 font-semibold text-center">
+								Are you sure you want to remove the strategy? This action cannot be undone.
+							</p>
+							<Button onClick={handleRemoveOrder} className="w-full bg-blue-500 hover:bg-blue-700">
+								Confirm Removal
+							</Button>
+						</div>
 					) : (
 						<>
 							{renderStatusStep(
 								1,
 								'Waiting for confirmation...',
 								removeStatus === StrategyRemoveStatus.WaitingForConfirmation,
-								removeStatus > StrategyRemoveStatus.WaitingForConfirmation
+								removeStatus >= StrategyRemoveStatus.Removing
 							)}
 							{renderStatusStep(
 								2,
@@ -153,19 +176,12 @@ export const RemoveModal = ({ vault, network }: RemoveModalProps) => {
 							<p>Strategy removed successfully!</p>
 						</div>
 					)}
-					<div className="flex gap-2">
-						{removeStatus === StrategyRemoveStatus.Idle && (
-							<Button onClick={handleRemoveOrder} className="w-full bg-blue-500 hover:bg-blue-700">
-								Confirm Removal
+					{removeStatus !== StrategyRemoveStatus.Idle &&
+						removeStatus !== StrategyRemoveStatus.Error && (
+							<Button onClick={handleClose} className="w-full bg-gray-300">
+								Close
 							</Button>
 						)}
-						{removeStatus !== StrategyRemoveStatus.Idle &&
-							removeStatus !== StrategyRemoveStatus.Error && (
-								<Button onClick={handleClose} className="w-full bg-gray-300">
-									Close
-								</Button>
-							)}
-					</div>
 				</div>
 			</DialogContent>
 		</Dialog>

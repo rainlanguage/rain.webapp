@@ -3,11 +3,9 @@ import { getTransactionAnalyticsData } from '@/app/_queries/strategyAnalytics';
 import { useQuery } from '@tanstack/react-query';
 import { TokenAndBalance } from './TokenAndBalance';
 import { formatTimestampSecondsAsLocal } from '../_services/dates';
-import { useAccount, useSwitchChain } from 'wagmi';
 import TradesTable from './TradesTable';
 import QuotesTable from './QuotesTable';
 import { Input, Output } from '../types';
-import { SupportedChains } from '../_types/chains';
 
 import { RemoveModal } from './RemoveModal';
 
@@ -41,17 +39,12 @@ const Property = ({
 );
 
 const StrategyAnalytics = ({ transactionId, network }: props) => {
-	const { switchChainAsync } = useSwitchChain();
 	const query = useQuery({
 		queryKey: [transactionId],
 		queryFn: () => getTransactionAnalyticsData(transactionId, network),
 		enabled: !!transactionId,
 		refetchInterval: 10000
 	});
-
-	const address = useAccount().address;
-	const userchain = useAccount().chain;
-	const chain = SupportedChains[network as keyof typeof SupportedChains];
 
 	return (
 		<div className="container flex-grow pt-8 pb-safe">
@@ -64,7 +57,11 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 							<h1 className="text-2xl font-semibold">Strategy Analytics</h1>
 							{query.data.order.active && (
 								<>
-									<RemoveModal vault={query.data.order} network={network} />
+									<RemoveModal
+										vault={query.data.order}
+										network={network}
+										onComplete={query.refetch}
+									/>
 								</>
 							)}
 						</div>

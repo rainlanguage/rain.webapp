@@ -75,8 +75,8 @@ export const RemoveModal = ({ vault, network }: RemoveModalProps) => {
 			setRemoveStatus(StrategyRemoveStatus.Completed);
 		} catch (e) {
 			setRemoveStatus(StrategyRemoveStatus.Error);
-			console.log(error.message);
-			setError(error.details);
+			console.error(e.message);
+			setError(e.details || 'An error occured while removing the strategy.');
 		}
 	};
 

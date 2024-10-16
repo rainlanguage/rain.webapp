@@ -24,7 +24,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<head>
-				<link rel="icon" href="/favicon.png" />
+				<link rel="icon" href="/favicon.svg" />
 				<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 			</head>
 			<body>

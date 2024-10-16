@@ -1,15 +1,19 @@
 import { Table } from 'flowbite-react';
 import { quote } from '@rainlanguage/orderbook';
 import * as allChains from 'wagmi/chains';
-import { useState } from 'react';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 import { formatEther, formatUnits, fromHex } from 'viem';
 import { Input, Order, Output } from '../types';
+
+export type QuotesTableRef = {
+	getQuotes: () => Promise<void>;
+};
 
 interface props {
 	order: Order;
 }
 
-const QuotesTable = ({ order }: props) => {
+const QuotesTable = forwardRef<QuotesTableRef, props>(({ order }, ref) => {
 	const [quotes, setQuotes] = useState<quote.OrderQuoteValue[]>([]);
 	const { ...chains } = allChains;
 	const orderChainKey = Object.keys(chains).find((chain) => chain === order.network);
@@ -58,6 +62,10 @@ const QuotesTable = ({ order }: props) => {
 		getQuotes();
 	}
 
+	useImperativeHandle(ref, () => ({
+		getQuotes
+	}));
+
 	return (
 		<div className="w-full overflow-x-scroll pt-6">
 			<Table hoverable striped>
@@ -96,6 +104,8 @@ const QuotesTable = ({ order }: props) => {
 			</Table>
 		</div>
 	);
-};
+});
+
+QuotesTable.displayName = 'QuotesTable';
 
 export default QuotesTable;

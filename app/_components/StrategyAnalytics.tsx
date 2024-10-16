@@ -13,6 +13,9 @@ import { Input, Output } from '../types';
 import { SupportedChains } from '../_types/chains';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRef } from 'react';
+import { waitForTransactionReceipt } from '@wagmi/core';
+import { config } from '../providers';
+import { pollTransaction } from '../_services/pollTransaction';
 
 interface props {
 	transactionId: string;
@@ -65,7 +68,7 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 		const orderStruct = [orderBookJson.abi[17].inputs[2]];
 		const order = decodeAbiParameters(orderStruct, query.data.order.orderBytes)[0];
 
-		await writeContractAsync({
+		const hash = await writeContractAsync({
 			abi: orderBookJson.abi,
 			address: query.data.order.orderbook.id,
 			functionName: 'removeOrder2',
@@ -73,6 +76,13 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 			chainId: chain.id
 		});
 
+		await waitForTransactionReceipt(config, {
+			hash,
+			confirmations: 1
+		});
+		const isResolved = (data: any) => data && data.timestamp;
+		const res = await pollTransaction(hash, network, isResolved);
+		console.log('RES', res);
 		query.refetch();
 	};
 
@@ -95,8 +105,7 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 								<Button
 									onClick={() => {
 										removeOrder();
-									}}
-								>
+									}}>
 									Remove strategy
 								</Button>
 							)}

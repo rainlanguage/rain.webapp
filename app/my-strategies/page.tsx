@@ -18,9 +18,6 @@ export default function MyStrategies() {
 		enabled: !!account.address,
 		refetchInterval: 10000
 	});
-	useEffect(() => {
-		console.log('query.data', query.data);
-	}, [query.data]);
 
 	return (
 		<div className="flex-grow w-full flex flex-col items-start justify-items-start md:p-8 p-2 container">
@@ -48,8 +45,7 @@ export default function MyStrategies() {
 										router.push(
 											`${window.location.origin}/my-strategies/${order.orderHash}-${order.network}`
 										);
-									}}
-								>
+									}}>
 									<Table.Cell>{order.network}</Table.Cell>
 									<Table.Cell>
 										{order.active ? (

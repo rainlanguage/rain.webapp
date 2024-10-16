@@ -148,6 +148,79 @@ gui:
             - 10000
             - 12500
 
+    - deployment: polygon-usdc-ioen
+      name: USDC<>IOEN on Polygon.
+      description: Rotate USDC and IOEN on Polygon.
+
+      fields:
+        - binding: initial-io
+          name: Initial price (USDC per IOEN)
+          description: The rough USD price you see for IOEN on Dextools (e.g. 0.0026).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Maximum amount per auction (USDC)
+          description: The maximum amount of USDC that will be offered in a single auction.
+          min: 0
+          presets:
+            - name: $10
+              value: 10
+            - name: $20
+              value: 20
+            - name: $50
+              value: 50
+            - name: $100
+              value: 100
+        - binding: min-amount
+          name: Minimum amount per auction (USDC)
+          description: The minimum amount of USDC that will be offered in a single auction.
+          min: 0
+          presets:
+            - name: $10
+              value: 10
+            - name: $20
+              value: 20
+
+      deposits:
+        - token: polygon-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+            - 5000
+        - token: polygon-ioen
+          min: 0
+          presets:
+            - 0
+            - 500000
+            - 1000000
+            - 2000000
+
     - deployment: base-usdc-weth
       name: USDC<>WETH on Base.
       description: Rotate USDC and WETH on Base.
@@ -675,6 +748,12 @@ scenarios:
           amount-token: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
           initial-output-token: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
           initial-input-token: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
+      usdc-ioen:
+        runs: 1
+        bindings:
+          amount-token: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
+          initial-output-token: 0xd0e9c8f5Fae381459cf07Ec506C1d2896E8b5df6
+          initial-input-token: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
 
 networks:
   flare:
@@ -792,6 +871,14 @@ tokens:
     network: polygon
     address: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
     decimals: 18
+  polygon-ioen:
+    network: polygon
+    address: 0xd0e9c8f5Fae381459cf07Ec506C1d2896E8b5df6
+    decimals: 18
+  polygon-usdc:
+    network: polygon
+    address: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
+    decimals: 6
 
 orders:
   arbitrum-wbtc-weth:
@@ -866,6 +953,15 @@ orders:
     outputs:
       - token: polygon-quick
       - token: polygon-wmatic
+  polygon-usdc-ioen:
+    network: polygon
+    orderbook: polygon
+    inputs:
+      - token: polygon-usdc
+      - token: polygon-ioen
+    outputs:
+      - token: polygon-usdc
+      - token: polygon-ioen
 
 deployments:
   arbitrum-wbtc-weth:
@@ -892,6 +988,9 @@ deployments:
   polygon-quick-wmatic:
     order: polygon-quick-wmatic
     scenario: polygon.quick-wmatic
+  polygon-usdc-ioen:
+    order: polygon-usdc-ioen
+    scenario: polygon.usdc-ioen
 ---
 #raindex-subparser !Subparser for the Raindex.
 

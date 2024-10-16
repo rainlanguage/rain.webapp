@@ -12,14 +12,21 @@ import QuotesTable, { QuotesTableRef } from './QuotesTable';
 import { Input, Output } from '../types';
 import { SupportedChains } from '../_types/chains';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { config } from '../providers';
-import { pollTransaction } from '../_services/pollTransaction';
+import { Badge } from 'flowbite-react';
 
 interface props {
 	transactionId: string;
 	network: string;
+}
+
+enum RemovalStatus {
+	Idle = 'Remove strategy',
+	Confirming = 'Confirm removal in wallet...',
+	Removing = 'Removing strategy...',
+	Removed = 'Stategy removed'
 }
 
 const Property = ({
@@ -46,6 +53,7 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 		enabled: !!transactionId,
 		refetchInterval: 10000
 	});
+	const [removalStatus, setRemovalStatus] = useState(RemovalStatus.Idle);
 
 	const { writeContractAsync } = useWriteContract();
 
@@ -60,30 +68,39 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 	};
 
 	const removeOrder = async () => {
+		setRemovalStatus(RemovalStatus.Confirming);
 		if (!address && !connectModalOpen) {
 			openConnectModal?.();
 			return;
 		}
 		await switchChain();
-		const orderStruct = [orderBookJson.abi[17].inputs[2]];
-		const order = decodeAbiParameters(orderStruct, query.data.order.orderBytes)[0];
+		try {
+			const orderStruct = [orderBookJson.abi[17].inputs[2]];
+			const order = decodeAbiParameters(orderStruct, query.data.order.orderBytes)[0];
 
-		const hash = await writeContractAsync({
-			abi: orderBookJson.abi,
-			address: query.data.order.orderbook.id,
-			functionName: 'removeOrder2',
-			args: [order, []],
-			chainId: chain.id
-		});
+			const hash = await writeContractAsync({
+				abi: orderBookJson.abi,
+				address: query.data.order.orderbook.id,
+				functionName: 'removeOrder2',
+				args: [order, []],
+				chainId: chain.id
+			});
+			setRemovalStatus(RemovalStatus.Removing);
 
-		await waitForTransactionReceipt(config, {
-			hash,
-			confirmations: 1
-		});
-		const isResolved = (data: any) => data && data.timestamp;
-		const res = await pollTransaction(hash, network, isResolved);
-		console.log('RES', res);
-		query.refetch();
+			await waitForTransactionReceipt(config, {
+				hash,
+				confirmations: 1
+			});
+
+			while (query.data.order.active) {
+				await new Promise((resolve) => setTimeout(resolve, 1000));
+				await query.refetch();
+			}
+			setRemovalStatus(RemovalStatus.Removed);
+		} catch (e) {
+			setRemovalStatus(RemovalStatus.Idle);
+			console.error('ERROR', e);
+		}
 	};
 
 	const quotesTableRef = useRef<QuotesTableRef>(null);
@@ -101,14 +118,24 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 					<div className="flex flex-col gap-y-4">
 						<div className="flex md:flex-row flex-col gap-4 justify-between items-center mb-8">
 							<h1 className="text-2xl font-semibold">Strategy Analytics</h1>
-							{query.data.order.active && (
-								<Button
-									onClick={() => {
-										removeOrder();
-									}}>
-									Remove strategy
-								</Button>
-							)}
+							<div className="flex gap-4">
+								<Badge
+									size="2xl"
+									className="py-2 px-4"
+									color={query.data.order.active ? 'green' : 'red'}>
+									{query.data.order.active ? 'Active' : 'Inactive'}
+								</Badge>
+
+								{query.data.order.active && (
+									<Button
+										className={removalStatus !== RemovalStatus.Idle ? 'animate-pulse' : ''}
+										onClick={() => {
+											removeOrder();
+										}}>
+										{removalStatus}
+									</Button>
+								)}
+							</div>
 						</div>
 						<Property name="Chain">
 							<span className="break-words">

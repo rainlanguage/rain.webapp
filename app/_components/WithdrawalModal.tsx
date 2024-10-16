@@ -38,9 +38,10 @@ const formSchema = z.object({
 interface WithdrawalModalProps {
 	vault: InputType | Output;
 	network: string;
+	onSuccess?: () => void;
 }
 
-export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
+export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalProps) => {
 	const [open, setOpen] = useState(false);
 	const { switchChainAsync } = useSwitchChain();
 	const { writeContractAsync } = useWriteContract();
@@ -94,7 +95,6 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 			return;
 		}
 		await switchChain();
-		// Send raw value to the contract (no conversion needed here)
 		try {
 			await writeContractAsync({
 				abi: orderBookJson.abi,
@@ -102,6 +102,7 @@ export const WithdrawalModal = ({ vault, network }: WithdrawalModalProps) => {
 				functionName: 'withdraw2',
 				args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
 			});
+      onSuccess?.();
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: any) {
 			console.error(error.message);

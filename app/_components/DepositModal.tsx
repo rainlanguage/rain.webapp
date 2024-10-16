@@ -72,9 +72,10 @@ interface Vault {
 interface DepositModalProps {
 	vault: Vault;
 	network: string;
+	onSuccess?: () => void;
 }
 
-export const DepositModal = ({ vault, network }: DepositModalProps) => {
+export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) => {
 	const { switchChainAsync } = useSwitchChain();
 	const { writeContractAsync } = useWriteContract();
 	const [open, setOpen] = useState(false);
@@ -205,8 +206,8 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 			});
 
 			setDepositState(TokenDepositStatus.Done);
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		} catch (error: any) {
+			onSuccess?.();
+		} catch (error: unknown) {
 			setDepositState(TokenDepositStatus.Error);
 			console.error(error.message);
 			setError(error.details || 'An error occured while confirming your deposit.');
@@ -234,7 +235,7 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 
 	return (
 		<Dialog open={open} onOpenChange={connect}>
-			<DialogTrigger asChild={true}>
+			<DialogTrigger>
 				<span
 					className={cn(
 						buttonVariants(),

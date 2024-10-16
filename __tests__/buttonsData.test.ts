@@ -8,8 +8,9 @@ import {
 import { FrameState } from '@/app/_types/frame';
 import { YamlData, Field, Deposit } from '@/app/_types/yamlData';
 import { TokenInfo } from '@/app/_services/getTokenInfo';
-import { mockYamlData } from '@/__mocks__/mockYamlData';
-import { depositFrameState, fieldsFrameState } from '@/__mocks__/mockFrameStates';
+import { mockYamlData } from '@/__fixtures__/mockYamlData';
+import { depositFrameState, fieldsFrameState } from '@/__fixtures__/mockFrameStates';
+import { Button } from '@/app/types';
 
 describe('getPaginatedButtons', () => {
 	it('returns the correct number of buttons with "More" button when needed', () => {
@@ -17,7 +18,7 @@ describe('getPaginatedButtons', () => {
 			buttonValue: `val${i}`,
 			buttonText: `Button ${i}`
 		}));
-		const paginatedButtons = getPaginatedButtons(allButtons, 0, 4);
+		const paginatedButtons = getPaginatedButtons(allButtons as Button[], 0, 4);
 
 		expect(paginatedButtons).toHaveLength(4);
 		expect(paginatedButtons[paginatedButtons.length - 1]).toEqual({
@@ -32,7 +33,7 @@ describe('getPaginatedButtons', () => {
 			buttonValue: `val${i}`,
 			buttonText: `Button ${i}`
 		}));
-		const paginatedButtons = getPaginatedButtons(allButtons, 1, 4);
+		const paginatedButtons = getPaginatedButtons(allButtons as Button[], 1, 4);
 
 		expect(paginatedButtons[0]).toEqual({
 			buttonTarget: 'buttonPage',

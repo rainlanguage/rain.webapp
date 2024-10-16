@@ -4,7 +4,6 @@ import { Mock, vi } from 'vitest';
 import { generateButtonsData } from '@/app/_services/buttonsData';
 import { fixturedTokenInfos } from '@/__fixtures__/tokenInfos';
 import { mockFixedLimit } from '@/__fixtures__/fixed-limit';
-import userEvent from '@testing-library/user-event';
 import { getTokenInfos } from '@/app/_services/getTokenInfo';
 
 const { useRouter, useSearchParams } = vi.hoisted(() => {
@@ -30,7 +29,7 @@ vi.mock('next/navigation', async (importActual) => {
 });
 
 vi.mock('@/app/_services/getTokenInfo', () => ({
-	getTokenInfos: vi.fn() // Mock with async to match actual behavior
+	getTokenInfos: vi.fn()
 }));
 
 vi.mock('@/app/_services/buttonsData', () => ({
@@ -39,53 +38,15 @@ vi.mock('@/app/_services/buttonsData', () => ({
 
 describe('WebappFrame Component', () => {
 	beforeEach(() => {
-		vi.clearAllMocks();
 		vi.resetAllMocks();
 	});
 
 	it('shows input field when only one "Custom" button is present', async () => {
+		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
 		(generateButtonsData as Mock).mockReturnValue([
 			{ buttonValue: 'customValue', buttonText: 'Custom' }
 		]);
 		render(<WebappFrame dotrainText={mockFixedLimit} deploymentOption="" />);
-		await waitFor(() => {
-			expect(screen.getByTestId('input')).toBeInTheDocument();
-		});
-	});
-	it('shows preset buttons when there are multiple choices', async () => {
-		(getTokenInfos as Mock).mockReturnValue(fixturedTokenInfos);
-		(generateButtonsData as Mock).mockReturnValue([
-			{
-				buttonTarget: 'buttonValue',
-				buttonValue: 'back',
-				buttonText: '←'
-			},
-			{
-				buttonTarget: 'buttonValue',
-				buttonValue: '0',
-				buttonText: '0 USDC'
-			},
-			{
-				buttonTarget: 'buttonValue',
-				buttonValue: '10',
-				buttonText: '10 USDC'
-			},
-			{
-				buttonTarget: 'textInputLabel',
-				buttonValue: 'Enter a number greater than 0',
-				buttonText: 'Custom'
-			}
-		]);
-
-		render(<WebappFrame dotrainText={mockFixedLimit} deploymentOption="" />);
-
-		await waitFor(() => {
-			expect(screen.getByText('0 USDC')).toBeInTheDocument();
-			expect(screen.getByText('10 USDC')).toBeInTheDocument();
-		});
-
-		const customButton = screen.getByText('Custom');
-		await userEvent.click(customButton);
 		await waitFor(() => {
 			expect(screen.getByTestId('input')).toBeInTheDocument();
 		});

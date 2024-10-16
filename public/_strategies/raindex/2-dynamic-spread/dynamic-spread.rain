@@ -136,6 +136,8 @@ gui:
             - 0.1
             - 0.5
             - 1
+            - 10
+            - 12.5
         - token: polygon-quick
           min: 0
           presets:
@@ -143,6 +145,8 @@ gui:
             - 100
             - 500
             - 1000
+            - 10000
+            - 12500
 
     - deployment: base-usdc-weth
       name: USDC<>WETH on Base.

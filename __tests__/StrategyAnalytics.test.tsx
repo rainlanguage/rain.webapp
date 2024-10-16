@@ -37,10 +37,9 @@ describe('StrategyAnalytics', () => {
 		(useAccount as Mock).mockReturnValue({ address: '0x123', chain: { id: 1 } });
 		(useSwitchChain as Mock).mockReturnValue({ switchChainAsync: vi.fn() });
 		(useWriteContract as Mock).mockReturnValue({ writeContractAsync: vi.fn() });
-		// (waitForTransactionReceipt as Mock).mockResolvedValue({ confirmations: 1 });
 	});
 
-	it.only('renders the strategy details and removal button', () => {
+	it('renders the strategy details and removal button', () => {
 		(useQuery as Mock).mockReturnValue({
 			data: {
 				order: {
@@ -62,7 +61,7 @@ describe('StrategyAnalytics', () => {
 		expect(screen.getByText(RemovalStatus.Idle)).toBeInTheDocument();
 	});
 
-	it.only('renders no removal button if the strategy is inactive', () => {
+	it('renders no removal button if the strategy is inactive', () => {
 		(useQuery as Mock).mockReturnValue({
 			data: {
 				order: {
@@ -84,7 +83,7 @@ describe('StrategyAnalytics', () => {
 		expect(screen.queryByTestId('remove-strategy-btn')).not.toBeInTheDocument();
 	});
 
-	it.only('initiates removeOrder process and updates removal status', async () => {
+	it('initiates removeOrder process and updates removal status', async () => {
 		const mockSwitchChainAsync = vi.fn();
 		const mockRefetch = vi.fn();
 		const mockWaitForTransactionReceipt = vi.fn().mockResolvedValue({ confirmations: 1 });

@@ -1,3 +1,4 @@
+import { Order } from '../types';
 import { getNetworkSubgraphs } from './subgraphs';
 
 export const getOrders = async (owner?: string) => {
@@ -48,7 +49,7 @@ export const getOrders = async (owner?: string) => {
       }`;
 
 	// make a query for each network
-	const promises: Promise<any>[] = [];
+	const promises: Promise<Order[]>[] = [];
 	Object.entries(networks).forEach(([network, subgraphUrl]) => {
 		promises.push(
 			fetch(subgraphUrl, {
@@ -62,7 +63,7 @@ export const getOrders = async (owner?: string) => {
 				.then((res) => {
 					if (res.errors) throw new Error(res.errors[0].message);
 					if (res.data && res.data.orders) {
-						return res.data.orders.map((order: any) => {
+						return res.data.orders.map((order: Order) => {
 							order.network = network;
 							return order;
 						});
@@ -71,7 +72,9 @@ export const getOrders = async (owner?: string) => {
 		);
 	});
 
-	const results = await Promise.all(promises).then((res) => res.flat());
-	const orderedResults = results.sort((a, b) => b.timestampAdded - a.timestampAdded);
-	return orderedResults;
+	return (await Promise.allSettled(promises))
+		.filter((v) => v.status === 'fulfilled')
+		.map((v) => v.value)
+		.flat()
+		.sort((a, b) => +b.timestampAdded - +a.timestampAdded);
 };

@@ -1,22 +1,26 @@
 import { Table } from 'flowbite-react';
 import { quote } from '@rainlanguage/orderbook';
 import * as allChains from 'wagmi/chains';
-import { useState } from 'react';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 import { formatEther, formatUnits, fromHex } from 'viem';
+import { Input, Order, Output } from '../types';
+
+export type QuotesTableRef = {
+	getQuotes: () => Promise<void>;
+};
 
 interface props {
-	order: any;
+	order: Order;
 }
 
-const QuotesTable = ({ order }: props) => {
-	const [quotes, setQuotes] = useState<any[]>([]);
+const QuotesTable = forwardRef<QuotesTableRef, props>(({ order }, ref) => {
+	const [quotes, setQuotes] = useState<quote.OrderQuoteValue[]>([]);
 	const { ...chains } = allChains;
 	const orderChainKey = Object.keys(chains).find((chain) => chain === order.network);
-
-	const specs = order.inputs.reduce((acc: quote.QuoteSpec[], input: any, inputIndex: number) => {
+	const specs = order.inputs.reduce((acc: quote.QuoteSpec[], input: Input, inputIndex: number) => {
 		return [
 			...acc,
-			...order.outputs.reduce((acc: any[], output: any, outputIndex: number) => {
+			...order.outputs.reduce((acc: quote.QuoteSpec[], output: Output, outputIndex: number) => {
 				// Prevents TokenSelfTrade error
 				if (order.inputs[inputIndex].token.address === order.outputs[outputIndex].token.address) {
 					return acc;
@@ -43,17 +47,24 @@ const QuotesTable = ({ order }: props) => {
 			const result = await quote.doQuoteSpecs(
 				specs,
 				order.subgraphUrl,
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				(chains as any)[orderChainKey].rpcUrls.default.http[0]
 			);
 			setQuotes(result);
-		} catch (e) {
-			console.error(e);
+		} catch (e: unknown) {
+			if (e instanceof Error) {
+				throw new Error(e.message);
+			}
 		}
 	};
 
 	if (!quotes.length) {
 		getQuotes();
 	}
+
+	useImperativeHandle(ref, () => ({
+		getQuotes
+	}));
 
 	return (
 		<div className="w-full overflow-x-scroll pt-6">
@@ -65,7 +76,7 @@ const QuotesTable = ({ order }: props) => {
 					<Table.HeadCell>MAXIMUM INPUT</Table.HeadCell>
 				</Table.Head>
 				<Table.Body>
-					{quotes.map((quote: any, i: number) => {
+					{quotes.map((quote: quote.OrderQuoteValue, i: number) => {
 						if (typeof quote === 'string') return;
 						return (
 							<Table.Row key={i}>
@@ -73,11 +84,16 @@ const QuotesTable = ({ order }: props) => {
 									{order.inputs[specs[i].inputIOIndex].token.symbol}/
 									{order.outputs[specs[i].outputIOIndex].token.symbol}
 								</Table.Cell>
-								<Table.Cell>{formatEther(fromHex(quote.maxOutput, 'bigint'))}</Table.Cell>
-								<Table.Cell>{formatEther(fromHex(quote.ratio, 'bigint'))}</Table.Cell>
+								<Table.Cell>
+									{formatEther(fromHex(quote.maxOutput as `0x${string}`, 'bigint'))}
+								</Table.Cell>
+								<Table.Cell>
+									{formatEther(fromHex(quote.ratio as `0x${string}`, 'bigint'))}
+								</Table.Cell>
 								<Table.Cell>
 									{formatUnits(
-										fromHex(quote.maxOutput, 'bigint') * fromHex(quote.ratio, 'bigint'),
+										fromHex(quote.maxOutput as `0x${string}`, 'bigint') *
+											fromHex(quote.ratio as `0x${string}`, 'bigint'),
 										36
 									)}
 								</Table.Cell>
@@ -88,6 +104,8 @@ const QuotesTable = ({ order }: props) => {
 			</Table>
 		</div>
 	);
-};
+});
+
+QuotesTable.displayName = 'QuotesTable';
 
 export default QuotesTable;

@@ -13,7 +13,7 @@ export const DeploymentCard = ({
 	slug: string;
 }) => {
 	const router = useRouter();
-	const currentHostname = window.location.hostname;
+
 	const handleClick = () => {
 		router.push(`${slug}/${deployment.deployment}`);
 	};

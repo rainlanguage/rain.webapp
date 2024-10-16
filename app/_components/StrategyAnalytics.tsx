@@ -97,9 +97,10 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 				await query.refetch();
 			}
 			setRemovalStatus(RemovalStatus.Removed);
-		} catch (e) {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (e: any) {
 			setRemovalStatus(RemovalStatus.Idle);
-			console.error('ERROR', e);
+			console.error('error', e.message);
 		}
 	};
 
@@ -128,6 +129,7 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 
 								{query.data.order.active && (
 									<Button
+										data-testId="remove-strategy"
 										className={removalStatus !== RemovalStatus.Idle ? 'animate-pulse' : ''}
 										onClick={() => {
 											removeOrder();

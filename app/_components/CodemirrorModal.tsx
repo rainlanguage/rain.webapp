@@ -15,12 +15,7 @@ interface CodemirrorModalProps {
 	setError: React.Dispatch<SetStateAction<string | React.ReactElement | null>>;
 }
 
-export const CodemirrorModal = ({
-	yamlData,
-	currentState,
-	dotrainText,
-	setError
-}: CodemirrorModalProps) => {
+export const CodemirrorModal = ({ currentState, dotrainText }: CodemirrorModalProps) => {
 	const [composedDotrainText, setComposedDotrainText] = useState<string>('');
 
 	const getComposedDotrainText = async () => {
@@ -43,8 +38,7 @@ export const CodemirrorModal = ({
 				<Button
 					color="primary"
 					size="sm"
-					className=" from-blue-600 to-violet-600 bg-gradient-to-br"
-				>
+					className=" from-blue-600 to-violet-600 bg-gradient-to-br">
 					Show Rainlang
 				</Button>
 			</DialogTrigger>

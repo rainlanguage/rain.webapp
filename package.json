@@ -19,7 +19,6 @@
 		"@types/lodash": "^4.17.7",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
-		"dayjs": "^1.11.13",
 		"dotenv": "^16.4.5",
 		"flowbite-react": "^0.10.1",
 		"frames.js": "^0.16.2",

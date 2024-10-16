@@ -44,7 +44,8 @@ export default function MyStrategies() {
 										router.push(
 											`${window.location.origin}/my-strategies/${order.orderHash}-${order.network}`
 										);
-									}}>
+									}}
+								>
 									<Table.Cell>{order.network}</Table.Cell>
 									<Table.Cell>
 										{order.active ? (

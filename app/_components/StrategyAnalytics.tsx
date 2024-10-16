@@ -121,19 +121,22 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 							<h1 className="text-2xl font-semibold">Strategy Analytics</h1>
 							<div className="flex gap-4">
 								<Badge
+									data-testid="strategy-status"
 									size="2xl"
 									className="py-2 px-4"
-									color={query.data.order.active ? 'green' : 'red'}>
+									color={query.data.order.active ? 'green' : 'red'}
+								>
 									{query.data.order.active ? 'Active' : 'Inactive'}
 								</Badge>
 
 								{query.data.order.active && (
 									<Button
-										data-testId="remove-strategy"
+										data-testid="remove-strategy-btn"
 										className={removalStatus !== RemovalStatus.Idle ? 'animate-pulse' : ''}
 										onClick={() => {
 											removeOrder();
-										}}>
+										}}
+									>
 										{removalStatus}
 									</Button>
 								)}

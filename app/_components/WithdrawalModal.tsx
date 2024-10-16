@@ -102,7 +102,7 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 				functionName: 'withdraw2',
 				args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
 			});
-      onSuccess?.();
+			onSuccess?.();
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: any) {
 			console.error(error.message);
@@ -128,7 +128,8 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 					className={cn(
 						buttonVariants(),
 						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
-					)}>
+					)}
+				>
 					Withdraw
 				</span>
 			</DialogTrigger>
@@ -142,7 +143,8 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 								await withdraw(rawAmount);
 								setOpen(false);
 							})}
-							className="space-y-8">
+							className="space-y-8"
+						>
 							<FormField
 								control={form.control}
 								name="withdrawalAmount"

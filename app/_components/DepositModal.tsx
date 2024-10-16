@@ -72,9 +72,10 @@ interface Vault {
 interface DepositModalProps {
 	vault: Vault;
 	network: string;
+	onSuccess?: () => void;
 }
 
-export const DepositModal = ({ vault, network }: DepositModalProps) => {
+export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) => {
 	const { switchChainAsync } = useSwitchChain();
 	const { writeContractAsync } = useWriteContract();
 	const [open, setOpen] = useState(false);
@@ -208,6 +209,7 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 			});
 
 			setDepositState(TokenDepositStatus.Done);
+			onSuccess?.();
 		} catch (error: unknown) {
 			setDepositState(TokenDepositStatus.Error);
 			if (
@@ -240,7 +242,7 @@ export const DepositModal = ({ vault, network }: DepositModalProps) => {
 
 	return (
 		<Dialog open={open} onOpenChange={connect}>
-			<DialogTrigger asChild={true}>
+			<DialogTrigger>
 				<span
 					className={cn(
 						buttonVariants(),

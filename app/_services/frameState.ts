@@ -76,9 +76,10 @@ export const getUpdatedFrameState = (
 					updatedState.textInputLabel = '';
 				} else {
 					const previousField = fields[currentBindingsCount - 1];
-					updatedState.textInputLabel = previousField.min !== undefined && !previousField.presets
-						? `Enter a number greater than ${previousField.min}`
-						: '';
+					updatedState.textInputLabel =
+						previousField.min !== undefined && !previousField.presets
+							? `Enter a number greater than ${previousField.min}`
+							: '';
 					delete updatedState.bindings[previousField.binding];
 				}
 				updatedState.error = null;

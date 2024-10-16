@@ -83,7 +83,7 @@ gui:
       fields:
         - binding: initial-io
           name: Initial price (QUICK per QUICK (old))
-          description: The rough price ratio for new QUICK to old QUICK (e.g. 1088).
+          description: The rough price ratio for new QUICK to old QUICK (e.g. 1034).
           min: 1000
         - binding: next-trade-multiplier
           name: Next trade multiplier
@@ -114,23 +114,19 @@ gui:
           description: The maximum amount of QUICK (new) that will be offered in a single auction.
           min: 0
           presets:
-            - name: 200
-              value: 200
-            - name: 500
-              value: 500
-            - name: 1000
-              value: 1000
+            - value: 200
+            - value: 300
+            - value: 500
+            - value: 1000
         - binding: min-amount
           name: Minimum amount per auction (QUICK new)
           description: The minimum amount of QUICK (new) that will be offered in a single auction.
           min: 0
           presets:
-            - name: 100
-              value: 100
-            - name: 200
-              value: 200
-            - name: 500
-              value: 500
+            - value: 100
+            - value: 150
+            - value: 200
+            - value: 500
 
       deposits:
         - token: polygon-quick-old

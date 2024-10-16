@@ -207,7 +207,8 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 
 			setDepositState(TokenDepositStatus.Done);
 			onSuccess?.();
-		} catch (error: unknown) {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (error: any) {
 			setDepositState(TokenDepositStatus.Error);
 			console.error(error.message);
 			setError(error.details || 'An error occured while confirming your deposit.');

@@ -135,13 +135,17 @@ describe('OrderQuotes', () => {
 
 		const inputTokenBalance = screen.getAllByTestId('token-balance')[0];
 		const depositButton = within(inputTokenBalance).getByRole('button', { name: /Deposit/i });
-		fireEvent.click(depositButton);
+		await act(async () => {
+			fireEvent.click(depositButton);
+		});
 
 		const depositModal = screen.getByRole('dialog');
 		expect(depositModal).toBeInTheDocument();
 
 		const input = within(depositModal).getByPlaceholderText('0') as HTMLInputElement;
-		fireEvent.change(input, { target: { value: '0.1' } });
+		await act(async () => {
+			fireEvent.change(input, { target: { value: '0.1' } });
+		});
 
 		const submitButton = within(depositModal).getByRole('button', { name: /Submit/i });
 		await act(async () => {
@@ -155,7 +159,7 @@ describe('OrderQuotes', () => {
 		expect(dismissButton).toBeInTheDocument();
 
 		// Click the dismiss button
-		fireEvent.click(dismissButton);
+		await act(async () => fireEvent.click(dismissButton));
 
 		// Check if the modal is closed
 		await waitFor(() => {

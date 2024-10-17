@@ -37,7 +37,10 @@ describe('DepositModal', () => {
 		fireEvent.click(maxButton);
 
 		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
-		const expectedValue = formatUnits(BigInt('156879426436436000'), mockVault.token.decimals);
+		const expectedValue = formatUnits(
+			BigInt('156879426436436000'),
+			Number(mockVault.token.decimals)
+		);
 		expect(input.value).toBe(expectedValue);
 		expect(input.value).toBe('0.156879426436436');
 	});

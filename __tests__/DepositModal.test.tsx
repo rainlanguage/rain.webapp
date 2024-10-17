@@ -1,27 +1,35 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi } from 'vitest';
 import { DepositModal } from '@/app/_components/DepositModal';
-
-import { formatUnits } from 'viem';
+import { useReadContract } from 'wagmi';
+import { formatUnits, zeroAddress } from 'viem';
 import { Input } from '@/app/types';
+import { userEvent } from '@testing-library/user-event';
 
 vi.mock('wagmi', async (importOriginal) => {
 	const original = await importOriginal();
 	return {
 		...(original as object),
-		useAccount: () => ({ address: '0xMockAddress', chain: { id: 1 } }),
+		useAccount: () => ({ address: zeroAddress, chain: { id: 1 } }),
 		useReadContract: vi.fn(() => ({
-			data: BigInt('156879426436436000')
+			data: BigInt('156879426436436000'),
+			refetch: vi.fn()
 		})),
-		useWriteContract: vi.fn(() => ({ writeContractAsync: vi.fn() })),
+		useWriteContract: vi.fn(() => ({
+			writeContractAsync: vi.fn().mockResolvedValue('0xMockTransactionHash')
+		})),
 		useSwitchChain: vi.fn(() => ({ switchChainAsync: vi.fn() }))
 	};
 });
 
+vi.mock('@wagmi/core', () => ({
+	waitForTransactionReceipt: vi.fn().mockResolvedValue({ confirmations: 1 })
+}));
+
 const mockVault = {
-	token: { address: '0xTokenAddress', decimals: 18, symbol: 'MOCK' },
+	token: { address: zeroAddress, decimals: 18, symbol: 'MOCK' },
 	vaultId: BigInt(1),
-	orderbook: { id: '0xOrderBookAddress' }
+	orderbook: { id: zeroAddress }
 } as unknown as Input;
 
 const mockNetwork = 'flare';
@@ -69,5 +77,26 @@ describe('DepositModal', () => {
 
 		const errorMessage = await screen.findByText(/Amount exceeds wallet balance/i);
 		expect(errorMessage).toBeInTheDocument();
+	});
+	it('triggers refetch after successful deposit', async () => {
+		const mockOnSuccess = vi.fn();
+		const { refetch } = vi.mocked(useReadContract).mock.results[0].value;
+
+		render(<DepositModal vault={mockVault} network={mockNetwork} onSuccess={mockOnSuccess} />);
+
+		const triggerButton = screen.getByText(/Deposit/i);
+		await userEvent.click(triggerButton);
+
+		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
+		await fireEvent.change(input, { target: { value: '0.1' } });
+
+		const submitButton = screen.getByRole('button', { name: /Submit/i });
+		await userEvent.click(submitButton);
+
+		const successMessage = await screen.findByText(/Deposit completed successfully!/);
+		expect(successMessage).toBeInTheDocument();
+
+		expect(refetch).toHaveBeenCalled();
+		expect(mockOnSuccess).toHaveBeenCalled();
 	});
 });

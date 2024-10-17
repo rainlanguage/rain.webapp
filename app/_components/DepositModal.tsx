@@ -110,6 +110,13 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 		chainId: chain.id as (typeof config.chains)[number]['id']
 	}) as { data: bigint | undefined; refetch: () => void };
 
+	const { data: existingAllowance, refetch: refetchAllowance } = useReadContract({
+		abi: erc20Abi,
+		address: vault.token.address as `0x${string}`,
+		functionName: 'allowance',
+		args: [address as `0x${string}`, vault.orderbook.id as `0x${string}`]
+	}) as { data: bigint | undefined; refetch: () => void };
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -143,16 +150,8 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			const parsedAmount = parseUnits(depositAmount, Number(vault.token.decimals));
 
 			setDepositState(TokenDepositStatus.CheckingAllowance);
-			const existingAllowance = await readContract(
-				config.getClient({ chainId: chain.id as (typeof config.chains)[number]['id'] }),
-				{
-					abi: erc20Abi,
-					address: vault.token.address as `0x${string}`,
-					functionName: 'allowance',
-					args: [address as `0x${string}`, vault.orderbook.id as `0x${string}`]
-				}
-			);
-			if (existingAllowance < parsedAmount) {
+			console.log('allowance', existingAllowance);
+			if (existingAllowance !== undefined && existingAllowance < parsedAmount) {
 				setDepositState(TokenDepositStatus.ApprovingTokens);
 				try {
 					const approveTx = await writeContractAsync({
@@ -203,8 +202,10 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 
 			setDepositState(TokenDepositStatus.Done);
 			refetchBalance?.();
+			refetchAllowance?.();
 			onSuccess?.();
 		} catch (error: unknown) {
+			console.log('ERROR', error);
 			setDepositState(TokenDepositStatus.Error);
 			if (
 				(error as Error)?.message &&

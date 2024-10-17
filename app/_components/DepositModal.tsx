@@ -176,14 +176,11 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 						hash: approveTx,
 						confirmations: 1
 					});
-				} catch (error: unknown) {
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				} catch (error: any) {
 					setDepositState(TokenDepositStatus.Error);
-					if (
-						(error as Error)?.message &&
-						(error as Error).message.includes('User rejected the request')
-					) {
-						setError('User rejected the approval request.');
-					} else setError('Error during approval process');
+					console.error(error.message);
+					setError((error.details as string) || 'An error occured while approving your deposit.');
 				}
 
 				setDepositState(TokenDepositStatus.TokensApproved);
@@ -210,14 +207,11 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 
 			setDepositState(TokenDepositStatus.Done);
 			onSuccess?.();
-		} catch (error: unknown) {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (error: any) {
 			setDepositState(TokenDepositStatus.Error);
-			if (
-				(error as Error)?.message &&
-				(error as Error).message.includes('User rejected the request')
-			) {
-				setError('User rejected the deposit request.');
-			} else setError('Error during deposit process');
+			console.error(error.message);
+			setError(error.details || 'An error occured while confirming your deposit.');
 		}
 	};
 

@@ -40,10 +40,13 @@ export default function MyStrategies() {
 								<Table.Row
 									className="cursor-pointer"
 									key={i}
-									onClick={() => {
-										router.push(
-											`${window.location.origin}/my-strategies/${order.addEvents[0].transaction.id}-${order.network}`
-										);
+									onClick={(e) => {
+										const url = `${window.location.origin}/my-strategies/${order.addEvents[0].transaction.id}-${order.network}`;
+										if (e.ctrlKey || e.metaKey) {
+											window.open(url, '_blank');
+										} else {
+											router.push(url);
+										}
 									}}
 								>
 									<Table.Cell>{order.network}</Table.Cell>

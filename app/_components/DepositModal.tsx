@@ -109,13 +109,13 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 		setError(null);
 	};
 
-	const { data: connectedWalletBalance, refetch: refetchBalance } = useReadContract({
+	const connectedWalletBalance: bigint = useReadContract({
 		abi: ERC20_ABI,
 		address: vault.token.address as `0x${string}`,
 		functionName: 'balanceOf',
 		args: [address as `0x${string}`],
 		chainId: chain.id as (typeof config.chains)[number]['id']
-	}) as { data: bigint | undefined; refetch: () => void };
+	}).data as bigint;
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -132,10 +132,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			Number(vault.token.decimals)
 		).toString();
 		setRawAmount(parsedRawAmount);
-		if (
-			connectedWalletBalance !== undefined &&
-			BigInt(parsedRawAmount) > BigInt(connectedWalletBalance)
-		) {
+		if (BigInt(parsedRawAmount) > connectedWalletBalance) {
 			setError('Amount exceeds wallet balance');
 		} else {
 			setError(null);
@@ -212,7 +209,6 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			});
 
 			setDepositState(TokenDepositStatus.Done);
-			refetchBalance();
 			onSuccess?.();
 		} catch (error: unknown) {
 			setDepositState(TokenDepositStatus.Error);

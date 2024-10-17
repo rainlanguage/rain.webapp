@@ -26,7 +26,6 @@ import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits, erc20Abi } from 'viem';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { readContract } from 'viem/actions';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { Orderbook, Token } from '../types';
 import { SupportedChains } from '../_types/chains';

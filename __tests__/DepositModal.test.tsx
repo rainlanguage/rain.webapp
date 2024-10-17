@@ -6,15 +6,28 @@ import { formatUnits, zeroAddress } from 'viem';
 import { Input } from '@/app/types';
 import { userEvent } from '@testing-library/user-event';
 
+const balanceRefetch = vi.fn().mockName('balanceRefetch');
+const allowanceRefetch = vi.fn().mockName('allowanceRefetch');
+
 vi.mock('wagmi', async (importOriginal) => {
 	const original = await importOriginal();
 	return {
 		...(original as object),
 		useAccount: () => ({ address: zeroAddress, chain: { id: 1 } }),
-		useReadContract: vi.fn(() => ({
-			data: BigInt('156879426436436000'),
-			refetch: vi.fn().mockName('refetch')
-		})),
+		useReadContract: vi
+			.fn()
+			.mockImplementation(() => ({
+				data: BigInt('1000000000000000000'),
+				refetch: balanceRefetch
+			}))
+			.mockImplementationOnce(() => ({
+				data: BigInt('156879426436436000'),
+				refetch: allowanceRefetch
+			}))
+			.mockImplementationOnce(() => ({
+				data: BigInt('3000000000000000000'),
+				refetch: balanceRefetch
+			})),
 		useWriteContract: vi.fn(() => ({
 			writeContractAsync: vi.fn().mockResolvedValue('0xMockTransactionHash')
 		})),
@@ -82,7 +95,8 @@ describe('DepositModal', () => {
 		const mockOnSuccess = vi.fn();
 
 		render(<DepositModal vault={mockVault} network={mockNetwork} onSuccess={mockOnSuccess} />);
-		const refetchMocks = (useReadContract as Mock).mock.calls.map((call) => call[0].refetch);
+
+		const allowanceRefetch = (useReadContract as Mock).mock.results[1].value.refetch;
 
 		const triggerButton = screen.getByText(/Deposit/i);
 		await userEvent.click(triggerButton);
@@ -96,9 +110,8 @@ describe('DepositModal', () => {
 		expect(successMessage).toBeInTheDocument();
 
 		await waitFor(() => {
-			expect(refetchMocks.length).toBe(2);
-			// NOT PASSING
-			// refetchMocks.forEach((refetch) => expect(refetch).toHaveBeenCalled());
+			expect(balanceRefetch).toHaveBeenCalled();
+			expect(allowanceRefetch).toHaveBeenCalled();
 			expect(mockOnSuccess).toHaveBeenCalled();
 		});
 	});

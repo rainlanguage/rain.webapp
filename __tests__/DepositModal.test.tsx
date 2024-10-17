@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import { DepositModal } from '@/app/_components/DepositModal';
 
@@ -65,6 +65,22 @@ describe('DepositModal', () => {
 		fireEvent.change(input, { target: { value: exceededValue } });
 
 		const errorMessage = await screen.findByText(/Amount exceeds wallet balance/i);
+		expect(errorMessage).toBeInTheDocument();
+	});
+	it('displays transaction error if "approve" fails', async () => {
+		render(<DepositModal vault={mockVault} network={mockNetwork} />);
+
+		const triggerButton = screen.getByText(/Deposit/i);
+		fireEvent.click(triggerButton);
+
+		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
+		fireEvent.change(input, { target: { value: '0.1' } });
+
+		const submitButton = screen.getByRole('button', { name: /Submit/i });
+		fireEvent.click(submitButton);
+
+		// Wait for the error state to be set
+		const errorMessage = await waitFor(() => screen.findByText(/Error during approval process/i));
 		expect(errorMessage).toBeInTheDocument();
 	});
 });

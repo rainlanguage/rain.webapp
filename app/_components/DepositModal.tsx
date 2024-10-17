@@ -140,7 +140,9 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 
 	const deposit = async () => {
 		try {
+			console.log('switching chain');
 			await switchChain();
+
 			setDepositState(TokenDepositStatus.Pending);
 
 			const depositAmount = form.getValues('depositAmount').toString();

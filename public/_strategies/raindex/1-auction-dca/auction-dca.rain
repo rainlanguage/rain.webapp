@@ -285,7 +285,7 @@ trade-epochs: div(duration time-per-trade-epoch);
 
 #amount-for-epoch
 amount-epochs:,
-total-available: linear-growth(0 amount-per-epoch amount-epochs),
+total-available: linear-growth(min-trade-amount amount-per-epoch amount-epochs),
 used: get(hash(order-hash() amount-used-key)),
 unused: sub(total-available used),
 capped-unused: min(unused max-trade-amount);

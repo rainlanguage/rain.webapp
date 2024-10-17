@@ -7,27 +7,16 @@ import { Input } from '@/app/types';
 import { userEvent } from '@testing-library/user-event';
 
 const balanceRefetch = vi.fn().mockName('balanceRefetch');
-const allowanceRefetch = vi.fn().mockName('allowanceRefetch');
 
 vi.mock('wagmi', async (importOriginal) => {
 	const original = await importOriginal();
 	return {
 		...(original as object),
 		useAccount: () => ({ address: zeroAddress, chain: { id: 1 } }),
-		useReadContract: vi
-			.fn()
-			.mockImplementation(() => ({
-				data: BigInt('156879426436436000'),
-				refetch: balanceRefetch
-			}))
-			.mockImplementationOnce(() => ({
-				data: BigInt('156879426436436000'),
-				refetch: allowanceRefetch
-			}))
-			.mockImplementationOnce(() => ({
-				data: BigInt('3000000000000000000'),
-				refetch: balanceRefetch
-			})),
+		useReadContract: vi.fn().mockImplementation(() => ({
+			data: BigInt('156879426436436000'),
+			refetch: balanceRefetch
+		})),
 		useWriteContract: vi.fn(),
 		useSwitchChain: vi.fn(() => ({ switchChainAsync: vi.fn() }))
 	};

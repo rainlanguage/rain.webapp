@@ -42,23 +42,18 @@ gui:
           description: The maximum amount of WPOL that will be offered in a single auction.
           min: 0
           presets:
-            - name: 50
-              value: 50
-            - name: 100
-              value: 100
-            - name: 500
-              value: 500
+            - value: 50
+            - value: 100
+            - value: 150
+            - value: 500
         - binding: min-amount
           name: Minimum amount per auction (WPOL)
           description: The minimum amount of WPOL that will be offered in a single auction.
           min: 0
           presets:
-            - name: 20
-              value: 20
-            - name: 50
-              value: 50
-            - name: 100
-              value: 100
+            - value: 20
+            - value: 50
+            - value: 100
 
       deposits:
         - token: polygon-quick
@@ -68,6 +63,7 @@ gui:
             - 100
             - 500
             - 1000
+            - 70000
         - token: polygon-wmatic
           min: 0
           presets:
@@ -75,6 +71,7 @@ gui:
             - 100
             - 500
             - 1000
+            - 7000
 
     - deployment: polygon-quick-old-quick
       name: QUICK (old)<>QUICK on Polygon.

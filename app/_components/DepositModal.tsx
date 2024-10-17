@@ -102,6 +102,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 		}
 	};
 
+	console.log('ERROR');
 	const handleDismiss = () => {
 		setOpen(false);
 		setDepositTxHash(null);

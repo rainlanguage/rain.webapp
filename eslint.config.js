@@ -41,10 +41,7 @@ export default [
 	reactPlugin.configs.flat['jsx-runtime'],
 	{
 		rules: {
-			'no-console':
-				process.env.NODE_ENV === 'production' || process.env.CI
-					? ['warn', { allow: ['warn', 'error'] }]
-					: 'off',
+			'no-console': process.env.NODE_ENV === 'production' || process.env.CI ? 'error' : 'off',
 			'no-trailing-spaces': 'error',
 			eqeqeq: 'off',
 			'prefer-const': ['error', { ignoreReadBeforeAssign: true }],

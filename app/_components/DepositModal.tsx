@@ -26,7 +26,6 @@ import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits, erc20Abi } from 'viem';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { readContract } from 'viem/actions';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { Orderbook, Token } from '../types';
 import { SupportedChains } from '../_types/chains';
@@ -102,20 +101,20 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 		}
 	};
 
-	const handleDismiss = () => {
-		setOpen(false);
-		setDepositTxHash(null);
-		setDepositState(TokenDepositStatus.Idle);
-		setError(null);
-	};
-
-	const connectedWalletBalance: bigint = useReadContract({
+	const { data: connectedWalletBalance, refetch: refetchBalance } = useReadContract({
 		abi: ERC20_ABI,
 		address: vault.token.address as `0x${string}`,
 		functionName: 'balanceOf',
 		args: [address as `0x${string}`],
 		chainId: chain.id as (typeof config.chains)[number]['id']
-	}).data as bigint;
+	}) as { data: bigint | undefined; refetch: () => void };
+
+	const { data: existingAllowance, refetch: refetchAllowance } = useReadContract({
+		abi: erc20Abi,
+		address: vault.token.address as `0x${string}`,
+		functionName: 'allowance',
+		args: [address as `0x${string}`, vault.orderbook.id as `0x${string}`]
+	}) as { data: bigint | undefined; refetch: () => void };
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -132,7 +131,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			Number(vault.token.decimals)
 		).toString();
 		setRawAmount(parsedRawAmount);
-		if (BigInt(parsedRawAmount) > connectedWalletBalance) {
+		if (BigInt(parsedRawAmount) > Number(connectedWalletBalance)) {
 			setError('Amount exceeds wallet balance');
 		} else {
 			setError(null);
@@ -141,7 +140,9 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 
 	const deposit = async () => {
 		try {
+			console.log('switching chain');
 			await switchChain();
+
 			setDepositState(TokenDepositStatus.Pending);
 
 			const depositAmount = form.getValues('depositAmount').toString();
@@ -150,18 +151,12 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			const parsedAmount = parseUnits(depositAmount, Number(vault.token.decimals));
 
 			setDepositState(TokenDepositStatus.CheckingAllowance);
-			const existingAllowance = await readContract(
-				config.getClient({ chainId: chain.id as (typeof config.chains)[number]['id'] }),
-				{
-					abi: erc20Abi,
-					address: vault.token.address as `0x${string}`,
-					functionName: 'allowance',
-					args: [address as `0x${string}`, vault.orderbook.id as `0x${string}`]
-				}
-			);
-			if (existingAllowance < parsedAmount) {
+			console.log(parsedAmount, existingAllowance, existingAllowance < parsedAmount);
+			if (existingAllowance !== undefined && existingAllowance < parsedAmount) {
+				console.log('APPROVING');
 				setDepositState(TokenDepositStatus.ApprovingTokens);
 				try {
+					console.log('APPROVING');
 					const approveTx = await writeContractAsync({
 						address: vault.token.address as `0x${string}`,
 						abi: erc20Abi,
@@ -177,13 +172,14 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 						confirmations: 1
 					});
 				} catch (error: unknown) {
-					setDepositState(TokenDepositStatus.Error);
+					console.log('APPROVE ERROR');
 					if (
 						(error as Error)?.message &&
 						(error as Error).message.includes('User rejected the request')
 					) {
 						setError('User rejected the approval request.');
 					} else setError('Error during approval process');
+					return setDepositState(TokenDepositStatus.Error);
 				}
 
 				setDepositState(TokenDepositStatus.TokensApproved);
@@ -207,17 +203,20 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 				hash: depositTx,
 				confirmations: 1
 			});
-
 			setDepositState(TokenDepositStatus.Done);
+			refetchBalance?.();
+			refetchAllowance?.();
 			onSuccess?.();
 		} catch (error: unknown) {
-			setDepositState(TokenDepositStatus.Error);
+			console.log('DEPOSIT ERROR');
+
 			if (
 				(error as Error)?.message &&
 				(error as Error).message.includes('User rejected the request')
 			) {
 				setError('User rejected the deposit request.');
 			} else setError('Error during deposit process');
+			return setDepositState(TokenDepositStatus.Error);
 		}
 	};
 
@@ -238,6 +237,13 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			openConnectModal?.();
 		}
 		if (address) setOpen(open);
+	};
+
+	const handleDismiss = () => {
+		setOpen(false);
+		setDepositTxHash(null);
+		setDepositState(TokenDepositStatus.Idle);
+		setError(null);
 	};
 
 	return (

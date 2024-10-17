@@ -149,7 +149,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			const parsedAmount = parseUnits(depositAmount, Number(vault.token.decimals));
 
 			setDepositState(TokenDepositStatus.CheckingAllowance);
-			console.log('allowance', existingAllowance);
+
 			if (existingAllowance !== undefined && existingAllowance < parsedAmount) {
 				setDepositState(TokenDepositStatus.ApprovingTokens);
 				try {
@@ -202,9 +202,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			refetchBalance?.();
 			refetchAllowance?.();
 			onSuccess?.();
-			console.log('SUCCESS!', refetchAllowance, refetchBalance);
 		} catch (error: unknown) {
-			console.log('ERROR', error);
 			setDepositState(TokenDepositStatus.Error);
 			if (
 				(error as Error)?.message &&

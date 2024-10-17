@@ -1,4 +1,4 @@
-export const mockYamlData = {
+export const yamlDataFixture = {
 	'raindex-version': '8898591f3bcaa21dc91dc3b8584330fc405eadfa',
 	networks: {
 		base: {

@@ -8,8 +8,9 @@ import {
 import { FrameState } from '@/app/_types/frame';
 import { YamlData, Field, Deposit } from '@/app/_types/yamlData';
 import { TokenInfo } from '@/app/_services/getTokenInfo';
-import { mockYamlData } from '@/__mocks__/mockYamlData';
-import { depositFrameState, fieldsFrameState } from '@/__mocks__/mockFrameStates';
+import { yamlDataFixture } from '@/__fixtures__/yamlDataFixture';
+import { depositFrameState, fieldsFrameState } from '@/__fixtures__/frameStatesFixture';
+import { Button } from '@/app/types';
 
 describe('getPaginatedButtons', () => {
 	it('returns the correct number of buttons with "More" button when needed', () => {
@@ -17,7 +18,7 @@ describe('getPaginatedButtons', () => {
 			buttonValue: `val${i}`,
 			buttonText: `Button ${i}`
 		}));
-		const paginatedButtons = getPaginatedButtons(allButtons, 0, 4);
+		const paginatedButtons = getPaginatedButtons(allButtons as Button[], 0, 4);
 
 		expect(paginatedButtons).toHaveLength(4);
 		expect(paginatedButtons[paginatedButtons.length - 1]).toEqual({
@@ -32,7 +33,7 @@ describe('getPaginatedButtons', () => {
 			buttonValue: `val${i}`,
 			buttonText: `Button ${i}`
 		}));
-		const paginatedButtons = getPaginatedButtons(allButtons, 1, 4);
+		const paginatedButtons = getPaginatedButtons(allButtons as Button[], 1, 4);
 
 		expect(paginatedButtons[0]).toEqual({
 			buttonTarget: 'buttonPage',
@@ -99,7 +100,7 @@ describe('generateButtonsData', () => {
 			buttonPage: 0,
 			buttonMax: 4
 		} as FrameState;
-		const buttonsData = generateButtonsData(mockYamlData as unknown as YamlData, frameState);
+		const buttonsData = generateButtonsData(yamlDataFixture as unknown as YamlData, frameState);
 
 		expect(buttonsData).toEqual([
 			{
@@ -116,19 +117,19 @@ describe('generateButtonsData', () => {
 			buttonPage: 0,
 			buttonMax: 2
 		} as FrameState;
-		const buttonsData = generateButtonsData(mockYamlData as unknown as YamlData, frameState);
+		const buttonsData = generateButtonsData(yamlDataFixture as unknown as YamlData, frameState);
 
 		expect(buttonsData).toHaveLength(3);
 		expect(buttonsData[0]).toEqual({
 			buttonTarget: 'buttonValue',
-			buttonValue: JSON.stringify(mockYamlData.gui.deployments[0]),
-			buttonText: mockYamlData.gui.deployments[0].name
+			buttonValue: JSON.stringify(yamlDataFixture.gui.deployments[0]),
+			buttonText: yamlDataFixture.gui.deployments[0].name
 		});
 	});
 
 	it('returns field preset buttons when currentStep is "fields"', () => {
 		const buttonsData = generateButtonsData(
-			mockYamlData as unknown as YamlData,
+			yamlDataFixture as unknown as YamlData,
 			fieldsFrameState as unknown as FrameState
 		);
 
@@ -142,7 +143,7 @@ describe('generateButtonsData', () => {
 
 	it('returns deposit preset buttons when currentStep is "deposit"', () => {
 		const buttonsData = generateButtonsData(
-			mockYamlData as unknown as YamlData,
+			yamlDataFixture as unknown as YamlData,
 			depositFrameState as unknown as FrameState
 		);
 
@@ -160,7 +161,7 @@ describe('generateButtonsData', () => {
 			isWebapp: true,
 			deploymentOption: { deployment: 'base-weth-usdc' }
 		} as FrameState;
-		const buttonsData = generateButtonsData(mockYamlData as unknown as YamlData, frameState);
+		const buttonsData = generateButtonsData(yamlDataFixture as unknown as YamlData, frameState);
 
 		expect(buttonsData).toContainEqual({
 			buttonTarget: 'buttonValue',

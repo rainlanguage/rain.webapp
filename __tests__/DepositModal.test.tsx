@@ -17,7 +17,7 @@ vi.mock('wagmi', async (importOriginal) => {
 		useReadContract: vi
 			.fn()
 			.mockImplementation(() => ({
-				data: BigInt('1000000000000000000'),
+				data: BigInt('156879426436436000'),
 				refetch: balanceRefetch
 			}))
 			.mockImplementationOnce(() => ({
@@ -91,7 +91,7 @@ describe('DepositModal', () => {
 		const errorMessage = await screen.findByText(/Amount exceeds wallet balance/i);
 		expect(errorMessage).toBeInTheDocument();
 	});
-	it.only('triggers refetch for both balance and allowance after a successful deposit', async () => {
+	it('triggers refetch for both balance and allowance after a successful deposit', async () => {
 		const mockOnSuccess = vi.fn();
 
 		render(<DepositModal vault={mockVault} network={mockNetwork} onSuccess={mockOnSuccess} />);

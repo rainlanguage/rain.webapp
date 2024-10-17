@@ -118,6 +118,7 @@ gui:
             - value: 300
             - value: 500
             - value: 1000
+            - value: 1500
         - binding: min-amount
           name: Minimum amount per auction (QUICK new)
           description: The minimum amount of QUICK (new) that will be offered in a single auction.
@@ -138,6 +139,7 @@ gui:
             - 1
             - 10
             - 12.5
+            - 75
         - token: polygon-quick
           min: 0
           presets:
@@ -147,6 +149,7 @@ gui:
             - 1000
             - 10000
             - 12500
+            - 75000
 
     - deployment: polygon-usdc-ioen
       name: USDC<>IOEN on Polygon.

@@ -199,11 +199,11 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 				hash: depositTx,
 				confirmations: 1
 			});
-
 			setDepositState(TokenDepositStatus.Done);
 			refetchBalance?.();
 			refetchAllowance?.();
 			onSuccess?.();
+			console.log('SUCCESS!', refetchAllowance, refetchBalance);
 		} catch (error: unknown) {
 			console.log('ERROR', error);
 			setDepositState(TokenDepositStatus.Error);

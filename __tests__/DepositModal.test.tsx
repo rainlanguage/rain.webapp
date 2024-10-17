@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { vi } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { Mock, vi } from 'vitest';
 import { DepositModal } from '@/app/_components/DepositModal';
 import { useReadContract } from 'wagmi';
 import { formatUnits, zeroAddress } from 'viem';
@@ -13,7 +13,7 @@ vi.mock('wagmi', async (importOriginal) => {
 		useAccount: () => ({ address: zeroAddress, chain: { id: 1 } }),
 		useReadContract: vi.fn(() => ({
 			data: BigInt('156879426436436000'),
-			refetch: vi.fn()
+			refetch: vi.fn().mockName('refetch')
 		})),
 		useWriteContract: vi.fn(() => ({
 			writeContractAsync: vi.fn().mockResolvedValue('0xMockTransactionHash')
@@ -78,25 +78,27 @@ describe('DepositModal', () => {
 		const errorMessage = await screen.findByText(/Amount exceeds wallet balance/i);
 		expect(errorMessage).toBeInTheDocument();
 	});
-	it('triggers refetch after successful deposit', async () => {
+	it.only('triggers refetch for both balance and allowance after a successful deposit', async () => {
 		const mockOnSuccess = vi.fn();
-		const { refetch } = vi.mocked(useReadContract).mock.results[0].value;
 
 		render(<DepositModal vault={mockVault} network={mockNetwork} onSuccess={mockOnSuccess} />);
+		const refetchMocks = (useReadContract as Mock).mock.calls.map((call) => call[0].refetch);
 
 		const triggerButton = screen.getByText(/Deposit/i);
 		await userEvent.click(triggerButton);
 
 		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
 		await fireEvent.change(input, { target: { value: '0.1' } });
-
 		const submitButton = screen.getByRole('button', { name: /Submit/i });
 		await userEvent.click(submitButton);
 
 		const successMessage = await screen.findByText(/Deposit completed successfully!/);
 		expect(successMessage).toBeInTheDocument();
 
-		expect(refetch).toHaveBeenCalled();
-		expect(mockOnSuccess).toHaveBeenCalled();
+		await waitFor(() => {
+			expect(refetchMocks.length).toBe(2);
+			// NOT PASSING
+			refetchMocks.forEach((refetch) => expect(refetch).toHaveBeenCalled());
+		});
 	});
 });

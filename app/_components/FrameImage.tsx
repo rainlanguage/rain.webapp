@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { FrameState } from '../_types/frame';
 import { ProgressBar } from './ProgressBar';
 
@@ -89,7 +88,7 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 							{Object.keys(currentState.bindings).map((binding: string) => {
 								if (!currentState.deploymentOption) return;
 								const field = currentState.deploymentOption.fields.find(
-									(field: any) => field.binding === binding
+									(field: { binding: string }) => field.binding === binding
 								);
 								if (!field) return;
 								return (

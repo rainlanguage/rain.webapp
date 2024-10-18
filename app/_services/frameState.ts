@@ -4,7 +4,7 @@ import { YamlData } from '../_types/yamlData';
 export const getUpdatedFrameState = (
 	yamlData: YamlData,
 	currentState: FrameState,
-	buttonValue: any,
+	buttonValue: string,
 	inputText?: string
 ): FrameState => {
 	const updatedState = { ...currentState };
@@ -75,11 +75,12 @@ export const getUpdatedFrameState = (
 					updatedState.deploymentOption = undefined;
 					updatedState.textInputLabel = '';
 				} else {
-					const currentField = fields[currentBindingsCount - 1];
-					if (currentField.min !== undefined && !currentField.presets) {
-						updatedState.textInputLabel = `Enter a number greater than ${currentField.min}`;
-					}
-					delete updatedState.bindings[currentField.binding];
+					const previousField = fields[currentBindingsCount - 1];
+					updatedState.textInputLabel =
+						previousField.min !== undefined && !previousField.presets
+							? `Enter a number greater than ${previousField.min}`
+							: '';
+					delete updatedState.bindings[previousField.binding];
 				}
 				updatedState.error = null;
 			} else if (buttonValue) {

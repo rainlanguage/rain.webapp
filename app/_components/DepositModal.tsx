@@ -21,13 +21,16 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '@/components/ui/dialog';
-import { useWriteContract, useReadContract, useAccount } from 'wagmi';
+import { useWriteContract, useReadContract, useAccount, useSwitchChain } from 'wagmi';
 import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits, erc20Abi } from 'viem';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { readContract } from 'viem/actions';
 import { waitForTransactionReceipt } from '@wagmi/core';
+import { Orderbook, Token } from '../types';
+import { SupportedChains } from '../_types/chains';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 export enum TokenDepositStatus {
 	Idle,
@@ -61,22 +64,30 @@ const formSchema = z.object({
 });
 
 interface Vault {
-	token: any;
-	vaultId: any;
-	orderbook: any;
+	token: Token;
+	vaultId: bigint;
+	orderbook: Orderbook;
 }
 
 interface DepositModalProps {
 	vault: Vault;
+	network: string;
+	onSuccess?: () => void;
 }
 
-export const DepositModal = ({ vault }: DepositModalProps) => {
+export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) => {
+	const { switchChainAsync } = useSwitchChain();
 	const { writeContractAsync } = useWriteContract();
 	const [open, setOpen] = useState(false);
 	const [rawAmount, setRawAmount] = useState<string>('0');
+	const { connectModalOpen, openConnectModal } = useConnectModal();
 	const [depositState, setDepositState] = useState<TokenDepositStatus>(TokenDepositStatus.Idle);
 	const [error, setError] = useState<string | null>(null);
 	const [depositTxHash, setDepositTxHash] = useState<string | null>(null);
+
+	const address = useAccount().address;
+	const userchain = useAccount().chain;
+	const chain = SupportedChains[network as keyof typeof SupportedChains];
 
 	useEffect(() => {
 		if (!open) {
@@ -85,8 +96,11 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 		}
 	}, [open]);
 
-	const address = useAccount().address;
-	const chain = useAccount().chain;
+	const switchChain = async () => {
+		if (userchain && chain.id !== userchain.id) {
+			await switchChainAsync({ chainId: chain.id });
+		}
+	};
 
 	const handleDismiss = () => {
 		setOpen(false);
@@ -97,9 +111,10 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 
 	const connectedWalletBalance: bigint = useReadContract({
 		abi: ERC20_ABI,
-		address: vault.token.address,
+		address: vault.token.address as `0x${string}`,
 		functionName: 'balanceOf',
-		args: [address as `0x${string}`]
+		args: [address as `0x${string}`],
+		chainId: chain.id as (typeof config.chains)[number]['id']
 	}).data as bigint;
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -109,35 +124,55 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 		}
 	});
 
+	const depositAmount = form.watch('depositAmount');
+
+	useEffect(() => {
+		const parsedRawAmount = parseUnits(
+			depositAmount.toString(),
+			Number(vault.token.decimals)
+		).toString();
+		setRawAmount(parsedRawAmount);
+		if (BigInt(parsedRawAmount) > connectedWalletBalance) {
+			setError('Amount exceeds wallet balance');
+		} else {
+			setError(null);
+		}
+	}, [depositAmount]);
+
 	const deposit = async () => {
 		try {
+			await switchChain();
 			setDepositState(TokenDepositStatus.Pending);
 
 			const depositAmount = form.getValues('depositAmount').toString();
 			setRawAmount(depositAmount);
 
-			const parsedAmount = parseUnits(depositAmount, vault.token.decimals);
+			const parsedAmount = parseUnits(depositAmount, Number(vault.token.decimals));
 
 			setDepositState(TokenDepositStatus.CheckingAllowance);
-			const existingAllowance = await readContract(config.getClient(), {
-				abi: erc20Abi,
-				address: vault.token.address,
-				functionName: 'allowance',
-				args: [address as `0x${string}`, vault.orderbook.id]
-			});
+			const existingAllowance = await readContract(
+				config.getClient({ chainId: chain.id as (typeof config.chains)[number]['id'] }),
+				{
+					abi: erc20Abi,
+					address: vault.token.address as `0x${string}`,
+					functionName: 'allowance',
+					args: [address as `0x${string}`, vault.orderbook.id as `0x${string}`]
+				}
+			);
 			if (existingAllowance < parsedAmount) {
 				setDepositState(TokenDepositStatus.ApprovingTokens);
 				try {
 					const approveTx = await writeContractAsync({
-						address: vault.token.address,
+						address: vault.token.address as `0x${string}`,
 						abi: erc20Abi,
 						functionName: 'approve',
-						args: [vault.orderbook.id, parsedAmount]
+						args: [vault.orderbook.id as `0x${string}`, parsedAmount],
+						chainId: chain.id as (typeof config.chains)[number]['id']
 					});
 
 					setDepositState(TokenDepositStatus.WaitingForApprovalConfirmation);
 
-					const receipt = await waitForTransactionReceipt(config, {
+					await waitForTransactionReceipt(config, {
 						hash: approveTx,
 						confirmations: 1
 					});
@@ -159,20 +194,22 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 			setDepositState(TokenDepositStatus.DepositingTokens);
 			const depositTx = await writeContractAsync({
 				abi: orderBookJson.abi,
-				address: vault.orderbook.id,
+				address: vault.orderbook.id as `0x${string}`,
 				functionName: 'deposit2',
-				args: [vault.token.address, BigInt(vault.vaultId), parsedAmount, []]
+				args: [vault.token.address, BigInt(vault.vaultId), parsedAmount, []],
+				chainId: chain.id as (typeof config.chains)[number]['id']
 			});
 			setDepositTxHash(depositTx);
 
 			setDepositState(TokenDepositStatus.WaitingForDepositConfirmation);
 
-			const depositReceipt = await waitForTransactionReceipt(config, {
+			await waitForTransactionReceipt(config, {
 				hash: depositTx,
 				confirmations: 1
 			});
 
 			setDepositState(TokenDepositStatus.Done);
+			onSuccess?.();
 		} catch (error: unknown) {
 			setDepositState(TokenDepositStatus.Error);
 			if (
@@ -186,43 +223,26 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 
 	const handleMaxClick = () => {
 		if (connectedWalletBalance === BigInt(0)) {
-			return setError('Insuficient balance');
+			return;
 		} else if (!connectedWalletBalance) {
 			return setError('No balance found');
 		}
-		const userMaxBalance = connectedWalletBalance?.toString();
-		const readableMaxBalance = formatUnits(BigInt(userMaxBalance), vault.token.decimals);
-		form.setValue('depositAmount', parseFloat(readableMaxBalance));
-		setRawAmount(userMaxBalance);
+		const formattedBalance = formatUnits(connectedWalletBalance, Number(vault.token.decimals));
+		form.setValue('depositAmount', formattedBalance as unknown as number);
+		setRawAmount(formattedBalance);
 		form.setFocus('depositAmount');
 	};
 
-	const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const userInput = e.target.value;
-		form.setValue('depositAmount', parseFloat(userInput));
-
-		if (userInput) {
-			try {
-				const parsedRawAmount = parseUnits(userInput, vault.token.decimals).toString();
-
-				if (BigInt(parsedRawAmount) > connectedWalletBalance) {
-					setError('Amount exceeds wallet balance');
-				} else {
-					setError(null);
-				}
-				setRawAmount(parsedRawAmount); // Update raw amount on every user change
-			} catch (err) {
-				// TODO: Allow decimals
-				setRawAmount('0'); // Fallback to 0 if input is invalid
-			}
-		} else {
-			setRawAmount('0'); // Fallback to 0 if input is empty
+	const connect = async (open: boolean) => {
+		if (!address && !connectModalOpen) {
+			openConnectModal?.();
 		}
+		if (address) setOpen(open);
 	};
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild={true}>
+		<Dialog open={open} onOpenChange={connect}>
+			<DialogTrigger>
 				<span
 					className={cn(
 						buttonVariants(),
@@ -249,21 +269,21 @@ export const DepositModal = ({ vault }: DepositModalProps) => {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Amount</FormLabel>
-											{connectedWalletBalance && (
+											{connectedWalletBalance !== undefined && (
 												<div className="text-sm text-gray-500">
 													Your {vault.token.symbol} Balance:{' '}
 													<strong>
-														{formatUnits(connectedWalletBalance, vault.token.decimals)}
+														{formatUnits(connectedWalletBalance, Number(vault.token.decimals))}
 													</strong>
 												</div>
 											)}
 											<FormControl>
 												<Input
+													data-testid={'deposit-input'}
 													placeholder="0"
 													{...field}
 													type="number"
 													step="0.1"
-													onChange={handleUserChange}
 												/>
 											</FormControl>
 											<FormMessage>{error}</FormMessage>

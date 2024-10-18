@@ -5,13 +5,18 @@ import { TokenAndBalance } from './TokenAndBalance';
 import { formatTimestampSecondsAsLocal } from '../_services/dates';
 import { Button } from '@/components/ui/button';
 import { orderBookJson } from '@/public/_abis/OrderBook';
-import { useWriteContract } from 'wagmi';
+import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
 import { decodeAbiParameters } from 'viem';
 import TradesTable from './TradesTable';
-import QuotesTable from './QuotesTable';
+import QuotesTable, { QuotesTableRef } from './QuotesTable';
+import { Input, Output } from '../types';
+import { SupportedChains } from '../_types/chains';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { useRef } from 'react';
 
 interface props {
 	transactionId: string;
+	network: string;
 }
 
 const Property = ({
@@ -29,17 +34,34 @@ const Property = ({
 	</div>
 );
 
-const StrategyAnalytics = ({ transactionId }: props) => {
+const StrategyAnalytics = ({ transactionId, network }: props) => {
+	const { switchChainAsync } = useSwitchChain();
+	const { connectModalOpen, openConnectModal } = useConnectModal();
 	const query = useQuery({
 		queryKey: [transactionId],
-		queryFn: () => getTransactionAnalyticsData(transactionId),
+		queryFn: () => getTransactionAnalyticsData(transactionId, network),
 		enabled: !!transactionId,
 		refetchInterval: 10000
 	});
 
 	const { writeContractAsync } = useWriteContract();
 
+	const address = useAccount().address;
+	const userchain = useAccount().chain;
+	const chain = SupportedChains[network as keyof typeof SupportedChains];
+
+	const switchChain = async () => {
+		if (userchain && chain.id !== userchain.id) {
+			await switchChainAsync({ chainId: chain.id });
+		}
+	};
+
 	const removeOrder = async () => {
+		if (!address && !connectModalOpen) {
+			openConnectModal?.();
+			return;
+		}
+		await switchChain();
 		const orderStruct = [orderBookJson.abi[17].inputs[2]];
 		const order = decodeAbiParameters(orderStruct, query.data.order.orderBytes)[0];
 
@@ -47,10 +69,17 @@ const StrategyAnalytics = ({ transactionId }: props) => {
 			abi: orderBookJson.abi,
 			address: query.data.order.orderbook.id,
 			functionName: 'removeOrder2',
-			args: [order, []]
+			args: [order, []],
+			chainId: chain.id
 		});
 
 		query.refetch();
+	};
+
+	const quotesTableRef = useRef<QuotesTableRef>(null);
+
+	const refetchQuotes = () => {
+		quotesTableRef.current?.getQuotes();
 	};
 
 	return (
@@ -72,6 +101,11 @@ const StrategyAnalytics = ({ transactionId }: props) => {
 								</Button>
 							)}
 						</div>
+						<Property name="Chain">
+							<span className="break-words">
+								{network[0].toUpperCase() + network.substring(1).toLowerCase()}
+							</span>
+						</Property>
 						<Property name="Transaction ID">
 							<span className="break-words">{query.data.transaction.id}</span>
 						</Property>
@@ -88,10 +122,16 @@ const StrategyAnalytics = ({ transactionId }: props) => {
 							{query.data.order.inputs && (
 								<div className="flex flex-col gap-2">
 									<h2 className="font-semibold mb-2">Input tokens</h2>
-									{query.data.order.inputs.map((vault: any) => {
+									{query.data.order.inputs.map((vault: Input, i: number) => {
 										return (
-											<div key={vault}>
-												<TokenAndBalance input={vault} deposit withdraw />
+											<div key={i}>
+												<TokenAndBalance
+													input={vault}
+													deposit
+													withdraw
+													network={network}
+													onDepositWithdrawSuccess={refetchQuotes}
+												/>
 											</div>
 										);
 									})}
@@ -100,10 +140,16 @@ const StrategyAnalytics = ({ transactionId }: props) => {
 							{query.data.order.inputs && (
 								<div className="flex flex-col gap-2">
 									<h2 className="font-semibold mb-2">Output tokens</h2>
-									{query.data.order.outputs.map((vault: any) => {
+									{query.data.order.outputs.map((vault: Output, i: number) => {
 										return (
-											<div key={vault}>
-												<TokenAndBalance input={vault} deposit withdraw />
+											<div key={i}>
+												<TokenAndBalance
+													input={vault}
+													deposit
+													withdraw
+													network={network}
+													onDepositWithdrawSuccess={refetchQuotes}
+												/>
 											</div>
 										);
 									})}
@@ -111,7 +157,7 @@ const StrategyAnalytics = ({ transactionId }: props) => {
 							)}
 						</div>
 					</div>
-					<QuotesTable order={query.data.order} />
+					<QuotesTable order={query.data.order} ref={quotesTableRef} />
 					<TradesTable trades={query.data.order.trades} />
 				</>
 			)}

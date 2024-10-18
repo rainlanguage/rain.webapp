@@ -1,11 +1,13 @@
 import { FrameState } from '../_types/frame';
 import { DeploymentOption, Deposit, Preset, YamlData, Field } from '../_types/yamlData';
+import { Button } from '../types';
 import { TokenInfo } from './getTokenInfo';
 
 export const getPaginatedButtons = (
-	allButtons: any[],
+	allButtons: Button[],
 	buttonPage: number,
 	buttonMax = 4
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any[] => {
 	const buttonPageOffset = buttonPage * 3;
 	let buttonEndIndex = buttonPageOffset + buttonMax;
@@ -40,7 +42,7 @@ export const getPaginatedButtons = (
 	];
 };
 
-export const getFieldPresetsButtons = (field: Field): any[] => {
+export const getFieldPresetsButtons = (field: Field): Button[] => {
 	return [
 		{
 			buttonTarget: 'buttonValue',
@@ -48,11 +50,15 @@ export const getFieldPresetsButtons = (field: Field): any[] => {
 			buttonText: '←'
 		},
 		...(field.presets
-			? field.presets.map((preset: Preset) => ({
-					buttonTarget: 'buttonValue',
-					buttonValue: `${preset.value}`,
-					buttonText: `${preset.name}`
-				}))
+			? field.presets
+					// Field must have a value to be displayed
+					.filter((preset: Preset) => preset.value)
+					//  If no name exists on the preset, display the value
+					.map((preset: Preset) => ({
+						buttonTarget: 'buttonValue',
+						buttonValue: `${preset.value}`,
+						buttonText: `${preset.name || preset.value}`
+					}))
 			: []),
 		...(field.min !== undefined
 			? [
@@ -66,7 +72,7 @@ export const getFieldPresetsButtons = (field: Field): any[] => {
 	];
 };
 
-export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): any[] => {
+export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): Button[] => {
 	if (!deposit) {
 		return [];
 	}
@@ -95,9 +101,8 @@ export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): an
 	];
 };
 
-export const generateButtonsData = (yamlData: YamlData, currentState: FrameState): any[] => {
-	console.log('GENERATING');
-	let buttons: any[] = [];
+export const generateButtonsData = (yamlData: YamlData, currentState: FrameState): Button[] => {
+	let buttons: Button[] = [];
 	if (currentState.textInputLabel) {
 		return [
 			{

@@ -30,6 +30,7 @@ import { waitForTransactionReceipt } from '@wagmi/core';
 import { Orderbook, Token } from '../types';
 import { SupportedChains } from '../_types/chains';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { readContract } from 'viem/actions';
 
 export enum TokenDepositStatus {
 	Idle,
@@ -109,13 +110,6 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 		chainId: chain.id as (typeof config.chains)[number]['id']
 	}) as { data: bigint | undefined; refetch: () => void };
 
-	const { data: existingAllowance, refetch: refetchAllowance } = useReadContract({
-		abi: erc20Abi,
-		address: vault.token.address as `0x${string}`,
-		functionName: 'allowance',
-		args: [address as `0x${string}`, vault.orderbook.id as `0x${string}`]
-	}) as { data: bigint | undefined; refetch: () => void };
-
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -140,7 +134,6 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 
 	const deposit = async () => {
 		try {
-			console.log('switching chain');
 			await switchChain();
 
 			setDepositState(TokenDepositStatus.Pending);
@@ -151,7 +144,17 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			const parsedAmount = parseUnits(depositAmount, Number(vault.token.decimals));
 
 			setDepositState(TokenDepositStatus.CheckingAllowance);
-			console.log(parsedAmount, existingAllowance, existingAllowance < parsedAmount);
+			const existingAllowance = await readContract(
+				config.getClient({ chainId: chain.id as (typeof config.chains)[number]['id'] }),
+				{
+					abi: erc20Abi,
+					address: vault.token.address as `0x${string}`,
+					functionName: 'allowance',
+					args: [address as `0x${string}`, vault.orderbook.id as `0x${string}`]
+				}
+			);
+
+			console.log('EXISTING ALLOWANCE', existingAllowance);
 			if (existingAllowance !== undefined && existingAllowance < parsedAmount) {
 				console.log('APPROVING');
 				setDepositState(TokenDepositStatus.ApprovingTokens);
@@ -205,7 +208,6 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			});
 			setDepositState(TokenDepositStatus.Done);
 			refetchBalance?.();
-			refetchAllowance?.();
 			onSuccess?.();
 		} catch (error: unknown) {
 			console.log('DEPOSIT ERROR');
@@ -253,8 +255,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 					className={cn(
 						buttonVariants(),
 						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
-					)}
-				>
+					)}>
 					Deposit
 				</span>
 			</DialogTrigger>
@@ -267,8 +268,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 								onSubmit={form.handleSubmit(async () => {
 									await deposit();
 								})}
-								className="space-y-8"
-							>
+								className="space-y-8">
 								<FormField
 									control={form.control}
 									name="depositAmount"
@@ -332,8 +332,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 										<a
 											href={(chain?.blockExplorers.default.url as string) + '/tx/' + depositTxHash}
 											target="_blank"
-											rel="noreferrer"
-										>
+											rel="noreferrer">
 											<Button className="w-fit">View Transaction</Button>
 										</a>
 									)}
@@ -354,8 +353,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 													  depositState === TokenDepositStatus.WaitingForApprovalConfirmation
 													? 'bg-amber-500 w-12 h-12'
 													: 'bg-emerald-600 w-10 h-10'
-										}`}
-									>
+										}`}>
 										{1}
 									</div>
 									<div className="text-lg">
@@ -387,8 +385,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 													: depositState === TokenDepositStatus.TokensDeposited
 														? 'bg-emerald-600 w-10 h-10'
 														: 'bg-gray-400 w-10 h-10'
-										}`}
-									>
+										}`}>
 										{2}
 									</div>
 									<div className="text-lg">
@@ -415,8 +412,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 								<a
 									href={(chain?.blockExplorers.default.url as string) + '/tx/' + depositTxHash}
 									target="_blank"
-									rel="noreferrer"
-								>
+									rel="noreferrer">
 									<Button className="w-fit">View Transaction</Button>
 								</a>
 							)}

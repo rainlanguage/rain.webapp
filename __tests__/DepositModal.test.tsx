@@ -5,6 +5,7 @@ import { useReadContract, useWriteContract } from 'wagmi';
 import { formatUnits, zeroAddress } from 'viem';
 import { Input } from '@/app/types';
 import { userEvent } from '@testing-library/user-event';
+import { readContract } from 'viem/actions';
 
 const balanceRefetch = vi.fn().mockName('balanceRefetch');
 
@@ -19,6 +20,14 @@ vi.mock('wagmi', async (importOriginal) => {
 		})),
 		useWriteContract: vi.fn(),
 		useSwitchChain: vi.fn(() => ({ switchChainAsync: vi.fn() }))
+	};
+});
+
+vi.mock('viem/actions', async (importOriginal) => {
+	const original = await importOriginal();
+	return {
+		...(original as object),
+		readContract: vi.fn()
 	};
 });
 
@@ -85,17 +94,16 @@ describe('DepositModal', () => {
 		(useWriteContract as Mock).mockReturnValue({
 			writeContractAsync: vi.fn().mockResolvedValue('0xMockTransactionHash')
 		});
+		(readContract as Mock).mockReturnValue(BigInt('100000'));
 		const mockOnSuccess = vi.fn();
 
 		render(<DepositModal vault={mockVault} network={mockNetwork} onSuccess={mockOnSuccess} />);
-
-		const allowanceRefetch = (useReadContract as Mock).mock.results[1].value.refetch;
 
 		const triggerButton = screen.getByText(/Deposit/i);
 		await userEvent.click(triggerButton);
 
 		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
-		await fireEvent.change(input, { target: { value: '0.1' } });
+		await fireEvent.change(input, { target: { value: '0.000001' } });
 		const submitButton = screen.getByRole('button', { name: /Submit/i });
 		await userEvent.click(submitButton);
 
@@ -104,8 +112,26 @@ describe('DepositModal', () => {
 
 		await waitFor(() => {
 			expect(balanceRefetch).toHaveBeenCalled();
-			expect(allowanceRefetch).toHaveBeenCalled();
 			expect(mockOnSuccess).toHaveBeenCalled();
 		});
+	});
+	it('fails the approve step and displays an error message', async () => {
+		(useWriteContract as Mock).mockReturnValue({
+			writeContractAsync: vi.fn().mockRejectedValue(new Error('Approval failed'))
+		});
+		(readContract as Mock).mockReturnValue(BigInt('100000'));
+
+		render(<DepositModal vault={mockVault} network={mockNetwork} />);
+
+		const triggerButton = screen.getByText(/Deposit/i);
+		await userEvent.click(triggerButton);
+
+		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
+		await fireEvent.change(input, { target: { value: '0.000001' } });
+		const submitButton = screen.getByRole('button', { name: /Submit/i });
+		await userEvent.click(submitButton);
+
+		const errorMessage = await screen.findByText(/Error during approval process/i);
+		expect(errorMessage).toBeInTheDocument();
 	});
 });

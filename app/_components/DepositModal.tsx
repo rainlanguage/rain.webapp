@@ -26,11 +26,11 @@ import { orderBookJson } from '@/public/_abis/OrderBook';
 import { parseUnits, formatUnits, erc20Abi } from 'viem';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { readContract } from 'viem/actions';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { Orderbook, Token } from '../types';
 import { SupportedChains } from '../_types/chains';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { readContract } from 'viem/actions';
 
 export enum TokenDepositStatus {
 	Idle,
@@ -154,12 +154,9 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 				}
 			);
 
-			console.log('EXISTING ALLOWANCE', existingAllowance);
 			if (existingAllowance !== undefined && existingAllowance < parsedAmount) {
-				console.log('APPROVING');
 				setDepositState(TokenDepositStatus.ApprovingTokens);
 				try {
-					console.log('APPROVING');
 					const approveTx = await writeContractAsync({
 						address: vault.token.address as `0x${string}`,
 						abi: erc20Abi,
@@ -175,7 +172,6 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 						confirmations: 1
 					});
 				} catch (error: unknown) {
-					console.log('APPROVE ERROR');
 					if (
 						(error as Error)?.message &&
 						(error as Error).message.includes('User rejected the request')
@@ -210,8 +206,6 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			refetchBalance?.();
 			onSuccess?.();
 		} catch (error: unknown) {
-			console.log('DEPOSIT ERROR');
-
 			if (
 				(error as Error)?.message &&
 				(error as Error).message.includes('User rejected the request')
@@ -255,8 +249,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 					className={cn(
 						buttonVariants(),
 						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
-					)}
-				>
+					)}>
 					Deposit
 				</span>
 			</DialogTrigger>
@@ -269,8 +262,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 								onSubmit={form.handleSubmit(async () => {
 									await deposit();
 								})}
-								className="space-y-8"
-							>
+								className="space-y-8">
 								<FormField
 									control={form.control}
 									name="depositAmount"
@@ -334,8 +326,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 										<a
 											href={(chain?.blockExplorers.default.url as string) + '/tx/' + depositTxHash}
 											target="_blank"
-											rel="noreferrer"
-										>
+											rel="noreferrer">
 											<Button className="w-fit">View Transaction</Button>
 										</a>
 									)}
@@ -356,8 +347,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 													  depositState === TokenDepositStatus.WaitingForApprovalConfirmation
 													? 'bg-amber-500 w-12 h-12'
 													: 'bg-emerald-600 w-10 h-10'
-										}`}
-									>
+										}`}>
 										{1}
 									</div>
 									<div className="text-lg">
@@ -389,8 +379,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 													: depositState === TokenDepositStatus.TokensDeposited
 														? 'bg-emerald-600 w-10 h-10'
 														: 'bg-gray-400 w-10 h-10'
-										}`}
-									>
+										}`}>
 										{2}
 									</div>
 									<div className="text-lg">
@@ -417,8 +406,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 								<a
 									href={(chain?.blockExplorers.default.url as string) + '/tx/' + depositTxHash}
 									target="_blank"
-									rel="noreferrer"
-								>
+									rel="noreferrer">
 									<Button className="w-fit">View Transaction</Button>
 								</a>
 							)}

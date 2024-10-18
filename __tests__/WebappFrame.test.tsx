@@ -1,15 +1,19 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import WebappFrame from '@/app/_components/WebappFrame';
 import fs from 'fs';
 import path from 'path';
-import { vi } from 'vitest';
+import { Mock, vi } from 'vitest';
+import { useSearchParams } from 'next/navigation';
+import { userEvent } from '@testing-library/user-event';
 
-// Mock next/navigation
-vi.mock('next/navigation', () => ({
-	useSearchParams: () => new URLSearchParams({})
-}));
+vi.mock('next/navigation', async (importActual) => {
+	const actual = await importActual();
+	return {
+		...(actual as object),
+		useSearchParams: vi.fn()
+	};
+});
 
-// Mock getTokenInfo
 vi.mock('@/app/_services/getTokenInfo', () => ({
 	getTokenInfos: vi.fn().mockResolvedValue([
 		{
@@ -39,6 +43,7 @@ describe('WebappFrame', () => {
 			'2-dynamic-spread',
 			'dynamic-spread.rain'
 		);
+		(useSearchParams as Mock).mockReturnValue(new URLSearchParams({}));
 		const dotrainText = fs.readFileSync(filePath, 'utf8');
 
 		render(<WebappFrame dotrainText={dotrainText} deploymentOption={null} />);
@@ -46,7 +51,7 @@ describe('WebappFrame', () => {
 		await waitFor(() => {
 			expect(screen.getByText(/Start/i)).toBeInTheDocument();
 		});
-		fireEvent.click(screen.getByText(/Start/i));
+		userEvent.click(screen.getByText(/Start/i));
 
 		await waitFor(() => {
 			expect(screen.getByText(/Initial price (USDC.e per WETH)/i)).toBeInTheDocument();

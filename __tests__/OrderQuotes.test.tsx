@@ -199,7 +199,9 @@ describe('OrderQuotes', () => {
 	});
 
 	it('should refetch quotes when order is refetched', async () => {
-		const { rerender } = render(<StrategyAnalytics transactionId={mockTransactionId} network={mockNetwork} />);
+		const { rerender } = render(
+			<StrategyAnalytics transactionId={mockTransactionId} network={mockNetwork} />
+		);
 		expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(1);
 
 		// Simulate a refetch
@@ -209,7 +211,7 @@ describe('OrderQuotes', () => {
 				isRefetching: true
 			} as any);
 			rerender(<StrategyAnalytics transactionId={mockTransactionId} network={mockNetwork} />);
-		})
+		});
 
 		// initial render - 1
 		// refetch - 1

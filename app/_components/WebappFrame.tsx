@@ -68,6 +68,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	const [inputText, setInputText] = useState<string>('');
 
 	const searchParams = useSearchParams();
+	console.log('SEARCHPARAMS', searchParams);
 
 	const getUrlState = async () => {
 		const encodedState = searchParams.get('currentState');
@@ -138,7 +139,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		if (buttonData.buttonTarget === 'textInputLabel') {
 			setCurrentState((prevState) => ({
 				...prevState,
-				textInputLabel: buttonData.toString()
+				textInputLabel: buttonData.buttonValue.toString()
 			}));
 			return;
 		} else if (buttonData.buttonTarget === 'buttonPage') {

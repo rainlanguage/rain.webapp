@@ -1,0 +1,66 @@
+import { render, screen, waitFor } from '@testing-library/react';
+import WebappFrame from '@/app/_components/WebappFrame';
+import fs from 'fs';
+import path from 'path';
+import { Mock, vi } from 'vitest';
+import { useSearchParams } from 'next/navigation';
+import { userEvent } from '@testing-library/user-event';
+
+vi.mock('next/navigation', async (importActual) => {
+	const actual = await importActual();
+	return {
+		...(actual as object),
+		useSearchParams: vi.fn()
+	};
+});
+
+vi.mock('@/app/_services/getTokenInfo', () => ({
+	getTokenInfos: vi.fn().mockResolvedValue([
+		{
+			decimals: 18,
+			symbol: 'WETH',
+			name: 'Wrapped Ether',
+			yamlName: 'weth',
+			address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+		},
+		{
+			decimals: 6,
+			symbol: 'USDC',
+			name: 'USD Coin',
+			yamlName: 'usdc',
+			address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+		}
+	])
+}));
+
+describe('WebappFrame', () => {
+	it('renders the correct text input placeholders', async () => {
+		const filePath = path.join(
+			process.cwd(),
+			'public',
+			'_strategies',
+			'raindex',
+			'2-dynamic-spread',
+			'dynamic-spread.rain'
+		);
+		(useSearchParams as Mock).mockReturnValue(new URLSearchParams({}));
+		const dotrainText = fs.readFileSync(filePath, 'utf8');
+
+		render(<WebappFrame dotrainText={dotrainText} deploymentOption={null} />);
+
+		await waitFor(() => {
+			expect(screen.getByText(/Start/i)).toBeInTheDocument();
+		});
+		userEvent.click(screen.getByText(/Start/i));
+
+		await waitFor(() => {
+			expect(screen.getByText(/SFLR<>WFLR on Flare./i)).toBeInTheDocument();
+		});
+		const button = screen.getByText(/SFLR<>WFLR on Flare./i);
+		await waitFor(() => userEvent.click(button));
+		screen.debug();
+
+		const input = await waitFor(() => screen.getByPlaceholderText('Enter a number greater than 1'));
+		expect(input).toBeInTheDocument();
+	});
+});

@@ -54,7 +54,13 @@ describe('WebappFrame', () => {
 		userEvent.click(screen.getByText(/Start/i));
 
 		await waitFor(() => {
-			expect(screen.getByText(/Initial price (USDC.e per WETH)/i)).toBeInTheDocument();
+			expect(screen.getByText(/SFLR<>WFLR on Flare./i)).toBeInTheDocument();
 		});
+		const button = screen.getByText(/SFLR<>WFLR on Flare./i);
+		await waitFor(() => userEvent.click(button));
+		screen.debug();
+
+		const input = await waitFor(() => screen.getByPlaceholderText('Enter a number greater than 1'));
+		expect(input).toBeInTheDocument();
 	});
 });

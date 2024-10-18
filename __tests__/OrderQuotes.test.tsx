@@ -131,7 +131,7 @@ describe('OrderQuotes', () => {
 	});
 
 	it('should refetch quotes when deposit is successful', async () => {
-		render(<StrategyAnalytics transactionId={mockTransactionId} network={mockNetwork} />);
+		render(<StrategyAnalytics orderHash={mockTransactionId} network={mockNetwork} />);
 
 		const inputTokenBalance = screen.getAllByTestId('token-balance')[0];
 		const depositButton = within(inputTokenBalance).getByRole('button', { name: /Deposit/i });
@@ -169,7 +169,7 @@ describe('OrderQuotes', () => {
 	});
 
 	it('should refetch quotes when withdrawal is successful', async () => {
-		render(<StrategyAnalytics transactionId={mockTransactionId} network={mockNetwork} />);
+		render(<StrategyAnalytics orderHash={mockTransactionId} network={mockNetwork} />);
 
 		const inputTokenBalance = screen.getAllByTestId('token-balance')[0];
 		const depositButton = within(inputTokenBalance).getByRole('button', { name: /Withdraw/i });

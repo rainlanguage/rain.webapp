@@ -11,7 +11,7 @@ vi.mock('wagmi', async (importOriginal) => {
 		...(original as object),
 		useAccount: () => ({ address: '0xMockAddress', chain: { id: 1 } }),
 		useReadContract: vi.fn(() => ({
-			data: BigInt('156879426436436000')
+			data: BigInt('327472398438872398423')
 		})),
 		useWriteContract: vi.fn(() => ({ writeContractAsync: vi.fn() })),
 		useSwitchChain: vi.fn(() => ({ switchChainAsync: vi.fn() }))
@@ -37,10 +37,11 @@ describe('DepositModal', () => {
 		fireEvent.click(maxButton);
 
 		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
-		const expectedValue = formatUnits(BigInt('156879426436436000'), mockVault.token.decimals);
+		const expectedValue = formatUnits(BigInt('327472398438872398423'), Number(mockVault.token.decimals));
 		expect(input.value).toBe(expectedValue);
-		expect(input.value).toBe('0.156879426436436');
+		expect(input.value).toBe('327.472398438872398423');
 	});
+
 	it('allows typing of decimal places in the input field', async () => {
 		render(<DepositModal vault={mockVault as unknown as Input} network={mockNetwork} />);
 

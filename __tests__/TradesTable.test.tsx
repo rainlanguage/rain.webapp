@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import TradesTable from '@/app/_components/TradesTable';
 import { Trade } from '@/app/types';
+import { formatUnits } from 'viem';
 
 const mockTrades: Trade[] = [
 	{
@@ -69,6 +70,28 @@ describe('TradesTable', () => {
 
 		expect(new Date(tradeDates[0].textContent!).getTime()).toBeGreaterThan(
 			new Date(tradeDates[1].textContent!).getTime()
+		);
+	});
+
+	it('displays output in absolute value', () => {
+		render(<TradesTable trades={mockTrades} />);
+
+		const tableRows = screen.getAllByRole('row');
+		const ioRatios = tableRows
+			.map((row) => row.children[row.children.length - 2]?.textContent)
+			.filter(Boolean);
+
+		expect(ioRatios[1]).toBe(
+			`${formatUnits(
+				BigInt(Math.abs(Number(mockTrades[0].outputVaultBalanceChange.amount))),
+				Number(mockTrades[0].outputVaultBalanceChange.vault.token.decimals)
+			)} DAI`
+		);
+		expect(ioRatios[2]).toBe(
+			`${formatUnits(
+				BigInt(Math.abs(Number(mockTrades[1].outputVaultBalanceChange.amount))),
+				Number(mockTrades[1].outputVaultBalanceChange.vault.token.decimals)
+			)} USDC`
 		);
 	});
 

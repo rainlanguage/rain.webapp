@@ -57,7 +57,7 @@ const TradesTable = ({ trades }: props) => {
 							<Table.Cell>
 								<div className="flex gap-x-2">
 									{formatUnits(
-										trade.outputVaultBalanceChange.amount,
+										BigInt(Math.abs(Number(trade.outputVaultBalanceChange.amount))),
 										Number(trade.outputVaultBalanceChange.vault.token.decimals)
 									)}{' '}
 									{trade.outputVaultBalanceChange.vault.token.symbol}

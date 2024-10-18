@@ -12,7 +12,7 @@ const mockTrades: Trade[] = [
 			sender: '0xabcdefabcdefabcdefabcdefabcdefabcdef'
 		},
 		inputVaultBalanceChange: {
-			amount: BigInt(1000000000000000000),
+			amount: BigInt(5000000000000000000),
 			vault: {
 				token: {
 					symbol: 'ETH',
@@ -21,7 +21,7 @@ const mockTrades: Trade[] = [
 			}
 		},
 		outputVaultBalanceChange: {
-			amount: BigInt(2000000000000000000),
+			amount: BigInt(-2000000000000000000),
 			vault: {
 				token: {
 					symbol: 'DAI',
@@ -48,7 +48,7 @@ const mockTrades: Trade[] = [
 			}
 		},
 		outputVaultBalanceChange: {
-			amount: BigInt(1000000000000000000),
+			amount: BigInt(-1000000000000000000),
 			vault: {
 				token: {
 					symbol: 'USDC',
@@ -69,6 +69,20 @@ describe('TradesTable', () => {
 
 		expect(new Date(tradeDates[0].textContent!).getTime()).toBeGreaterThan(
 			new Date(tradeDates[1].textContent!).getTime()
+		);
+	});
+
+	it('displays io ratios in absolute value', () => {
+		render(<TradesTable trades={mockTrades} />);
+
+		const tableRows = screen.getAllByRole('row');
+		const ioRatios = tableRows.map((row) => row.lastChild?.textContent).filter(Boolean);
+
+		expect(ioRatios[1]).toBe(
+			`${Math.abs(Number(mockTrades[0].inputVaultBalanceChange.amount / mockTrades[0].outputVaultBalanceChange.amount)).toFixed(2)} ETH/DAI`
+		);
+		expect(ioRatios[2]).toBe(
+			`${Math.abs(Number(mockTrades[1].inputVaultBalanceChange.amount / mockTrades[1].outputVaultBalanceChange.amount)).toFixed(2)} ETH/USDC`
 		);
 	});
 });

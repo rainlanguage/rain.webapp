@@ -64,8 +64,10 @@ const TradesTable = ({ trades }: props) => {
 								</div>
 							</Table.Cell>
 							<Table.Cell>
-								{Number(
-									trade.inputVaultBalanceChange.amount / trade.outputVaultBalanceChange.amount
+								{Math.abs(
+									Number(
+										trade.inputVaultBalanceChange.amount / trade.outputVaultBalanceChange.amount
+									)
 								).toFixed(2)}{' '}
 								{trade.inputVaultBalanceChange.vault.token.symbol}/
 								{trade.outputVaultBalanceChange.vault.token.symbol}

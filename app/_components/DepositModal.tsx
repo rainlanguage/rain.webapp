@@ -127,6 +127,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 	const depositAmount = form.watch('depositAmount');
 
 	useEffect(() => {
+		if (!connectedWalletBalance) return;
 		const parsedRawAmount = parseUnits(
 			depositAmount.toString(),
 			Number(vault.token.decimals)

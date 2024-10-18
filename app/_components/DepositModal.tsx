@@ -132,12 +132,12 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			Number(vault.token.decimals)
 		).toString();
 		setRawAmount(parsedRawAmount);
-		if (BigInt(parsedRawAmount) > connectedWalletBalance) {
+		if (BigInt(parsedRawAmount) > BigInt(connectedWalletBalance.toString())) {
 			setError('Amount exceeds wallet balance');
 		} else {
 			setError(null);
 		}
-	}, [depositAmount]);
+	}, [depositAmount, connectedWalletBalance]);
 
 	const deposit = async () => {
 		try {

@@ -126,7 +126,7 @@ export const getUpdatedFrameState = (
 			if (buttonValue === 'submit' && currentDeposit.min !== undefined) {
 				if (inputText && isNaN(Number(inputText))) {
 					updatedState.error = 'Value must be a number';
-				} else if (inputText && parseFloat(inputText) >= currentDeposit.min) {
+				} else if (inputText && Number(inputText) >= Number(currentDeposit.min)) {
 					setDepositValue(Number(inputText));
 					updatedState.textInputLabel = '';
 				} else {

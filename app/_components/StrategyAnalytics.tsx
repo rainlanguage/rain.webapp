@@ -12,7 +12,7 @@ import QuotesTable, { QuotesTableRef } from './QuotesTable';
 import { Input, Output } from '../types';
 import { SupportedChains } from '../_types/chains';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface props {
 	orderHash: string;
@@ -81,6 +81,10 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 	const refetchQuotes = () => {
 		quotesTableRef.current?.getQuotes();
 	};
+
+	useEffect(() => {
+		if (query.isRefetching) refetchQuotes();
+	}, [query.isRefetching]);
 
 	return (
 		<div className="container flex-grow pt-8 pb-safe">

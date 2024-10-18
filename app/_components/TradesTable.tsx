@@ -57,15 +57,17 @@ const TradesTable = ({ trades }: props) => {
 							<Table.Cell>
 								<div className="flex gap-x-2">
 									{formatUnits(
-										trade.outputVaultBalanceChange.amount,
+										BigInt(Math.abs(Number(trade.outputVaultBalanceChange.amount))),
 										Number(trade.outputVaultBalanceChange.vault.token.decimals)
 									)}{' '}
 									{trade.outputVaultBalanceChange.vault.token.symbol}
 								</div>
 							</Table.Cell>
 							<Table.Cell>
-								{Number(
-									trade.inputVaultBalanceChange.amount / trade.outputVaultBalanceChange.amount
+								{Math.abs(
+									Number(
+										trade.inputVaultBalanceChange.amount / trade.outputVaultBalanceChange.amount
+									)
 								).toFixed(2)}{' '}
 								{trade.inputVaultBalanceChange.vault.token.symbol}/
 								{trade.outputVaultBalanceChange.vault.token.symbol}

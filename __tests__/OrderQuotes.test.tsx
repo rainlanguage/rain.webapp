@@ -117,6 +117,7 @@ describe('OrderQuotes', () => {
 			isPending: false,
 			isSuccess: true,
 			isFetching: false,
+			isRefetching: false,
 			status: 'success',
 			fetchStatus: 'idle'
 		} as any);
@@ -194,6 +195,27 @@ describe('OrderQuotes', () => {
 		// Wait for the deposit to complete
 		await waitFor(() => {
 			expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(2);
+		});
+	});
+
+	it('should refetch quotes when order is refetched', async () => {
+		const { rerender } = render(<StrategyAnalytics transactionId={mockTransactionId} network={mockNetwork} />);
+		expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(1);
+
+		// Simulate a refetch
+		act(() => {
+			vi.mocked(useQuery).mockReturnValue({
+				data: mockQueryData,
+				isRefetching: true
+			} as any);
+			rerender(<StrategyAnalytics transactionId={mockTransactionId} network={mockNetwork} />);
+		})
+
+		// initial render - 1
+		// refetch - 1
+		// rerender - 1
+		await waitFor(() => {
+			expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(3);
 		});
 	});
 });

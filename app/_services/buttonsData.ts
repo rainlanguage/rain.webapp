@@ -213,5 +213,6 @@ export const generateButtonsData = (yamlData: YamlData, currentState: FrameState
 			];
 			break;
 	}
+
 	return buttons;
 };

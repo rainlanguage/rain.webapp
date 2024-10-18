@@ -33,15 +33,13 @@ const TradesTable = ({ trades }: props) => {
 							</Table.Cell>
 							<Table.Cell
 								onClick={() => navigator.clipboard.writeText(trade.tradeEvent.sender)}
-								className="cursor-pointer"
-							>
+								className="cursor-pointer">
 								{trade.tradeEvent.sender.slice(0, 5)}...
 								{trade.tradeEvent.sender.slice(-1 * 5)}
 							</Table.Cell>
 							<Table.Cell
 								onClick={() => navigator.clipboard.writeText(trade.tradeEvent.transaction.id)}
-								className="cursor-pointer"
-							>
+								className="cursor-pointer">
 								{trade.tradeEvent.transaction.id.slice(0, 5)}...
 								{trade.tradeEvent.transaction.id.slice(-1 * 5)}
 							</Table.Cell>
@@ -66,7 +64,7 @@ const TradesTable = ({ trades }: props) => {
 							<Table.Cell>
 								{Number(
 									trade.inputVaultBalanceChange.amount / trade.outputVaultBalanceChange.amount
-								).toFixed(2)}{' '}
+								)}{' '}
 								{trade.inputVaultBalanceChange.vault.token.symbol}/
 								{trade.outputVaultBalanceChange.vault.token.symbol}
 							</Table.Cell>

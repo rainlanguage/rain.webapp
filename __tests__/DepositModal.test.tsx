@@ -4,8 +4,8 @@ import { DepositModal } from '@/app/_components/DepositModal';
 import { useWriteContract } from 'wagmi';
 import { formatUnits, zeroAddress } from 'viem';
 import { Input } from '@/app/types';
-import { userEvent } from '@testing-library/user-event';
 import { readContract } from 'viem/actions';
+import { userEvent } from '@testing-library/user-event';
 
 const balanceRefetch = vi.fn().mockName('balanceRefetch');
 

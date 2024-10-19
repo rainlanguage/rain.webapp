@@ -186,23 +186,18 @@ gui:
           description: The maximum amount of USDC that will be offered in a single auction.
           min: 0
           presets:
-            - name: $10
-              value: 10
-            - name: $20
-              value: 20
-            - name: $50
-              value: 50
-            - name: $100
-              value: 100
+            - value: 10
+            - value: 20
+            - value: 50
+            - value: 100
+            - value: 200
         - binding: min-amount
           name: Minimum amount per auction (USDC)
           description: The minimum amount of USDC that will be offered in a single auction.
           min: 0
           presets:
-            - name: $10
-              value: 10
-            - name: $20
-              value: 20
+            - value: 10
+            - value: 20
 
       deposits:
         - token: polygon-usdc
@@ -213,6 +208,7 @@ gui:
             - 500
             - 1000
             - 5000
+            - 10000
         - token: polygon-ioen
           min: 0
           presets:
@@ -220,6 +216,7 @@ gui:
             - 500000
             - 1000000
             - 2000000
+            - 4000000
 
     - deployment: base-usdc-weth
       name: USDC<>WETH on Base.

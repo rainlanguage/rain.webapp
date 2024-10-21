@@ -66,7 +66,7 @@ const TradesTable = ({ trades }: props) => {
 							<Table.Cell>
 								{Math.abs(
 									Number(
-										trade.inputVaultBalanceChange.amount / trade.outputVaultBalanceChange.amount
+										BigInt(trade.inputVaultBalanceChange.amount) / BigInt(trade.outputVaultBalanceChange.amount)
 									)
 								).toFixed(2)}{' '}
 								{trade.inputVaultBalanceChange.vault.token.symbol}/

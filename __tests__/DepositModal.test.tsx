@@ -125,8 +125,14 @@ describe('DepositModal', () => {
 		});
 	});
 	it('sets error message from error.details', async () => {
-		const mockError = new Error('Mock error');
-		mockError.details = 'Specific error details';
+		class CustomError extends Error {
+			details: string;
+			constructor(message: string, details: string) {
+				super(message);
+				this.details = details;
+			}
+		}
+		const mockError = new CustomError('Mock error', 'Specific error details');
 		(mockWriteContractAsync as Mock).mockRejectedValue(mockError);
 
 		render(<DepositModal vault={mockVault} network={mockNetwork} />);

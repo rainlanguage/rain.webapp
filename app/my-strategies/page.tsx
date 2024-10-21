@@ -68,9 +68,7 @@ export default function MyStrategies() {
 									</Table.Cell>
 									<Table.Cell>
 										<Link
-											href={`${window.location.origin}/my-strategies/${order.addEvents[0].transaction.id}-${order.network}`}
-											target="_blank"
-											rel="noopener noreferrer"
+											href={`${window.location.origin}/my-strategies/${order.orderHash}-${order.network}`}
 										>
 											<button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl">
 												Details

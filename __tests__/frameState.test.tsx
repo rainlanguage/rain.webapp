@@ -3,11 +3,11 @@ import { FrameState } from '../app/_types/frame';
 import { YamlData } from '../app/_types/yamlData';
 
 describe('getUpdatedFrameState', () => {
-	let mockYamlData: YamlData;
+	let yamlDataFixture: YamlData;
 	let initialState: FrameState;
 
 	beforeEach(() => {
-		mockYamlData = {
+		yamlDataFixture = {
 			gui: {
 				deployments: [
 					{
@@ -25,7 +25,7 @@ describe('getUpdatedFrameState', () => {
 
 		initialState = {
 			currentStep: 'fields',
-			deploymentOption: mockYamlData.gui.deployments[0],
+			deploymentOption: yamlDataFixture.gui.deployments[0],
 			bindings: { field1: '10', field2: '7' },
 			deposits: [],
 			tokenInfos: [],
@@ -42,11 +42,11 @@ describe('getUpdatedFrameState', () => {
 		expect(updatedState.textInputLabel).toBe('Enter a number greater than or equal to 5');
 		expect(updatedState.bindings).toEqual({ field1: '10' });
 
-		updatedState = getUpdatedFrameState(mockYamlData, updatedState, 'back');
+		updatedState = getUpdatedFrameState(yamlDataFixture, updatedState, 'back');
 		expect(updatedState.textInputLabel).toBe('');
 		expect(updatedState.bindings).toEqual({});
 
-		updatedState = getUpdatedFrameState(mockYamlData, updatedState, 'back');
+		updatedState = getUpdatedFrameState(yamlDataFixture, updatedState, 'back');
 		expect(updatedState.currentStep).toBe('deployment');
 		expect(updatedState.deploymentOption).toBeUndefined();
 	});

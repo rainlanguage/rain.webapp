@@ -50,7 +50,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			const fields = deployment.fields;
 			const currentField = fields[0];
 			if (currentField.min !== undefined && !currentField.presets) {
-				return `Enter a number greater than ${currentField.min}`;
+				return `Enter a number greater than or equal to ${currentField.min}`;
 			}
 			return '';
 		})(),

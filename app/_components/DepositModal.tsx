@@ -30,6 +30,7 @@ import { waitForTransactionReceipt } from '@wagmi/core';
 import { Orderbook, Token } from '../types';
 import { SupportedChains } from '../_types/chains';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { handleDecimalSeparator } from '../_utils/handleDecimalSeparator';
 
 export enum TokenDepositStatus {
 	Idle,
@@ -289,11 +290,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 													inputMode="decimal"
 													step="0.1"
 													onChange={(e) => {
-														const value = e.target.value;
-														const sanitizedValue = value
-															.replace(/[,.]/, '.')
-															.replace(/\.(?=.*\.)/g, '');
-														const finalValue = sanitizedValue.replace(/[^\d.]/g, '');
+														const finalValue = handleDecimalSeparator(e);
 														field.onChange(finalValue);
 													}}
 												/>

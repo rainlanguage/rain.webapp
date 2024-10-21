@@ -27,6 +27,7 @@ import type { Output, Input as InputType } from '../types';
 import { cn } from '@/lib/utils';
 import { SupportedChains } from '../_types/chains';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { handleDecimalSeparator } from '../_utils/handleDecimalSeparator';
 
 const formSchema = z.object({
 	withdrawalAmount: z.preprocess(
@@ -156,11 +157,7 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 												inputMode="decimal"
 												step="0.1"
 												onChange={(e) => {
-													const value = e.target.value;
-													const sanitizedValue = value
-														.replace(/[,.]/, '.')
-														.replace(/\.(?=.*\.)/g, '');
-													const finalValue = sanitizedValue.replace(/[^\d.]/g, '');
+													const finalValue = handleDecimalSeparator(e);
 													field.onChange(finalValue);
 												}}
 											/>

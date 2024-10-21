@@ -131,9 +131,9 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 		const parsedRawAmount = parseUnits(
 			depositAmount.toString(),
 			Number(vault.token.decimals)
-		).toString();
-		setRawAmount(parsedRawAmount);
-		if (BigInt(parsedRawAmount) > BigInt(connectedWalletBalance.toString())) {
+		);
+		setRawAmount(parsedRawAmount.toString());
+		if (BigInt(parsedRawAmount) > BigInt(connectedWalletBalance)) {
 			setError('Amount exceeds wallet balance');
 		} else {
 			setError(null);
@@ -228,7 +228,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 		} else if (!connectedWalletBalance) {
 			return setError('No balance found');
 		}
-		const formattedBalance = formatUnits(connectedWalletBalance, Number(vault.token.decimals));
+		const formattedBalance = formatUnits(BigInt(connectedWalletBalance), Number(vault.token.decimals));
 		form.setValue('depositAmount', formattedBalance as unknown as number);
 		setRawAmount(formattedBalance);
 		form.setFocus('depositAmount');
@@ -274,7 +274,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 												<div className="text-sm text-gray-500">
 													Your {vault.token.symbol} Balance:{' '}
 													<strong>
-														{formatUnits(connectedWalletBalance, Number(vault.token.decimals))}
+														{formatUnits(BigInt(connectedWalletBalance), Number(vault.token.decimals))}
 													</strong>
 												</div>
 											)}
@@ -283,8 +283,15 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 													data-testid={'deposit-input'}
 													placeholder="0"
 													{...field}
-													type="number"
+													type="text"
+													inputMode="decimal"
 													step="0.1"
+													onChange={(e) => {
+														const value = e.target.value;
+														const sanitizedValue = value.replace(/[,.]/, '.').replace(/\.(?=.*\.)/g, '');
+														const finalValue = sanitizedValue.replace(/[^\d.]/g, '');
+														field.onChange(finalValue);
+													  }}
 												/>
 											</FormControl>
 											<FormMessage>{error}</FormMessage>

@@ -176,7 +176,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	const buttonsData = generateButtonsData(yamlData, currentState);
 
 	useEffect(() => {
-		console.log(buttonsData);
 		const filteredButtons = buttonsData.filter(
 			(buttonData) => buttonData.buttonValue !== 'back' && buttonData.buttonValue !== 'finalSubmit'
 		);
@@ -232,8 +231,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							key={buttonData.buttonText}
 							onClick={async () => {
 								await handleButtonClick(buttonData);
-							}}
-						>
+							}}>
 							{buttonData.buttonText}
 						</Button>
 					);
@@ -255,8 +253,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					<DialogClose asChild>
 						<button
 							className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
-							onClick={() => setError(null)}
-						>
+							onClick={() => setError(null)}>
 							Close
 						</button>
 					</DialogClose>

@@ -33,7 +33,7 @@ export default function MyStrategies() {
 							<Table.HeadCell>Inputs</Table.HeadCell>
 							<Table.HeadCell>Outputs</Table.HeadCell>
 							<Table.HeadCell>Trades</Table.HeadCell>
-							<Table.HeadCell/>
+							<Table.HeadCell />
 						</Table.Head>
 						<Table.Body>
 							{query.data.map((order: Order, i: number) => (

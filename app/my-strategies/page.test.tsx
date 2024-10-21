@@ -41,7 +41,6 @@ describe('Page', () => {
 
 		render(<Page />);
 
-
 		const linkElement = screen.getByRole('link', { name: /details/i });
 
 		expect(linkElement).toHaveAttribute(

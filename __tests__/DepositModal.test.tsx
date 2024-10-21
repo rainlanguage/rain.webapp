@@ -54,6 +54,18 @@ describe('DepositModal', () => {
 		expect(input.value).toBe('123.456');
 	});
 
+	it('uses correct separator for input value', async () => {
+		render(<DepositModal vault={mockVault} network={mockNetwork} />);
+
+		const triggerButton = screen.getByText(/Deposit/i);
+		fireEvent.click(triggerButton);
+
+		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
+		fireEvent.change(input, { target: { value: '123,456' } });
+
+		expect(input.value).toBe('123.456');
+	});
+
 	it('shows an error when the deposit amount exceeds the wallet balance', async () => {
 		render(<DepositModal vault={mockVault} network={mockNetwork} />);
 

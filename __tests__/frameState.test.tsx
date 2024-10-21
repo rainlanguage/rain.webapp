@@ -39,7 +39,7 @@ describe('getUpdatedFrameState', () => {
 
 	test('handles back button correctly for different field types', () => {
 		let updatedState = getUpdatedFrameState(mockYamlData, initialState, 'back');
-		expect(updatedState.textInputLabel).toBe('Enter a number greater than 5');
+		expect(updatedState.textInputLabel).toBe('Enter a number greater than or equal to 5');
 		expect(updatedState.bindings).toEqual({ field1: '10' });
 
 		updatedState = getUpdatedFrameState(mockYamlData, updatedState, 'back');

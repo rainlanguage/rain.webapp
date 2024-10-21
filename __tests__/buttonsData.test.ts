@@ -58,7 +58,7 @@ describe('getFieldPresetsButtons', () => {
 			{ buttonTarget: 'buttonValue', buttonValue: '30', buttonText: '30' },
 			{
 				buttonTarget: 'textInputLabel',
-				buttonValue: 'Enter a number greater than 5',
+				buttonValue: 'Enter a number greater than or equal to 5',
 				buttonText: 'Custom'
 			}
 		]);
@@ -85,7 +85,7 @@ describe('getDepositPresetsButtons', () => {
 			{ buttonTarget: 'buttonValue', buttonValue: '20', buttonText: '20 TK1' },
 			{
 				buttonTarget: 'textInputLabel',
-				buttonValue: 'Enter a number greater than 5',
+				buttonValue: 'Enter a number greater than or equal to 5',
 				buttonText: 'Custom'
 			}
 		]);
@@ -136,7 +136,7 @@ describe('generateButtonsData', () => {
 		expect(buttonsData[1]).toEqual({
 			buttonTarget: 'textInputLabel',
 			buttonText: 'Custom',
-			buttonValue: 'Enter a number greater than 1000'
+			buttonValue: 'Enter a number greater than or equal to 1000'
 		});
 	});
 

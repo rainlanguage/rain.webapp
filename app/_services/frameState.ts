@@ -17,7 +17,7 @@ export const getUpdatedFrameState = (
 				updatedState.currentStep = 'fields';
 				const firstField = updatedState.deploymentOption.fields[0];
 				if (firstField.min !== undefined && !firstField.presets) {
-					updatedState.textInputLabel = `Enter a number greater than ${firstField.min}`;
+					updatedState.textInputLabel = `Enter a number greater than or equal to ${firstField.min}`;
 				}
 			} else if (buttonValue) {
 				updatedState.currentStep = 'deployment';
@@ -33,7 +33,7 @@ export const getUpdatedFrameState = (
 				updatedState.currentStep = 'fields';
 				const firstField = updatedState.deploymentOption.fields[0];
 				if (firstField.min !== undefined && !firstField.presets) {
-					updatedState.textInputLabel = `Enter a number greater than ${firstField.min}`;
+					updatedState.textInputLabel = `Enter a number greater than or equal to ${firstField.min}`;
 				}
 			}
 			break;
@@ -46,7 +46,7 @@ export const getUpdatedFrameState = (
 			const currentField = fields[currentBindingsCount];
 
 			if (currentField.min !== undefined && !currentField.presets) {
-				updatedState.textInputLabel = `Enter a number greater than ${currentField.min}`;
+				updatedState.textInputLabel = `Enter a number greater than or equal to ${currentField.min}`;
 			}
 
 			const setBindingValue = (value: string) => {
@@ -78,7 +78,7 @@ export const getUpdatedFrameState = (
 					const previousField = fields[currentBindingsCount - 1];
 					updatedState.textInputLabel =
 						previousField.min !== undefined && !previousField.presets
-							? `Enter a number greater than ${previousField.min}`
+							? `Enter a number greater than or equal to ${previousField.min}`
 							: '';
 					delete updatedState.bindings[previousField.binding];
 				}
@@ -101,7 +101,7 @@ export const getUpdatedFrameState = (
 			const currentDeposit = deposits[currentDepositCount];
 
 			if (currentDeposit.min !== undefined && !currentDeposit.presets) {
-				updatedState.textInputLabel = `Enter a number greater than ${currentDeposit.min}`;
+				updatedState.textInputLabel = `Enter a number greater than or equal to ${currentDeposit.min}`;
 			}
 
 			const setDepositValue = (value: number) => {

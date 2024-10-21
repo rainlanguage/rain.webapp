@@ -157,10 +157,12 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 												step="0.1"
 												onChange={(e) => {
 													const value = e.target.value;
-													const sanitizedValue = value.replace(/[,.]/, '.').replace(/\.(?=.*\.)/g, '');
+													const sanitizedValue = value
+														.replace(/[,.]/, '.')
+														.replace(/\.(?=.*\.)/g, '');
 													const finalValue = sanitizedValue.replace(/[^\d.]/g, '');
 													field.onChange(finalValue);
-												  }}
+												}}
 											/>
 										</FormControl>
 										<FormMessage>{error}</FormMessage>

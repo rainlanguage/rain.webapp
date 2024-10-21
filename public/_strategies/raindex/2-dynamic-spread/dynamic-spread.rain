@@ -42,23 +42,18 @@ gui:
           description: The maximum amount of WPOL that will be offered in a single auction.
           min: 0
           presets:
-            - name: 50
-              value: 50
-            - name: 100
-              value: 100
-            - name: 500
-              value: 500
+            - value: 50
+            - value: 100
+            - value: 150
+            - value: 500
         - binding: min-amount
           name: Minimum amount per auction (WPOL)
           description: The minimum amount of WPOL that will be offered in a single auction.
           min: 0
           presets:
-            - name: 20
-              value: 20
-            - name: 50
-              value: 50
-            - name: 100
-              value: 100
+            - value: 20
+            - value: 50
+            - value: 100
 
       deposits:
         - token: polygon-quick
@@ -68,6 +63,7 @@ gui:
             - 100
             - 500
             - 1000
+            - 70000
         - token: polygon-wmatic
           min: 0
           presets:
@@ -75,6 +71,7 @@ gui:
             - 100
             - 500
             - 1000
+            - 7000
 
     - deployment: polygon-quick-old-quick
       name: QUICK (old)<>QUICK on Polygon.
@@ -118,6 +115,7 @@ gui:
             - value: 300
             - value: 500
             - value: 1000
+            - value: 1500
         - binding: min-amount
           name: Minimum amount per auction (QUICK new)
           description: The minimum amount of QUICK (new) that will be offered in a single auction.
@@ -138,6 +136,7 @@ gui:
             - 1
             - 10
             - 12.5
+            - 75
         - token: polygon-quick
           min: 0
           presets:
@@ -147,6 +146,77 @@ gui:
             - 1000
             - 10000
             - 12500
+            - 75000
+
+    - deployment: polygon-usdc-ioen
+      name: USDC<>IOEN on Polygon.
+      description: Rotate USDC and IOEN on Polygon.
+
+      fields:
+        - binding: initial-io
+          name: Initial price (USDC per IOEN)
+          description: The rough USD price you see for IOEN on Dextools (e.g. 0.0026).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Maximum amount per auction (USDC)
+          description: The maximum amount of USDC that will be offered in a single auction.
+          min: 0
+          presets:
+            - value: 10
+            - value: 20
+            - value: 50
+            - value: 100
+            - value: 200
+        - binding: min-amount
+          name: Minimum amount per auction (USDC)
+          description: The minimum amount of USDC that will be offered in a single auction.
+          min: 0
+          presets:
+            - value: 10
+            - value: 20
+
+      deposits:
+        - token: polygon-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+            - 5000
+            - 10000
+        - token: polygon-ioen
+          min: 0
+          presets:
+            - 0
+            - 500000
+            - 1000000
+            - 2000000
+            - 3500000
 
     - deployment: base-usdc-weth
       name: USDC<>WETH on Base.
@@ -223,6 +293,81 @@ gui:
             - 0.1
             - 0.2
             - 0.5
+
+    - deployment: base-usdc-paid
+      name: USDC<>PAID on Base.
+      description: Rotate USDC and PAID on Base.
+
+      fields:
+        - binding: initial-io
+          name: Initial price (USDC per PAID)
+          description: The rough USDC price you see for PAID on Dex Screener (e.g. 0.04983).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of USDC that will be offered in a single auction.
+          min: 5
+          presets:
+            - name: $10
+              value: 10
+            - name: $20
+              value: 20
+            - name: $50
+              value: 50
+            - name: $100
+              value: 100
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of USDC that will be offered in a single auction.
+          min: 5
+          presets:
+            - name: $5
+              value: 5
+            - name: $10
+              value: 10
+            - name: $20
+              value: 20
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 500
+            - 1000
+        - token: base-paid
+          min: 0
+          presets:
+            - 0
+            - 1000
+            - 5000
+            - 10000
+            - 20000
 
     - deployment: arbitrum-usdc-weth
       name: USDC<>WETH on Arbitrum.
@@ -591,6 +736,80 @@ gui:
             - 0.01
             - 50
             - 100
+    - deployment: flare-usdce-weth
+      name: USDC.e<>WETH on Flare.
+      description: Rotate USDC.e (Bridged USDC on Stargate) and WETH on Flare.
+
+      fields:
+        - binding: initial-io
+          name: Initial price (USDC.e per WETH)
+          description: The rough USD price you see for WETH on Dextools (e.g. 2500).
+          min: 1
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of USDC.e that will be offered in a single auction.
+          min: 1
+          presets:
+            - name: $10
+              value: 10
+            - name: $20
+              value: 20
+            - name: $50
+              value: 50
+            - name: $100
+              value: 100
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of USDC.e that will be offered in a single auction.
+          min: 1
+          presets:
+            - name: $1
+              value: 1
+            - name: $2
+              value: 2
+            - name: $5
+              value: 5
+            - name: $10
+              value: 10
+      deposits:
+        - token: flare-usdce
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+        - token: flare-weth
+          min: 0
+          presets:
+            - 0
+            - 0.05
+            - 0.2
+            - 0.4
 
 scenarios:
   arbitrum:
@@ -631,6 +850,12 @@ scenarios:
           amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
           initial-output-token: 0xac1bd2486aaf3b5c0fc3fd868558b082a531b2b4
           initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+      usdc-paid:
+        runs: 1
+        bindings:
+          amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+          initial-output-token: 0x655A51e6803faF50D4acE80fa501af2F29C856cF
+          initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
   flare:
     orderbook: flare
     runs: 1
@@ -656,6 +881,12 @@ scenarios:
           amount-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
           initial-output-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
           initial-input-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
+      usdce-weth:
+        runs: 1
+        bindings:
+          amount-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
+          initial-output-token: 0x1502FA4be69d526124D453619276FacCab275d3D
+          initial-input-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
   polygon:
     orderbook: polygon
     runs: 1
@@ -675,6 +906,12 @@ scenarios:
           amount-token: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
           initial-output-token: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
           initial-input-token: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
+      usdc-ioen:
+        runs: 1
+        bindings:
+          amount-token: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
+          initial-output-token: 0xd0e9c8f5Fae381459cf07Ec506C1d2896E8b5df6
+          initial-input-token: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
 
 networks:
   flare:
@@ -764,6 +1001,10 @@ tokens:
     network: base
     address: 0x4200000000000000000000000000000000000006
     decimals: 18
+  base-paid:
+    network: base
+    address: 0x655A51e6803faF50D4acE80fa501af2F29C856cF
+    decimals: 18
   flare-usdce:
     network: flare
     address: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
@@ -792,6 +1033,14 @@ tokens:
     network: polygon
     address: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
     decimals: 18
+  polygon-ioen:
+    network: polygon
+    address: 0xd0e9c8f5Fae381459cf07Ec506C1d2896E8b5df6
+    decimals: 18
+  polygon-usdc:
+    network: polygon
+    address: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
+    decimals: 6
 
 orders:
   arbitrum-wbtc-weth:
@@ -830,6 +1079,15 @@ orders:
     outputs:
       - token: base-usdc
       - token: base-toshi
+  base-usdc-paid:
+    network: base
+    orderbook: base
+    inputs:
+      - token: base-usdc
+      - token: base-paid
+    outputs:
+      - token: base-usdc
+      - token: base-paid
   flare-usdce-sflr:
     network: flare
     orderbook: flare
@@ -848,6 +1106,15 @@ orders:
     outputs:
       - token: flare-sflr
       - token: flare-wflr
+  flare-usdce-weth:
+    network: flare
+    orderbook: flare
+    inputs:
+      - token: flare-usdce
+      - token: flare-weth
+    outputs:
+      - token: flare-usdce
+      - token: flare-weth
   polygon-quick-old-quick:
     network: polygon
     orderbook: polygon
@@ -866,6 +1133,15 @@ orders:
     outputs:
       - token: polygon-quick
       - token: polygon-wmatic
+  polygon-usdc-ioen:
+    network: polygon
+    orderbook: polygon
+    inputs:
+      - token: polygon-usdc
+      - token: polygon-ioen
+    outputs:
+      - token: polygon-usdc
+      - token: polygon-ioen
 
 deployments:
   arbitrum-wbtc-weth:
@@ -880,18 +1156,27 @@ deployments:
   base-usdc-toshi:
     order: base-usdc-toshi
     scenario: base.usdc-toshi
+  base-usdc-paid:
+    order: base-usdc-paid
+    scenario: base.usdc-paid
   flare-usdce-sflr:
     order: flare-usdce-sflr
     scenario: flare.usdce-sflr
   flare-sflr-wflr:
     order: flare-sflr-wflr
     scenario: flare.sflr-wflr
+  flare-usdce-weth:
+    order: flare-usdce-weth
+    scenario: flare.usdce-weth
   polygon-quick-old-quick:
     order: polygon-quick-old-quick
     scenario: polygon.quick-old-quick
   polygon-quick-wmatic:
     order: polygon-quick-wmatic
     scenario: polygon.quick-wmatic
+  polygon-usdc-ioen:
+    order: polygon-usdc-ioen
+    scenario: polygon.usdc-ioen
 ---
 #raindex-subparser !Subparser for the Raindex.
 

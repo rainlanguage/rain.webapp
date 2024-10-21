@@ -4,12 +4,11 @@ import { getOrders } from '../_queries/getOrders';
 import { useAccount } from 'wagmi';
 import { Spinner, Table } from 'flowbite-react';
 import { formatTimestampSecondsAsLocal } from '../_services/dates';
-import { useRouter } from 'next/navigation';
 import { TokenAndBalance } from '../_components/TokenAndBalance';
 import { Input, Order, Output } from '../types';
+import Link from 'next/link';
 
 export default function MyStrategies() {
-	const router = useRouter();
 	const account = useAccount();
 	const query = useQuery({
 		queryKey: [account.address],
@@ -34,21 +33,11 @@ export default function MyStrategies() {
 							<Table.HeadCell>Inputs</Table.HeadCell>
 							<Table.HeadCell>Outputs</Table.HeadCell>
 							<Table.HeadCell>Trades</Table.HeadCell>
+							<Table.HeadCell/>
 						</Table.Head>
 						<Table.Body>
 							{query.data.map((order: Order, i: number) => (
-								<Table.Row
-									className="cursor-pointer"
-									key={i}
-									onClick={(e) => {
-										const url = `${window.location.origin}/my-strategies/${order.addEvents[0].transaction.id}-${order.network}`;
-										if (e.ctrlKey || e.metaKey) {
-											window.open(url, '_blank');
-										} else {
-											router.push(url);
-										}
-									}}
-								>
+								<Table.Row key={i}>
 									<Table.Cell>{order.network}</Table.Cell>
 									<Table.Cell>
 										{order.active ? (
@@ -76,6 +65,17 @@ export default function MyStrategies() {
 									</Table.Cell>
 									<Table.Cell>
 										{order.trades.length === 1000 ? '>999' : order.trades.length}
+									</Table.Cell>
+									<Table.Cell>
+										<Link
+											href={`${window.location.origin}/my-strategies/${order.addEvents[0].transaction.id}-${order.network}`}
+											target="_blank"
+											rel="noopener noreferrer"
+										>
+											<button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl">
+												Details
+											</button>
+										</Link>
 									</Table.Cell>
 								</Table.Row>
 							))}

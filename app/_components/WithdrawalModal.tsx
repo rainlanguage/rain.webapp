@@ -152,8 +152,15 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 												data-testid={'withdrawal-input'}
 												placeholder="0"
 												{...field}
-												type="number"
+												type="text"
+												inputMode="decimal"
 												step="0.1"
+												onChange={(e) => {
+													const value = e.target.value;
+													const sanitizedValue = value.replace(/[,.]/, '.').replace(/\.(?=.*\.)/g, '');
+													const finalValue = sanitizedValue.replace(/[^\d.]/g, '');
+													field.onChange(finalValue);
+												  }}
 											/>
 										</FormControl>
 										<FormMessage>{error}</FormMessage>

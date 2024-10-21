@@ -5,6 +5,7 @@ import { useReadContract } from 'wagmi';
 import { formatUnits, zeroAddress } from 'viem';
 import { Input } from '@/app/types';
 import { userEvent } from '@testing-library/user-event';
+import { useWriteContract } from 'wagmi';
 
 const balanceRefetch = vi.fn().mockName('balanceRefetch');
 const allowanceRefetch = vi.fn().mockName('allowanceRefetch');
@@ -29,7 +30,7 @@ vi.mock('wagmi', async (importOriginal) => {
 				refetch: balanceRefetch
 			})),
 		useWriteContract: vi.fn(() => ({
-			writeContractAsync: vi.fn().mockResolvedValue('0xMockTransactionHash')
+			writeContractAsync: vi.fn()
 		})),
 		useSwitchChain: vi.fn(() => ({ switchChainAsync: vi.fn() }))
 	};
@@ -48,6 +49,14 @@ const mockVault = {
 const mockNetwork = 'flare';
 
 describe('DepositModal', () => {
+	let mockWriteContractAsync: Mock;
+
+	beforeEach(() => {
+		mockWriteContractAsync = vi.fn();
+		(useWriteContract as Mock).mockReturnValue({
+			writeContractAsync: mockWriteContractAsync
+		});
+	});
 	it('updates input value to max balance with long decimal precision on "Max" button click', async () => {
 		render(<DepositModal vault={mockVault} network={mockNetwork} />);
 
@@ -114,5 +123,23 @@ describe('DepositModal', () => {
 			expect(allowanceRefetch).toHaveBeenCalled();
 			expect(mockOnSuccess).toHaveBeenCalled();
 		});
+	});
+	it('sets error message from error.details', async () => {
+		const mockError = new Error('Mock error');
+		mockError.details = 'Specific error details';
+		(mockWriteContractAsync as Mock).mockRejectedValue(mockError);
+
+		render(<DepositModal vault={mockVault} network={mockNetwork} />);
+
+		const triggerButton = screen.getByText(/Deposit/i);
+		fireEvent.click(triggerButton);
+
+		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
+		await fireEvent.change(input, { target: { value: '0.1' } });
+		const submitButton = screen.getByRole('button', { name: /Submit/i });
+		await userEvent.click(submitButton);
+
+		const errorMessage = await screen.findByText('Specific error details');
+		expect(errorMessage).toBeInTheDocument();
 	});
 });

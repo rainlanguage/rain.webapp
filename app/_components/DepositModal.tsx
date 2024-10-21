@@ -30,6 +30,7 @@ import { waitForTransactionReceipt } from '@wagmi/core';
 import { Orderbook, Token } from '../types';
 import { SupportedChains } from '../_types/chains';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { handleDecimalSeparator } from '../_utils/handleDecimalSeparator';
 
 export enum TokenDepositStatus {
 	Idle,
@@ -126,17 +127,15 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 	const depositAmount = form.watch('depositAmount');
 
 	useEffect(() => {
-		const parsedRawAmount = parseUnits(
-			depositAmount.toString(),
-			Number(vault.token.decimals)
-		).toString();
-		setRawAmount(parsedRawAmount);
-		if (BigInt(parsedRawAmount) > Number(connectedWalletBalance)) {
+		if (!connectedWalletBalance) return;
+		const parsedRawAmount = parseUnits(depositAmount.toString(), Number(vault.token.decimals));
+		setRawAmount(parsedRawAmount.toString());
+		if (BigInt(parsedRawAmount) > BigInt(connectedWalletBalance)) {
 			setError('Amount exceeds wallet balance');
 		} else {
 			setError(null);
 		}
-	}, [depositAmount]);
+	}, [depositAmount, connectedWalletBalance]);
 
 	const deposit = async () => {
 		try {
@@ -219,7 +218,10 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 		} else if (!connectedWalletBalance) {
 			return setError('No balance found');
 		}
-		const formattedBalance = formatUnits(connectedWalletBalance, Number(vault.token.decimals));
+		const formattedBalance = formatUnits(
+			BigInt(connectedWalletBalance),
+			Number(vault.token.decimals)
+		);
 		form.setValue('depositAmount', formattedBalance as unknown as number);
 		setRawAmount(formattedBalance);
 		form.setFocus('depositAmount');
@@ -272,7 +274,10 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 												<div className="text-sm text-gray-500">
 													Your {vault.token.symbol} Balance:{' '}
 													<strong>
-														{formatUnits(connectedWalletBalance, Number(vault.token.decimals))}
+														{formatUnits(
+															BigInt(connectedWalletBalance),
+															Number(vault.token.decimals)
+														)}
 													</strong>
 												</div>
 											)}
@@ -281,8 +286,13 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 													data-testid={'deposit-input'}
 													placeholder="0"
 													{...field}
-													type="number"
+													type="text"
+													inputMode="decimal"
 													step="0.1"
+													onChange={(e) => {
+														const finalValue = handleDecimalSeparator(e);
+														field.onChange(finalValue);
+													}}
 												/>
 											</FormControl>
 											<FormMessage>{error}</FormMessage>

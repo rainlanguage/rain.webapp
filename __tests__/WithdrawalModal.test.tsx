@@ -54,6 +54,19 @@ describe('WithdrawalModal', () => {
 
 		expect(input.value).toBe('123.456');
 	});
+
+	it('uses correct separator for input value', async () => {
+		render(<WithdrawalModal vault={mockVault} network={mockNetwork} />);
+
+		const triggerButton = screen.getByText(/Withdraw/i);
+		fireEvent.click(triggerButton);
+
+		const input = screen.getByTestId('withdrawal-input') as HTMLInputElement;
+		fireEvent.change(input, { target: { value: '123,456' } });
+
+		expect(input.value).toBe('123.456');
+	});
+
 	it('shows an error when the input value exceeds the vault balance', async () => {
 		render(<WithdrawalModal vault={mockVault} network={mockNetwork} />);
 

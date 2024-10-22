@@ -1322,7 +1322,11 @@ _: add(baseline above-baseline);
 using-words-from raindex-subparser
 epoch:call<'get-epoch>(),
 io: call<'io-for-epoch>(epoch),
-max-output: call<'amount-for-epoch>(epoch io),
+epoch-max-output: call<'amount-for-epoch>(epoch io),
+other-total-out
+_
+other-vwaio: call<'get-cost-basis-io-ratio>(),
+max-output: max(epoch-max-output other-total-out),
 _: io,
 :call<'set-last-trade>(io);
 

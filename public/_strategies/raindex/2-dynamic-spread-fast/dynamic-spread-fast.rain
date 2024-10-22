@@ -1199,36 +1199,46 @@ deployments:
   _: equal-to(amount-token output-token());
 
 #get-cost-basis-io-ratio
-  this-vwaio: get(hash(order-hash() input-token() output-token() vwaio-key)),
-  other-vwaio: get(hash(order-hash() output-token() input-token() vwaio-key)),
-  _: any(this-vwaio inv(any(other-vwaio max-value())));
+  this-total-out-key: hash(order-hash() input-token() output-token()),
+  this-vwaio-key: hash(this-total-out-key vwaio-key),
+  other-total-out-key: hash(order-hash() output-token() input-token()),
+  other-vwaio-key: hash(other-total-out-key vwaio-key),
+
+  this-total-out: get(this-total-out-key),
+  other-total-out: get(other-total-out-key),
+
+  this-vwaio: get(this-vwaio-key),
+  other-vwaio: get(other-vwaio-key);
 
 #set-cost-basis-io-ratio
   /* first reduce outstanding inventory */
-  other-total-out-key: hash(order-hash() output-token() input-token()),
-  other-vwaio-key: hash(order-hash() output-token() input-token() vwaio-key),
-  other-total-out: get(other-total-out-key),
-  other-vwaio: get(other-vwaio-key),
+  this-total-out-key
+  this-vwaio-key
+  other-total-out-key
+  other-vwaio-key
+  this-total-out
+  other-total-out
+  this-vwaio
+  other-vwaio: call<'get-cost-basis-io-ratio>(),
+
   other-reduction-out: min(other-total-out input-vault-increase()),
   reduced-other-total-out: sub(other-total-out other-reduction-out),
+
   :set(other-total-out-key reduced-other-total-out),
   :set(other-vwaio-key every(reduced-other-total-out other-vwaio)),
 
   /* then increase our inventory */
-  total-out-key: hash(order-hash() input-token() output-token()),
-  this-vwaio-key: hash(order-hash() input-token() output-token() vwaio-key),
-  total-out: get(total-out-key),
-  vwaio: get(this-vwaio-key),
-  total-in: mul(total-out vwaio),
-  remaining-in: sub(input-vault-increase() other-reduction-out),
-  new-in: add(total-in remaining-in),
-  remaining-out: div(remaining-in calculated-io-ratio()),
-  new-out: add(total-out remaining-out),
-  new-vwaio: every(new-out div(new-in any(new-out max-value()))),
-  cap-out: if(call<'amount-is-output>() history-cap div(history-cap any(new-vwaio calculated-io-ratio()))),
-  capped-out: min(new-out cap-out),
-  :set(total-out-key capped-out),
-  :set(this-vwaio-key new-vwaio);
+  this-total-in: mul(this-total-out this-vwaio),
+  this-remaining-in: sub(input-vault-increase() other-reduction-out),
+  this-new-in: add(this-total-in this-remaining-in),
+  this-remaining-out: div(this-remaining-in calculated-io-ratio()),
+  this-new-out: add(this-total-out this-remaining-out),
+  this-new-vwaio: every(this-new-out div(this-new-in any(this-new-out max-value()))),
+  cap-out: if(call<'amount-is-output>() history-cap div(history-cap any(this-new-vwaio calculated-io-ratio()))),
+  capped-out: min(this-new-out cap-out),
+
+  :set(this-total-out-key capped-out),
+  :set(this-vwaio-key this-new-vwaio);
 
 #halflife
 epoch:,
@@ -1273,8 +1283,9 @@ using-words-from raindex-subparser
 :set(hash(order-hash() last-trade-time-key) now()),
 :set(hash(order-hash() last-trade-io-key) initial-io),
 :set(hash(order-hash() last-trade-output-token-key) initial-output-token),
-:set(hash(order-hash() initial-input-token initial-output-token) 1e-18),
-:set(hash(order-hash() initial-input-token initial-output-token vwaio-key) initial-io);
+this-total-out-key: hash(order-hash() initial-input-token initial-output-token),
+:set(this-total-out-key 1e-18),
+:set(hash(this-total-out-key vwaio-key) initial-io);
 
 #get-last-trade
 stored-last-io:get(hash(order-hash() last-trade-io-key)),
@@ -1297,7 +1308,9 @@ _: if(call<'amount-is-output>() base-amount mul(base-amount inv(io)));
 #io-for-epoch
 epoch:,
 last-io: call<'get-last-trade>(),
-cost-basis-io: call<'get-cost-basis-io-ratio>(),
+this-vwaio
+other-vwaio: call<'get-cost-basis-io-ratio>(),
+cost-basis-io: any(this-vwaio inv(any(other-vwaio max-value()))),
 max-next-trade: mul(max(cost-basis-io last-io) next-trade-multiplier),
 baseline: any(cost-basis-io last-io),
 variable-component: sub(max-next-trade baseline),
@@ -1315,5 +1328,9 @@ _: io,
 
 #handle-io
 min-trade-amount: mul(min-amount 0.9),
-:ensure(greater-than-or-equal-to(if(call<'amount-is-output>() output-vault-decrease() input-vault-increase()) min-trade-amount) "Min trade amount."),
+:ensure(
+  greater-than-or-equal-to(
+    if(call<'amount-is-output>() output-vault-decrease() input-vault-increase())
+    min-trade-amount)
+  "Min trade amount."),
 :call<'set-cost-basis-io-ratio>();

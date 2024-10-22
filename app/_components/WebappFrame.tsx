@@ -82,6 +82,10 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		window.history.replaceState({}, '', url);
 	};
 
+	useEffect(() => {
+		updateUrl();
+	}, [currentState]);
+
 	const getUrlState = async () => {
 		console.log('GETTING URL STATE');
 		const encodedState = searchParams.get('currentState');

@@ -1,42 +1,38 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Mock, vi } from 'vitest';
 import { DepositModal } from '@/app/_components/DepositModal';
-import { useReadContract } from 'wagmi';
+import { useWriteContract } from 'wagmi';
 import { formatUnits, zeroAddress } from 'viem';
 import { Input } from '@/app/types';
+import { readContract } from 'viem/actions';
 import { userEvent } from '@testing-library/user-event';
 
 const balanceRefetch = vi.fn().mockName('balanceRefetch');
-const allowanceRefetch = vi.fn().mockName('allowanceRefetch');
 
 vi.mock('wagmi', async (importOriginal) => {
 	const original = await importOriginal();
 	return {
 		...(original as object),
 		useAccount: () => ({ address: zeroAddress, chain: { id: 1 } }),
-		useReadContract: vi
-			.fn()
-			.mockImplementation(() => ({
-				data: BigInt('156879426436436000'),
-				refetch: balanceRefetch
-			}))
-			.mockImplementationOnce(() => ({
-				data: BigInt('156879426436436000'),
-				refetch: allowanceRefetch
-			}))
-			.mockImplementationOnce(() => ({
-				data: BigInt('3000000000000000000'),
-				refetch: balanceRefetch
-			})),
-		useWriteContract: vi.fn(() => ({
-			writeContractAsync: vi.fn().mockResolvedValue('0xMockTransactionHash')
+		useReadContract: vi.fn().mockImplementation(() => ({
+			data: BigInt('156879426436436000'),
+			refetch: balanceRefetch
 		})),
+		useWriteContract: vi.fn(),
 		useSwitchChain: vi.fn(() => ({ switchChainAsync: vi.fn() }))
 	};
 });
 
+vi.mock('viem/actions', async (importOriginal) => {
+	const original = await importOriginal();
+	return {
+		...(original as object),
+		readContract: vi.fn()
+	};
+});
+
 vi.mock('@wagmi/core', () => ({
-	waitForTransactionReceipt: vi.fn().mockResolvedValue({ confirmations: 1 })
+	waitForTransactionReceipt: vi.fn()
 }));
 
 const mockVault = {
@@ -49,6 +45,9 @@ const mockNetwork = 'flare';
 
 describe('DepositModal', () => {
 	it('updates input value to max balance with long decimal precision on "Max" button click', async () => {
+		(useWriteContract as Mock).mockResolvedValue({
+			writeContractAsync: vi.fn().mockResolvedValue('0xMockTransactionHash')
+		});
 		render(<DepositModal vault={mockVault} network={mockNetwork} />);
 
 		const triggerButton = screen.getByText(/Deposit/i);
@@ -92,17 +91,19 @@ describe('DepositModal', () => {
 		expect(errorMessage).toBeInTheDocument();
 	});
 	it('triggers refetch for both balance and allowance after a successful deposit', async () => {
+		(useWriteContract as Mock).mockReturnValue({
+			writeContractAsync: vi.fn().mockResolvedValue('0xMockTransactionHash')
+		});
+		(readContract as Mock).mockReturnValue(BigInt('100000'));
 		const mockOnSuccess = vi.fn();
 
 		render(<DepositModal vault={mockVault} network={mockNetwork} onSuccess={mockOnSuccess} />);
-
-		const allowanceRefetch = (useReadContract as Mock).mock.results[1].value.refetch;
 
 		const triggerButton = screen.getByText(/Deposit/i);
 		await userEvent.click(triggerButton);
 
 		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
-		await fireEvent.change(input, { target: { value: '0.1' } });
+		await fireEvent.change(input, { target: { value: '0.000001' } });
 		const submitButton = screen.getByRole('button', { name: /Submit/i });
 		await userEvent.click(submitButton);
 
@@ -111,8 +112,26 @@ describe('DepositModal', () => {
 
 		await waitFor(() => {
 			expect(balanceRefetch).toHaveBeenCalled();
-			expect(allowanceRefetch).toHaveBeenCalled();
 			expect(mockOnSuccess).toHaveBeenCalled();
 		});
+	});
+	it('fails the approve step and displays an error message', async () => {
+		(useWriteContract as Mock).mockReturnValue({
+			writeContractAsync: vi.fn().mockRejectedValue(new Error('Approval failed'))
+		});
+		(readContract as Mock).mockReturnValue(BigInt('100000'));
+
+		render(<DepositModal vault={mockVault} network={mockNetwork} />);
+
+		const triggerButton = screen.getByText(/Deposit/i);
+		await userEvent.click(triggerButton);
+
+		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
+		await fireEvent.change(input, { target: { value: '0.000001' } });
+		const submitButton = screen.getByRole('button', { name: /Submit/i });
+		await userEvent.click(submitButton);
+
+		const errorMessage = await screen.findByText(/Error during approval process/i);
+		expect(errorMessage).toBeInTheDocument();
 	});
 });

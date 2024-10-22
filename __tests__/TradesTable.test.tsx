@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import TradesTable from '@/app/_components/TradesTable';
 import { Trade } from '@/app/types';
+import { formatUnits } from 'viem';
 
 const mockTrades: Trade[] = [
 	{
@@ -12,7 +13,7 @@ const mockTrades: Trade[] = [
 			sender: '0xabcdefabcdefabcdefabcdefabcdefabcdef'
 		},
 		inputVaultBalanceChange: {
-			amount: BigInt(1000000000000000000),
+			amount: BigInt('5000000000000000000'),
 			vault: {
 				token: {
 					symbol: 'ETH',
@@ -21,7 +22,7 @@ const mockTrades: Trade[] = [
 			}
 		},
 		outputVaultBalanceChange: {
-			amount: BigInt(2000000000000000000),
+			amount: BigInt('2000000000000000000') * BigInt(-1),
 			vault: {
 				token: {
 					symbol: 'DAI',
@@ -39,7 +40,7 @@ const mockTrades: Trade[] = [
 			sender: '0x1234567890abcdef1234567890abcdef12345678'
 		},
 		inputVaultBalanceChange: {
-			amount: BigInt(500000000000000000),
+			amount: BigInt('500000000000000000'),
 			vault: {
 				token: {
 					symbol: 'ETH',
@@ -48,7 +49,7 @@ const mockTrades: Trade[] = [
 			}
 		},
 		outputVaultBalanceChange: {
-			amount: BigInt(1000000000000000000),
+			amount: BigInt('1000000000000000000') * BigInt(-1),
 			vault: {
 				token: {
 					symbol: 'USDC',
@@ -70,5 +71,37 @@ describe('TradesTable', () => {
 		expect(new Date(tradeDates[0].textContent!).getTime()).toBeGreaterThan(
 			new Date(tradeDates[1].textContent!).getTime()
 		);
+	});
+
+	it('displays output in absolute value', () => {
+		render(<TradesTable trades={mockTrades} />);
+
+		const tableRows = screen.getAllByRole('row');
+		const ioRatios = tableRows
+			.map((row) => row.children[row.children.length - 2]?.textContent)
+			.filter(Boolean);
+
+		expect(ioRatios[1]).toBe(
+			`${formatUnits(
+				BigInt(Math.abs(Number(mockTrades[0].outputVaultBalanceChange.amount))),
+				Number(mockTrades[0].outputVaultBalanceChange.vault.token.decimals)
+			)} DAI`
+		);
+		expect(ioRatios[2]).toBe(
+			`${formatUnits(
+				BigInt(Math.abs(Number(mockTrades[1].outputVaultBalanceChange.amount))),
+				Number(mockTrades[1].outputVaultBalanceChange.vault.token.decimals)
+			)} USDC`
+		);
+	});
+
+	it('displays io ratios in absolute value', () => {
+		render(<TradesTable trades={mockTrades} />);
+
+		const tableRows = screen.getAllByRole('row');
+		const ioRatios = tableRows.map((row) => row.lastChild?.textContent).filter(Boolean);
+
+		expect(ioRatios[1]).toBe('2.5 ETH/DAI');
+		expect(ioRatios[2]).toBe('0.0000000000005 ETH/USDC');
 	});
 });

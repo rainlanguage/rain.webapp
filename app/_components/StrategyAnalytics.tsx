@@ -1,6 +1,6 @@
 'use client';
 import { getTransactionAnalyticsData } from '@/app/_queries/strategyAnalytics';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { TokenAndBalance } from './TokenAndBalance';
 import { formatTimestampSecondsAsLocal } from '../_services/dates';
 import { Button } from '@/components/ui/button';
@@ -47,6 +47,7 @@ const Property = ({
 const StrategyAnalytics = ({ orderHash, network }: props) => {
 	const { switchChainAsync } = useSwitchChain();
 	const { connectModalOpen, openConnectModal } = useConnectModal();
+	const queryClient = useQueryClient();
 	const query = useQuery({
 		queryKey: [orderHash],
 		queryFn: () => getTransactionAnalyticsData(orderHash, network),
@@ -106,7 +107,11 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 
 	const quotesTableRef = useRef<QuotesTableRef>(null);
 
-	const refetchQuotes = () => {
+	const onDepositWithdrawSuccess = async () => {
+		await queryClient.refetchQueries({
+			queryKey: [orderHash],
+			exact: true
+		});
 		quotesTableRef.current?.getQuotes();
 	};
 
@@ -174,7 +179,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 													deposit
 													withdraw
 													network={network}
-													onDepositWithdrawSuccess={refetchQuotes}
+													onDepositWithdrawSuccess={onDepositWithdrawSuccess}
 												/>
 											</div>
 										);
@@ -192,7 +197,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 													deposit
 													withdraw
 													network={network}
-													onDepositWithdrawSuccess={refetchQuotes}
+													onDepositWithdrawSuccess={onDepositWithdrawSuccess}
 												/>
 											</div>
 										);

@@ -23,7 +23,8 @@ vi.mock(import('@tanstack/react-query'), async (importOriginal) => {
 	const actual = await importOriginal();
 	return {
 		...actual,
-		useQuery: vi.fn()
+		useQuery: vi.fn(),
+		useQueryClient: vi.fn()
 	};
 });
 
@@ -56,7 +57,7 @@ describe('StrategyAnalytics', () => {
 			isError: false,
 			refetch: vi.fn()
 		});
-		render(<StrategyAnalytics transactionId="0xtransaction" network="ethereum" />);
+		render(<StrategyAnalytics orderHash="0xtransaction" network="ethereum" />);
 		expect(screen.getByText('Strategy Analytics')).toBeInTheDocument();
 		expect(screen.getByText(RemovalStatus.Idle)).toBeInTheDocument();
 	});
@@ -78,7 +79,7 @@ describe('StrategyAnalytics', () => {
 			isError: false,
 			refetch: vi.fn()
 		});
-		render(<StrategyAnalytics transactionId="0xtransaction" network="ethereum" />);
+		render(<StrategyAnalytics orderHash="0xtransaction" network="ethereum" />);
 		expect(screen.getByTestId('strategy-status')).toHaveTextContent('Inactive');
 		expect(screen.queryByTestId('remove-strategy-btn')).not.toBeInTheDocument();
 	});
@@ -108,7 +109,7 @@ describe('StrategyAnalytics', () => {
 		});
 		(waitForTransactionReceipt as Mock).mockReturnValue(mockWaitForTransactionReceipt);
 
-		render(<StrategyAnalytics transactionId="0xtransaction" network="flare" />);
+		render(<StrategyAnalytics orderHash="0xtransaction" network="flare" />);
 
 		const removeButton = screen.getByTestId('remove-strategy-btn');
 		expect(removeButton).toHaveTextContent(RemovalStatus.Idle);

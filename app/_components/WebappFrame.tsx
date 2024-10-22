@@ -68,10 +68,22 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	const [error, setError] = useState<string | React.ReactElement | null>(null);
 	const [inputText, setInputText] = useState<string>('');
+	const [isInternalUpdate, setIsInternalUpdate] = useState(false);
 
 	const searchParams = useSearchParams();
 
+	const updateUrl = async () => {
+		setIsInternalUpdate(true);
+		console.log('updateUrl', currentState);
+		const url = new URL(window.location.href);
+		const jsonString = JSON.stringify(currentState);
+		const compressed = await compress(jsonString);
+		url.searchParams.set('currentState', compressed);
+		window.history.replaceState({}, '', url);
+	};
+
 	const getUrlState = async () => {
+		console.log('GETTING URL STATE');
 		const encodedState = searchParams.get('currentState');
 		if (encodedState) {
 			try {
@@ -84,7 +96,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 				};
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (e: any) {
-				// If decompression fails, try decoding the state without decompression
 				if (e.message.includes('not correctly encoded')) {
 					const decodedState = decodeURI(encodedState);
 					return {
@@ -98,30 +109,21 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		return null;
 	};
 
-	// useEffect to update the URL with the current state
 	useEffect(() => {
-		(async () => {
-			const url = new URL(window.location.href);
-			const jsonString = JSON.stringify(currentState);
-			const compressed = await compress(jsonString);
-			url.searchParams.set('currentState', compressed);
-			window.history.replaceState({}, '', url);
-		})();
-	}, [currentState]);
-
-	useEffect(() => {
-		const initializeState = async () => {
-			try {
-				const urlState = await getUrlState();
-				if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
-			} catch {
-				throw new Error('Error decoding state:');
-			} finally {
-				setLoading((prev) => ({ ...prev, decodingState: false }));
-			}
-		};
-		initializeState();
-	}, [searchParams]); // Run only when searchParams change
+		if (!isInternalUpdate) {
+			const initializeState = async () => {
+				try {
+					const urlState = await getUrlState();
+					if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
+				} catch {
+					throw new Error('Error decoding state:');
+				} finally {
+					setLoading((prev) => ({ ...prev, decodingState: false }));
+				}
+			};
+			initializeState();
+		}
+	}, [searchParams]);
 
 	useEffect(() => {
 		const fetchTokenInfos = async () => {
@@ -150,7 +152,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	const handleButtonClick = async (buttonData: ButtonType) => {
 		setError(null);
-
 		if (buttonData.buttonTarget === 'textInputLabel') {
 			setCurrentState((prevState) => ({
 				...prevState,
@@ -207,6 +208,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			<div className="w-full top-0">
 				<ProgressBar currentState={currentState} />
 			</div>
+			<Button onClick={() => console.log(currentState)}>Log State</Button>
 			<FrameImage currentState={currentState} />
 			{currentState.textInputLabel && (
 				<div className="flex justify-center mb-4">

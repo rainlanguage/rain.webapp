@@ -1326,7 +1326,7 @@ epoch-max-output: call<'amount-for-epoch>(epoch io),
 other-total-out
 _
 other-vwaio: call<'get-cost-basis-io-ratio>(),
-max-output: max(epoch-max-output other-total-out),
+max-output: max(epoch-max-output mul(other-total-out other-vwaio)),
 _: io,
 :call<'set-last-trade>(io);
 

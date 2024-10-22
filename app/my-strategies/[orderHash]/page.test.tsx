@@ -1,13 +1,14 @@
 import StrategyAnalytics from '@/app/_components/StrategyAnalytics';
-import { useQuery } from '@tanstack/react-query';
-import { act, render, screen } from '@testing-library/react';
-import { vi } from 'vitest';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { act, render, screen, waitFor, within, fireEvent } from '@testing-library/react';
+import { Mock, vi } from 'vitest';
 
 vi.mock('@tanstack/react-query', async () => {
 	const actual = await vi.importActual('@tanstack/react-query');
 	return {
 		...actual,
-		useQuery: vi.fn()
+		useQuery: vi.fn(),
+		useQueryClient: vi.fn()
 	};
 });
 
@@ -104,12 +105,18 @@ const mockQueryData = {
 };
 
 describe('StrategyAnalytics', () => {
+	let refetchQueriesMock: Mock;
+
 	beforeEach(() => {
+		refetchQueriesMock = vi.fn();
 		vi.mocked(useQuery).mockReturnValue({
 			data: mockQueryData,
 			isLoading: false,
 			isError: false,
 			error: null
+		} as any);
+		vi.mocked(useQueryClient).mockReturnValue({
+			refetchQueries: refetchQueriesMock
 		} as any);
 		vi.clearAllMocks();
 	});
@@ -120,5 +127,76 @@ describe('StrategyAnalytics', () => {
 		});
 		expect(screen.getByText('Order hash')).toBeInTheDocument();
 		expect(screen.getByText(mockOrderHash)).toBeInTheDocument();
+	});
+
+	it('should refetch the order on deposit success', async () => {
+		render(<StrategyAnalytics orderHash={mockOrderHash} network={mockNetwork} />);
+
+		const inputTokenBalance = screen.getAllByTestId('token-balance')[0];
+		const depositButton = within(inputTokenBalance).getByRole('button', { name: /Deposit/i });
+		await act(async () => {
+			fireEvent.click(depositButton);
+		});
+
+		const depositModal = screen.getByRole('dialog');
+		expect(depositModal).toBeInTheDocument();
+
+		const input = within(depositModal).getByPlaceholderText('0') as HTMLInputElement;
+		await act(async () => {
+			fireEvent.change(input, { target: { value: '0.1' } });
+		});
+
+		const submitButton = within(depositModal).getByRole('button', { name: /Submit/i });
+		await act(async () => {
+			fireEvent.click(submitButton);
+		});
+
+		const depositTxHash = await screen.findByText(/Deposit completed successfully!/);
+		expect(depositTxHash).toBeInTheDocument();
+
+		const dismissButton = within(depositModal).getByRole('button', { name: /Dismiss/i });
+		expect(dismissButton).toBeInTheDocument();
+
+		// Click the dismiss button
+		await act(async () => fireEvent.click(dismissButton));
+
+		// Check if the modal is closed
+		await waitFor(() => {
+			expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+		});
+
+		// Wait for the deposit to complete
+		await waitFor(() => {
+			expect(refetchQueriesMock).toHaveBeenCalled();
+		});
+	});
+
+	it('should refetch the order on withdrawal success', async () => {
+		render(<StrategyAnalytics orderHash={mockOrderHash} network={mockNetwork} />);
+
+		const inputTokenBalance = screen.getAllByTestId('token-balance')[0];
+		const depositButton = within(inputTokenBalance).getByRole('button', { name: /Withdraw/i });
+		fireEvent.click(depositButton);
+
+		const depositModal = screen.getByRole('dialog');
+		expect(depositModal).toBeInTheDocument();
+
+		const input = within(depositModal).getByPlaceholderText('0') as HTMLInputElement;
+		fireEvent.change(input, { target: { value: '0.1' } });
+
+		const submitButton = within(depositModal).getByRole('button', { name: /Submit/i });
+		await act(async () => {
+			fireEvent.click(submitButton);
+		});
+
+		// Check if the modal is closed
+		await waitFor(() => {
+			expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+		});
+
+		// Wait for the deposit to complete
+		await waitFor(() => {
+			expect(refetchQueriesMock).toHaveBeenCalled();
+		});
 	});
 });

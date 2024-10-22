@@ -12,7 +12,6 @@ const { useRouter, useSearchParams } = vi.hoisted(() => {
 		if (param === 'currentState') return 'mockEncodedStateString';
 		return null;
 	});
-
 	return {
 		useRouter: () => ({ replace: mockedRouterReplace }),
 		useSearchParams: () => ({ get: mockedGetSearchParams })

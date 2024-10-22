@@ -72,22 +72,16 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	const searchParams = useSearchParams();
 
-	const updateUrl = async () => {
+	const updateUrl = async (updatedState: FrameState) => {
 		setIsInternalUpdate(true);
-		console.log('updateUrl', currentState);
 		const url = new URL(window.location.href);
-		const jsonString = JSON.stringify(currentState);
+		const jsonString = JSON.stringify(updatedState);
 		const compressed = await compress(jsonString);
 		url.searchParams.set('currentState', compressed);
 		window.history.replaceState({}, '', url);
 	};
 
-	useEffect(() => {
-		updateUrl();
-	}, [currentState]);
-
 	const getUrlState = async () => {
-		console.log('GETTING URL STATE');
 		const encodedState = searchParams.get('currentState');
 		if (encodedState) {
 			try {
@@ -123,6 +117,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					throw new Error('Error decoding state:');
 				} finally {
 					setLoading((prev) => ({ ...prev, decodingState: false }));
+					setIsInternalUpdate(true);
 				}
 			};
 			initializeState();
@@ -182,8 +177,14 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			inputText
 		);
 
-		setCurrentState({ ...updatedState });
-
+		setCurrentState(() => {
+			if (isInternalUpdate) {
+				updateUrl(updatedState);
+			}
+			return {
+				...updatedState
+			};
+		});
 		if (inputText) {
 			setInputText('');
 		}
@@ -212,7 +213,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			<div className="w-full top-0">
 				<ProgressBar currentState={currentState} />
 			</div>
-			<Button onClick={() => console.log(currentState)}>Log State</Button>
 			<FrameImage currentState={currentState} />
 			{currentState.textInputLabel && (
 				<div className="flex justify-center mb-4">

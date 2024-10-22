@@ -78,7 +78,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		const jsonString = JSON.stringify(updatedState);
 		const compressed = await compress(jsonString);
 		url.searchParams.set('currentState', compressed);
-		window.history.replaceState({}, '', url);
+		await window.history.replaceState({}, '', url);
 	};
 
 	const getUrlState = async () => {
@@ -243,6 +243,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 						</div>
 					) : (
 						<Button
+							data-testid={`button-${buttonData.buttonText}`}
 							color="primary"
 							size="sm"
 							key={buttonData.buttonText}

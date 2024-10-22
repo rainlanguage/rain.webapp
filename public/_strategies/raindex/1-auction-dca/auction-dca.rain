@@ -1,28 +1,67 @@
 raindex-version: 8898591f3bcaa21dc91dc3b8584330fc405eadfa
 
 networks:
+  flare:
+    rpc: https://rpc.ankr.com/flare
+    chain-id: 14
+    network-id: 14
+    currency: FLR
+  base:
+    rpc: https://mainnet.base.org
+    chain-id: 8453
+    network-id: 8453
+    currency: ETH
   arbitrum:
     rpc: https://rpc.ankr.com/arbitrum
     chain-id: 42161
     network-id: 42161
     currency: ETH
+  polygon:
+    rpc: https://rpc.ankr.com/polygon
+    chain-id: 137
+    network-id: 137
+    currency: POL
 
 metaboards:
+  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
+  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-arbitrum/0.1/gn
+  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-polygon/0.1/gn
 
 subgraphs:
+  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
+  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
+  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
 
 orderbooks:
+  flare:
+    address: 0xCEe8Cd002F151A536394E564b84076c41bBBcD4d
+  base:
+    address: 0xd2938e7c9fe3597f78832ce780feb61945c377d7
+    network: base
+    subgraph: base
   arbitrum:
     address: 0x550878091b2B1506069F61ae59e3A5484Bca9166
     network: arbitrum
     subgraph: arbitrum
+  polygon:
+    address: 0x7D2f700b1f6FD75734824EA4578960747bdF269A
+    network: polygon
+    subgraph: polygon
 
 deployers:
+  flare:
+    address: 0xE3989Ea7486c0F418C764e6c511e86f6E8830FAb
+  base:
+    address: 0xC1A14cE2fd58A3A2f99deCb8eDd866204eE07f8D
+    network: base
   arbitrum:
     address: 0x9B0D254bd858208074De3d2DaF5af11b3D2F377F
     network: arbitrum
+  polygon:
+    address: 0xE7116BC05C8afe25e5B54b813A74F916B5D42aB1
+    network: polygon
 
 tokens:
   arbitrum-wbtc:
@@ -33,6 +72,14 @@ tokens:
     network: arbitrum
     address: 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1
     decimals: 18
+  base-paid:
+    network: base
+    address: 0x655A51e6803faF50D4acE80fa501af2F29C856cF
+    decimals: 18
+  base-usdc:
+    network: base
+    address: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+    decimals: 6
 
 orders:
   arbitrum-wbtc-weth:
@@ -42,6 +89,20 @@ orders:
       - token: arbitrum-weth
     outputs:
       - token: arbitrum-wbtc
+  base-usdc-paid:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-paid
+    outputs:
+      - token: base-usdc
+  base-paid-usdc:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-usdc
+    outputs:
+      - token: base-paid
 
 scenarios:
   arbitrum:
@@ -49,11 +110,22 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
+  base:
+    orderbook: base
+    runs: 1
+    bindings:
+      raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
 
 deployments:
   arbitrum-wbtc-weth:
     order: arbitrum-wbtc-weth
     scenario: arbitrum
+  base-usdc-paid:
+    order: base-usdc-paid
+    scenario: base
+  base-paid-usdc:
+    order: base-paid-usdc
+    scenario: base
 
 gui:
   name: Auction based cost averaging
@@ -222,6 +294,342 @@ gui:
             the first auction, so that everything else can be calculated from there.
 
             This is WETH per WBTC, so if the ETH/BTC ratio is 0.05 then this should be 20.
+
+            You can set this much higher than the market rates to start the strategy
+            off easily, for example you could set it at 50 if the market was around 20-25.
+
+            There is no need for this to be exact, it just has to be ballpark and
+            definitely higher than the market. Any number within 1-10x the real
+            price should be fine.
+
+            This should be greater than the baseline.
+          min: 0
+          presets:
+            - name: 30
+              value: 30
+            - name: 50
+              value: 50
+            - name: 100
+              value: 100
+    - deployment: base-usdc-paid
+      name: Sell PAID for USDC on Base.
+      description: >
+        Swap PAID for USDC on Base.
+      deposits:
+        - token: base-paid
+          min: 0
+          presets:
+            - 0
+            - 0.0001
+            - 0.001
+            - 0.01
+            - 0.1
+            - 0.2
+        
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (PAID per period)
+          description: >
+            The amount of PAID to sell each budget period.
+
+            For example, if the budget is daily and this is 100 then 100 PAID will be sold for USDC each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (PAID)
+          description: >
+            The maximum amount of PAID to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (PAID)
+          description: >
+            The minimum amount of PAID to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+
+            As the auction is an exponential decay, the price will halve every time this period passes.
+
+            For example, if the auction period is 1 hour then this is 3600 seconds (60 * 60).
+            If this hourly auction starts at 0.03 USDC per PAID, and the baseline is 0.01 USDC per PAID,
+            then the price will be 0.02 USDC per PAID after 1 hour (halfway between 30 and 10),
+            0.015 USDC per PAID after 2 hours (halfway between 20 and 10),
+            and so on.
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline USDC per PAID
+          description: >
+            The absolute minimum amount of USDC per PAID that the auction will
+            trade at.
+
+            0.05 USDC per PAID would mean never selling PAID when the
+            USDC/PAID ratio is lower than 0.05.
+
+            This can be set to 0 to disable the baseline.
+          presets:
+            - name: 10
+              value: 10
+            - name: 20
+              value: 20
+            - name: 25
+              value: 25
+            - name: 30
+              value: 30
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+
+            For example, if this is 1.1 and the last trade was at 0.2 USDC per PAID,
+            then the next auction will start at 0.22 USDC per PAID.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+
+            For example, if this is 0.9 and the last trade was at 0.2 USDC per PAID,
+            then the next auction will end at 0.18 USDC per PAID.
+
+            Note that this moving baseline is ignored if it goes below the baseline.
+            I.e. the absolute minimum baseline overrides this if necessary.
+
+            This can be set to 0 to disable the moving baseline, and should be less than 1.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff USDC per PAID
+          description: >
+            The initial USDC per PAID to kickoff the first auction.
+
+            The strategy will pretend that a trade was made at this price before
+            the first auction, so that everything else can be calculated from there.
+
+            You can set this much higher than the market rates to start the strategy
+            off easily, for example you could set it at 0.5 if the market was around 0.2-0.25.
+
+            There is no need for this to be exact, it just has to be ballpark and
+            definitely higher than the market. Any number within 1-10x the real
+            price should be fine.
+
+            This should be greater than the baseline.
+          min: 0
+          presets:
+            - name: 30
+              value: 30
+            - name: 50
+              value: 50
+            - name: 100
+              value: 100
+    - deployment: base-paid-usdc
+      name: Buy PAID with USDC on Base.
+      description: >
+        Swap USDC for PAID on Base.
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 10
+            - 100
+            - 1000
+            - 10000
+        
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+
+            For example, if the budget is daily and this is 100 then 100 USDC will be spent for PAID each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+
+            As the auction is an exponential decay, the price will halve every time this period passes.
+
+            For example, if the auction period is 1 hour then this is 3600 seconds (60 * 60).
+            If this hourly auction starts at 30 PAID per USDC, and the baseline is 10 PAID per USDC,
+            then the price will be 20 PAID per USDC after 1 hour (halfway between 30 and 10),
+            15 PAID per USDC after 2 hours (halfway between 20 and 10),
+            and so on.
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline PAID per USDC
+          description: >
+            The absolute minimum amount of PAID per USDC that the auction will
+            trade at.
+
+            This is the inverse (i.e. `1 / x`) of the USDC/PAID ratio.
+
+            For example, 20 PAID per USDC would mean never buying PAID when the
+            USDC/PAID ratio is higher than 0.05.
+
+            This can be set to 0 to disable the baseline.
+          presets:
+            - name: 10
+              value: 10
+            - name: 20
+              value: 20
+            - name: 25
+              value: 25
+            - name: 30
+              value: 30
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+
+            For example, if this is 1.1 and the last trade was at 20 PAID per USDC,
+            then the next auction will start at 22 PAID per USDC.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+
+            For example, if this is 0.9 and the last trade was at 20 PAID per USDC,
+            then the next auction will end at 18 PAID per USDC.
+
+            Note that this moving baseline is ignored if it goes below the baseline.
+            I.e. the absolute minimum baseline overrides this if necessary.
+
+            This can be set to 0 to disable the moving baseline, and should be less than 1.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff PAID per USDC
+          description: >
+            The initial PAID per USDC to kickoff the first auction.
+
+            The strategy will pretend that a trade was made at this price before
+            the first auction, so that everything else can be calculated from there.
+
+            This is PAID per USDC, so if the USDC/PAID ratio is 0.05 then this should be 20.
 
             You can set this much higher than the market rates to start the strategy
             off easily, for example you could set it at 50 if the market was around 20-25.

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { Mock, vi } from 'vitest';
+import { vi } from 'vitest';
 import StrategyAnalytics from '@/app/_components/StrategyAnalytics';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { act } from 'react';

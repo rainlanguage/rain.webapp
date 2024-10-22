@@ -15,7 +15,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRef } from 'react';
 
 interface props {
-	transactionId: string;
+	orderHash: string;
 	network: string;
 }
 
@@ -34,13 +34,13 @@ const Property = ({
 	</div>
 );
 
-const StrategyAnalytics = ({ transactionId, network }: props) => {
+const StrategyAnalytics = ({ orderHash, network }: props) => {
 	const { switchChainAsync } = useSwitchChain();
 	const { connectModalOpen, openConnectModal } = useConnectModal();
 	const query = useQuery({
-		queryKey: [transactionId],
-		queryFn: () => getTransactionAnalyticsData(transactionId, network),
-		enabled: !!transactionId,
+		queryKey: [orderHash],
+		queryFn: () => getTransactionAnalyticsData(orderHash, network),
+		enabled: !!orderHash,
 		refetchInterval: 10000
 	});
 
@@ -105,6 +105,9 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 							<span className="break-words">
 								{network[0].toUpperCase() + network.substring(1).toLowerCase()}
 							</span>
+						</Property>
+						<Property name="Order hash">
+							<span className="break-words">{orderHash}</span>
 						</Property>
 						<Property name="Transaction ID">
 							<span className="break-words">{query.data.transaction.id}</span>

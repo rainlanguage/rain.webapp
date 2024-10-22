@@ -102,20 +102,13 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 		}
 	};
 
-	const handleDismiss = () => {
-		setOpen(false);
-		setDepositTxHash(null);
-		setDepositState(TokenDepositStatus.Idle);
-		setError(null);
-	};
-
-	const connectedWalletBalance: bigint = useReadContract({
+	const { data: connectedWalletBalance, refetch: refetchBalance } = useReadContract({
 		abi: ERC20_ABI,
 		address: vault.token.address as `0x${string}`,
 		functionName: 'balanceOf',
 		args: [address as `0x${string}`],
 		chainId: chain.id as (typeof config.chains)[number]['id']
-	}).data as bigint;
+	}) as { data: bigint | undefined; refetch: () => void };
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -132,7 +125,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			Number(vault.token.decimals)
 		).toString();
 		setRawAmount(parsedRawAmount);
-		if (BigInt(parsedRawAmount) > connectedWalletBalance) {
+		if (BigInt(parsedRawAmount) > Number(connectedWalletBalance)) {
 			setError('Amount exceeds wallet balance');
 		} else {
 			setError(null);
@@ -142,6 +135,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 	const deposit = async () => {
 		try {
 			await switchChain();
+
 			setDepositState(TokenDepositStatus.Pending);
 
 			const depositAmount = form.getValues('depositAmount').toString();
@@ -159,7 +153,8 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 					args: [address as `0x${string}`, vault.orderbook.id as `0x${string}`]
 				}
 			);
-			if (existingAllowance < parsedAmount) {
+
+			if (existingAllowance !== undefined && existingAllowance < parsedAmount) {
 				setDepositState(TokenDepositStatus.ApprovingTokens);
 				try {
 					const approveTx = await writeContractAsync({
@@ -177,13 +172,13 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 						confirmations: 1
 					});
 				} catch (error: unknown) {
-					setDepositState(TokenDepositStatus.Error);
 					if (
 						(error as Error)?.message &&
 						(error as Error).message.includes('User rejected the request')
 					) {
 						setError('User rejected the approval request.');
 					} else setError('Error during approval process');
+					return setDepositState(TokenDepositStatus.Error);
 				}
 
 				setDepositState(TokenDepositStatus.TokensApproved);
@@ -207,17 +202,17 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 				hash: depositTx,
 				confirmations: 1
 			});
-
 			setDepositState(TokenDepositStatus.Done);
+			refetchBalance?.();
 			onSuccess?.();
 		} catch (error: unknown) {
-			setDepositState(TokenDepositStatus.Error);
 			if (
 				(error as Error)?.message &&
 				(error as Error).message.includes('User rejected the request')
 			) {
 				setError('User rejected the deposit request.');
 			} else setError('Error during deposit process');
+			return setDepositState(TokenDepositStatus.Error);
 		}
 	};
 
@@ -238,6 +233,13 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			openConnectModal?.();
 		}
 		if (address) setOpen(open);
+	};
+
+	const handleDismiss = () => {
+		setOpen(false);
+		setDepositTxHash(null);
+		setDepositState(TokenDepositStatus.Idle);
+		setError(null);
 	};
 
 	return (

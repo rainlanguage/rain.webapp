@@ -64,7 +64,7 @@ export const getFieldPresetsButtons = (field: Field): Button[] => {
 			? [
 					{
 						buttonTarget: 'textInputLabel',
-						buttonValue: `Enter a number greater than ${field.min}`,
+						buttonValue: `Enter a number greater than or equal to ${field.min}`,
 						buttonText: 'Custom'
 					}
 				]
@@ -93,7 +93,7 @@ export const getDepositPresetsButtons = (deposit: Deposit, token: TokenInfo): Bu
 			? [
 					{
 						buttonTarget: 'textInputLabel',
-						buttonValue: `Enter a number greater than ${deposit.min}`,
+						buttonValue: `Enter a number greater than or equal to ${deposit.min}`,
 						buttonText: 'Custom'
 					}
 				]

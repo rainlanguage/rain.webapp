@@ -16,7 +16,7 @@ import { TriangleAlert } from 'lucide-react';
 import { TokenInfo, getTokenInfos } from '../_services/getTokenInfo';
 import { Button, Spinner } from 'flowbite-react';
 import ShareStateAsUrl from './ShareStateAsUrl';
-import { decompress } from '../_services/compress';
+import { compress, decompress } from '../_services/compress';
 import { Button as ButtonType } from '../types';
 
 interface props {
@@ -97,6 +97,17 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		}
 		return null;
 	};
+
+	// useEffect to update the URL with the current state
+	useEffect(() => {
+		(async () => {
+			const url = new URL(window.location.href);
+			const jsonString = JSON.stringify(currentState);
+			const compressed = await compress(jsonString);
+			url.searchParams.set('currentState', compressed);
+			window.history.replaceState({}, '', url);
+		})();
+	}, [currentState]);
 
 	useEffect(() => {
 		const initializeState = async () => {
@@ -231,8 +242,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							key={buttonData.buttonText}
 							onClick={async () => {
 								await handleButtonClick(buttonData);
-							}}
-						>
+							}}>
 							{buttonData.buttonText}
 						</Button>
 					);
@@ -254,8 +264,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					<DialogClose asChild>
 						<button
 							className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
-							onClick={() => setError(null)}
-						>
+							onClick={() => setError(null)}>
 							Close
 						</button>
 					</DialogClose>

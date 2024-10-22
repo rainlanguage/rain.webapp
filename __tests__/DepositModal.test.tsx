@@ -64,6 +64,7 @@ describe('DepositModal', () => {
 		expect(input.value).toBe(expectedValue);
 		expect(input.value).toBe('0.156879426436436');
 	});
+
 	it('allows typing of decimal places in the input field', async () => {
 		render(<DepositModal vault={mockVault as unknown as Input} network={mockNetwork} />);
 
@@ -72,6 +73,18 @@ describe('DepositModal', () => {
 
 		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
 		fireEvent.change(input, { target: { value: '123.456' } });
+
+		expect(input.value).toBe('123.456');
+	});
+
+	it('uses correct separator for input value', async () => {
+		render(<DepositModal vault={mockVault} network={mockNetwork} />);
+
+		const triggerButton = screen.getByText(/Deposit/i);
+		fireEvent.click(triggerButton);
+
+		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
+		fireEvent.change(input, { target: { value: '123,456' } });
 
 		expect(input.value).toBe('123.456');
 	});

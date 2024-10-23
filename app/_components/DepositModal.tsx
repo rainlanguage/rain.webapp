@@ -121,11 +121,6 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 	const depositAmount = form.watch('depositAmount');
 
 	useEffect(() => {
-		console.log(depositAmount, 'depositAmount', typeof depositAmount);
-		console.log(rawAmount, 'rawAmount', typeof rawAmount);
-	}, [depositAmount, rawAmount]);
-
-	useEffect(() => {
 		if (!connectedWalletBalance) return;
 		const parsedRawAmount = parseUnits(depositAmount.toString(), Number(vault.token.decimals));
 		setRawAmount(parsedRawAmount.toString());
@@ -315,15 +310,6 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 									data-testid="submit-button"
 									type="submit"
 									disabled={!!error || Number(depositAmount) === 0}
-									onClick={() =>
-										console.log(
-											rawAmount,
-											typeof rawAmount,
-											rawAmount !== '0',
-											'deposit',
-											typeof depositAmount
-										)
-									}
 								>
 									Submit
 								</Button>

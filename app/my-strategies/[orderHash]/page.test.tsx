@@ -1,21 +1,14 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { vi } from 'vitest';
 import StrategyAnalytics from '@/app/_components/StrategyAnalytics';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { act } from 'react';
-import { quote } from '@rainlanguage/orderbook';
-import QuotesTable from '@/app/_components/QuotesTable';
+import { act, render, screen, waitFor, within, fireEvent } from '@testing-library/react';
+import { Mock, vi } from 'vitest';
 
 vi.mock('@tanstack/react-query', async () => {
 	const actual = await vi.importActual('@tanstack/react-query');
 	return {
 		...actual,
 		useQuery: vi.fn(),
-		useQueryClient: vi.fn(() => ({
-			queryClient: {
-				refetchQueries: vi.fn()
-			}
-		}))
+		useQueryClient: vi.fn()
 	};
 });
 
@@ -61,7 +54,7 @@ vi.mock('@rainlanguage/orderbook', async (importOriginal) => {
 	};
 });
 
-const mockTransactionId = '1234567890';
+const mockOrderHash = 'some-order-hash';
 const mockNetwork = 'flare';
 const mockOrder = {
 	network: 'flare',
@@ -105,41 +98,39 @@ const mockOrder = {
 };
 const mockQueryData = {
 	transaction: {
-		id: mockTransactionId,
+		id: 'some-transaction-id',
 		timestamp: '1234567890'
 	},
 	order: mockOrder
 };
 
-describe('OrderQuotes', () => {
+describe('StrategyAnalytics', () => {
+	let refetchQueriesMock: Mock;
+
 	beforeEach(() => {
+		refetchQueriesMock = vi.fn();
 		vi.mocked(useQuery).mockReturnValue({
 			data: mockQueryData,
 			isLoading: false,
 			isError: false,
-			error: null,
-			refetch: vi.fn(),
-			isPending: false,
-			isSuccess: true,
-			isFetching: false,
-			status: 'success',
-			fetchStatus: 'idle'
+			error: null
 		} as any);
 		vi.mocked(useQueryClient).mockReturnValue({
-			refetchQueries: vi.fn()
+			refetchQueries: refetchQueriesMock
 		} as any);
 		vi.clearAllMocks();
 	});
 
-	it('table should have correct headers', () => {
-		const { container } = render(<QuotesTable order={mockOrder} />);
-		expect(container.querySelector('table')).toBeInTheDocument();
-		const headers = Array.from(container.querySelectorAll('th')).map((th) => th.textContent);
-		expect(headers).toEqual(['PAIR', 'MAXIMUM OUTPUT', 'IO RATIO', 'MAXIMUM INPUT']);
+	it('should have order hash', () => {
+		act(() => {
+			render(<StrategyAnalytics orderHash={mockOrderHash} network={mockNetwork} />);
+		});
+		expect(screen.getByText('Order hash')).toBeInTheDocument();
+		expect(screen.getByText(mockOrderHash)).toBeInTheDocument();
 	});
 
-	it('should refetch quotes when deposit is successful', async () => {
-		render(<StrategyAnalytics orderHash={mockTransactionId} network={mockNetwork} />);
+	it('should refetch the order on deposit success', async () => {
+		render(<StrategyAnalytics orderHash={mockOrderHash} network={mockNetwork} />);
 
 		const inputTokenBalance = screen.getAllByTestId('token-balance')[0];
 		const depositButton = within(inputTokenBalance).getByRole('button', { name: /Deposit/i });
@@ -176,12 +167,12 @@ describe('OrderQuotes', () => {
 
 		// Wait for the deposit to complete
 		await waitFor(() => {
-			expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(2);
+			expect(refetchQueriesMock).toHaveBeenCalled();
 		});
 	});
 
-	it('should refetch quotes when withdrawal is successful', async () => {
-		render(<StrategyAnalytics orderHash={mockTransactionId} network={mockNetwork} />);
+	it('should refetch the order on withdrawal success', async () => {
+		render(<StrategyAnalytics orderHash={mockOrderHash} network={mockNetwork} />);
 
 		const inputTokenBalance = screen.getAllByTestId('token-balance')[0];
 		const depositButton = within(inputTokenBalance).getByRole('button', { name: /Withdraw/i });
@@ -205,7 +196,7 @@ describe('OrderQuotes', () => {
 
 		// Wait for the deposit to complete
 		await waitFor(() => {
-			expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(2);
+			expect(refetchQueriesMock).toHaveBeenCalled();
 		});
 	});
 });

@@ -13,6 +13,7 @@ export function middleware(req: NextRequest) {
 	// Determine if the request is from localhost or your production domains
 	const isLocalhost = host.includes('localhost');
 	const isProductionDomain = host.includes('rainframe.xyz') || host.includes('raindex.finance');
+	const isVercelDomain = host.includes('vercel.app');
 
 	if (isLocalhost) {
 		if (domains.length > 1) {
@@ -30,6 +31,8 @@ export function middleware(req: NextRequest) {
 			// Production root domain
 			subdomain = 'raindex';
 		}
+	} else if (isVercelDomain) {
+		subdomain = 'raindex';
 	}
 
 	if (subdomain) {

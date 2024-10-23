@@ -73,6 +73,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	const searchParams = useSearchParams();
 
 	const updateUrl = async (updatedState: FrameState) => {
+		console.log(updatedState);
 		setIsInternalUpdate(true);
 		const url = new URL(window.location.href);
 		const jsonString = JSON.stringify(updatedState);

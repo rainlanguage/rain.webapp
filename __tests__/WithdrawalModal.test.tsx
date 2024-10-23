@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import { WithdrawalModal } from '@/app/_components/WithdrawalModal';
 import { formatUnits } from 'viem';
@@ -80,5 +80,16 @@ describe('WithdrawalModal', () => {
 
 		const errorMessage = await screen.findByText(/Amount exceeds vault balance/i);
 		expect(errorMessage).toBeInTheDocument();
+	});
+	it('disables the submit button if withdrawal is 0', async () => {
+		render(<WithdrawalModal vault={mockVault} network={mockNetwork} />);
+
+		const triggerButton = screen.getByText(/Withdraw/i);
+		fireEvent.click(triggerButton);
+
+		const input = screen.getByTestId('withdrawal-input') as HTMLInputElement;
+		await fireEvent.change(input, { target: { value: '0' } });
+
+		await waitFor(() => expect(triggerButton).toBeDisabled());
 	});
 });

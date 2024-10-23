@@ -121,6 +121,11 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 	const depositAmount = form.watch('depositAmount');
 
 	useEffect(() => {
+		console.log(depositAmount, 'depositAmount', typeof depositAmount);
+		console.log(rawAmount, 'rawAmount', typeof rawAmount);
+	}, [depositAmount, rawAmount]);
+
+	useEffect(() => {
 		if (!connectedWalletBalance) return;
 		const parsedRawAmount = parseUnits(depositAmount.toString(), Number(vault.token.decimals));
 		setRawAmount(parsedRawAmount.toString());
@@ -287,7 +292,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 											<FormControl>
 												<Input
 													data-testid={'deposit-input'}
-													placeholder="0"
+													placeholder="Enter a number greater than 0"
 													{...field}
 													type="text"
 													inputMode="decimal"
@@ -306,7 +311,22 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 										</FormItem>
 									)}
 								/>
-								<Button type="submit" disabled={!!error}>
+								<Button
+									data-testid="submit-button"
+									type="submit"
+									disabled={
+										!!error || depositAmount.toString() === '0' || depositAmount.toString() === ''
+									}
+									onClick={() =>
+										console.log(
+											rawAmount,
+											typeof rawAmount,
+											rawAmount !== '0',
+											'deposit',
+											typeof depositAmount
+										)
+									}
+								>
 									Submit
 								</Button>
 							</form>

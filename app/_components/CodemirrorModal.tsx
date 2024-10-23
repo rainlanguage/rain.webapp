@@ -56,7 +56,8 @@ export const CodemirrorModal = ({ currentState, dotrainText, yamlData }: Codemir
 				<Button
 					color="primary"
 					size="sm"
-					className=" from-blue-600 to-violet-600 bg-gradient-to-br">
+					className=" from-blue-600 to-violet-600 bg-gradient-to-br"
+				>
 					Show Rainlang
 				</Button>
 			</DialogTrigger>

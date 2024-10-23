@@ -125,8 +125,7 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 					className={cn(
 						buttonVariants(),
 						'bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors cursor-pointer'
-					)}
-				>
+					)}>
 					Withdraw
 				</span>
 			</DialogTrigger>
@@ -140,8 +139,7 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 								await withdraw(rawAmount);
 								setOpen(false);
 							})}
-							className="space-y-8"
-						>
+							className="space-y-8">
 							<FormField
 								control={form.control}
 								name="withdrawalAmount"
@@ -170,7 +168,10 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 									</FormItem>
 								)}
 							/>
-							<Button type="submit" disabled={!!error}>
+							<Button
+								type="submit"
+								data-testid="withdraw-button"
+								disabled={!!error || Number(withdrawalAmount) === 0}>
 								Submit
 							</Button>
 						</form>

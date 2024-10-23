@@ -41,9 +41,7 @@ describe('Page', () => {
 
 		render(<Page />);
 
-		// Select the link using the data-testid attribute
 		const linkElement = screen.getByTestId('order-row');
-
 		expect(linkElement).toHaveAttribute(
 			'href',
 			`${window.location.origin}/my-strategies/order123-Ethereum`

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Mock, vi } from 'vitest';
 import { DepositModal } from '@/app/_components/DepositModal';
 import { useReadContract, useSwitchChain, useWriteContract } from 'wagmi';

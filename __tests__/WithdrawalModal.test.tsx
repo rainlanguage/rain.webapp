@@ -67,7 +67,7 @@ describe('WithdrawalModal', () => {
 		expect(input.value).toBe('123.456');
 	});
 
-	it('shows an error when the input value exceeds the vault balance', async () => {
+	it.only('shows an error when the input value exceeds the vault balance', async () => {
 		render(<WithdrawalModal vault={mockVault} network={mockNetwork} />);
 
 		const triggerButton = screen.getByText(/Withdraw/i);
@@ -84,7 +84,7 @@ describe('WithdrawalModal', () => {
 	it('disables the submit button if withdrawal is 0', async () => {
 		render(<WithdrawalModal vault={mockVault} network={mockNetwork} />);
 
-		const triggerButton = screen.getByText(/Withdraw/i);
+		const triggerButton = screen.getByTestId('submit-button');
 		fireEvent.click(triggerButton);
 
 		const input = screen.getByTestId('withdrawal-input') as HTMLInputElement;

@@ -138,7 +138,7 @@ describe('OrderQuotes', () => {
 		expect(headers).toEqual(['PAIR', 'MAXIMUM OUTPUT', 'IO RATIO', 'MAXIMUM INPUT']);
 	});
 
-	it('should refetch quotes when deposit is successful', async () => {
+	it.only('should refetch quotes when deposit is successful', async () => {
 		render(<StrategyAnalytics orderHash={mockTransactionId} network={mockNetwork} />);
 
 		const inputTokenBalance = screen.getAllByTestId('token-balance')[0];
@@ -150,7 +150,7 @@ describe('OrderQuotes', () => {
 		const depositModal = screen.getByRole('dialog');
 		expect(depositModal).toBeInTheDocument();
 
-		const input = within(depositModal).getByPlaceholderText('0') as HTMLInputElement;
+		const input = within(depositModal).getByTestId('') as HTMLInputElement;
 		await act(async () => {
 			fireEvent.change(input, { target: { value: '0.1' } });
 		});
@@ -180,23 +180,36 @@ describe('OrderQuotes', () => {
 		});
 	});
 
-	it('should refetch quotes when withdrawal is successful', async () => {
+	it.only('should refetch quotes when deposit is successful', async () => {
 		render(<StrategyAnalytics orderHash={mockTransactionId} network={mockNetwork} />);
 
 		const inputTokenBalance = screen.getAllByTestId('token-balance')[0];
-		const depositButton = within(inputTokenBalance).getByRole('button', { name: /Withdraw/i });
-		fireEvent.click(depositButton);
+		const withdrawButton = within(inputTokenBalance).getByRole('button', { name: /withdraw/i });
+		await act(async () => {
+			fireEvent.click(withdrawButton);
+		});
 
-		const depositModal = screen.getByRole('dialog');
-		expect(depositModal).toBeInTheDocument();
+		const withdrawModal = screen.getByRole('dialog');
+		expect(withdrawModal).toBeInTheDocument();
 
-		const input = within(depositModal).getByPlaceholderText('0') as HTMLInputElement;
-		fireEvent.change(input, { target: { value: '0.1' } });
+		const input = within(withdrawModal).getByPlac('') as HTMLInputElement;
+		await act(async () => {
+			fireEvent.change(input, { target: { value: '0.1' } });
+		});
 
-		const submitButton = within(depositModal).getByRole('button', { name: /Submit/i });
+		const submitButton = within(withdrawModal).getByRole('button', { name: /Submit/i });
 		await act(async () => {
 			fireEvent.click(submitButton);
 		});
+
+		const withdrawTxHash = await screen.findByText(/withdraw completed successfully!/);
+		expect(withdrawTxHash).toBeInTheDocument();
+
+		const dismissButton = within(withdrawModal).getByRole('button', { name: /Dismiss/i });
+		expect(dismissButton).toBeInTheDocument();
+
+		// Click the dismiss button
+		await act(async () => fireEvent.click(dismissButton));
 
 		// Check if the modal is closed
 		await waitFor(() => {

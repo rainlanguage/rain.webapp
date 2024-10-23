@@ -90,6 +90,10 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 		}
 	}, [withdrawalAmount]);
 
+	useEffect(() => {
+		console.log(withdrawalAmount, typeof withdrawalAmount);
+	}, [withdrawalAmount]);
+
 	const withdraw = async (amount: string) => {
 		if (!address && !connectModalOpen) {
 			openConnectModal?.();
@@ -119,7 +123,7 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 	};
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog open={open} onOpenChange={setOpen} data-testid="withdraw-modal">
 			<DialogTrigger>
 				<span
 					className={cn(

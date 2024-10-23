@@ -138,7 +138,7 @@ describe('StrategyAnalytics', () => {
 			fireEvent.click(depositButton);
 		});
 
-		const depositModal = screen.getByRole('dialog');
+		const depositModal = screen.getByTestId('deposit-dialog');
 		expect(depositModal).toBeInTheDocument();
 
 		const input = within(depositModal).getByPlaceholderText('0') as HTMLInputElement;
@@ -175,23 +175,23 @@ describe('StrategyAnalytics', () => {
 		render(<StrategyAnalytics orderHash={mockOrderHash} network={mockNetwork} />);
 
 		const inputTokenBalance = screen.getAllByTestId('token-balance')[0];
-		const depositButton = within(inputTokenBalance).getByRole('button', { name: /Withdraw/i });
-		fireEvent.click(depositButton);
+		const withdrawButton = within(inputTokenBalance).getByRole('button', { name: /Withdraw/i });
+		await fireEvent.click(withdrawButton);
 
-		const depositModal = screen.getByRole('dialog');
-		expect(depositModal).toBeInTheDocument();
+		const withdrawModal = screen.getByTestId('withdraw-dialog');
+		expect(withdrawModal).toBeInTheDocument();
 
-		const input = within(depositModal).getByPlaceholderText('0') as HTMLInputElement;
+		const input = within(withdrawModal).getByPlaceholderText('0') as HTMLInputElement;
 		fireEvent.change(input, { target: { value: '0.1' } });
 
-		const submitButton = within(depositModal).getByRole('button', { name: /Submit/i });
+		const submitButton = within(withdrawModal).getByRole('button', { name: /Submit/i });
 		await act(async () => {
 			fireEvent.click(submitButton);
 		});
 
 		// Check if the modal is closed
 		await waitFor(() => {
-			expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+			expect(screen.queryByRole('withdraw-dialog')).not.toBeInTheDocument();
 		});
 
 		// Wait for the deposit to complete

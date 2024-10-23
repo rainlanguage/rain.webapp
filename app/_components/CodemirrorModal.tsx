@@ -18,13 +18,16 @@ interface CodemirrorModalProps {
 }
 
 export const CodemirrorModal = ({ currentState, dotrainText, yamlData }: CodemirrorModalProps) => {
+	console.log(yamlData);
 	const { scenario } = getOrderDetailsGivenDeployment(
 		yamlData,
 		currentState.deploymentOption?.deployment || ''
 	);
+	console.log('scen', scenario);
 	const [composedDotrainText, setComposedDotrainText] = useState<string>('');
 
 	const getComposedDotrainText = async () => {
+		console.log('currentState', currentState.bindings);
 		const convertedBindings = Object.keys(currentState.bindings).reduce((acc, key) => {
 			const value = currentState.bindings[key];
 			if (typeof value !== 'number' || isNaN(value)) {
@@ -53,8 +56,7 @@ export const CodemirrorModal = ({ currentState, dotrainText, yamlData }: Codemir
 				<Button
 					color="primary"
 					size="sm"
-					className=" from-blue-600 to-violet-600 bg-gradient-to-br"
-				>
+					className=" from-blue-600 to-violet-600 bg-gradient-to-br">
 					Show Rainlang
 				</Button>
 			</DialogTrigger>

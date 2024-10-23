@@ -78,6 +78,9 @@ export const SubmissionModal = ({
 	const router = useRouter();
 
 	const account = useAccount();
+	useEffect(() => {
+		console.log(account);
+	}, [account]);
 	const currentWalletChainId = useChainId();
 	const { switchChainAsync } = useSwitchChain();
 	const { writeContractAsync } = useWriteContract();
@@ -106,6 +109,7 @@ export const SubmissionModal = ({
 
 	const [open, setOpen] = useState(false);
 	const [showFinalMessage, setShowFinalMessage] = useState(false);
+	const [transactionHash, setTransactionHash] = useState<string | null>(null);
 
 	useEffect(() => {
 		console.log(submissionState);
@@ -257,19 +261,22 @@ export const SubmissionModal = ({
 			const convertedBindings = Object.keys(currentState.bindings).reduce((acc, key) => {
 				const value = currentState.bindings[key];
 				if (typeof value !== 'number' || isNaN(value)) {
-					return { ...acc, [key]: 0 };
+					return { ...acc, [key]: value };
 				}
-				return { ...acc, [key]: 0 };
+				return { ...acc, [key]: value };
 			}, {});
 			scenario.bindings = {
 				...scenario.bindings,
 				...convertedBindings
 			};
-			console.log(scenario.bindings, convertedBindings);
-
+			// Get multicall data for addOrder and deposit
+			console.log('getting dotraintext');
 			const updatedDotrainText = yaml.dump(yamlData) + '---' + dotrainText.split('---')[1];
-
-			console.log('tokenDeposits', tokenDeposits);
+			console.log('dotraintext');
+			tokenDeposits.map((deposit) => {
+				console.log(deposit);
+				return { ...deposit, amount: 0 };
+			});
 
 			const { addOrderCalldata, depositCalldatas } = await getSubmissionTransactionData(
 				currentState,
@@ -289,14 +296,14 @@ export const SubmissionModal = ({
 					args: [[addOrderCalldata, ...depositCalldatas]]
 				});
 				setSubmissionState(SubmissionStatus.WaitingForDeploymentConfirmation);
+				setTransactionHash(deployTx);
 
 				// Wait for deployment transaction confirmation
 				const receipt = await waitForTransactionReceipt(config.getClient(), {
 					hash: deployTx,
 					confirmations: 4
 				});
-
-				console.log('RECEIPT!', receipt);
+				console.log('RECEIPT', receipt);
 
 				setSubmissionState(SubmissionStatus.Done);
 			} catch (error) {
@@ -480,9 +487,18 @@ export const SubmissionModal = ({
 									)}
 								</div>
 							</div>
+							{transactionHash && (
+								<Button
+									className="mt-4"
+									target="_blank"
+									href={`${account?.chain?.blockExplorers?.default.url}/tx/${transactionHash}`}>
+									View deployment transaction
+								</Button>
+							)}
 						</div>
 					</div>
 				)}
+
 				{showFinalMessage ? (
 					<div className="flex flex-col items-start transition-opacity duration-1500 animate-fade-in gap-y-4">
 						<DialogTitle className="w-full font-light text-2xl">Your strategy is live!</DialogTitle>
@@ -490,6 +506,12 @@ export const SubmissionModal = ({
 							It will continue to trade until removed. If you&apos;re interested in creating your
 							own strategies from scratch, try <a href="https://docs.rainlang.xyz"> Raindex.</a>
 						</div>
+						<Button
+							className="mt-4"
+							target="_blank"
+							href={`${account?.chain?.blockExplorers?.default.url}/tx/${transactionHash}`}>
+							View deployment transaction
+						</Button>
 						<Button
 							className="mt-4"
 							onClick={() => router.push(`${window.location.origin}/my-strategies`)}>

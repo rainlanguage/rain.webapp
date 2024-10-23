@@ -18,19 +18,19 @@ export const getSubmissionTransactionData = async (
 	dotrainText: string,
 	tokenDeposits: TokenDeposit[]
 ) => {
-	console.log('1, getting submission tx data');
+	console.log('1, addOrderCalldata');
 	const addOrderCalldata = await getAddOrderCalldata(
 		dotrainText,
 		currentState.deploymentOption?.deployment || ''
 	);
-	console.log('2, call data order added');
+	console.log('2, decodedAddOrderCalldata');
 
 	// Get the vault ids from the decoded calldata
 	const decodedAddOrderCalldata = decodeFunctionData({
 		data: toHex(addOrderCalldata),
 		abi: orderBookJson.abi
 	}) as DecodedAddOrderCallData;
-	console.log('3, call data order decoded');
+	console.log('3, mapping depositCallDatas');
 
 	const depositCalldatas = tokenDeposits.map((tokenDeposit) => {
 		const depositAmount = parseUnits(String(tokenDeposit.amount), tokenDeposit.tokenInfo.decimals);

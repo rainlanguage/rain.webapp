@@ -314,9 +314,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 								<Button
 									data-testid="submit-button"
 									type="submit"
-									disabled={
-										!!error || depositAmount.toString() === '0' || depositAmount.toString() === ''
-									}
+									disabled={!!error || Number(depositAmount) === 0}
 									onClick={() =>
 										console.log(
 											rawAmount,

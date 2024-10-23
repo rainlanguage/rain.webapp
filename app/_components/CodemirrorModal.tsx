@@ -7,6 +7,8 @@ import { DotrainOrder } from '@rainlanguage/orderbook/common';
 import CodeMirror from '@uiw/react-codemirror';
 import { DialogClose, DialogTrigger } from '@radix-ui/react-dialog';
 import { RainlangLR } from 'codemirror-rainlang';
+import { getOrderDetailsGivenDeployment } from '../_services/parseDotrainFrontmatter';
+import yaml from 'js-yaml';
 
 interface CodemirrorModalProps {
 	yamlData: YamlData;
@@ -15,14 +17,27 @@ interface CodemirrorModalProps {
 	setError: React.Dispatch<SetStateAction<string | React.ReactElement | null>>;
 }
 
-export const CodemirrorModal = ({ currentState, dotrainText }: CodemirrorModalProps) => {
+export const CodemirrorModal = ({ currentState, dotrainText, yamlData }: CodemirrorModalProps) => {
+	const { scenario } = getOrderDetailsGivenDeployment(
+		yamlData,
+		currentState.deploymentOption?.deployment || ''
+	);
 	const [composedDotrainText, setComposedDotrainText] = useState<string>('');
 
 	const getComposedDotrainText = async () => {
-		console.log('dotrainText', dotrainText);
-		console.log(currentState.deploymentOption?.deployment);
-		const dotrainOrder = await DotrainOrder.create(dotrainText);
-		console.log('ORDER', dotrainOrder);
+		const convertedBindings = Object.keys(currentState.bindings).reduce((acc, key) => {
+			const value = currentState.bindings[key];
+			if (typeof value !== 'number' || isNaN(value)) {
+				return { ...acc, [key]: value };
+			}
+			return { ...acc, [key]: Number(value) };
+		}, {});
+		scenario.bindings = {
+			...scenario.bindings,
+			...convertedBindings
+		};
+		const updatedDotrainText = yaml.dump(yamlData) + '---' + dotrainText.split('---')[1];
+		const dotrainOrder = await DotrainOrder.create(updatedDotrainText);
 
 		setComposedDotrainText(
 			await dotrainOrder.composeDeploymentToRainlang(

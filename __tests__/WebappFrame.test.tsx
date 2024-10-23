@@ -8,17 +8,13 @@ import { getTokenInfos } from '@/app/_services/getTokenInfo';
 import { compress } from '@/app/_services/compress';
 import userEvent from '@testing-library/user-event';
 import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
-import { getOrderDetailsGivenDeployment } from '@/app/_services/parseDotrainFrontmatter';
-import { parsedDotrainTextFixture } from '@/__fixtures__/parsedDotrainTextFixture';
-import { decompress } from '@/app/_services/compress';
 
-const searchParamsWithState =
-	'H4sIAAAAAAAAE8WSXW%2BbMBSG%2F4p1tItNIhMQTIBLQlArdR9qWvViy4XBh9Yq2Mg2S6Iq%2F30CmuZj6bS7IUDCPrzned%2FjFzBWM4uP26%2BsQUggFxvkpBaNsOC8bWZoSi1aK5Q8rSFKc9RkX%2FdTggNlpzVKu7TYQgIafwlcgwMc21ptG5T226vQy9EaJFAwg5M12qdJZ3gJDsgRKe225GFxd0XWwj6R%2B2U2J0qSlBn8PMgeo12orZQm1UDcalHi%2Fl8i0a6Vfh41WmWENZD8eAGrnlHucV5JGiEhcR1oNRoc6lzH6%2B%2FhGV%2FuardyoBJY81GoEJIL%2BQgJDO0nQh08DYwjj5Aj58cPpEVNFndXn%2FYde9ndaufspUyf2ZtYAv0%2B7C7xX8tK9cVb1tSvkz32wzjXaAwk4G6i6ZRGcVXyEHkRohtVQTkrpz4PqplX0KDgzPVjbzrkVIqG1QaS0AGzbQpVQwI9%2FcHZ%2FTIjcyVkz8Ua1fWj9dw%2BmqKzVsnv7BGHLMfPL2zT7ztgcWOvZdvZG1ZgLwsOoNZKQyK7unZAmAcsWNtCYnWHzsHnaPvcaX%2BQzpwGvvsvV3ji1IuOrPZjOxqiZm2LnCzsE2rYOf857pP2Vc00TtZVrc%2F6e1nklkGcFumce3M39rxpEIY0TKkfZ3m8oKWfz6Ip%2F0sI%2Bc3tnyHkfcPLFOYChY%2BhS4vScwOMp2lA0WNZHOcxUkqrkMYu9Uo%2FTd%2BnMCcUS8uee4ib28sI2BluzxjiMA08P4qz2A2CII0Yz%2BgMw9wPaZZStohC6mW5H787CbxfZncHhoVUZmvIsLhb7X4DMW00mVsFAAA%3D';
+const mockedSearchParams = 'mockedSearchParams';
 
 const { useRouter, useSearchParams } = vi.hoisted(() => {
 	const mockedRouterReplace = vi.fn();
 	const mockedGetSearchParams = vi.fn((param) => {
-		if (param === 'currentState') return searchParamsWithState;
+		if (param === 'currentState') return mockedSearchParams;
 		return null;
 	});
 	return {

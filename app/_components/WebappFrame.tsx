@@ -70,7 +70,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	const [inputText, setInputText] = useState<string>('');
 
 	const searchParams = useSearchParams();
-	console.log('SEARCHPARAMS', searchParams);
 
 	const getUrlState = async () => {
 		const encodedState = searchParams.get('currentState');

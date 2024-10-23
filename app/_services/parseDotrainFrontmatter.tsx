@@ -19,6 +19,16 @@ export const getOrderDetailsGivenDeployment = (yamlData: YamlData, deploymentOpt
 		.join('.');
 	const scenario = _.get(yamlData.scenarios, fullScenarioPath);
 
+	console.log({
+		deployment,
+		order,
+		orderBook,
+		orderBookAddress,
+		network,
+		tokens,
+		scenario
+	});
+
 	return {
 		deployment,
 		order,

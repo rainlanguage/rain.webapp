@@ -3,15 +3,22 @@ import WebappFrame from '@/app/_components/WebappFrame';
 import { Mock, vi } from 'vitest';
 import { generateButtonsData } from '@/app/_services/buttonsData';
 import { fixturedTokenInfos } from '@/__fixtures__/tokenInfos';
-import { mockFixedLimit } from '@/__fixtures__/fixed-limit';
+import { fixedLimitFixture } from '@/__fixtures__/fixed-limit';
 import { getTokenInfos } from '@/app/_services/getTokenInfo';
 import { compress } from '@/app/_services/compress';
 import userEvent from '@testing-library/user-event';
+import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
+import { getOrderDetailsGivenDeployment } from '@/app/_services/parseDotrainFrontmatter';
+import { parsedDotrainTextFixture } from '@/__fixtures__/parsedDotrainTextFixture';
+import { decompress } from '@/app/_services/compress';
+
+const searchParamsWithState =
+	'H4sIAAAAAAAAE8WSXW%2BbMBSG%2F4p1tItNIhMQTIBLQlArdR9qWvViy4XBh9Yq2Mg2S6Iq%2F30CmuZj6bS7IUDCPrzned%2FjFzBWM4uP26%2BsQUggFxvkpBaNsOC8bWZoSi1aK5Q8rSFKc9RkX%2FdTggNlpzVKu7TYQgIafwlcgwMc21ptG5T226vQy9EaJFAwg5M12qdJZ3gJDsgRKe225GFxd0XWwj6R%2B2U2J0qSlBn8PMgeo12orZQm1UDcalHi%2Fl8i0a6Vfh41WmWENZD8eAGrnlHucV5JGiEhcR1oNRoc6lzH6%2B%2FhGV%2FuardyoBJY81GoEJIL%2BQgJDO0nQh08DYwjj5Aj58cPpEVNFndXn%2FYde9ndaufspUyf2ZtYAv0%2B7C7xX8tK9cVb1tSvkz32wzjXaAwk4G6i6ZRGcVXyEHkRohtVQTkrpz4PqplX0KDgzPVjbzrkVIqG1QaS0AGzbQpVQwI9%2FcHZ%2FTIjcyVkz8Ua1fWj9dw%2BmqKzVsnv7BGHLMfPL2zT7ztgcWOvZdvZG1ZgLwsOoNZKQyK7unZAmAcsWNtCYnWHzsHnaPvcaX%2BQzpwGvvsvV3ji1IuOrPZjOxqiZm2LnCzsE2rYOf857pP2Vc00TtZVrc%2F6e1nklkGcFumce3M39rxpEIY0TKkfZ3m8oKWfz6Ip%2F0sI%2Bc3tnyHkfcPLFOYChY%2BhS4vScwOMp2lA0WNZHOcxUkqrkMYu9Uo%2FTd%2BnMCcUS8uee4ib28sI2BluzxjiMA08P4qz2A2CII0Yz%2BgMw9wPaZZStohC6mW5H787CbxfZncHhoVUZmvIsLhb7X4DMW00mVsFAAA%3D';
 
 const { useRouter, useSearchParams } = vi.hoisted(() => {
 	const mockedRouterReplace = vi.fn();
 	const mockedGetSearchParams = vi.fn((param) => {
-		if (param === 'currentState') return 'mockEncodedStateString';
+		if (param === 'currentState') return searchParamsWithState;
 		return null;
 	});
 	return {
@@ -20,12 +27,23 @@ const { useRouter, useSearchParams } = vi.hoisted(() => {
 	};
 });
 
+vi.mock('@/app/_services/parseDotrainFrontmatter', () => ({
+	getOrderDetailsGivenDeployment: vi.fn()
+}));
+
+vi.mock('wagmi', () => ({
+	useAccount: vi.fn(),
+	useSwitchChain: vi.fn(),
+	useWriteContract: vi.fn(),
+	useChainId: vi.fn()
+}));
+
 vi.mock('next/navigation', async (importActual) => {
 	const actual = await importActual();
 	return {
 		...(actual as object),
 		useRouter,
-		useSearchParams: vi.fn()
+		useSearchParams
 	};
 });
 
@@ -44,6 +62,9 @@ vi.mock('@/app/_services/compress', () => ({
 describe('WebappFrame Component', () => {
 	beforeEach(() => {
 		vi.resetAllMocks();
+		(useAccount as Mock).mockReturnValue({ address: '0x123', chain: { id: 1 } });
+		(useSwitchChain as Mock).mockReturnValue({ switchChainAsync: vi.fn() });
+		(useWriteContract as Mock).mockReturnValue({ writeContractAsync: vi.fn() });
 	});
 
 	it('shows input field when only one "Custom" button is present', async () => {
@@ -51,14 +72,13 @@ describe('WebappFrame Component', () => {
 		(generateButtonsData as Mock).mockReturnValue([
 			{ buttonValue: 'customValue', buttonText: 'Custom' }
 		]);
-		render(<WebappFrame dotrainText={mockFixedLimit} deploymentOption="" />);
+		render(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="" />);
 		await waitFor(() => {
 			expect(screen.getByTestId('input')).toBeInTheDocument();
 		});
 	});
 
-	it.only('updates the URL with the current state', async () => {
-		(useSearchParams as Mock).mockReturnValue({ get: () => null });
+	it('updates the URL with the current state', async () => {
 		const mockCompressedState = 'mockCompressedState';
 		(compress as Mock).mockResolvedValue(mockCompressedState);
 		const replaceStateSpy = vi.spyOn(window.history, 'replaceState');
@@ -67,7 +87,7 @@ describe('WebappFrame Component', () => {
 			{ buttonValue: 'customValue', buttonText: 'Custom' }
 		]);
 
-		render(<WebappFrame dotrainText={mockFixedLimit} deploymentOption="" />);
+		render(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="" />);
 
 		await waitFor(() => {
 			expect(screen.getByTestId('input')).toBeInTheDocument();
@@ -86,8 +106,6 @@ describe('WebappFrame Component', () => {
 		await waitFor(() => {
 			expect(replaceStateSpy).toHaveBeenCalled();
 			expect(replaceStateSpy).toHaveBeenCalledTimes(1);
-			const [state, , url] = replaceStateSpy.mock.calls[0];
-			console.log('replaceStateSpy args:', { state, url });
 		});
 		replaceStateSpy.mockRestore();
 	});
@@ -95,82 +113,33 @@ describe('WebappFrame Component', () => {
 	it('updates the URL with the current state when a preset button is clicked', async () => {
 		const mockCompressedState = 'mockCompressedState';
 
-		// Mocking the compress and token info services
 		(compress as Mock).mockResolvedValue(mockCompressedState);
 		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
 
-		// Mock the buttons data that will be rendered
 		(generateButtonsData as Mock).mockReturnValue([
 			{ buttonValue: 'presetValue', buttonText: 'Preset' },
 			{ buttonValue: 'presetValue2', buttonText: 'Preset2' }
 		]);
 
-		// Spy on window.history.replaceState
 		const replaceStateSpy = vi.spyOn(window.history, 'replaceState');
+		render(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="" />);
 
-		// Render the component
-		render(<WebappFrame dotrainText={mockFixedLimit} deploymentOption="" />);
-
-		// Wait for the preset button to be in the document
 		await waitFor(() => {
-			expect(screen.getByText('Preset')).toBeInTheDocument();
+			expect(screen.getByTestId('button-Preset')).toBeInTheDocument();
 		});
 
-		// Simulate clicking the preset button
 		act(() => {
 			const presetButton = screen.getByText('Preset');
 			presetButton.click();
 		});
 
-		// Wait for URL updates to be triggered
 		await waitFor(() => {
 			expect(replaceStateSpy).toHaveBeenCalled();
+			expect(replaceStateSpy).toHaveBeenCalledTimes(1);
 			const url = new URL(window.location.href);
 			expect(url.searchParams.get('currentState')).toEqual(mockCompressedState);
 		});
 
-		// Clean up mock
-		replaceStateSpy.mockRestore();
-	});
-
-	it('updates the URL with the current state when a preset button is clicked', async () => {
-		const mockCompressedState = 'mockCompressedState';
-
-		// Mocking the compress and token info services
-		(compress as Mock).mockResolvedValue(mockCompressedState);
-		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
-
-		// Mock the buttons data that will be rendered
-		(generateButtonsData as Mock).mockReturnValue([
-			{ buttonValue: 'presetValue', buttonText: 'Preset' },
-			{ buttonValue: 'presetValue2', buttonText: 'Preset2' }
-		]);
-
-		// Spy on window.history.replaceState
-		const replaceStateSpy = vi.spyOn(window.history, 'replaceState');
-
-		// Render the component
-		render(<WebappFrame dotrainText={mockFixedLimit} deploymentOption="" />);
-
-		// Wait for the preset button to be in the document
-		await waitFor(() => {
-			expect(screen.getByText('Preset')).toBeInTheDocument();
-		});
-
-		// Simulate clicking the preset button
-		act(() => {
-			const presetButton = screen.getByText('Preset');
-			presetButton.click();
-		});
-
-		// Wait for URL updates to be triggered
-		await waitFor(() => {
-			expect(replaceStateSpy).toHaveBeenCalled();
-			const url = new URL(window.location.href);
-			expect(url.searchParams.get('currentState')).toEqual(mockCompressedState);
-		});
-
-		// Clean up mock
 		replaceStateSpy.mockRestore();
 	});
 });

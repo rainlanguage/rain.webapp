@@ -25,6 +25,7 @@ interface props {
 }
 
 const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
+	console.log(deploymentOption);
 	const yamlData = yaml.load(dotrainText.split('---')[0], {
 		schema: FailsafeSchemaWithNumbers
 	}) as YamlData;
@@ -73,7 +74,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	const searchParams = useSearchParams();
 
 	const updateUrl = async (updatedState: FrameState) => {
-		console.log(updatedState);
 		setIsInternalUpdate(true);
 		const url = new URL(window.location.href);
 		const jsonString = JSON.stringify(updatedState);
@@ -192,6 +192,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	const buttonsData = generateButtonsData(yamlData, currentState);
+	console.log(buttonsData);
 
 	useEffect(() => {
 		const filteredButtons = buttonsData.filter(
@@ -231,7 +232,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			<div className="flex flex-wrap gap-2 justify-center md:pb-20 pb-8 px-8 pt-10">
 				{buttonsData.map((buttonData, i: number) => {
 					return buttonData.buttonValue === 'finalSubmit' ? (
-						<div key={i} className="flex gap-2 flex-wrap justify-center">
+						<div key={i} data-testid="final-submit" className="flex gap-2 flex-wrap justify-center">
 							<SubmissionModal
 								key={buttonData.buttonText}
 								buttonText={buttonData.buttonText}

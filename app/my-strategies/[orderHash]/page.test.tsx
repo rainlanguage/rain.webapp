@@ -141,7 +141,7 @@ describe('StrategyAnalytics', () => {
 		const depositModal = screen.getByTestId('deposit-dialog');
 		expect(depositModal).toBeInTheDocument();
 
-		const input = within(depositModal).getByPlaceholderText('0') as HTMLInputElement;
+		const input = within(depositModal).getByTestId('deposit-input') as HTMLInputElement;
 		await act(async () => {
 			fireEvent.change(input, { target: { value: '0.1' } });
 		});

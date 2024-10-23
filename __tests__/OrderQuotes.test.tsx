@@ -150,7 +150,7 @@ describe('OrderQuotes', () => {
 		const depositModal = screen.getByRole('dialog');
 		expect(depositModal).toBeInTheDocument();
 
-		const input = within(depositModal).getByTestId('') as HTMLInputElement;
+		const input = within(depositModal).getByTestId('deposit-input') as HTMLInputElement;
 		await act(async () => {
 			fireEvent.change(input, { target: { value: '0.1' } });
 		});

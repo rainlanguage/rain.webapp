@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { vi } from 'vitest';
 import StrategyAnalytics from '@/app/_components/StrategyAnalytics';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { act } from 'react';
 import { quote } from '@rainlanguage/orderbook';
 import QuotesTable from '@/app/_components/QuotesTable';
@@ -10,7 +10,12 @@ vi.mock('@tanstack/react-query', async () => {
 	const actual = await vi.importActual('@tanstack/react-query');
 	return {
 		...actual,
-		useQuery: vi.fn()
+		useQuery: vi.fn(),
+		useQueryClient: vi.fn(() => ({
+			queryClient: {
+				refetchQueries: vi.fn()
+			}
+		}))
 	};
 });
 
@@ -120,6 +125,9 @@ describe('OrderQuotes', () => {
 			status: 'success',
 			fetchStatus: 'idle'
 		} as any);
+		vi.mocked(useQueryClient).mockReturnValue({
+			refetchQueries: vi.fn()
+		} as any);
 		vi.clearAllMocks();
 	});
 
@@ -131,7 +139,7 @@ describe('OrderQuotes', () => {
 	});
 
 	it('should refetch quotes when deposit is successful', async () => {
-		render(<StrategyAnalytics transactionId={mockTransactionId} network={mockNetwork} />);
+		render(<StrategyAnalytics orderHash={mockTransactionId} network={mockNetwork} />);
 
 		const inputTokenBalance = screen.getAllByTestId('token-balance')[0];
 		const depositButton = within(inputTokenBalance).getByRole('button', { name: /Deposit/i });
@@ -173,7 +181,7 @@ describe('OrderQuotes', () => {
 	});
 
 	it('should refetch quotes when withdrawal is successful', async () => {
-		render(<StrategyAnalytics transactionId={mockTransactionId} network={mockNetwork} />);
+		render(<StrategyAnalytics orderHash={mockTransactionId} network={mockNetwork} />);
 
 		const inputTokenBalance = screen.getAllByTestId('token-balance')[0];
 		const depositButton = within(inputTokenBalance).getByRole('button', { name: /Withdraw/i });

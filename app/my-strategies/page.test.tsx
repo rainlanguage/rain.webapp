@@ -21,7 +21,7 @@ vi.mock('next/navigation', () => ({
 }));
 
 describe('Page', () => {
-	it('navigates to the order details page when the details button is clicked', () => {
+	it('navigates to the order details page when the row is clicked', () => {
 		(useAccount as Mock).mockReturnValue({ address: '0x123', isConnected: true });
 		(useQuery as Mock).mockReturnValue({
 			data: [
@@ -41,7 +41,8 @@ describe('Page', () => {
 
 		render(<Page />);
 
-		const linkElement = screen.getByRole('link', { name: /details/i });
+		// Select the link using the data-testid attribute
+		const linkElement = screen.getByTestId('order-row');
 
 		expect(linkElement).toHaveAttribute(
 			'href',

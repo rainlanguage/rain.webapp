@@ -257,21 +257,19 @@ export const SubmissionModal = ({
 			const convertedBindings = Object.keys(currentState.bindings).reduce((acc, key) => {
 				const value = currentState.bindings[key];
 				if (typeof value !== 'number' || isNaN(value)) {
-					return { ...acc, [key]: value };
+					return { ...acc, [key]: 0 };
 				}
-				return { ...acc, [key]: Number(value) };
+				return { ...acc, [key]: 0 };
 			}, {});
 			scenario.bindings = {
 				...scenario.bindings,
 				...convertedBindings
 			};
+			console.log(scenario.bindings, convertedBindings);
 
-			// Get multicall data for addOrder and deposit
-			console.log('getting dotraintext');
 			const updatedDotrainText = yaml.dump(yamlData) + '---' + dotrainText.split('---')[1];
-			console.log('dotraintext');
 
-			console.log('getting submission tx data');
+			console.log('tokenDeposits', tokenDeposits);
 
 			const { addOrderCalldata, depositCalldatas } = await getSubmissionTransactionData(
 				currentState,
@@ -279,28 +277,32 @@ export const SubmissionModal = ({
 				tokenDeposits
 			);
 
-			console.log(' tx data');
-
 			// Send deployment transaction
 
 			setSubmissionState(SubmissionStatus.DeployingStrategy);
 
-			const deployTx = await writeContractAsync({
-				address: orderBookAddress,
-				abi: orderBookJson.abi,
-				functionName: 'multicall',
-				args: [[addOrderCalldata, ...depositCalldatas]]
-			});
+			try {
+				const deployTx = await writeContractAsync({
+					address: orderBookAddress,
+					abi: orderBookJson.abi,
+					functionName: 'multicall',
+					args: [[addOrderCalldata, ...depositCalldatas]]
+				});
+				setSubmissionState(SubmissionStatus.WaitingForDeploymentConfirmation);
 
-			setSubmissionState(SubmissionStatus.WaitingForDeploymentConfirmation);
+				// Wait for deployment transaction confirmation
+				const receipt = await waitForTransactionReceipt(config.getClient(), {
+					hash: deployTx,
+					confirmations: 4
+				});
 
-			// Wait for deployment transaction confirmation
-			await waitForTransactionReceipt(config.getClient(), {
-				hash: deployTx,
-				confirmations: 4
-			});
+				console.log('RECEIPT!', receipt);
 
-			setSubmissionState(SubmissionStatus.Done);
+				setSubmissionState(SubmissionStatus.Done);
+			} catch (error) {
+				console.log('ERROR IN DEPLOY!', error);
+			}
+
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (e: any) {
 			if (
@@ -394,7 +396,8 @@ export const SubmissionModal = ({
 								<div className="flex items-center my-4">
 									<div
 										className={`text-2xl text-white rounded-full flex items-center justify-center mr-4 transition-all ${
-											submissionState === SubmissionStatus.Pending
+											submissionState === SubmissionStatus.Pending ||
+											submissionState === SubmissionStatus.Idle
 												? 'bg-gray-400 w-10 h-10'
 												: submissionState === SubmissionStatus.CheckingBalances
 													? 'bg-amber-500 w-12 h-12'

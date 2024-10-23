@@ -283,7 +283,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 											<FormControl>
 												<Input
 													data-testid={'deposit-input'}
-													placeholder="0"
+													placeholder="Enter a number greater than 0"
 													{...field}
 													type="text"
 													inputMode="decimal"
@@ -302,7 +302,11 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 										</FormItem>
 									)}
 								/>
-								<Button type="submit" disabled={!!error}>
+								<Button
+									data-testid="submit-button"
+									type="submit"
+									disabled={!!error || Number(depositAmount) === 0}
+								>
 									Submit
 								</Button>
 							</form>

@@ -1,66 +1,54 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import WebappFrame from '@/app/_components/WebappFrame';
-import fs from 'fs';
-import path from 'path';
 import { Mock, vi } from 'vitest';
-import { useSearchParams } from 'next/navigation';
-import { userEvent } from '@testing-library/user-event';
+import { generateButtonsData } from '@/app/_services/buttonsData';
+import { fixturedTokenInfos } from '@/__fixtures__/tokenInfos';
+import { mockFixedLimit } from '@/__fixtures__/fixed-limit';
+import { getTokenInfos } from '@/app/_services/getTokenInfo';
+
+const { useRouter, useSearchParams } = vi.hoisted(() => {
+	const mockedRouterReplace = vi.fn();
+	const mockedGetSearchParams = vi.fn((param) => {
+		if (param === 'currentState') return 'mockEncodedStateString';
+		return null;
+	});
+
+	return {
+		useRouter: () => ({ replace: mockedRouterReplace }),
+		useSearchParams: () => ({ get: mockedGetSearchParams })
+	};
+});
 
 vi.mock('next/navigation', async (importActual) => {
 	const actual = await importActual();
 	return {
 		...(actual as object),
-		useSearchParams: vi.fn()
+		useRouter,
+		useSearchParams
 	};
 });
 
 vi.mock('@/app/_services/getTokenInfo', () => ({
-	getTokenInfos: vi.fn().mockResolvedValue([
-		{
-			decimals: 18,
-			symbol: 'WETH',
-			name: 'Wrapped Ether',
-			yamlName: 'weth',
-			address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
-		},
-		{
-			decimals: 6,
-			symbol: 'USDC',
-			name: 'USD Coin',
-			yamlName: 'usdc',
-			address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
-		}
-	])
+	getTokenInfos: vi.fn()
 }));
 
-describe('WebappFrame', () => {
-	it('renders the correct text input placeholders', async () => {
-		const filePath = path.join(
-			process.cwd(),
-			'public',
-			'_strategies',
-			'raindex',
-			'2-dynamic-spread',
-			'dynamic-spread.rain'
-		);
-		(useSearchParams as Mock).mockReturnValue(new URLSearchParams({}));
-		const dotrainText = fs.readFileSync(filePath, 'utf8');
+vi.mock('@/app/_services/buttonsData', () => ({
+	generateButtonsData: vi.fn()
+}));
 
-		render(<WebappFrame dotrainText={dotrainText} deploymentOption={null} />);
+describe('WebappFrame Component', () => {
+	beforeEach(() => {
+		vi.resetAllMocks();
+	});
 
+	it('shows input field when only one "Custom" button is present', async () => {
+		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
+		(generateButtonsData as Mock).mockReturnValue([
+			{ buttonValue: 'customValue', buttonText: 'Custom' }
+		]);
+		render(<WebappFrame dotrainText={mockFixedLimit} deploymentOption="" />);
 		await waitFor(() => {
-			expect(screen.getByText(/Start/i)).toBeInTheDocument();
+			expect(screen.getByTestId('input')).toBeInTheDocument();
 		});
-		userEvent.click(screen.getByText(/Start/i));
-
-		await waitFor(() => {
-			expect(screen.getByText(/SFLR<>WFLR on Flare./i)).toBeInTheDocument();
-		});
-		const button = screen.getByText(/SFLR<>WFLR on Flare./i);
-		await waitFor(() => userEvent.click(button));
-		screen.debug();
-
-		const input = await waitFor(() => screen.getByPlaceholderText('Enter a number greater than 1'));
-		expect(input).toBeInTheDocument();
 	});
 });

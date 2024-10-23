@@ -37,7 +37,7 @@ export default function MyStrategies() {
 						</Table.Head>
 						<Table.Body>
 							{query.data.map((order: Order, i: number) => (
-								<Table.Row key={i}>
+								<Table.Row key={i} className="relative">
 									<Table.Cell>{order.network}</Table.Cell>
 									<Table.Cell>
 										{order.active ? (
@@ -66,15 +66,11 @@ export default function MyStrategies() {
 									<Table.Cell>
 										{order.trades.length === 1000 ? '>999' : order.trades.length}
 									</Table.Cell>
-									<Table.Cell>
-										<Link
-											href={`${window.location.origin}/my-strategies/${order.orderHash}-${order.network}`}
-										>
-											<button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl">
-												Details
-											</button>
-										</Link>
-									</Table.Cell>
+									<Link
+										data-testid="order-row"
+										href={`${window.location.origin}/my-strategies/${order.orderHash}-${order.network}`}
+										className="absolute inset-0"
+									/>
 								</Table.Row>
 							))}
 						</Table.Body>

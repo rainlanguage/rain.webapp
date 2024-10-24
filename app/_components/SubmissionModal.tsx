@@ -37,8 +37,8 @@ enum SubmissionStatus {
 	WaitingForApprovalConfirmation,
 	TokensApproved,
 	PreparingStrategy,
-	DeployingStrategy,
-	WaitingForDeploymentConfirmation,
+	AwaitingDeploymentConfirmation,
+	AwaitingDeploymentTx,
 	StrategyDeployed,
 	Error,
 	Done
@@ -309,6 +309,7 @@ export const SubmissionModal = ({
 			// PERFORM STRATEGY DEPLOYMENT //
 
 			try {
+				setSubmissionState(SubmissionStatus.AwaitingDeploymentConfirmation);
 				const deployTx = await writeContractAsync({
 					address: orderBookAddress,
 					abi: orderBookJson.abi,
@@ -317,7 +318,7 @@ export const SubmissionModal = ({
 				});
 
 				setTransactionHash(deployTx);
-				setSubmissionState(SubmissionStatus.WaitingForDeploymentConfirmation);
+				setSubmissionState(SubmissionStatus.AwaitingDeploymentTx);
 
 				await waitForTransactionReceipt(config.getClient(), {
 					hash: deployTx,
@@ -506,8 +507,8 @@ export const SubmissionModal = ({
 								<div
 									className={`text-2xl text-white rounded-full transition-all flex items-center justify-center mr-4 ${
 										submissionState === SubmissionStatus.PreparingStrategy ||
-										submissionState === SubmissionStatus.DeployingStrategy ||
-										submissionState === SubmissionStatus.WaitingForDeploymentConfirmation
+										submissionState === SubmissionStatus.AwaitingDeploymentConfirmation ||
+										submissionState === SubmissionStatus.AwaitingDeploymentTx
 											? 'bg-amber-500 w-12 h-12'
 											: submissionState === SubmissionStatus.Done
 												? 'bg-emerald-600 w-10 h-10'
@@ -518,9 +519,9 @@ export const SubmissionModal = ({
 								<div className="text-lg">
 									{submissionState === SubmissionStatus.PreparingStrategy ? (
 										<span className="animate-pulse">Preparing your strategy for deployment...</span>
-									) : submissionState === SubmissionStatus.DeployingStrategy ? (
+									) : submissionState === SubmissionStatus.AwaitingDeploymentConfirmation ? (
 										<span className="animate-pulse">Confirm deployment in wallet...</span>
-									) : submissionState === SubmissionStatus.WaitingForDeploymentConfirmation ? (
+									) : submissionState === SubmissionStatus.AwaitingDeploymentTx ? (
 										<span className="animate-pulse">Waiting for deployment transaction...</span>
 									) : submissionState === SubmissionStatus.Done ? (
 										'Strategy deployed'

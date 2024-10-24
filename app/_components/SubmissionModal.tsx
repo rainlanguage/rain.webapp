@@ -75,6 +75,7 @@ export const SubmissionModal = ({
 		yamlData,
 		currentState.deploymentOption?.deployment || ''
 	);
+
 	const { ...chains } = allChains;
 
 	const [submissionState, setSubmissionState] = useState<SubmissionStatus>(
@@ -153,7 +154,8 @@ export const SubmissionModal = ({
 													href={ref.url}
 													target="_blank"
 													rel="noreferrer"
-													style={{ color: 'blue', textDecoration: 'underline' }}>
+													style={{ color: 'blue', textDecoration: 'underline' }}
+												>
 													{ref.name}
 												</a>
 											</li>
@@ -256,22 +258,28 @@ export const SubmissionModal = ({
 				tokenDeposits
 			);
 
-			// Send deployment transaction
-			const deployTx = await writeContractAsync({
-				address: orderBookAddress,
-				abi: orderBookJson.abi,
-				functionName: 'multicall',
-				args: [[addOrderCalldata, ...depositCalldatas]]
-			});
+			let deployTx;
+			try {
+				deployTx = await writeContractAsync({
+					address: orderBookAddress,
+					abi: orderBookJson.abi,
+					functionName: 'multicall',
+					args: [[addOrderCalldata, ...depositCalldatas]]
+				});
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			} catch (e: any) {
+				setError(e.details || 'There was an error when confirming the transaction in your wallet.');
+				return;
+			}
 
 			setSubmissionState(SubmissionStatus.WaitingForDeploymentConfirmation);
 
-			// Wait for deployment transaction confirmation
-			await waitForTransactionReceipt(config.getClient(), {
+			const receipt = await waitForTransactionReceipt(config.getClient(), {
 				hash: deployTx,
 				confirmations: 4
 			});
 
+			if (!receipt) throw new Error('The deployment transaction reverted, please try again.');
 			setSubmissionState(SubmissionStatus.Done);
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (e: any) {
@@ -298,7 +306,8 @@ export const SubmissionModal = ({
 					onClick={() => setOpen(true)}
 					color="primary"
 					size="sm"
-					className=" from-blue-600 to-violet-600 bg-gradient-to-br">
+					className=" from-blue-600 to-violet-600 bg-gradient-to-br"
+				>
 					{buttonText}
 				</Button>
 			) : (
@@ -306,7 +315,8 @@ export const SubmissionModal = ({
 			)}
 			<DialogContent
 				onInteractOutside={resetSubmissionState}
-				className="bg-white flex flex-col justify-center w-full font-light gap-y-8">
+				className="bg-white flex flex-col justify-center w-full font-light gap-y-8"
+			>
 				{showDisclaimer && (
 					<div className="flex flex-col items-start gap-y-4">
 						<DialogTitle className="w-full font-light text-2xl">Wait!</DialogTitle>
@@ -346,7 +356,8 @@ export const SubmissionModal = ({
 							onClick={() => {
 								setShowDisclaimer(false);
 								submitStrategy();
-							}}>
+							}}
+						>
 							I understand
 						</Button>
 					</div>
@@ -360,7 +371,8 @@ export const SubmissionModal = ({
 						<div
 							className={`transition-opacity duration-1000 flex flex-col ${
 								submissionState === SubmissionStatus.Done ? 'opacity-0' : 'opacity-100'
-							}`}>
+							}`}
+						>
 							{tokenDeposits.map((deposit, i) => (
 								<div key={i} className="flex items-center my-4">
 									<div
@@ -372,7 +384,8 @@ export const SubmissionModal = ({
 													  deposit.status === TokenDepositStatus.WaitingForApprovalConfirmation
 													? 'bg-amber-500 w-12 h-12'
 													: 'bg-emerald-600 w-10 h-10'
-										}`}>
+										}`}
+									>
 										{i + 1}
 									</div>
 									<div className="text-lg">
@@ -405,7 +418,8 @@ export const SubmissionModal = ({
 												: submissionState === SubmissionStatus.Done
 													? 'bg-emerald-600 w-10 h-10'
 													: 'bg-gray-400 w-10 h-10'
-									}`}>
+									}`}
+								>
 									{tokenDeposits.length + 1}
 								</div>
 								<div className="text-lg">
@@ -432,7 +446,8 @@ export const SubmissionModal = ({
 						</div>
 						<Button
 							className="mt-4"
-							onClick={() => router.push(`${window.location.origin}/my-strategies`)}>
+							onClick={() => router.push(`${window.location.origin}/my-strategies`)}
+						>
 							Track your strategy
 						</Button>
 					</div>

@@ -170,14 +170,12 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 						hash: approveTx,
 						confirmations: 1
 					});
-				} catch (error: unknown) {
-					if (
-						(error as Error)?.message &&
-						(error as Error).message.includes('User rejected the request')
-					) {
-						setError('User rejected the approval request.');
-					} else setError('Error during approval process');
-					return setDepositState(TokenDepositStatus.Error);
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				} catch (e: any) {
+					setDepositState(TokenDepositStatus.Error);
+					console.error(e.message, e.details);
+					setError((e.details as string) || 'An error occured while approving your deposit.');
+					return;
 				}
 
 				setDepositState(TokenDepositStatus.TokensApproved);
@@ -204,14 +202,12 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			setDepositState(TokenDepositStatus.Done);
 			refetchBalance?.();
 			onSuccess?.();
-		} catch (error: unknown) {
-			if (
-				(error as Error)?.message &&
-				(error as Error).message.includes('User rejected the request')
-			) {
-				setError('User rejected the deposit request.');
-			} else setError('Error during deposit process');
-			return setDepositState(TokenDepositStatus.Error);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (error: any) {
+			setDepositState(TokenDepositStatus.Error);
+			console.error(error.message);
+			setError(error.details || 'An error occured while confirming your deposit.');
+			return;
 		}
 	};
 
@@ -287,7 +283,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 											<FormControl>
 												<Input
 													data-testid={'deposit-input'}
-													placeholder="0"
+													placeholder="Enter a number greater than 0"
 													{...field}
 													type="text"
 													inputMode="decimal"
@@ -306,7 +302,11 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 										</FormItem>
 									)}
 								/>
-								<Button type="submit" disabled={!!error}>
+								<Button
+									data-testid="submit-button"
+									type="submit"
+									disabled={!!error || Number(depositAmount) === 0}
+								>
 									Submit
 								</Button>
 							</form>
@@ -322,7 +322,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 							<div className="flex flex-col gap-4  justify-center">
 								<div className="bg-red-200  text-black p-4 rounded-lg flex flex-col gap-2">
 									<p>Failed to deposit.</p>
-									<p>{error}</p>
+									<p data-testid="error-message">{error}</p>
 								</div>
 								<Button className="w-fit" onClick={handleDismiss}>
 									Dismiss

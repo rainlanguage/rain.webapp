@@ -1,7 +1,7 @@
 import { Table } from 'flowbite-react';
+import { useQuery } from '@tanstack/react-query';
 import { quote } from '@rainlanguage/orderbook';
 import * as allChains from 'wagmi/chains';
-import { forwardRef, useImperativeHandle, useState } from 'react';
 import { formatEther, formatUnits, fromHex } from 'viem';
 import { Input, Order, Output } from '../types';
 
@@ -10,11 +10,13 @@ export type QuotesTableRef = {
 };
 
 interface props {
+	syncedQueryKey: string;
 	order: Order;
 }
 
-const QuotesTable = forwardRef<QuotesTableRef, props>(({ order }, ref) => {
-	const [quotes, setQuotes] = useState<quote.OrderQuoteValue[]>([]);
+export const QUERY_KEY = 'quotes';
+
+const QuotesTable = ({ syncedQueryKey, order }: props) => {
 	const { ...chains } = allChains;
 	const orderChainKey = Object.keys(chains).find((chain) => chain === order.network);
 	const specs = order.inputs.reduce((acc: quote.QuoteSpec[], input: Input, inputIndex: number) => {
@@ -40,7 +42,13 @@ const QuotesTable = forwardRef<QuotesTableRef, props>(({ order }, ref) => {
 		];
 	}, []);
 
-	const getQuotes = async () => {
+	const query = useQuery<quote.OrderQuoteValue[]>({
+		queryKey: [syncedQueryKey, QUERY_KEY, order.orderHash],
+		queryFn: () => getQuotes(order, specs),
+		enabled: orderChainKey !== undefined
+	});
+
+	const getQuotes = async (order: Order, specs: quote.QuoteSpec[]) => {
 		if (orderChainKey === undefined) return;
 
 		try {
@@ -50,21 +58,13 @@ const QuotesTable = forwardRef<QuotesTableRef, props>(({ order }, ref) => {
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				(chains as any)[orderChainKey].rpcUrls.default.http[0]
 			);
-			setQuotes(result);
+			return result;
 		} catch (e: unknown) {
 			if (e instanceof Error) {
 				throw new Error(e.message);
 			}
 		}
 	};
-
-	if (!quotes.length) {
-		getQuotes();
-	}
-
-	useImperativeHandle(ref, () => ({
-		getQuotes
-	}));
 
 	return (
 		<div className="w-full overflow-x-scroll pt-6">
@@ -76,36 +76,35 @@ const QuotesTable = forwardRef<QuotesTableRef, props>(({ order }, ref) => {
 					<Table.HeadCell>MAXIMUM INPUT</Table.HeadCell>
 				</Table.Head>
 				<Table.Body>
-					{quotes.map((quote: quote.OrderQuoteValue, i: number) => {
-						if (typeof quote === 'string') return;
-						return (
-							<Table.Row key={i}>
-								<Table.Cell>
-									{order.inputs[specs[i].inputIOIndex].token.symbol}/
-									{order.outputs[specs[i].outputIOIndex].token.symbol}
-								</Table.Cell>
-								<Table.Cell>
-									{formatEther(fromHex(quote.maxOutput as `0x${string}`, 'bigint'))}
-								</Table.Cell>
-								<Table.Cell>
-									{formatEther(fromHex(quote.ratio as `0x${string}`, 'bigint'))}
-								</Table.Cell>
-								<Table.Cell>
-									{formatUnits(
-										fromHex(quote.maxOutput as `0x${string}`, 'bigint') *
-											fromHex(quote.ratio as `0x${string}`, 'bigint'),
-										36
-									)}
-								</Table.Cell>
-							</Table.Row>
-						);
-					})}
+					{query.data &&
+						query.data.map((quote: quote.OrderQuoteValue, i: number) => {
+							if (typeof quote === 'string') return;
+							return (
+								<Table.Row key={i}>
+									<Table.Cell>
+										{order.inputs[specs[i].inputIOIndex].token.symbol}/
+										{order.outputs[specs[i].outputIOIndex].token.symbol}
+									</Table.Cell>
+									<Table.Cell>
+										{formatEther(fromHex(quote.maxOutput as `0x${string}`, 'bigint'))}
+									</Table.Cell>
+									<Table.Cell>
+										{formatEther(fromHex(quote.ratio as `0x${string}`, 'bigint'))}
+									</Table.Cell>
+									<Table.Cell>
+										{formatUnits(
+											fromHex(quote.maxOutput as `0x${string}`, 'bigint') *
+												fromHex(quote.ratio as `0x${string}`, 'bigint'),
+											36
+										)}
+									</Table.Cell>
+								</Table.Row>
+							);
+						})}
 				</Table.Body>
 			</Table>
 		</div>
 	);
-});
-
-QuotesTable.displayName = 'QuotesTable';
+};
 
 export default QuotesTable;

@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Mock, vi } from 'vitest';
 import { DepositModal } from '@/app/_components/DepositModal';
-import { useAccount, useChainId, useReadContract, useSwitchChain, useWriteContract } from 'wagmi';
+import { useReadContract, useSwitchChain, useWriteContract } from 'wagmi';
 import { formatUnits, zeroAddress } from 'viem';
 import { Input } from '@/app/types';
 import { readContract } from 'viem/actions';

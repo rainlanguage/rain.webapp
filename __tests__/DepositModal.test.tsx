@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Mock, vi } from 'vitest';
 import { DepositModal } from '@/app/_components/DepositModal';
-import { useWriteContract } from 'wagmi';
+import { useReadContract, useSwitchChain, useWriteContract } from 'wagmi';
 import { formatUnits, zeroAddress } from 'viem';
 import { Input } from '@/app/types';
 import { readContract } from 'viem/actions';
@@ -14,12 +14,9 @@ vi.mock('wagmi', async (importOriginal) => {
 	return {
 		...(original as object),
 		useAccount: () => ({ address: zeroAddress, chain: { id: 1 } }),
-		useReadContract: vi.fn().mockImplementation(() => ({
-			data: BigInt('156879426436436000'),
-			refetch: balanceRefetch
-		})),
+		useReadContract: vi.fn(),
 		useWriteContract: vi.fn(),
-		useSwitchChain: vi.fn(() => ({ switchChainAsync: vi.fn() }))
+		useSwitchChain: vi.fn()
 	};
 });
 
@@ -44,6 +41,21 @@ const mockVault = {
 const mockNetwork = 'flare';
 
 describe('DepositModal', () => {
+	let mockWriteContractAsync: Mock;
+
+	beforeEach(() => {
+		vi.resetAllMocks();
+		(useReadContract as Mock).mockImplementation(() => ({
+			data: BigInt('156879426436436000'),
+			refetch: balanceRefetch
+		}));
+		mockWriteContractAsync = vi.fn();
+		(useWriteContract as Mock).mockReturnValue({
+			writeContractAsync: mockWriteContractAsync
+		});
+		(useSwitchChain as Mock).mockReturnValue({ switchChainAsync: vi.fn() });
+		(readContract as Mock).mockReturnValue(BigInt('100000'));
+	});
 	it('updates input value to max balance with long decimal precision on "Max" button click', async () => {
 		(useWriteContract as Mock).mockResolvedValue({
 			writeContractAsync: vi.fn().mockResolvedValue('0xMockTransactionHash')
@@ -128,24 +140,49 @@ describe('DepositModal', () => {
 			expect(mockOnSuccess).toHaveBeenCalled();
 		});
 	});
+	it('sets error message from error.details', async () => {
+		type CustomError = {
+			message?: string;
+			details: string;
+		};
+		const mockError: CustomError = { details: 'Specific error details' };
+		(mockWriteContractAsync as Mock).mockRejectedValue(mockError);
+
+		render(<DepositModal vault={mockVault} network={mockNetwork} />);
+
+		const triggerButton = screen.getByText(/Deposit/i);
+		fireEvent.click(triggerButton);
+
+		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
+		await fireEvent.change(input, { target: { value: '0.1' } });
+		const submitButton = screen.getByRole('button', { name: /Submit/i });
+		await userEvent.click(submitButton);
+
+		const errorMessage = await screen.findByText('Specific error details');
+		expect(errorMessage).toBeInTheDocument();
+	});
 	it('fails the approve step and displays an error message', async () => {
 		(useWriteContract as Mock).mockReturnValue({
 			writeContractAsync: vi.fn().mockRejectedValue(new Error('Approval failed'))
 		});
 		(readContract as Mock).mockReturnValue(BigInt('100000'));
+		(readContract as Mock).mockReturnValue(BigInt('0'));
 
 		render(<DepositModal vault={mockVault} network={mockNetwork} />);
 
 		const triggerButton = screen.getByText(/Deposit/i);
-		await userEvent.click(triggerButton);
 
+		await userEvent.click(triggerButton);
 		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
 		await fireEvent.change(input, { target: { value: '0.000001' } });
 		const submitButton = screen.getByRole('button', { name: /Submit/i });
 		await userEvent.click(submitButton);
 
-		const errorMessage = await screen.findByText(/Error during approval process/i);
-		expect(errorMessage).toBeInTheDocument();
+		await waitFor(async () => {
+			const errorMessage = await screen.getByTestId('error-message');
+			expect(errorMessage).toBeInTheDocument();
+			expect(errorMessage).toHaveTextContent('An error occured while approving your deposit.');
+		});
 	});
 	it('disables the submit button if 0 deposit', async () => {
 		(readContract as Mock).mockReturnValue(BigInt('100000'));

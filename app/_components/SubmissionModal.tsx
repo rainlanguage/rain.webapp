@@ -284,33 +284,30 @@ export const SubmissionModal = ({
 				tokenDeposits
 			);
 
-			// Send deployment transaction
-
-			setSubmissionState(SubmissionStatus.DeployingStrategy);
-
 			try {
+				throw new Error('test');
+
 				const deployTx = await writeContractAsync({
 					address: orderBookAddress,
 					abi: orderBookJson.abi,
 					functionName: 'multicall',
 					args: [[addOrderCalldata, ...depositCalldatas]]
 				});
-				setSubmissionState(SubmissionStatus.WaitingForDeploymentConfirmation);
-				setTransactionHash(deployTx);
 
+				setSubmissionState(SubmissionStatus.WaitingForDeploymentConfirmation);
 				// Wait for deployment transaction confirmation
-				const receipt = await waitForTransactionReceipt(config.getClient(), {
+				await waitForTransactionReceipt(config.getClient(), {
 					hash: deployTx,
-					confirmations: 4
+					confirmations: 1
 				});
-				console.log('RECEIPT', receipt);
 
 				setSubmissionState(SubmissionStatus.Done);
-			} catch (error) {
-				console.log('ERROR IN DEPLOY!', error);
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			} catch (e: any) {
+				setError(e.details || 'There was an error deploying your strategy');
+				setOpen(false);
+				return;
 			}
-
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (e: any) {
 			if (
 				e?.cause?.message?.includes('addEthereumChain') ||

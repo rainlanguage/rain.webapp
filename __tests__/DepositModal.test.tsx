@@ -147,4 +147,30 @@ describe('DepositModal', () => {
 		const errorMessage = await screen.findByText(/Error during approval process/i);
 		expect(errorMessage).toBeInTheDocument();
 	});
+	it('disables the submit button if 0 deposit', async () => {
+		(readContract as Mock).mockReturnValue(BigInt('100000'));
+
+		render(<DepositModal vault={mockVault} network={mockNetwork} />);
+
+		const triggerButton = screen.getByText(/Deposit/i);
+		await userEvent.click(triggerButton);
+
+		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
+		await fireEvent.change(input, { target: { value: '0' } });
+		const submitButton = screen.getByRole('button', { name: /Submit/i });
+		await waitFor(() => expect(submitButton).toBeDisabled());
+	});
+	it('disables the submit button if empty string in deposit field', async () => {
+		(readContract as Mock).mockReturnValue(BigInt('100000'));
+
+		render(<DepositModal vault={mockVault} network={mockNetwork} />);
+
+		const triggerButton = screen.getByText(/Deposit/i);
+		await userEvent.click(triggerButton);
+
+		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
+		await fireEvent.change(input, { target: { value: '' } });
+		const submitButton = screen.getByRole('button', { name: /Submit/i });
+		await waitFor(() => expect(submitButton).toBeDisabled());
+	});
 });

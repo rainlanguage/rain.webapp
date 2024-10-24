@@ -37,11 +37,12 @@ export default function MyStrategies() {
 						</Table.Head>
 						<Table.Body>
 							{query.data.map((order: Order, i: number) => (
-								<Table.Row key={i} className="relative">
-									<Link
-										data-testid="order-row"
-										href={`${window.location.origin}/my-strategies/${order.orderHash}-${order.network}`}
-									>
+								<Link
+									key={i}
+									data-testid="order-row"
+									href={`${window.location.origin}/my-strategies/${order.orderHash}-${order.network}`}
+								>
+									<Table.Row className="relative">
 										<Table.Cell>{order.network}</Table.Cell>
 										<Table.Cell>
 											{order.active ? (
@@ -71,8 +72,8 @@ export default function MyStrategies() {
 											{order.trades.length === 1000 ? '>999' : order.trades.length}
 										</Table.Cell>
 										<Table.Cell />
-									</Link>
-								</Table.Row>
+									</Table.Row>
+								</Link>
 							))}
 						</Table.Body>
 					</Table>

@@ -77,7 +77,7 @@ describe('WebappFrame Component', () => {
 	it('updates the URL with the current state', async () => {
 		const mockCompressedState = 'mockCompressedState';
 		(compress as Mock).mockResolvedValue(mockCompressedState);
-		const replaceStateSpy = vi.spyOn(window.history, 'replaceState');
+		const pushStateSpy = vi.spyOn(window.history, 'pushState');
 		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
 		(generateButtonsData as Mock).mockReturnValue([
 			{ buttonValue: 'customValue', buttonText: 'Custom' }
@@ -100,10 +100,10 @@ describe('WebappFrame Component', () => {
 		screen.debug();
 
 		await waitFor(() => {
-			expect(replaceStateSpy).toHaveBeenCalled();
-			expect(replaceStateSpy).toHaveBeenCalledTimes(1);
+			expect(pushStateSpy).toHaveBeenCalled();
+			expect(pushStateSpy).toHaveBeenCalledTimes(1);
 		});
-		replaceStateSpy.mockRestore();
+		pushStateSpy.mockRestore();
 	});
 
 	it('updates the URL with the current state when a preset button is clicked', async () => {
@@ -117,7 +117,7 @@ describe('WebappFrame Component', () => {
 			{ buttonValue: 'presetValue2', buttonText: 'Preset2' }
 		]);
 
-		const replaceStateSpy = vi.spyOn(window.history, 'replaceState');
+		const pushStateSpy = vi.spyOn(window.history, 'pushState');
 		render(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="" />);
 
 		await waitFor(() => {
@@ -130,13 +130,13 @@ describe('WebappFrame Component', () => {
 		});
 
 		await waitFor(() => {
-			expect(replaceStateSpy).toHaveBeenCalled();
-			expect(replaceStateSpy).toHaveBeenCalledTimes(1);
+			expect(pushStateSpy).toHaveBeenCalled();
+			expect(pushStateSpy).toHaveBeenCalledTimes(1);
 			const url = new URL(window.location.href);
 			expect(url.searchParams.get('currentState')).toEqual(mockCompressedState);
 		});
 
-		replaceStateSpy.mockRestore();
+		pushStateSpy.mockRestore();
 	});
 
 	it('renders the correct text input placeholder', async () => {

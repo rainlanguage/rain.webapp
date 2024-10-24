@@ -403,15 +403,7 @@ gui:
             USDC/PAID ratio is lower than 0.05.
 
             This can be set to 0 to disable the baseline.
-          presets:
-            - name: 10
-              value: 10
-            - name: 20
-              value: 20
-            - name: 25
-              value: 25
-            - name: 30
-              value: 30
+          min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
           description: >
@@ -471,13 +463,7 @@ gui:
 
             This should be greater than the baseline.
           min: 0
-          presets:
-            - name: 30
-              value: 30
-            - name: 50
-              value: 50
-            - name: 100
-              value: 100
+
     - deployment: base-paid-usdc
       name: Buy PAID with USDC on Base.
       description: >
@@ -570,15 +556,7 @@ gui:
             USDC/PAID ratio is higher than 0.05.
 
             This can be set to 0 to disable the baseline.
-          presets:
-            - name: 10
-              value: 10
-            - name: 20
-              value: 20
-            - name: 25
-              value: 25
-            - name: 30
-              value: 30
+          min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
           description: >
@@ -640,13 +618,6 @@ gui:
 
             This should be greater than the baseline.
           min: 0
-          presets:
-            - name: 30
-              value: 30
-            - name: 50
-              value: 50
-            - name: 100
-              value: 100
 
 ---
 #raindex-subparser !Raindex subparser.

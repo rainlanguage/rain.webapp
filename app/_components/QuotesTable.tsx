@@ -46,7 +46,7 @@ const QuotesTable = ({ syncedQueryKey, order }: props) => {
 		queryKey: [syncedQueryKey, QUERY_KEY, order.orderHash],
 		queryFn: () => getQuotes(order, specs),
 		enabled: orderChainKey !== undefined
-	})
+	});
 
 	const getQuotes = async (order: Order, specs: quote.QuoteSpec[]) => {
 		if (orderChainKey === undefined) return;
@@ -80,27 +80,27 @@ const QuotesTable = ({ syncedQueryKey, order }: props) => {
 						query.data.map((quote: quote.OrderQuoteValue, i: number) => {
 							if (typeof quote === 'string') return;
 							return (
-							<Table.Row key={i}>
-								<Table.Cell>
-									{order.inputs[specs[i].inputIOIndex].token.symbol}/
-									{order.outputs[specs[i].outputIOIndex].token.symbol}
-								</Table.Cell>
-								<Table.Cell>
-									{formatEther(fromHex(quote.maxOutput as `0x${string}`, 'bigint'))}
-								</Table.Cell>
-								<Table.Cell>
-									{formatEther(fromHex(quote.ratio as `0x${string}`, 'bigint'))}
-								</Table.Cell>
-								<Table.Cell>
-									{formatUnits(
-										fromHex(quote.maxOutput as `0x${string}`, 'bigint') *
-											fromHex(quote.ratio as `0x${string}`, 'bigint'),
-										36
-									)}
-								</Table.Cell>
-							</Table.Row>
-						);
-					})}
+								<Table.Row key={i}>
+									<Table.Cell>
+										{order.inputs[specs[i].inputIOIndex].token.symbol}/
+										{order.outputs[specs[i].outputIOIndex].token.symbol}
+									</Table.Cell>
+									<Table.Cell>
+										{formatEther(fromHex(quote.maxOutput as `0x${string}`, 'bigint'))}
+									</Table.Cell>
+									<Table.Cell>
+										{formatEther(fromHex(quote.ratio as `0x${string}`, 'bigint'))}
+									</Table.Cell>
+									<Table.Cell>
+										{formatUnits(
+											fromHex(quote.maxOutput as `0x${string}`, 'bigint') *
+												fromHex(quote.ratio as `0x${string}`, 'bigint'),
+											36
+										)}
+									</Table.Cell>
+								</Table.Row>
+							);
+						})}
 				</Table.Body>
 			</Table>
 		</div>

@@ -62,8 +62,8 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 		const interval = setInterval(async () => {
 			await queryClient.refetchQueries({
 				queryKey: [SYNCED_QUERY_KEY],
-				exact: false,
-			})
+				exact: false
+			});
 		}, 10000);
 		return () => clearInterval(interval);
 	}, []);
@@ -120,8 +120,8 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 	const refetchQuotes = async () => {
 		await queryClient.refetchQueries({
 			queryKey: [QUOTES_QUERY_KEY],
-			exact: false,
-		})
+			exact: false
+		});
 	};
 
 	return (

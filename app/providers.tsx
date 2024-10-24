@@ -34,8 +34,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 					<RainbowKitProvider
 						theme={lightTheme({
 							accentColor: 'rgb(30, 101, 242)'
-						})}
-					>
+						})}>
 						{children}
 					</RainbowKitProvider>
 				</QueryClientProvider>

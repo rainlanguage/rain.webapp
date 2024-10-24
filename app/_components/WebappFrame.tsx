@@ -140,7 +140,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	const handleButtonClick = async (buttonData: ButtonType) => {
 		setError(null);
-
 		if (buttonData.buttonTarget === 'textInputLabel') {
 			setCurrentState((prevState) => ({
 				...prevState,

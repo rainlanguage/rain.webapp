@@ -1,60 +1,10 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { vi } from 'vitest';
+import { Mock, vi } from 'vitest';
 import StrategyAnalytics from '@/app/_components/StrategyAnalytics';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { act } from 'react';
 import { quote } from '@rainlanguage/orderbook';
 import QuotesTable from '@/app/_components/QuotesTable';
-
-vi.mock('@tanstack/react-query', async () => {
-	const actual = await vi.importActual('@tanstack/react-query');
-	return {
-		...actual,
-		useQuery: vi.fn()
-	};
-});
-
-vi.mock('wagmi', async (importOriginal) => {
-	const original = await importOriginal();
-	return {
-		...(original as object),
-		useAccount: () => ({ address: '0xMockAddress', chain: { id: 1 } }),
-		useReadContract: vi.fn(() => ({ readContract: vi.fn() })),
-		useWriteContract: vi.fn(() => ({ writeContractAsync: vi.fn() })),
-		useSwitchChain: vi.fn(() => ({ switchChainAsync: vi.fn() }))
-	};
-});
-
-vi.mock('@wagmi/core', async (importOriginal) => {
-	const original = await importOriginal();
-	return {
-		...(original as object),
-		waitForTransactionReceipt: vi.fn().mockResolvedValue({})
-	};
-});
-
-vi.mock('viem/actions', async (importOriginal) => {
-	const original = await importOriginal();
-	return {
-		...(original as object),
-		readContract: vi.fn().mockResolvedValue(BigInt('1000000000000000000'))
-	};
-});
-
-vi.mock('@rainlanguage/orderbook', async (importOriginal) => {
-	const original = await importOriginal();
-	return {
-		...(original as object),
-		quote: {
-			doQuoteSpecs: vi.fn().mockResolvedValue([
-				{
-					maxOutput: '0x1',
-					ratio: '0x1'
-				}
-			])
-		}
-	};
-});
 
 const mockTransactionId = '1234567890';
 const mockNetwork = 'flare';
@@ -105,33 +55,94 @@ const mockQueryData = {
 	},
 	order: mockOrder
 };
+const mockQuotes = [
+	{
+		maxOutput: '0x1',
+		ratio: '0x1'
+	}
+];
+
+vi.mock('@tanstack/react-query', async () => {
+	const actual = await vi.importActual('@tanstack/react-query');
+	return {
+		...actual,
+		useQuery: vi.fn(),
+		useQueryClient: vi.fn()
+	};
+});
+
+vi.mock('wagmi', async (importOriginal) => {
+	const original = await importOriginal();
+	return {
+		...(original as object),
+		useAccount: () => ({ address: '0xMockAddress', chain: { id: 1 } }),
+		useReadContract: vi.fn(() => ({ readContract: vi.fn() })),
+		useWriteContract: vi.fn(() => ({ writeContractAsync: vi.fn() })),
+		useSwitchChain: vi.fn(() => ({ switchChainAsync: vi.fn() }))
+	};
+});
+
+vi.mock('@wagmi/core', async (importOriginal) => {
+	const original = await importOriginal();
+	return {
+		...(original as object),
+		waitForTransactionReceipt: vi.fn().mockResolvedValue({})
+	};
+});
+
+vi.mock('viem/actions', async (importOriginal) => {
+	const original = await importOriginal();
+	return {
+		...(original as object),
+		readContract: vi.fn().mockResolvedValue(BigInt('1000000000000000000'))
+	};
+});
+
+vi.mock('@rainlanguage/orderbook', async (importOriginal) => {
+	const original = await importOriginal();
+	return {
+		...(original as object),
+		quote: {
+			doQuoteSpecs: vi.fn().mockResolvedValue([])
+		}
+	};
+});
 
 describe('OrderQuotes', () => {
-	beforeEach(() => {
-		vi.mocked(useQuery).mockReturnValue({
+	let refetchQueriesMock: Mock;
+
+	const setup = () => {
+		refetchQueriesMock = vi.fn(() => {
+			// @ts-expect-error we are not using any parameters
+			quote.doQuoteSpecs()
+		});
+		vi.mocked(useQuery).mockImplementationOnce(() => ({
 			data: mockQueryData,
-			isLoading: false,
-			isError: false,
-			error: null,
-			refetch: vi.fn(),
-			isPending: false,
-			isSuccess: true,
-			isFetching: false,
-			isRefetching: false,
-			status: 'success',
-			fetchStatus: 'idle'
+		} as any));
+		vi.mocked(useQuery).mockImplementationOnce(() => ({
+			data: mockQuotes,
+		} as any));
+		vi.mocked(useQueryClient).mockReturnValue({
+			refetchQueries: refetchQueriesMock
 		} as any);
 		vi.clearAllMocks();
-	});
+	}
 
 	it('table should have correct headers', () => {
-		const { container } = render(<QuotesTable order={mockOrder} />);
+		vi.mocked(useQuery).mockReturnValue({
+			data: [],
+			isLoading: false,
+			error: null
+		} as any);
+		const { container } = render(<QuotesTable order={mockOrder} syncedQueryKey='' />);
 		expect(container.querySelector('table')).toBeInTheDocument();
 		const headers = Array.from(container.querySelectorAll('th')).map((th) => th.textContent);
 		expect(headers).toEqual(['PAIR', 'MAXIMUM OUTPUT', 'IO RATIO', 'MAXIMUM INPUT']);
 	});
 
 	it('should refetch quotes when deposit is successful', async () => {
+		setup();
+
 		render(<StrategyAnalytics transactionId={mockTransactionId} network={mockNetwork} />);
 
 		const inputTokenBalance = screen.getAllByTestId('token-balance')[0];
@@ -165,11 +176,13 @@ describe('OrderQuotes', () => {
 
 		// Wait for the deposit to complete
 		await waitFor(() => {
-			expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(2);
+			expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(1);
 		});
 	});
 
 	it('should refetch quotes when withdrawal is successful', async () => {
+		setup();
+
 		render(<StrategyAnalytics transactionId={mockTransactionId} network={mockNetwork} />);
 
 		const inputTokenBalance = screen.getAllByTestId('token-balance')[0];
@@ -194,30 +207,29 @@ describe('OrderQuotes', () => {
 
 		// Wait for the deposit to complete
 		await waitFor(() => {
-			expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(2);
+			expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(1);
 		});
 	});
 
 	it('should refetch quotes when order is refetched', async () => {
-		const { rerender } = render(
+		setup();
+
+		vi.useFakeTimers();
+
+		render(
 			<StrategyAnalytics transactionId={mockTransactionId} network={mockNetwork} />
 		);
-		expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(1);
 
-		// Simulate a refetch
 		act(() => {
-			vi.mocked(useQuery).mockReturnValue({
-				data: mockQueryData,
-				isRefetching: true
-			} as any);
-			rerender(<StrategyAnalytics transactionId={mockTransactionId} network={mockNetwork} />);
+			vi.advanceTimersByTime(11000)
+		})
+		vi.useRealTimers();
+
+		expect(refetchQueriesMock).toHaveBeenCalledWith({
+			queryKey: ['trades-quotes'],
+			exact: false,
 		});
 
-		// initial render - 1
-		// refetch - 1
-		// rerender - 1
-		await waitFor(() => {
-			expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(3);
-		});
+		expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(1);
 	});
 });

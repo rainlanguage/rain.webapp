@@ -155,7 +155,7 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 										<FormControl>
 											<Input
 												data-testid={'withdrawal-input'}
-												placeholder="0"
+												placeholder="Enter a number greater than 0"
 												{...field}
 												type="text"
 												inputMode="decimal"
@@ -174,7 +174,11 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 									</FormItem>
 								)}
 							/>
-							<Button type="submit" disabled={!!error}>
+							<Button
+								type="submit"
+								data-testid="withdraw-button"
+								disabled={!!error || Number(withdrawalAmount) === 0}
+							>
 								Submit
 							</Button>
 						</form>

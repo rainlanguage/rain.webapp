@@ -73,6 +73,13 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	const searchParams = useSearchParams();
 
+	const setInputValueAsLastValue = () => {
+		const lastBindingKey = Object.keys(currentState.bindings).pop();
+		const lastBindingValue = lastBindingKey ? currentState.bindings[lastBindingKey] : '';
+		const lastDeposit = currentState.deposits[currentState.deposits.length - 1];
+		setInputText(lastBindingValue.toString() || lastDeposit?.amount?.toString() || ('' as string));
+	};
+
 	const updateUrl = async (updatedState: FrameState) => {
 		setIsInternalUpdate(true);
 		const url = new URL(window.location.href);
@@ -115,6 +122,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 				try {
 					const urlState = await getUrlState();
 					if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
+					setInputValueAsLastValue();
 				} catch {
 					throw new Error('Error decoding state:');
 				} finally {
@@ -166,12 +174,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			}));
 			return;
 		} else if (buttonData.buttonTarget === 'buttonValue' && buttonData.buttonValue === 'back') {
-			const lastBindingKey = Object.keys(currentState.bindings).pop();
-			const lastBindingValue = lastBindingKey ? currentState.bindings[lastBindingKey] : '';
-			const lastDeposit = currentState.deposits[currentState.deposits.length - 1];
-			setInputText(
-				lastBindingValue.toString() || lastDeposit?.amount?.toString() || ('' as string)
-			);
+			setInputValueAsLastValue();
 			setCurrentState((prevState) => ({
 				...prevState,
 				textInputLabel: ''

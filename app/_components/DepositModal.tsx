@@ -87,7 +87,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 	const [depositTxHash, setDepositTxHash] = useState<string | null>(null);
 
 	const address = useAccount().address;
-	const userchain = useAccount().chain;
+	const userChain = useAccount().chain;
 	const chain = SupportedChains[network as keyof typeof SupportedChains];
 
 	useEffect(() => {
@@ -98,7 +98,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 	}, [open]);
 
 	const switchChain = async () => {
-		if (userchain && chain.id !== userchain.id) {
+		if (userChain && chain.id !== userChain.id) {
 			await switchChainAsync({ chainId: chain.id });
 		}
 	};
@@ -132,6 +132,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 	}, [depositAmount, connectedWalletBalance]);
 
 	const deposit = async () => {
+		console.log(chain, userChain);
 		try {
 			await switchChain();
 

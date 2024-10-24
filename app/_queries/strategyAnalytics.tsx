@@ -1,8 +1,8 @@
 import { getNetworkSubgraphs } from './subgraphs';
 
-export const transactionAnalytics = (transactionId: string) => `
+export const transactionAnalytics = () => `
 {
-  addOrders (sortBy: transaction__timestamp, where: {transaction: "${transactionId}"}) {
+  addOrders(sortBy: transaction__timestamp) {
     transaction {
       id
       timestamp
@@ -75,18 +75,21 @@ export const transactionAnalytics = (transactionId: string) => `
   }
 }`;
 
-export const getTransactionAnalyticsData = async (transactionId: string, network: string) => {
-	const subgraphUrl =
-		getNetworkSubgraphs()[network as keyof ReturnType<typeof getNetworkSubgraphs>];
-	if (subgraphUrl) {
+export const getTransactionAnalyticsData = async (orderHash: string, network: string) => {
+	// Find the network's subgraph by matching the network name
+	const subgraphInfo = getNetworkSubgraphs().find(
+		(net) => net.name.toLowerCase() === network.toLowerCase()
+	);
+
+	if (subgraphInfo?.subgraphUrl) {
 		try {
-			const response = await fetch(subgraphUrl, {
+			const response = await fetch(subgraphInfo.subgraphUrl, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					query: transactionAnalytics(transactionId)
+					query: transactionAnalytics()
 				})
 			});
 			if (!response.ok) {
@@ -96,15 +99,14 @@ export const getTransactionAnalyticsData = async (transactionId: string, network
 			if (result.errors) {
 				throw new Error(result.errors[0].message);
 			} else if (result.data?.addOrders.length) {
+				const orderByHash = result.data.addOrders.find(
+					(order: any) => order.order.orderHash === orderHash
+				);
 				return {
-					...result.data.addOrders[0],
-					order: { ...result.data.addOrders[0].order, network, subgraphUrl }
+					...orderByHash,
+					order: { ...orderByHash.order, network, subgraphUrl: subgraphInfo.subgraphUrl }
 				};
 			}
-			return {
-				...result.data.addOrders[0],
-				order: { ...result.data.addOrders[0].order, network, subgraphUrl }
-			};
 		} catch (error: unknown) {
 			if (error instanceof Error) {
 				throw new Error(

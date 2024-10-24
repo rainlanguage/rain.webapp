@@ -27,6 +27,7 @@ import type { Output, Input as InputType } from '../types';
 import { cn } from '@/lib/utils';
 import { SupportedChains } from '../_types/chains';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { handleDecimalSeparator } from '../_utils/handleDecimalSeparator';
 
 const formSchema = z.object({
 	withdrawalAmount: z.preprocess(
@@ -95,14 +96,18 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 			return;
 		}
 		await switchChain();
-		// Send raw value to the contract (no conversion needed here)
-		await writeContractAsync({
-			abi: orderBookJson.abi,
-			address: vault.orderbook.id as `0x${string}`,
-			functionName: 'withdraw2',
-			args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
-		});
-		onSuccess?.();
+		try {
+			await writeContractAsync({
+				abi: orderBookJson.abi,
+				address: vault.orderbook.id as `0x${string}`,
+				functionName: 'withdraw2',
+				args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
+			});
+			onSuccess?.();
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (error: any) {
+			console.error(error.message);
+		}
 	};
 
 	const handleMaxClick = () => {
@@ -150,10 +155,15 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 										<FormControl>
 											<Input
 												data-testid={'withdrawal-input'}
-												placeholder="0"
+												placeholder="Enter a number greater than 0"
 												{...field}
-												type="number"
+												type="text"
+												inputMode="decimal"
 												step="0.1"
+												onChange={(e) => {
+													const finalValue = handleDecimalSeparator(e);
+													field.onChange(finalValue);
+												}}
 											/>
 										</FormControl>
 										<FormMessage>{error}</FormMessage>
@@ -164,7 +174,11 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 									</FormItem>
 								)}
 							/>
-							<Button type="submit" disabled={!!error}>
+							<Button
+								type="submit"
+								data-testid="withdraw-button"
+								disabled={!!error || Number(withdrawalAmount) === 0}
+							>
 								Submit
 							</Button>
 						</form>

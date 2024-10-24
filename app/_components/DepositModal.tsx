@@ -31,6 +31,7 @@ import { waitForTransactionReceipt } from '@wagmi/core';
 import { Orderbook, Token } from '../types';
 import { SupportedChains } from '../_types/chains';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { handleDecimalSeparator } from '../_utils/handleDecimalSeparator';
 
 export enum TokenDepositStatus {
 	Idle,
@@ -86,7 +87,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 	const [depositTxHash, setDepositTxHash] = useState<string | null>(null);
 
 	const address = useAccount().address;
-	const userchain = useAccount().chain;
+	const userChain = useAccount().chain;
 	const chain = SupportedChains[network as keyof typeof SupportedChains];
 
 	useEffect(() => {
@@ -97,25 +98,18 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 	}, [open]);
 
 	const switchChain = async () => {
-		if (userchain && chain.id !== userchain.id) {
+		if (userChain && chain.id !== userChain.id) {
 			await switchChainAsync({ chainId: chain.id });
 		}
 	};
 
-	const handleDismiss = () => {
-		setOpen(false);
-		setDepositTxHash(null);
-		setDepositState(TokenDepositStatus.Idle);
-		setError(null);
-	};
-
-	const connectedWalletBalance: bigint = useReadContract({
+	const { data: connectedWalletBalance, refetch: refetchBalance } = useReadContract({
 		abi: ERC20_ABI,
 		address: vault.token.address as `0x${string}`,
 		functionName: 'balanceOf',
 		args: [address as `0x${string}`],
 		chainId: chain.id as (typeof config.chains)[number]['id']
-	}).data as bigint;
+	}) as { data: bigint | undefined; refetch: () => void };
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -127,21 +121,20 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 	const depositAmount = form.watch('depositAmount');
 
 	useEffect(() => {
-		const parsedRawAmount = parseUnits(
-			depositAmount.toString(),
-			Number(vault.token.decimals)
-		).toString();
-		setRawAmount(parsedRawAmount);
-		if (BigInt(parsedRawAmount) > connectedWalletBalance) {
+		if (!connectedWalletBalance) return;
+		const parsedRawAmount = parseUnits(depositAmount.toString(), Number(vault.token.decimals));
+		setRawAmount(parsedRawAmount.toString());
+		if (BigInt(parsedRawAmount) > BigInt(connectedWalletBalance)) {
 			setError('Amount exceeds wallet balance');
 		} else {
 			setError(null);
 		}
-	}, [depositAmount]);
+	}, [depositAmount, connectedWalletBalance]);
 
 	const deposit = async () => {
 		try {
 			await switchChain();
+
 			setDepositState(TokenDepositStatus.Pending);
 
 			const depositAmount = form.getValues('depositAmount').toString();
@@ -159,7 +152,8 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 					args: [address as `0x${string}`, vault.orderbook.id as `0x${string}`]
 				}
 			);
-			if (existingAllowance < parsedAmount) {
+
+			if (existingAllowance !== undefined && existingAllowance < parsedAmount) {
 				setDepositState(TokenDepositStatus.ApprovingTokens);
 				try {
 					const approveTx = await writeContractAsync({
@@ -176,14 +170,12 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 						hash: approveTx,
 						confirmations: 1
 					});
-				} catch (error: unknown) {
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				} catch (e: any) {
 					setDepositState(TokenDepositStatus.Error);
-					if (
-						(error as Error)?.message &&
-						(error as Error).message.includes('User rejected the request')
-					) {
-						setError('User rejected the approval request.');
-					} else setError('Error during approval process');
+					console.error(e.message, e.details);
+					setError((e.details as string) || 'An error occured while approving your deposit.');
+					return;
 				}
 
 				setDepositState(TokenDepositStatus.TokensApproved);
@@ -207,17 +199,15 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 				hash: depositTx,
 				confirmations: 1
 			});
-
 			setDepositState(TokenDepositStatus.Done);
+			refetchBalance?.();
 			onSuccess?.();
-		} catch (error: unknown) {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (error: any) {
 			setDepositState(TokenDepositStatus.Error);
-			if (
-				(error as Error)?.message &&
-				(error as Error).message.includes('User rejected the request')
-			) {
-				setError('User rejected the deposit request.');
-			} else setError('Error during deposit process');
+			console.error(error.message);
+			setError(error.details || 'An error occured while confirming your deposit.');
+			return;
 		}
 	};
 
@@ -227,7 +217,10 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 		} else if (!connectedWalletBalance) {
 			return setError('No balance found');
 		}
-		const formattedBalance = formatUnits(connectedWalletBalance, Number(vault.token.decimals));
+		const formattedBalance = formatUnits(
+			BigInt(connectedWalletBalance),
+			Number(vault.token.decimals)
+		);
 		form.setValue('depositAmount', formattedBalance as unknown as number);
 		setRawAmount(formattedBalance);
 		form.setFocus('depositAmount');
@@ -238,6 +231,13 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			openConnectModal?.();
 		}
 		if (address) setOpen(open);
+	};
+
+	const handleDismiss = () => {
+		setOpen(false);
+		setDepositTxHash(null);
+		setDepositState(TokenDepositStatus.Idle);
+		setError(null);
 	};
 
 	return (
@@ -273,17 +273,25 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 												<div className="text-sm text-gray-500">
 													Your {vault.token.symbol} Balance:{' '}
 													<strong>
-														{formatUnits(connectedWalletBalance, Number(vault.token.decimals))}
+														{formatUnits(
+															BigInt(connectedWalletBalance),
+															Number(vault.token.decimals)
+														)}
 													</strong>
 												</div>
 											)}
 											<FormControl>
 												<Input
 													data-testid={'deposit-input'}
-													placeholder="0"
+													placeholder="Enter a number greater than 0"
 													{...field}
-													type="number"
+													type="text"
+													inputMode="decimal"
 													step="0.1"
+													onChange={(e) => {
+														const finalValue = handleDecimalSeparator(e);
+														field.onChange(finalValue);
+													}}
 												/>
 											</FormControl>
 											<FormMessage>{error}</FormMessage>
@@ -294,7 +302,11 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 										</FormItem>
 									)}
 								/>
-								<Button type="submit" disabled={!!error}>
+								<Button
+									data-testid="submit-button"
+									type="submit"
+									disabled={!!error || Number(depositAmount) === 0}
+								>
 									Submit
 								</Button>
 							</form>
@@ -310,7 +322,7 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 							<div className="flex flex-col gap-4  justify-center">
 								<div className="bg-red-200  text-black p-4 rounded-lg flex flex-col gap-2">
 									<p>Failed to deposit.</p>
-									<p>{error}</p>
+									<p data-testid="error-message">{error}</p>
 								</div>
 								<Button className="w-fit" onClick={handleDismiss}>
 									Dismiss

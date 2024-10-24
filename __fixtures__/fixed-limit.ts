@@ -1,4 +1,4 @@
-export const mockFixedLimit = `raindex-version: 8898591f3bcaa21dc91dc3b8584330fc405eadfa
+export const fixedLimitFixture = `raindex-version: 8898591f3bcaa21dc91dc3b8584330fc405eadfa
 
 networks:
   base:

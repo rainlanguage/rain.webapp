@@ -112,7 +112,9 @@ export const SubmissionModal = ({
 	const [transactionHash, setTransactionHash] = useState<string | null>(null);
 	const [newOrderHash, setNewOrderHash] = useState<string | null>(null);
 	const [subgraphError, setSubgraphError] = useState<string | null>(null);
-
+	useEffect(() => {
+		console.log(showDisclaimer, showFinalMessage);
+	}, [showDisclaimer, showFinalMessage]);
 	useEffect(() => {
 		if (submissionState === SubmissionStatus.Done) {
 			setTimeout(() => {
@@ -120,6 +122,7 @@ export const SubmissionModal = ({
 			}, 1000);
 		}
 	}, [submissionState]);
+	console.log(currentState);
 
 	const resetSubmissionState = () => {
 		setOpen(false);
@@ -134,9 +137,11 @@ export const SubmissionModal = ({
 			if (currentWalletChainId !== network['chain-id']) {
 				await switchChainAsync({ chainId: network['chain-id'] });
 			}
+
 			setSubmissionState(SubmissionStatus.CheckingBalances);
 			// Check if the user has sufficient funds
 			for (const deposit of tokenDeposits) {
+				console.log(tokenDeposits);
 				if (!deposit.tokenInfo) throw new Error(`Token info not found`);
 
 				const depositAmount = parseUnits(String(deposit.amount), deposit.tokenInfo.decimals);
@@ -147,8 +152,10 @@ export const SubmissionModal = ({
 					functionName: 'balanceOf',
 					args: [account.address as `0x${string}`]
 				});
+				console.log(balance);
 
 				if (balance < depositAmount) {
+					console.log('ERROR', Number(balance - depositAmount));
 					setError(
 						<>
 							<p className="mb-3">
@@ -169,8 +176,7 @@ export const SubmissionModal = ({
 													href={ref.url}
 													target="_blank"
 													rel="noreferrer"
-													style={{ color: 'blue', textDecoration: 'underline' }}
-												>
+													style={{ color: 'blue', textDecoration: 'underline' }}>
 													{ref.name}
 												</a>
 											</li>
@@ -190,6 +196,7 @@ export const SubmissionModal = ({
 
 			// Check if the user has sufficient token approvals
 			for (const deposit of tokenDeposits) {
+				console.log('check approvals');
 				if (!deposit.tokenInfo) throw new Error(`Token info not found`);
 
 				const depositAmount = parseUnits(String(deposit.amount), deposit.tokenInfo.decimals);
@@ -365,10 +372,10 @@ export const SubmissionModal = ({
 			{account.isConnected ? (
 				<Button
 					onClick={() => setOpen(true)}
+					data-testid="open-strategy-deployment-modal"
 					color="primary"
 					size="sm"
-					className=" from-blue-600 to-violet-600 bg-gradient-to-br"
-				>
+					className=" from-blue-600 to-violet-600 bg-gradient-to-br">
 					{buttonText}
 				</Button>
 			) : (
@@ -376,8 +383,7 @@ export const SubmissionModal = ({
 			)}
 			<DialogContent
 				onInteractOutside={resetSubmissionState}
-				className="bg-white flex flex-col justify-center w-full font-light gap-y-8"
-			>
+				className="bg-white flex flex-col justify-center w-full font-light gap-y-8">
 				{showDisclaimer && (
 					<div className="flex flex-col items-start gap-y-4">
 						<DialogTitle className="w-full font-light text-2xl">Wait!</DialogTitle>
@@ -418,8 +424,7 @@ export const SubmissionModal = ({
 							onClick={() => {
 								setShowDisclaimer(false);
 								submitStrategy();
-							}}
-						>
+							}}>
 							I understand
 						</Button>
 					</div>
@@ -433,8 +438,7 @@ export const SubmissionModal = ({
 						<div
 							className={`transition-opacity duration-1000 flex flex-col ${
 								submissionState === SubmissionStatus.Done ? 'opacity-0' : 'opacity-100'
-							}`}
-						>
+							}`}>
 							{/* Checking deposits */}
 							<div className={`transition-opacity duration-1000 flex flex-col`}>
 								<div className="flex items-center my-4">
@@ -448,8 +452,7 @@ export const SubmissionModal = ({
 													: submissionState > SubmissionStatus.CheckingBalances
 														? 'bg-emerald-600 w-10 h-10'
 														: ''
-										}`}
-									>
+										}`}>
 										{1}
 									</div>
 									<div className="text-lg">
@@ -476,8 +479,7 @@ export const SubmissionModal = ({
 													  deposit.status === TokenDepositStatus.WaitingForApprovalConfirmation
 													? 'bg-amber-500 w-12 h-12'
 													: 'bg-emerald-600 w-10 h-10'
-										}`}
-									>
+										}`}>
 										{i + 2}
 									</div>
 									<div className="text-lg">
@@ -510,8 +512,7 @@ export const SubmissionModal = ({
 											: submissionState === SubmissionStatus.Done
 												? 'bg-emerald-600 w-10 h-10'
 												: 'bg-gray-400 w-10 h-10'
-									}`}
-								>
+									}`}>
 									{tokenDeposits.length + 2}
 								</div>
 								<div className="text-lg">
@@ -536,8 +537,7 @@ export const SubmissionModal = ({
 											`${account?.chain?.blockExplorers?.default.url}/tx/${transactionHash}`,
 											'_blank'
 										)
-									}
-								>
+									}>
 									View deployment transaction
 								</Button>
 							)}
@@ -567,8 +567,7 @@ export const SubmissionModal = ({
 										router.push(
 											`${window.location.origin}/my-strategies/${newOrderHash}-${getNetworkSubgraphs().find((n) => n.chainId === account.chainId)?.name}`
 										)
-									}
-								>
+									}>
 									Track your strategy
 								</Button>
 							) : (
@@ -582,8 +581,7 @@ export const SubmissionModal = ({
 										`${account?.chain?.blockExplorers?.default.url}/tx/${transactionHash}`,
 										'_blank'
 									)
-								}
-							>
+								}>
 								View transaction
 							</Button>
 						</div>

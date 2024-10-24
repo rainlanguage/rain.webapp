@@ -142,7 +142,7 @@ describe('SubmissionModal', () => {
 			isConnected: true
 		});
 	});
-	it.only('opens the modal and shows disclaimer', async () => {
+	it('opens the modal and shows disclaimer', async () => {
 		(useWriteContract as Mock).mockReturnValue({
 			writeContractAsync: vi.fn()
 		});
@@ -173,7 +173,7 @@ describe('SubmissionModal', () => {
 
 		await waitFor(() => expect(screen.queryByText(/Wait!/i)).not.toBeInTheDocument());
 	});
-	it.only('Sets an error if user rejects transactions', async () => {
+	it('Sets an error if user rejects transactions', async () => {
 		const mockSetError = vi.fn(); // Mock the setError function
 
 		// Mock writeContractAsync to throw an error
@@ -217,7 +217,7 @@ describe('SubmissionModal', () => {
 			expect.stringContaining('There was an error when confirming the transaction in your wallet.')
 		);
 	});
-	it.only('Sets an error if multicall reverts', async () => {
+	it('Sets an error if multicall reverts', async () => {
 		const mockSetError = vi.fn();
 
 		(useWriteContract as Mock).mockReturnValue({

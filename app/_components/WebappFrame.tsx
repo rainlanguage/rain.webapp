@@ -17,6 +17,7 @@ import { TokenInfo, getTokenInfos } from '../_services/getTokenInfo';
 import { Button, Spinner } from 'flowbite-react';
 import ShareStateAsUrl from './ShareStateAsUrl';
 import { decompress } from '../_services/compress';
+import { CodemirrorModal } from './CodemirrorModal';
 import { Button as ButtonType } from '../types';
 
 interface props {
@@ -50,7 +51,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			const fields = deployment.fields;
 			const currentField = fields[0];
 			if (currentField.min !== undefined && !currentField.presets) {
-				return `Enter a number greater than ${currentField.min}`;
+				return `Enter a number greater than or equal to ${currentField.min}`;
 			}
 			return '';
 		})(),
@@ -60,10 +61,12 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	const [currentState, setCurrentState] = useState<FrameState>(defaultState);
+
 	const [loading, setLoading] = useState({
 		fetchingTokens: false,
 		decodingState: true
 	});
+
 	const [error, setError] = useState<string | React.ReactElement | null>(null);
 	const [inputText, setInputText] = useState<string>('');
 
@@ -74,6 +77,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		if (encodedState) {
 			try {
 				const decompressedState = await decompress(encodedState);
+
 				return {
 					...JSON.parse(decompressedState),
 					requiresTokenApproval: false,
@@ -114,7 +118,9 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			if (currentState.tokenInfos.length === 0 && !loading.fetchingTokens) {
 				try {
 					setLoading((prev) => ({ ...prev, fetchingTokens: true }));
+
 					const tokenInfos = await getTokenInfos(yamlData);
+
 					setCurrentState((prevState) => ({
 						...prevState,
 						tokenInfos
@@ -170,6 +176,18 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	const buttonsData = generateButtonsData(yamlData, currentState);
 
+	useEffect(() => {
+		const filteredButtons = buttonsData.filter(
+			(buttonData) => buttonData.buttonValue !== 'back' && buttonData.buttonValue !== 'finalSubmit'
+		);
+		if (filteredButtons.length === 1 && filteredButtons[0].buttonText === 'Custom') {
+			setCurrentState((prevState) => ({
+				...prevState,
+				textInputLabel: filteredButtons[0].buttonValue
+			}));
+		}
+	}, [buttonsData]);
+
 	return loading.decodingState || loading.fetchingTokens ? (
 		<div className="flex-grow flex items-center justify-center">
 			<Spinner />
@@ -183,6 +201,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			{currentState.textInputLabel && (
 				<div className="flex justify-center mb-4">
 					<input
+						data-testid="input"
 						className="border-gray-200 rounded-lg border p-2 w-full max-w-96"
 						type="number"
 						placeholder={currentState.textInputLabel}
@@ -199,6 +218,12 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							<SubmissionModal
 								key={buttonData.buttonText}
 								buttonText={buttonData.buttonText}
+								yamlData={yamlData}
+								currentState={currentState}
+								dotrainText={dotrainText}
+								setError={setError}
+							/>
+							<CodemirrorModal
 								yamlData={yamlData}
 								currentState={currentState}
 								dotrainText={dotrainText}

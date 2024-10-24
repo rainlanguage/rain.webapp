@@ -69,7 +69,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	const [error, setError] = useState<string | React.ReactElement | null>(null);
 	const [inputText, setInputText] = useState<string>('');
-	const [isInternalUpdate, setIsInternalUpdate] = useState(false);
 
 	const searchParams = useSearchParams();
 
@@ -77,7 +76,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		const lastBindingKey = Object.keys(currentState.bindings).pop();
 		const lastBindingValue = lastBindingKey ? currentState.bindings[lastBindingKey] : '';
 		const lastDeposit = currentState.deposits[currentState.deposits.length - 1];
-		setInputText(lastBindingValue.toString() || lastDeposit?.amount?.toString() || ('' as string));
+		setInputText(lastDeposit?.amount?.toString() || lastBindingValue.toString() || ('' as string));
 	};
 
 	const initializeState = async () => {
@@ -88,7 +87,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			throw new Error('Error decoding state:');
 		} finally {
 			setLoading((prev) => ({ ...prev, decodingState: false }));
-			setIsInternalUpdate(true);
 		}
 	};
 

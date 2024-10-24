@@ -138,4 +138,30 @@ describe('WebappFrame Component', () => {
 
 		replaceStateSpy.mockRestore();
 	});
+
+	it('renders the correct text input placeholder', async () => {
+		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
+		(generateButtonsData as Mock).mockReturnValue([
+			{ buttonTarget: 'buttonValue', buttonValue: '0', buttonText: '0 USDC' },
+			{ buttonTarget: 'buttonValue', buttonValue: '10', buttonText: '10 USDC' },
+			{
+				buttonTarget: 'textInputLabel',
+				buttonValue: 'Some placeholder value',
+				buttonText: 'Custom'
+			}
+		]);
+		render(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="" />);
+
+		await waitFor(() => {
+			expect(screen.getByRole('button', { name: 'Custom' })).toBeInTheDocument();
+		});
+
+		const customButton = screen.getByRole('button', { name: 'Custom' });
+		act(() => {
+			fireEvent.click(customButton);
+		});
+		(generateButtonsData as Mock).mockReturnValue([]);
+
+		expect(screen.getByPlaceholderText('Some placeholder value')).toBeInTheDocument();
+	});
 });

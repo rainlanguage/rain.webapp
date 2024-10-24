@@ -155,7 +155,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		if (buttonData.buttonTarget === 'textInputLabel') {
 			setCurrentState((prevState) => ({
 				...prevState,
-				textInputLabel: buttonData.toString()
+				textInputLabel: buttonData.buttonValue.toString()
 			}));
 			return;
 		} else if (buttonData.buttonTarget === 'buttonPage') {

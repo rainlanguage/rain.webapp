@@ -114,22 +114,25 @@ describe('OrderQuotes', () => {
 	const setup = () => {
 		refetchQueriesMock = vi.fn(() => {
 			// @ts-expect-error we are not using any parameters
-			quote.doQuoteSpecs()
+			quote.doQuoteSpecs();
 		});
-		vi.mocked(useQuery).mockImplementationOnce(() => ({
-			data: mockQueryData,
-		} as any));
-		vi.mocked(useQuery).mockImplementationOnce(() => ({
-			data: mockQuotes,
-		} as any));
+		vi.mocked(useQuery).mockImplementationOnce(
+			() =>
+				({
+					data: mockQueryData
+				}) as any
+		);
+		vi.mocked(useQuery).mockImplementationOnce(
+			() =>
+				({
+					data: mockQuotes
+				}) as any
+		);
 		vi.mocked(useQueryClient).mockReturnValue({
 			refetchQueries: refetchQueriesMock
 		} as any);
-		vi.mocked(useQueryClient).mockReturnValue({
-			refetchQueries: vi.fn()
-		} as any);
 		vi.clearAllMocks();
-	}
+	};
 
 	it('table should have correct headers', () => {
 		vi.mocked(useQuery).mockReturnValue({
@@ -137,7 +140,7 @@ describe('OrderQuotes', () => {
 			isLoading: false,
 			error: null
 		} as any);
-		const { container } = render(<QuotesTable order={mockOrder} syncedQueryKey='' />);
+		const { container } = render(<QuotesTable order={mockOrder} syncedQueryKey="" />);
 		expect(container.querySelector('table')).toBeInTheDocument();
 		const headers = Array.from(container.querySelectorAll('th')).map((th) => th.textContent);
 		expect(headers).toEqual(['PAIR', 'MAXIMUM OUTPUT', 'IO RATIO', 'MAXIMUM INPUT']);
@@ -223,18 +226,16 @@ describe('OrderQuotes', () => {
 
 		vi.useFakeTimers();
 
-		render(
-			<StrategyAnalytics orderHash={mockOrderHash} network={mockNetwork} />
-		);
+		render(<StrategyAnalytics orderHash={mockOrderHash} network={mockNetwork} />);
 
 		act(() => {
-			vi.advanceTimersByTime(11000)
-		})
+			vi.advanceTimersByTime(11000);
+		});
 		vi.useRealTimers();
 
 		expect(refetchQueriesMock).toHaveBeenCalledWith({
 			queryKey: ['trades-quotes'],
-			exact: false,
+			exact: false
 		});
 
 		expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(1);

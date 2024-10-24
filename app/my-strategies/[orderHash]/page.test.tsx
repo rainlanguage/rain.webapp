@@ -109,12 +109,21 @@ describe('StrategyAnalytics', () => {
 
 	beforeEach(() => {
 		refetchQueriesMock = vi.fn();
-		vi.mocked(useQuery).mockReturnValue({
-			data: mockQueryData,
-			isLoading: false,
-			isError: false,
-			error: null
-		} as any);
+		vi.mocked(useQuery).mockImplementationOnce(
+			() =>
+				({
+					data: mockQueryData,
+					isLoading: false,
+					isError: false,
+					error: null
+				}) as any
+		);
+		vi.mocked(useQuery).mockImplementationOnce(
+			() =>
+				({
+					data: []
+				}) as any
+		);
 		vi.mocked(useQueryClient).mockReturnValue({
 			refetchQueries: refetchQueriesMock
 		} as any);

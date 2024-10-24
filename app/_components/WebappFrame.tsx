@@ -80,13 +80,24 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		setInputText(lastBindingValue.toString() || lastDeposit?.amount?.toString() || ('' as string));
 	};
 
+	const initializeState = async () => {
+		try {
+			const urlState = await getUrlState();
+			if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
+		} catch {
+			throw new Error('Error decoding state:');
+		} finally {
+			setLoading((prev) => ({ ...prev, decodingState: false }));
+			setIsInternalUpdate(true);
+		}
+	};
+
 	const updateUrl = async (updatedState: FrameState) => {
 		setIsInternalUpdate(true);
 		const url = new URL(window.location.href);
 		const jsonString = JSON.stringify(updatedState);
 		const compressed = await compress(jsonString);
 		url.searchParams.set('currentState', compressed);
-		console.log('updatedState', updatedState);
 		await window.history.pushState({}, '', url);
 	};
 
@@ -117,19 +128,8 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
+		console.log('searchParams', searchParams);
 		if (!isInternalUpdate) {
-			const initializeState = async () => {
-				try {
-					const urlState = await getUrlState();
-					if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
-					setInputValueAsLastValue();
-				} catch {
-					throw new Error('Error decoding state:');
-				} finally {
-					setLoading((prev) => ({ ...prev, decodingState: false }));
-					setIsInternalUpdate(true);
-				}
-			};
 			initializeState();
 		}
 	}, [searchParams]);

@@ -8,11 +8,11 @@ import { orderBookJson } from '@/public/_abis/OrderBook';
 import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
 import { decodeAbiParameters } from 'viem';
 import TradesTable from './TradesTable';
-import QuotesTable, { QuotesTableRef } from './QuotesTable';
+import QuotesTable, { QUERY_KEY as QUOTES_QUERY_KEY } from './QuotesTable';
 import { Input, Output } from '../types';
 import { SupportedChains } from '../_types/chains';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { config } from '../providers';
 import { Badge } from 'flowbite-react';
@@ -44,17 +44,29 @@ const Property = ({
 	</div>
 );
 
+const QUERY_KEY = 'trades';
+const SYNCED_QUERY_KEY = 'trades-quotes';
+
 const StrategyAnalytics = ({ orderHash, network }: props) => {
+	const queryClient = useQueryClient();
 	const { switchChainAsync } = useSwitchChain();
 	const { connectModalOpen, openConnectModal } = useConnectModal();
-	const queryClient = useQueryClient();
 	const query = useQuery({
-		queryKey: [orderHash],
+		queryKey: [SYNCED_QUERY_KEY, QUERY_KEY, orderHash],
 		queryFn: () => getTransactionAnalyticsData(orderHash, network),
-		enabled: !!orderHash,
-		refetchInterval: 10000
+		enabled: !!orderHash
 	});
 	const [removalStatus, setRemovalStatus] = useState(RemovalStatus.Idle);
+
+	useEffect(() => {
+		const interval = setInterval(async () => {
+			await queryClient.refetchQueries({
+				queryKey: [SYNCED_QUERY_KEY],
+				exact: false
+			});
+		}, 10000);
+		return () => clearInterval(interval);
+	}, []);
 
 	const { writeContractAsync } = useWriteContract();
 
@@ -105,14 +117,11 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 		}
 	};
 
-	const quotesTableRef = useRef<QuotesTableRef>(null);
-
-	const onDepositWithdrawSuccess = async () => {
+	const refetchQuotes = async () => {
 		await queryClient.refetchQueries({
-			queryKey: [orderHash],
-			exact: true
+			queryKey: [QUOTES_QUERY_KEY],
+			exact: false
 		});
-		quotesTableRef.current?.getQuotes();
 	};
 
 	return (
@@ -179,7 +188,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 													deposit
 													withdraw
 													network={network}
-													onDepositWithdrawSuccess={onDepositWithdrawSuccess}
+													onDepositWithdrawSuccess={refetchQuotes}
 												/>
 											</div>
 										);
@@ -197,7 +206,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 													deposit
 													withdraw
 													network={network}
-													onDepositWithdrawSuccess={onDepositWithdrawSuccess}
+													onDepositWithdrawSuccess={refetchQuotes}
 												/>
 											</div>
 										);
@@ -206,7 +215,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 							)}
 						</div>
 					</div>
-					<QuotesTable order={query.data.order} ref={quotesTableRef} />
+					<QuotesTable syncedQueryKey={SYNCED_QUERY_KEY} order={query.data.order} />
 					<TradesTable trades={query.data.order.trades} />
 				</>
 			)}

@@ -1,6 +1,6 @@
 'use client';
 import { getTransactionAnalyticsData } from '@/app/_queries/strategyAnalytics';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { TokenAndBalance } from './TokenAndBalance';
 import { formatTimestampSecondsAsLocal } from '../_services/dates';
 import { Button } from '@/components/ui/button';
@@ -8,11 +8,11 @@ import { orderBookJson } from '@/public/_abis/OrderBook';
 import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
 import { decodeAbiParameters } from 'viem';
 import TradesTable from './TradesTable';
-import QuotesTable, { QuotesTableRef } from './QuotesTable';
+import QuotesTable, { QUERY_KEY as QUOTES_QUERY_KEY } from './QuotesTable';
 import { Input, Output } from '../types';
 import { SupportedChains } from '../_types/chains';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 interface props {
 	transactionId: string;
@@ -34,15 +34,28 @@ const Property = ({
 	</div>
 );
 
+const QUERY_KEY = 'trades';
+const SYNCED_QUERY_KEY = 'trades-quotes';
+
 const StrategyAnalytics = ({ transactionId, network }: props) => {
+	const queryClient = useQueryClient();
 	const { switchChainAsync } = useSwitchChain();
 	const { connectModalOpen, openConnectModal } = useConnectModal();
 	const query = useQuery({
-		queryKey: [transactionId],
+		queryKey: [SYNCED_QUERY_KEY, QUERY_KEY, transactionId],
 		queryFn: () => getTransactionAnalyticsData(transactionId, network),
-		enabled: !!transactionId,
-		refetchInterval: 10000
+		enabled: !!transactionId
 	});
+
+	useEffect(() => {
+		const interval = setInterval(async () => {
+			await queryClient.refetchQueries({
+				queryKey: [SYNCED_QUERY_KEY],
+				exact: false,
+			})
+		}, 10000);
+		return () => clearInterval(interval);
+	}, []);
 
 	const { writeContractAsync } = useWriteContract();
 
@@ -76,15 +89,12 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 		query.refetch();
 	};
 
-	const quotesTableRef = useRef<QuotesTableRef>(null);
-
-	const refetchQuotes = () => {
-		quotesTableRef.current?.getQuotes();
+	const refetchQuotes = async () => {
+		await queryClient.refetchQueries({
+			queryKey: [QUOTES_QUERY_KEY],
+			exact: false,
+		})
 	};
-
-	useEffect(() => {
-		if (query.isRefetching) refetchQuotes();
-	}, [query.isRefetching]);
 
 	return (
 		<div className="container flex-grow pt-8 pb-safe">
@@ -161,7 +171,7 @@ const StrategyAnalytics = ({ transactionId, network }: props) => {
 							)}
 						</div>
 					</div>
-					<QuotesTable order={query.data.order} ref={quotesTableRef} />
+					<QuotesTable syncedQueryKey={SYNCED_QUERY_KEY} order={query.data.order} />
 					<TradesTable trades={query.data.order.trades} />
 				</>
 			)}

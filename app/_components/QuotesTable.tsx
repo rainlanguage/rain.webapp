@@ -76,9 +76,10 @@ const QuotesTable = ({ syncedQueryKey, order }: props) => {
 					<Table.HeadCell>MAXIMUM INPUT</Table.HeadCell>
 				</Table.Head>
 				<Table.Body>
-					{query.data?.map((quote: quote.OrderQuoteValue, i: number) => {
-						if (typeof quote === 'string') return;
-						return (
+					{query.data &&
+						query.data.map((quote: quote.OrderQuoteValue, i: number) => {
+							if (typeof quote === 'string') return;
+							return (
 							<Table.Row key={i}>
 								<Table.Cell>
 									{order.inputs[specs[i].inputIOIndex].token.symbol}/

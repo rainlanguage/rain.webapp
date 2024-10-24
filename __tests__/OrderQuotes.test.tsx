@@ -202,7 +202,9 @@ describe('OrderQuotes', () => {
 		const depositModal = screen.getByRole('dialog');
 		expect(depositModal).toBeInTheDocument();
 
-		const input = within(depositModal).getByPlaceholderText('0') as HTMLInputElement;
+		const input = within(depositModal).getByPlaceholderText(
+			'Enter a number greater than 0'
+		) as HTMLInputElement;
 		fireEvent.change(input, { target: { value: '0.1' } });
 
 		const submitButton = within(depositModal).getByRole('button', { name: /Submit/i });

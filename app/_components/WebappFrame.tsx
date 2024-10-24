@@ -79,7 +79,8 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		const jsonString = JSON.stringify(updatedState);
 		const compressed = await compress(jsonString);
 		url.searchParams.set('currentState', compressed);
-		await window.history.replaceState({}, '', url);
+		console.log('updatedState', updatedState);
+		await window.history.pushState({}, '', url);
 	};
 
 	const getUrlState = async () => {
@@ -165,11 +166,17 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			}));
 			return;
 		} else if (buttonData.buttonTarget === 'buttonValue' && buttonData.buttonValue === 'back') {
+			const lastBindingKey = Object.keys(currentState.bindings).pop();
+			const lastBindingValue = lastBindingKey ? currentState.bindings[lastBindingKey] : '';
+			const lastDeposit = currentState.deposits[currentState.deposits.length - 1];
+			setInputText(
+				lastBindingValue.toString() || lastDeposit?.amount?.toString() || ('' as string)
+			);
 			setCurrentState((prevState) => ({
 				...prevState,
 				textInputLabel: ''
 			}));
-		}
+		} else setInputText('');
 
 		const updatedState = getUpdatedFrameState(
 			yamlData,
@@ -186,9 +193,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 				...updatedState
 			};
 		});
-		if (inputText) {
-			setInputText('');
-		}
 	};
 
 	const buttonsData = generateButtonsData(yamlData, currentState);
@@ -256,8 +260,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							key={buttonData.buttonText}
 							onClick={async () => {
 								await handleButtonClick(buttonData);
-							}}
-						>
+							}}>
 							{buttonData.buttonText}
 						</Button>
 					);
@@ -279,8 +282,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					<DialogClose asChild>
 						<button
 							className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
-							onClick={() => setError(null)}
-						>
+							onClick={() => setError(null)}>
 							Close
 						</button>
 					</DialogClose>

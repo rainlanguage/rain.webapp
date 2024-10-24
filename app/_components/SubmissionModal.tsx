@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 import { TokenInfo } from '../_services/getTokenInfo';
 import { Alert, Button } from 'flowbite-react';
 import { TriangleAlert } from 'lucide-react';
+import { checkSubgraphForDeployment } from '../_services/checkSubgraphForTransaction';
 
 interface SubmissionModalProps {
 	yamlData: YamlData;
@@ -258,48 +259,63 @@ export const SubmissionModal = ({
 			}
 			setSubmissionState(SubmissionStatus.PreparingStrategy);
 
-			const convertedBindings = Object.keys(currentState.bindings).reduce((acc, key) => {
-				const value = currentState.bindings[key];
-				if (typeof value !== 'number' || isNaN(value)) {
-					return { ...acc, [key]: value };
-				}
-				return { ...acc, [key]: value };
-			}, {});
-			scenario.bindings = {
-				...scenario.bindings,
-				...convertedBindings
-			};
-			// Get multicall data for addOrder and deposit
-			console.log('getting dotraintext');
-			const updatedDotrainText = yaml.dump(yamlData) + '---' + dotrainText.split('---')[1];
-			console.log('dotraintext');
-			tokenDeposits.map((deposit) => {
-				console.log(deposit);
-				return { ...deposit, amount: 0 };
-			});
-
-			const { addOrderCalldata, depositCalldatas } = await getSubmissionTransactionData(
-				currentState,
-				updatedDotrainText,
-				tokenDeposits
-			);
+			// PREPARE STRATEGY //
+			let addOrderCalldata;
+			let depositCalldatas;
 
 			try {
-				throw new Error('test');
+				const convertedBindings = Object.keys(currentState.bindings).reduce((acc, key) => {
+					const value = currentState.bindings[key];
+					if (typeof value !== 'number' || isNaN(value)) {
+						return { ...acc, [key]: value };
+					}
+					return { ...acc, [key]: value };
+				}, {});
+				scenario.bindings = {
+					...scenario.bindings,
+					...convertedBindings
+				};
 
+				const updatedDotrainText = yaml.dump(yamlData) + '---' + dotrainText.split('---')[1];
+
+				tokenDeposits.map((deposit) => {
+					console.log(deposit);
+					return { ...deposit, amount: 0 };
+				});
+
+				const result = await getSubmissionTransactionData(
+					currentState,
+					updatedDotrainText,
+					tokenDeposits
+				);
+
+				addOrderCalldata = result.addOrderCalldata;
+				depositCalldatas = result.depositCalldatas;
+			} catch (e: any) {
+				setError(
+					e.details ||
+						'There was an error preparing the strategy. This may be caused by invalid deployment options.'
+				);
+				setOpen(false);
+				return;
+			}
+			// PERFORM STRATEGY DEPLOYMENT //
+
+			try {
 				const deployTx = await writeContractAsync({
 					address: orderBookAddress,
 					abi: orderBookJson.abi,
 					functionName: 'multicall',
 					args: [[addOrderCalldata, ...depositCalldatas]]
 				});
-
+				setTransactionHash(deployTx);
 				setSubmissionState(SubmissionStatus.WaitingForDeploymentConfirmation);
-				// Wait for deployment transaction confirmation
-				await waitForTransactionReceipt(config.getClient(), {
+
+				const receipt = await waitForTransactionReceipt(config.getClient(), {
 					hash: deployTx,
 					confirmations: 1
 				});
+				console.log('RECEIPT', receipt);
 
 				setSubmissionState(SubmissionStatus.Done);
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -307,6 +323,15 @@ export const SubmissionModal = ({
 				setError(e.details || 'There was an error deploying your strategy');
 				setOpen(false);
 				return;
+			}
+
+			// WAIT FOR SG TO UPDATE //
+
+			try {
+				const newOrderHash = await checkSubgraphForDeployment(transactionHash!);
+				console.log(newOrderHash);
+			} catch (e) {
+				console.log(e);
 			}
 		} catch (e: any) {
 			if (
@@ -353,6 +378,15 @@ export const SubmissionModal = ({
 									</span>
 								</div>
 							</Alert>
+							<Button
+								onClick={() => {
+									console.log(currentState);
+									checkSubgraphForDeployment(
+										'0x7749059c9508fa384d1db1865d896f11f292ddcb4db0b04652bc8f6e7bc8fd28'
+									);
+								}}>
+								Check SG
+							</Button>
 							<ul className="list-disc list-outside space-y-2 text-gray-700">
 								<li className="ml-4">
 									This front end is provided as a tool to interact with the Raindex smart contracts.
@@ -461,6 +495,7 @@ export const SubmissionModal = ({
 							<div className="flex items-center my-4">
 								<div
 									className={`text-2xl text-white rounded-full transition-all flex items-center justify-center mr-4 ${
+										submissionState === SubmissionStatus.PreparingStrategy ||
 										submissionState === SubmissionStatus.DeployingStrategy ||
 										submissionState === SubmissionStatus.WaitingForDeploymentConfirmation
 											? 'bg-amber-500 w-12 h-12'
@@ -486,9 +521,13 @@ export const SubmissionModal = ({
 							</div>
 							{transactionHash && (
 								<Button
-									className="mt-4"
-									target="_blank"
-									href={`${account?.chain?.blockExplorers?.default.url}/tx/${transactionHash}`}>
+									className="w-fit"
+									onClick={() =>
+										window.open(
+											`${account?.chain?.blockExplorers?.default.url}/tx/${transactionHash}`,
+											'_blank'
+										)
+									}>
 									View deployment transaction
 								</Button>
 							)}
@@ -503,17 +542,20 @@ export const SubmissionModal = ({
 							It will continue to trade until removed. If you&apos;re interested in creating your
 							own strategies from scratch, try <a href="https://docs.rainlang.xyz"> Raindex.</a>
 						</div>
-						<Button
-							className="mt-4"
-							target="_blank"
-							href={`${account?.chain?.blockExplorers?.default.url}/tx/${transactionHash}`}>
-							View deployment transaction
-						</Button>
-						<Button
-							className="mt-4"
-							onClick={() => router.push(`${window.location.origin}/my-strategies`)}>
-							Track your strategy
-						</Button>
+						<div className="flex gap-x-2">
+							<Button onClick={() => router.push(`${window.location.origin}/my-strategies/`)}>
+								Track your strategy
+							</Button>
+							<Button
+								onClick={() =>
+									window.open(
+										`${account?.chain?.blockExplorers?.default.url}/tx/${transactionHash}`,
+										'_blank'
+									)
+								}>
+								View deployment transaction
+							</Button>
+						</div>
 					</div>
 				) : null}
 			</DialogContent>

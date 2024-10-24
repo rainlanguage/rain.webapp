@@ -33,46 +33,42 @@ export default function MyStrategies() {
 							<Table.HeadCell>Inputs</Table.HeadCell>
 							<Table.HeadCell>Outputs</Table.HeadCell>
 							<Table.HeadCell>Trades</Table.HeadCell>
-							<Table.HeadCell />
 						</Table.Head>
 						<Table.Body>
 							{query.data.map((order: Order, i: number) => (
 								<Link
+									className="group/row table-row no-underline text-black hover:bg-gray-50"
 									key={i}
 									data-testid="order-row"
-									href={`${window.location.origin}/my-strategies/${order.orderHash}-${order.network}`}
-								>
-									<Table.Row className="relative">
-										<Table.Cell>{order.network}</Table.Cell>
-										<Table.Cell>
-											{order.active ? (
-												<div className="text-emerald-500">Active</div>
-											) : (
-												<div className="text-red-500">Inactive</div>
-											)}
-										</Table.Cell>
-										<Table.Cell>
-											{formatTimestampSecondsAsLocal(BigInt(order.timestampAdded))}
-										</Table.Cell>
-										<Table.Cell>
-											<div className="flex gap-x-2">
-												{order.inputs.map((input: Input, i: number) => (
-													<TokenAndBalance input={input} key={i} network={order.network} />
-												))}
-											</div>
-										</Table.Cell>
-										<Table.Cell>
-											<div className="flex gap-x-2">
-												{order.outputs.map((output: Output, i: number) => (
-													<TokenAndBalance input={output} key={i} network={order.network} />
-												))}
-											</div>
-										</Table.Cell>
-										<Table.Cell>
-											{order.trades.length === 1000 ? '>999' : order.trades.length}
-										</Table.Cell>
-										<Table.Cell />
-									</Table.Row>
+									href={`${window.location.origin}/my-strategies/${order.orderHash}-${order.network}`}>
+									<Table.Cell>{order.network}</Table.Cell>
+									<Table.Cell>
+										{order.active ? (
+											<div className="text-emerald-500">Active</div>
+										) : (
+											<div className="text-red-500">Inactive</div>
+										)}
+									</Table.Cell>
+									<Table.Cell>
+										{formatTimestampSecondsAsLocal(BigInt(order.timestampAdded))}
+									</Table.Cell>
+									<Table.Cell>
+										<div className="flex gap-x-2">
+											{order.inputs.map((input: Input, i: number) => (
+												<TokenAndBalance input={input} key={i} network={order.network} />
+											))}
+										</div>
+									</Table.Cell>
+									<Table.Cell>
+										<div className="flex gap-x-2">
+											{order.outputs.map((output: Output, i: number) => (
+												<TokenAndBalance input={output} key={i} network={order.network} />
+											))}
+										</div>
+									</Table.Cell>
+									<Table.Cell>
+										{order.trades.length === 1000 ? '>999' : order.trades.length}
+									</Table.Cell>
 								</Link>
 							))}
 						</Table.Body>

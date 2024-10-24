@@ -93,7 +93,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	const updateUrl = async (updatedState: FrameState) => {
-		setIsInternalUpdate(true);
 		const url = new URL(window.location.href);
 		const jsonString = JSON.stringify(updatedState);
 		const compressed = await compress(jsonString);
@@ -129,9 +128,8 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	useEffect(() => {
 		console.log('searchParams', searchParams);
-		if (!isInternalUpdate) {
-			initializeState();
-		}
+
+		initializeState();
 	}, [searchParams]);
 
 	useEffect(() => {
@@ -189,9 +187,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		);
 
 		setCurrentState(() => {
-			if (isInternalUpdate) {
-				updateUrl(updatedState);
-			}
+			updateUrl(updatedState);
 			return {
 				...updatedState
 			};

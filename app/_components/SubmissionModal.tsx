@@ -18,6 +18,7 @@ import { TokenInfo } from '../_services/getTokenInfo';
 import { Alert, Button } from 'flowbite-react';
 import { TriangleAlert } from 'lucide-react';
 import { checkSubgraphForDeployment } from '../_services/checkSubgraphForTransaction';
+import { getNetworkSubgraphs } from '../_queries/subgraphs';
 
 interface SubmissionModalProps {
 	yamlData: YamlData;
@@ -79,9 +80,7 @@ export const SubmissionModal = ({
 	const router = useRouter();
 
 	const account = useAccount();
-	useEffect(() => {
-		console.log(account);
-	}, [account]);
+
 	const currentWalletChainId = useChainId();
 	const { switchChainAsync } = useSwitchChain();
 	const { writeContractAsync } = useWriteContract();
@@ -111,9 +110,10 @@ export const SubmissionModal = ({
 	const [open, setOpen] = useState(false);
 	const [showFinalMessage, setShowFinalMessage] = useState(false);
 	const [transactionHash, setTransactionHash] = useState<string | null>(null);
+	const [newOrderHash, setNewOrderHash] = useState<string | null>(null);
+	const [subgraphError, setSubgraphError] = useState<string | null>(null);
 
 	useEffect(() => {
-		console.log(submissionState);
 		if (submissionState === SubmissionStatus.Done) {
 			setTimeout(() => {
 				setShowFinalMessage(true);
@@ -169,7 +169,8 @@ export const SubmissionModal = ({
 													href={ref.url}
 													target="_blank"
 													rel="noreferrer"
-													style={{ color: 'blue', textDecoration: 'underline' }}>
+													style={{ color: 'blue', textDecoration: 'underline' }}
+												>
 													{ref.name}
 												</a>
 											</li>
@@ -279,7 +280,6 @@ export const SubmissionModal = ({
 				const updatedDotrainText = yaml.dump(yamlData) + '---' + dotrainText.split('---')[1];
 
 				tokenDeposits.map((deposit) => {
-					console.log(deposit);
 					return { ...deposit, amount: 0 };
 				});
 
@@ -308,30 +308,40 @@ export const SubmissionModal = ({
 					functionName: 'multicall',
 					args: [[addOrderCalldata, ...depositCalldatas]]
 				});
+
 				setTransactionHash(deployTx);
 				setSubmissionState(SubmissionStatus.WaitingForDeploymentConfirmation);
 
-				const receipt = await waitForTransactionReceipt(config.getClient(), {
+				await waitForTransactionReceipt(config.getClient(), {
 					hash: deployTx,
 					confirmations: 1
 				});
-				console.log('RECEIPT', receipt);
 
-				setSubmissionState(SubmissionStatus.Done);
+				// WAIT FOR SG TO UPDATE //
+
+				try {
+					const newDeploymentOrderHash = await checkSubgraphForDeployment(
+						deployTx,
+						account?.chainId
+					);
+					if (!newDeploymentOrderHash) {
+						throw new Error('No deployment found');
+					} else {
+						setNewOrderHash(newDeploymentOrderHash);
+						setSubmissionState(SubmissionStatus.Done);
+					}
+				} catch {
+					setSubgraphError(
+						`Deployment was successful, but there was an error while polling the subgraph. Please check 'My stratgies' for the new deployment.`
+					);
+					return setSubmissionState(SubmissionStatus.Done);
+				}
+
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (e: any) {
 				setError(e.details || 'There was an error deploying your strategy');
 				setOpen(false);
 				return;
-			}
-
-			// WAIT FOR SG TO UPDATE //
-
-			try {
-				const newOrderHash = await checkSubgraphForDeployment(transactionHash!);
-				console.log(newOrderHash);
-			} catch (e) {
-				console.log(e);
 			}
 		} catch (e: any) {
 			if (
@@ -357,7 +367,8 @@ export const SubmissionModal = ({
 					onClick={() => setOpen(true)}
 					color="primary"
 					size="sm"
-					className=" from-blue-600 to-violet-600 bg-gradient-to-br">
+					className=" from-blue-600 to-violet-600 bg-gradient-to-br"
+				>
 					{buttonText}
 				</Button>
 			) : (
@@ -365,7 +376,8 @@ export const SubmissionModal = ({
 			)}
 			<DialogContent
 				onInteractOutside={resetSubmissionState}
-				className="bg-white flex flex-col justify-center w-full font-light gap-y-8">
+				className="bg-white flex flex-col justify-center w-full font-light gap-y-8"
+			>
 				{showDisclaimer && (
 					<div className="flex flex-col items-start gap-y-4">
 						<DialogTitle className="w-full font-light text-2xl">Wait!</DialogTitle>
@@ -378,15 +390,7 @@ export const SubmissionModal = ({
 									</span>
 								</div>
 							</Alert>
-							<Button
-								onClick={() => {
-									console.log(currentState);
-									checkSubgraphForDeployment(
-										'0x7749059c9508fa384d1db1865d896f11f292ddcb4db0b04652bc8f6e7bc8fd28'
-									);
-								}}>
-								Check SG
-							</Button>
+
 							<ul className="list-disc list-outside space-y-2 text-gray-700">
 								<li className="ml-4">
 									This front end is provided as a tool to interact with the Raindex smart contracts.
@@ -414,7 +418,8 @@ export const SubmissionModal = ({
 							onClick={() => {
 								setShowDisclaimer(false);
 								submitStrategy();
-							}}>
+							}}
+						>
 							I understand
 						</Button>
 					</div>
@@ -428,7 +433,8 @@ export const SubmissionModal = ({
 						<div
 							className={`transition-opacity duration-1000 flex flex-col ${
 								submissionState === SubmissionStatus.Done ? 'opacity-0' : 'opacity-100'
-							}`}>
+							}`}
+						>
 							{/* Checking deposits */}
 							<div className={`transition-opacity duration-1000 flex flex-col`}>
 								<div className="flex items-center my-4">
@@ -442,7 +448,8 @@ export const SubmissionModal = ({
 													: submissionState > SubmissionStatus.CheckingBalances
 														? 'bg-emerald-600 w-10 h-10'
 														: ''
-										}`}>
+										}`}
+									>
 										{1}
 									</div>
 									<div className="text-lg">
@@ -469,7 +476,8 @@ export const SubmissionModal = ({
 													  deposit.status === TokenDepositStatus.WaitingForApprovalConfirmation
 													? 'bg-amber-500 w-12 h-12'
 													: 'bg-emerald-600 w-10 h-10'
-										}`}>
+										}`}
+									>
 										{i + 2}
 									</div>
 									<div className="text-lg">
@@ -502,7 +510,8 @@ export const SubmissionModal = ({
 											: submissionState === SubmissionStatus.Done
 												? 'bg-emerald-600 w-10 h-10'
 												: 'bg-gray-400 w-10 h-10'
-									}`}>
+									}`}
+								>
 									{tokenDeposits.length + 2}
 								</div>
 								<div className="text-lg">
@@ -527,7 +536,8 @@ export const SubmissionModal = ({
 											`${account?.chain?.blockExplorers?.default.url}/tx/${transactionHash}`,
 											'_blank'
 										)
-									}>
+									}
+								>
 									View deployment transaction
 								</Button>
 							)}
@@ -542,18 +552,39 @@ export const SubmissionModal = ({
 							It will continue to trade until removed. If you&apos;re interested in creating your
 							own strategies from scratch, try <a href="https://docs.rainlang.xyz"> Raindex.</a>
 						</div>
-						<div className="flex gap-x-2">
-							<Button onClick={() => router.push(`${window.location.origin}/my-strategies/`)}>
-								Track your strategy
-							</Button>
+						{subgraphError && (
+							<Alert color="red">
+								<div className="flex items-center justify-center">
+									<TriangleAlert color="red" size="40" />
+									<span className="ml-2">{subgraphError}</span>
+								</div>
+							</Alert>
+						)}
+						<div className="flex gap-x-2 mt-4">
+							{newOrderHash ? (
+								<Button
+									onClick={() =>
+										router.push(
+											`${window.location.origin}/my-strategies/${newOrderHash}-${getNetworkSubgraphs().find((n) => n.chainId === account.chainId)?.name}`
+										)
+									}
+								>
+									Track your strategy
+								</Button>
+							) : (
+								<Button onClick={() => router.push(`${window.location.origin}/my-strategies/`)}>
+									View my Strategies{' '}
+								</Button>
+							)}
 							<Button
 								onClick={() =>
 									window.open(
 										`${account?.chain?.blockExplorers?.default.url}/tx/${transactionHash}`,
 										'_blank'
 									)
-								}>
-								View deployment transaction
+								}
+							>
+								View transaction
 							</Button>
 						</div>
 					</div>

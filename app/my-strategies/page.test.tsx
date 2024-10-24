@@ -41,12 +41,12 @@ describe('Page', () => {
 
 		render(<Page />);
 
-		const linkElement = screen.getByTestId('order-row');
-		expect(linkElement).toHaveAttribute(
+		const linkElements = screen.getAllByTestId('order-row-link');
+		expect(linkElements[0]).toHaveAttribute(
 			'href',
 			`${window.location.origin}/my-strategies/order123-Ethereum`
 		);
 
-		fireEvent.click(linkElement);
+		fireEvent.click(linkElements[0]);
 	});
 });

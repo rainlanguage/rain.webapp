@@ -16,7 +16,10 @@ export const TableRowLink = ({
 }) => {
 	return (
 		<LinkContext.Provider value={link}>
-			<Table.Row style={{ cursor: link ? 'pointer' : 'default', height: '1px' }}>
+			<Table.Row
+				style={{ cursor: link ? 'pointer' : 'default', height: '1px' }}
+				data-testid="order-row"
+			>
 				{children}
 			</Table.Row>
 		</LinkContext.Provider>
@@ -31,7 +34,9 @@ export const TableCellLink = ({ children }: { children: React.ReactNode }) => {
 			{link ? (
 				<a
 					href={link}
-					className="flex items-center justify-start h-full w-full p-4 text-inherit no-underline hover:bg-gray-50 visited:text-gray-500">
+					data-testid="order-row-link"
+					className="flex items-center justify-start h-full w-full p-4 text-inherit no-underline hover:bg-gray-50 visited:text-gray-500"
+				>
 					{children}
 				</a>
 			) : (

@@ -38,8 +38,8 @@ export default function MyStrategies() {
 							{query.data.map((order: Order, i: number) => (
 								<TableRowLink
 									key={i}
-									data-testid="order-row"
-									link={`${window.location.origin}/my-strategies/${order.orderHash}-${order.network}`}>
+									link={`${window.location.origin}/my-strategies/${order.orderHash}-${order.network}`}
+								>
 									<TableCellLink>{order.network}</TableCellLink>
 									<TableCellLink>
 										{order.active ? (

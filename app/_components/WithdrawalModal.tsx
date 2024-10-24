@@ -96,14 +96,18 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 			return;
 		}
 		await switchChain();
-		// Send raw value to the contract (no conversion needed here)
-		await writeContractAsync({
-			abi: orderBookJson.abi,
-			address: vault.orderbook.id as `0x${string}`,
-			functionName: 'withdraw2',
-			args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
-		});
-		onSuccess?.();
+		try {
+			await writeContractAsync({
+				abi: orderBookJson.abi,
+				address: vault.orderbook.id as `0x${string}`,
+				functionName: 'withdraw2',
+				args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
+			});
+			onSuccess?.();
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (error: any) {
+			console.error(error.message);
+		}
 	};
 
 	const handleMaxClick = () => {

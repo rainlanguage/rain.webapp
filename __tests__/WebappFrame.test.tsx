@@ -193,6 +193,8 @@ describe('WebappFrame Component', () => {
 			expect(replaceStateSpy).toHaveBeenCalled();
 			expect(replaceStateSpy).toHaveBeenCalledTimes(1);
 		});
-		replaceStateSpy.mockRestore();
+		// test clicking the back button
+		// test clicking custom(if necessary)
+		// value should be previous state
 	});
 });

@@ -164,4 +164,35 @@ describe('WebappFrame Component', () => {
 
 		expect(screen.getByPlaceholderText('Some placeholder value')).toBeInTheDocument();
 	});
+
+	it('updates preserves the previous form value', async () => {
+		const mockCompressedState = 'mockCompressedState';
+		(compress as Mock).mockResolvedValue(mockCompressedState);
+		const replaceStateSpy = vi.spyOn(window.history, 'replaceState');
+		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
+		(generateButtonsData as Mock).mockReturnValue([
+			{ buttonValue: 'customValue', buttonText: 'Custom' }
+		]);
+
+		render(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="" />);
+
+		await waitFor(() => {
+			expect(screen.getByTestId('input')).toBeInTheDocument();
+		});
+
+		const input = screen.getByTestId('input') as HTMLInputElement;
+		const button = screen.getByTestId('button-' + 'Custom') as HTMLButtonElement;
+		expect(button).toBeInTheDocument();
+
+		await act(async () => {
+			await userEvent.type(input, '123');
+			await userEvent.click(button);
+		});
+
+		await waitFor(() => {
+			expect(replaceStateSpy).toHaveBeenCalled();
+			expect(replaceStateSpy).toHaveBeenCalledTimes(1);
+		});
+		replaceStateSpy.mockRestore();
+	});
 });

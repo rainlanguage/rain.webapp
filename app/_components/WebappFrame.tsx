@@ -71,38 +71,33 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	const [inputText, setInputText] = useState<string>('');
 
 	const searchParams = useSearchParams();
+	const buttonsData = generateButtonsData(yamlData, currentState);
 
 	const setInputValueAsLastValue = () => {
+		console.log('setting input text');
 		const lastBindingKey = Object.keys(currentState.bindings).pop();
 		const lastBindingValue = lastBindingKey ? currentState.bindings[lastBindingKey] : '';
 		const lastDeposit = currentState.deposits[currentState.deposits.length - 1];
 		setInputText(lastDeposit?.amount?.toString() || lastBindingValue.toString() || ('' as string));
 	};
 
-	const initializeState = async () => {
-		try {
-			const urlState = await getUrlState();
-			if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
-		} catch {
-			throw new Error('Error decoding state:');
-		} finally {
-			setLoading((prev) => ({ ...prev, decodingState: false }));
-		}
-	};
-
 	const updateUrl = async (updatedState: FrameState) => {
 		const url = new URL(window.location.href);
+		console.log('updated!', updatedState);
 		const jsonString = JSON.stringify(updatedState);
 		const compressed = await compress(jsonString);
+		console.log('compressed', compressed);
 		url.searchParams.set('currentState', compressed);
 		await window.history.pushState({}, '', url);
 	};
 
 	const getUrlState = async () => {
 		const encodedState = searchParams.get('currentState');
+
 		if (encodedState) {
 			try {
 				const decompressedState = await decompress(encodedState);
+				console.log('decomp', decompressedState);
 
 				return {
 					...JSON.parse(decompressedState),
@@ -124,9 +119,21 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		return null;
 	};
 
-	useEffect(() => {
-		console.log('searchParams', searchParams);
+	const initializeState = async () => {
+		console.log('INITIALIZING STATE');
+		try {
+			const urlState = await getUrlState();
+			console.log('URL STATE', urlState);
 
+			if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
+		} catch {
+			throw new Error('Error decoding state:');
+		} finally {
+			setLoading((prev) => ({ ...prev, decodingState: false }));
+		}
+	};
+
+	useEffect(() => {
 		initializeState();
 	}, [searchParams]);
 
@@ -192,7 +199,9 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		});
 	};
 
-	const buttonsData = generateButtonsData(yamlData, currentState);
+	useEffect(() => {
+		console.log(buttonsData);
+	}, [buttonsData]);
 
 	useEffect(() => {
 		const filteredButtons = buttonsData.filter(
@@ -251,7 +260,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 						</div>
 					) : (
 						<Button
-							data-testid={`button-${buttonData.buttonText}`}
+							data-testid={`button-${buttonData.buttonValue}`}
 							color="primary"
 							size="sm"
 							key={buttonData.buttonText}

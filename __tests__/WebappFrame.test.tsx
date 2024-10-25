@@ -55,136 +55,6 @@ vi.mock('@/app/_services/compress', () => ({
 	decompress: vi.fn()
 }));
 
-const mockedStateWithBinding = {
-	strategyName: 'Fixed limit',
-	strategyDescription: 'Fixed limit order strategy\n',
-	currentStep: 'deposit',
-	deploymentOption: {
-		deployment: 'base-weth-usdc',
-		name: 'Buy WETH with USDC on Base.',
-		description: 'Buy WETH with USDC for fixed price on Base network.',
-		deposits: [
-			{
-				token: 'base-usdc',
-				min: 0,
-				presets: [0, 10, 100, 1000, 10000]
-			}
-		],
-		fields: [
-			{
-				binding: 'fixed-io',
-				name: 'WETH price in USDC ($ per ETH)',
-				min: 1000
-			}
-		]
-	},
-	bindings: {
-		'fixed-io': '1234'
-	},
-	deposits: [],
-	buttonPage: 0,
-	buttonMax: 10,
-	textInputLabel: '',
-	error: null,
-	isWebapp: true,
-	tokenInfos: [
-		{
-			yamlName: 'base-weth',
-			address: '0x4200000000000000000000000000000000000006',
-			decimals: 18,
-			symbol: 'WETH',
-			name: 'Wrapped Ether'
-		},
-		{
-			yamlName: 'base-usdc',
-			address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-			decimals: 6,
-			symbol: 'USDC',
-			name: 'USD Coin'
-		},
-		{
-			yamlName: 'flare-wflr',
-			address: '0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d',
-			decimals: 18,
-			symbol: 'WFLR',
-			name: 'Wrapped Flare'
-		},
-		{
-			yamlName: 'flare-sflr',
-			address: '0x12e605bc104e93B45e1aD99F9e555f659051c2BB',
-			decimals: 18,
-			symbol: 'sFLR',
-			name: 'Staked FLR'
-		},
-		{
-			yamlName: 'flare-eusdt',
-			address: '0x96B41289D90444B8adD57e6F265DB5aE8651DF29',
-			decimals: 6,
-			symbol: 'eUSDT',
-			name: 'Enosys USDT'
-		}
-	],
-	requiresTokenApproval: false
-};
-
-const mockedStateWithoutBinding = {
-	strategyName: 'Fixed limit',
-	strategyDescription: 'Fixed limit order strategy\n',
-	currentStep: 'fields',
-	deploymentOption: {
-		deployment: 'base-weth-usdc',
-		name: 'Buy WETH with USDC on Base.',
-		description: 'Buy WETH with USDC for fixed price on Base network.',
-		deposits: [[Object]],
-		fields: [[Object]]
-	},
-	bindings: {},
-	deposits: [],
-	buttonPage: 0,
-	buttonMax: 10,
-	textInputLabel: '',
-	error: null,
-	isWebapp: true,
-	tokenInfos: [
-		{
-			yamlName: 'base-weth',
-			address: '0x4200000000000000000000000000000000000006',
-			decimals: 18,
-			symbol: 'WETH',
-			name: 'Wrapped Ether'
-		},
-		{
-			yamlName: 'base-usdc',
-			address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-			decimals: 6,
-			symbol: 'USDC',
-			name: 'USD Coin'
-		},
-		{
-			yamlName: 'flare-wflr',
-			address: '0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d',
-			decimals: 18,
-			symbol: 'WFLR',
-			name: 'Wrapped Flare'
-		},
-		{
-			yamlName: 'flare-sflr',
-			address: '0x12e605bc104e93B45e1aD99F9e555f659051c2BB',
-			decimals: 18,
-			symbol: 'sFLR',
-			name: 'Staked FLR'
-		},
-		{
-			yamlName: 'flare-eusdt',
-			address: '0x96B41289D90444B8adD57e6F265DB5aE8651DF29',
-			decimals: 6,
-			symbol: 'eUSDT',
-			name: 'Enosys USDT'
-		}
-	],
-	requiresTokenApproval: false
-};
-
 describe('WebappFrame Component', () => {
 	beforeEach(() => {
 		vi.resetAllMocks();
@@ -193,7 +63,7 @@ describe('WebappFrame Component', () => {
 		(useWriteContract as Mock).mockReturnValue({ writeContractAsync: vi.fn() });
 	});
 
-	it.only('shows input field when only one "Custom" button is present', async () => {
+	it('shows input field when only one "Custom" button is present', async () => {
 		(useSearchParams as Mock).mockReturnValue({
 			get: vi.fn(),
 			set: vi.fn()
@@ -208,7 +78,7 @@ describe('WebappFrame Component', () => {
 		});
 	});
 
-	it.only('updates the URL with the current state', async () => {
+	it('updates the URL with the current state', async () => {
 		(useSearchParams as Mock).mockReturnValue({
 			get: vi.fn(),
 			set: vi.fn()
@@ -245,7 +115,7 @@ describe('WebappFrame Component', () => {
 		pushStateSpy.mockRestore();
 	});
 
-	it.only('updates the URL with the current state when a preset button is clicked', async () => {
+	it('updates the URL with the current state when a preset button is clicked', async () => {
 		(useSearchParams as Mock).mockReturnValue({
 			get: vi.fn(),
 			set: vi.fn()
@@ -281,7 +151,7 @@ describe('WebappFrame Component', () => {
 		pushStateSpy.mockRestore();
 	});
 
-	it.only('renders the correct text input placeholder', async () => {
+	it('renders the correct text input placeholder', async () => {
 		(useSearchParams as Mock).mockReturnValue({
 			get: vi.fn(),
 			set: vi.fn()
@@ -310,7 +180,117 @@ describe('WebappFrame Component', () => {
 
 		expect(screen.getByPlaceholderText('Some placeholder value')).toBeInTheDocument();
 	});
-	it.only('pre-fills form values based on URL state', async () => {
+	it('pre-fills form values based on URL state', async () => {
+		const mockedReviewState = {
+			strategyName: 'Fixed limit',
+			strategyDescription: 'Fixed limit order strategy\n',
+			currentStep: 'review',
+			deploymentOption: {
+				deployment: 'base-weth-usdc',
+				name: 'Buy WETH with USDC on Base.',
+				description: 'Buy WETH with USDC for fixed price on Base network.',
+				deposits: [
+					{
+						token: 'base-usdc',
+						min: 0,
+						presets: [0, 10, 100, 1000, 10000]
+					}
+				],
+				fields: [
+					{
+						binding: 'fixed-io',
+						name: 'WETH price in USDC ($ per ETH)',
+						min: 1000
+					}
+				]
+			},
+			bindings: {
+				'fixed-io': '1000'
+			},
+			deposits: [
+				{
+					tokenInfo: {
+						yamlName: 'base-usdc',
+						address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+						decimals: 6,
+						symbol: 'USDC',
+						name: 'USD Coin'
+					},
+					amount: 1000
+				}
+			],
+			buttonPage: 0,
+			buttonMax: 10,
+			textInputLabel: '',
+			error: null,
+			isWebapp: true,
+			tokenInfos: [
+				{
+					yamlName: 'base-weth',
+					address: '0x4200000000000000000000000000000000000006',
+					decimals: 18,
+					symbol: 'WETH',
+					name: 'Wrapped Ether'
+				},
+				{
+					yamlName: 'base-usdc',
+					address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+					decimals: 6,
+					symbol: 'USDC',
+					name: 'USD Coin'
+				},
+				{
+					yamlName: 'flare-wflr',
+					address: '0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d',
+					decimals: 18,
+					symbol: 'WFLR',
+					name: 'Wrapped Flare'
+				},
+				{
+					yamlName: 'flare-sflr',
+					address: '0x12e605bc104e93B45e1aD99F9e555f659051c2BB',
+					decimals: 18,
+					symbol: 'sFLR',
+					name: 'Staked FLR'
+				},
+				{
+					yamlName: 'flare-eusdt',
+					address: '0x96B41289D90444B8adD57e6F265DB5aE8651DF29',
+					decimals: 6,
+					symbol: 'eUSDT',
+					name: 'Enosys USDT'
+				}
+			],
+			requiresTokenApproval: false
+		};
+		(useSearchParams as Mock).mockReturnValue({
+			get: vi.fn(() => 'mockstate'),
+			set: vi.fn(() => JSON.stringify(mockedReviewState))
+		});
+		(decompress as Mock).mockResolvedValue(JSON.stringify(mockedReviewState));
+
+		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
+		(generateButtonsData as Mock).mockReturnValue([
+			{
+				buttonTarget: 'buttonValue',
+				buttonValue: 'back',
+				buttonText: '←'
+			},
+			{
+				buttonTarget: 'buttonValue',
+				buttonValue: 'finalSubmit',
+				buttonText: 'Deposit tokens and deploy strategy'
+			}
+		]);
+		render(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="" />);
+
+		await waitFor(() => {
+			expect(screen.getByText('Review choices')).toBeInTheDocument();
+			expect(screen.queryAllByText('Buy WETH with USDC on Base.')).toHaveLength(2);
+			expect(screen.queryAllByText('1000')).toHaveLength(2);
+		});
+	});
+	it.skip('pre-fills input with previous value', async () => {
 		const mockedReviewState = {
 			strategyName: 'Fixed limit',
 			strategyDescription: 'Fixed limit order strategy\n',

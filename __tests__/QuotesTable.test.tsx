@@ -18,7 +18,8 @@ describe('QuotesTable Component', () => {
 		network: 'polygon',
 		inputs: [{ token: { address: '0xTokenA', symbol: 'TKA', decimals: BigInt(18) } }] as Input[],
 		outputs: [{ token: { address: '0xTokenB', symbol: 'TKB', decimals: BigInt(18) } }] as Output[],
-		orderbook: { id: 'orderbook-id' }
+		orderbook: { id: 'orderbook-id' },
+		subgraphUrl: 'https://subgraph-url.com'
 	} as unknown as Order;
 
 	beforeEach(() => {
@@ -42,5 +43,23 @@ describe('QuotesTable Component', () => {
 		render(<QuotesTable syncedQueryKey="testKey" order={mockOrder} />);
 		expect(screen.getByRole('table')).toBeInTheDocument();
 		expect(screen.getByText('TKA/TKB')).toBeInTheDocument();
+	});
+	it('should not rendeer the table if subgraph URL is not included in the order', () => {
+		(useQuery as Mock).mockReturnValue({
+			data: [
+				{
+					maxOutput: '0x10',
+					ratio: '0x2',
+					inputIOIndex: 0,
+					outputIOIndex: 0
+				}
+			],
+			isLoading: false,
+			isError: false
+		});
+
+		render(<QuotesTable syncedQueryKey="testKey" order={{ ...mockOrder, subgraphUrl: '' }} />);
+		expect(screen.queryByRole('table')).toBeNull();
+		expect(screen.queryByText('TKA/TKB')).toBeNull();
 	});
 });

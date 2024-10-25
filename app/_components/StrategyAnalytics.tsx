@@ -222,11 +222,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 							)}
 						</div>
 					</div>
-					<QuotesTable
-						syncedQueryKey={SYNCED_QUERY_KEY}
-						order={query.data}
-						subgraphUrl={subgraphUrl}
-					/>
+					<QuotesTable syncedQueryKey={SYNCED_QUERY_KEY} order={query.data} />
 					<TradesTable trades={query.data.trades} />
 				</>
 			)}

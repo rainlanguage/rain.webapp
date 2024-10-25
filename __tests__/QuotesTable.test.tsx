@@ -18,7 +18,8 @@ describe('QuotesTable Component', () => {
 		network: 'polygon',
 		inputs: [{ token: { address: '0xTokenA', symbol: 'TKA', decimals: BigInt(18) } }] as Input[],
 		outputs: [{ token: { address: '0xTokenB', symbol: 'TKB', decimals: BigInt(18) } }] as Output[],
-		orderbook: { id: 'orderbook-id' }
+		orderbook: { id: 'orderbook-id' },
+		subgraphUrl: 'https://subgraph-url.com'
 	} as unknown as Order;
 
 	beforeEach(() => {

@@ -5,7 +5,6 @@ import { useQuery } from '@tanstack/react-query';
 import userEvent from '@testing-library/user-event';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { Mock, vi } from 'vitest';
-import { getNetworkSubgraphs } from '@/app/_queries/subgraphs';
 
 enum RemovalStatus {
 	Idle = 'Remove strategy',

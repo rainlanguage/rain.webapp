@@ -101,7 +101,7 @@ export const getStrategyAnalytics = async (
 		if (result.errors) {
 			throw new Error(result.errors[0].message);
 		} else if (result.data?.orders.length) {
-			return result.data.orders[0];
+			return { ...result.data.orders[0], network, subgraphUrl };
 		}
 	} catch (error: unknown) {
 		if (error instanceof Error) {

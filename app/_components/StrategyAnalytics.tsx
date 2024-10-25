@@ -133,7 +133,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 			{!subgraphUrl && <div data-testid="no-sg-error">No subgraph found for this network</div>}
 			{query.isLoading && <div data-testid="loading-indicator">Loading...</div>}
 			{query.isError && <div data-testid="query-error">{query.error.message}</div>}
-			{query.data && (
+			{query.data && subgraphUrl && (
 				<>
 					<div className="flex flex-col gap-y-4">
 						<div className="flex md:flex-row flex-col gap-4 justify-between items-center mb-8">
@@ -143,8 +143,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 									data-testid="strategy-status"
 									size="2xl"
 									className="py-2 px-4"
-									color={query.data.active ? 'green' : 'red'}
-								>
+									color={query.data.active ? 'green' : 'red'}>
 									{query.data.active ? 'Active' : 'Inactive'}
 								</Badge>
 
@@ -154,8 +153,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 										className={removalStatus !== RemovalStatus.Idle ? 'animate-pulse' : ''}
 										onClick={() => {
 											removeOrder();
-										}}
-									>
+										}}>
 										{removalStatus}
 									</Button>
 								)}
@@ -222,7 +220,11 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 							)}
 						</div>
 					</div>
-					<QuotesTable syncedQueryKey={SYNCED_QUERY_KEY} order={query.data} />
+					<QuotesTable
+						syncedQueryKey={SYNCED_QUERY_KEY}
+						order={query.data}
+						subgraphUrl={subgraphUrl}
+					/>
 					<TradesTable trades={query.data.trades} />
 				</>
 			)}

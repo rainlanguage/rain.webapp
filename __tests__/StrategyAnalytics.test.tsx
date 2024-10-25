@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import userEvent from '@testing-library/user-event';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { Mock, vi } from 'vitest';
+import { getNetworkSubgraphs } from '@/app/_queries/subgraphs';
 
 enum RemovalStatus {
 	Idle = 'Remove strategy',
@@ -63,7 +64,7 @@ describe('StrategyAnalytics', () => {
 		(useQuery as Mock).mockImplementationOnce(() => ({
 			data: []
 		}));
-		render(<StrategyAnalytics orderHash="0xtransaction" network="ethereum" />);
+		render(<StrategyAnalytics orderHash="0xtransaction" network="flare" />);
 		expect(screen.getByText('Strategy Analytics')).toBeInTheDocument();
 		expect(screen.getByText(RemovalStatus.Idle)).toBeInTheDocument();
 	});
@@ -86,7 +87,7 @@ describe('StrategyAnalytics', () => {
 		(useQuery as Mock).mockImplementationOnce(() => ({
 			data: []
 		}));
-		render(<StrategyAnalytics orderHash="0xtransaction" network="ethereum" />);
+		render(<StrategyAnalytics orderHash="0xtransaction" network="flare" />);
 		expect(screen.getByTestId('strategy-status')).toHaveTextContent('Inactive');
 		expect(screen.queryByTestId('remove-strategy-btn')).not.toBeInTheDocument();
 	});
@@ -142,7 +143,7 @@ describe('StrategyAnalytics', () => {
 		(useQuery as Mock).mockImplementationOnce(() => ({
 			data: []
 		}));
-		render(<StrategyAnalytics orderHash="0xtransaction" network="ethereum" />);
+		render(<StrategyAnalytics orderHash="0xtransaction" network="flare" />);
 		expect(screen.getByText('Strategy Analytics')).toBeInTheDocument();
 		expect(screen.getByText(RemovalStatus.Idle)).toBeInTheDocument();
 	});

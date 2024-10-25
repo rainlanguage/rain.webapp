@@ -16,7 +16,8 @@ vi.mock('wagmi', async (importOriginal) => {
 		useAccount: () => ({ address: zeroAddress, chain: { id: 1 } }),
 		useReadContract: vi.fn(),
 		useWriteContract: vi.fn(),
-		useSwitchChain: vi.fn()
+		useSwitchChain: vi.fn(),
+		useChainId: vi.fn()
 	};
 });
 
@@ -209,5 +210,44 @@ describe('DepositModal', () => {
 		await fireEvent.change(input, { target: { value: '' } });
 		const submitButton = screen.getByRole('button', { name: /Submit/i });
 		await waitFor(() => expect(submitButton).toBeDisabled());
+	});
+	it('fires the switch chain function if the chain is incorrect', async () => {
+		(useSwitchChain as Mock).mockReturnValue({
+			switchChain: vi.fn()
+		});
+		(readContract as Mock).mockReturnValue(BigInt('1010000000000'));
+		(readContract as Mock).mockReturnValue(BigInt('1000000000000'));
+
+		render(<DepositModal vault={mockVault} network={mockNetwork} />);
+
+		const triggerButton = screen.getByText(/Deposit/i);
+		await userEvent.click(triggerButton);
+
+		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
+		await fireEvent.change(input, { target: { value: '0.00000001' } });
+		const submitButton = screen.getByRole('button', { name: /Submit/i });
+		await waitFor(() => expect(submitButton).not.toBeDisabled());
+		await userEvent.click(submitButton);
+		expect(useSwitchChain).toHaveBeenCalled();
+	});
+	it('does not fire the switchChain function connected to the strat chain', async () => {
+		(useSwitchChain as Mock).mockReturnValue({
+			switchChain: vi.fn()
+		});
+
+		(readContract as Mock).mockReturnValue(BigInt('1010000000000'));
+		(readContract as Mock).mockReturnValue(BigInt('1000000000000'));
+
+		render(<DepositModal vault={mockVault} network={'mainnet'} />);
+
+		const triggerButton = screen.getByText(/Deposit/i);
+		await userEvent.click(triggerButton);
+
+		const input = screen.getByTestId('deposit-input') as HTMLInputElement;
+		await fireEvent.change(input, { target: { value: '0.00000001' } });
+		const submitButton = screen.getByRole('button', { name: /Submit/i });
+		await waitFor(() => expect(submitButton).not.toBeDisabled());
+		await userEvent.click(submitButton);
+		expect(useSwitchChain).toHaveBeenCalled();
 	});
 });

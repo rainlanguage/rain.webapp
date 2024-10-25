@@ -65,7 +65,7 @@ const QuotesTable = ({ syncedQueryKey, order }: props) => {
 			}
 		}
 	};
-
+	if (!order.subgraphUrl) return null;
 	return (
 		<div className="w-full overflow-x-scroll pt-6">
 			<Table hoverable striped>

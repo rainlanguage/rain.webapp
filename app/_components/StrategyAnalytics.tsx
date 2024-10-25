@@ -144,7 +144,8 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 									data-testid="strategy-status"
 									size="2xl"
 									className="py-2 px-4"
-									color={query.data.active ? 'green' : 'red'}>
+									color={query.data.active ? 'green' : 'red'}
+								>
 									{query.data.active ? 'Active' : 'Inactive'}
 								</Badge>
 
@@ -154,7 +155,8 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 										className={removalStatus !== RemovalStatus.Idle ? 'animate-pulse' : ''}
 										onClick={() => {
 											removeOrder();
-										}}>
+										}}
+									>
 										{removalStatus}
 									</Button>
 								)}

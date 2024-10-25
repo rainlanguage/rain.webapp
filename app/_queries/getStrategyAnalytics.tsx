@@ -78,7 +78,6 @@ export const getStrategyAnalytics = async (
 	network: string,
 	subgraphUrl: string
 ) => {
-	console.log('GETTING TRANSACTION ANALYTICS DATA');
 	try {
 		const variables = { orderHash };
 

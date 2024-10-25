@@ -50,7 +50,9 @@ export const getOrders = async (owner?: string) => {
 
 	// make a query for each network
 	const promises: Promise<Order[]>[] = [];
-	Object.entries(networks).forEach(([network, subgraphUrl]) => {
+
+	// Iterate over the array of networks
+	networks.forEach(({ name, subgraphUrl }) => {
 		promises.push(
 			fetch(subgraphUrl, {
 				method: 'POST',
@@ -64,7 +66,7 @@ export const getOrders = async (owner?: string) => {
 					if (res.errors) throw new Error(res.errors[0].message);
 					if (res.data && res.data.orders) {
 						return res.data.orders.map((order: Order) => {
-							order.network = network;
+							order.network = name; // Use the name of the network
 							return order;
 						});
 					}
@@ -74,7 +76,7 @@ export const getOrders = async (owner?: string) => {
 
 	return (await Promise.allSettled(promises))
 		.filter((v) => v.status === 'fulfilled')
-		.map((v) => v.value)
+		.map((v) => (v as PromiseFulfilledResult<Order[]>).value)
 		.flat()
 		.sort((a, b) => +b.timestampAdded - +a.timestampAdded);
 };

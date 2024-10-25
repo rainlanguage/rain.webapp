@@ -75,6 +75,7 @@ export const SubmissionModal = ({
 		yamlData,
 		currentState.deploymentOption?.deployment || ''
 	);
+
 	const { ...chains } = allChains;
 
 	const [submissionState, setSubmissionState] = useState<SubmissionStatus>(
@@ -171,7 +172,6 @@ export const SubmissionModal = ({
 				}
 			}
 
-			// Check if the user has sufficient token approvals
 			for (const deposit of tokenDeposits) {
 				if (!deposit.tokenInfo) throw new Error(`Token info not found`);
 
@@ -193,7 +193,6 @@ export const SubmissionModal = ({
 						)
 					);
 
-					// Send approval transaction
 					const approveTx = await writeContractAsync({
 						address: deposit.tokenInfo.address,
 						abi: erc20Abi,
@@ -212,7 +211,6 @@ export const SubmissionModal = ({
 						)
 					);
 
-					// Wait for approval transaction confirmation
 					await waitForTransactionReceipt(config.getClient(), {
 						hash: approveTx,
 						confirmations: 1
@@ -257,22 +255,29 @@ export const SubmissionModal = ({
 				tokenDeposits
 			);
 
-			// Send deployment transaction
-			const deployTx = await writeContractAsync({
-				address: orderBookAddress,
-				abi: orderBookJson.abi,
-				functionName: 'multicall',
-				args: [[addOrderCalldata, ...depositCalldatas]]
-			});
+			let deployTx;
+			try {
+				deployTx = await writeContractAsync({
+					address: orderBookAddress,
+					abi: orderBookJson.abi,
+					functionName: 'multicall',
+					args: [[addOrderCalldata, ...depositCalldatas]]
+				});
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			} catch (e: any) {
+				throw new Error(
+					e.details || 'There was an error when confirming the transaction in your wallet.'
+				);
+			}
 
 			setSubmissionState(SubmissionStatus.WaitingForDeploymentConfirmation);
 
-			// Wait for deployment transaction confirmation
-			await waitForTransactionReceipt(config.getClient(), {
+			const receipt = await waitForTransactionReceipt(config.getClient(), {
 				hash: deployTx,
 				confirmations: 4
 			});
 
+			if (!receipt) throw new Error('The deployment transaction reverted, please try again.');
 			setSubmissionState(SubmissionStatus.Done);
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (e: any) {
@@ -286,9 +291,9 @@ export const SubmissionModal = ({
 					}`
 				);
 			} else {
-				setError(e?.cause?.message || e?.message || 'An error occurred');
+				setError(e.message || 'An unknown error occurred.');
 			}
-			setOpen(false);
+			return setOpen(false);
 		}
 	};
 

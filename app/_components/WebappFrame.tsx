@@ -17,6 +17,7 @@ import { TokenInfo, getTokenInfos } from '../_services/getTokenInfo';
 import { Button, Spinner } from 'flowbite-react';
 import ShareStateAsUrl from './ShareStateAsUrl';
 import { decompress } from '../_services/compress';
+import { CodemirrorModal } from './CodemirrorModal';
 import { Button as ButtonType } from '../types';
 
 interface props {
@@ -143,7 +144,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		if (buttonData.buttonTarget === 'textInputLabel') {
 			setCurrentState((prevState) => ({
 				...prevState,
-				textInputLabel: buttonData.toString()
+				textInputLabel: buttonData.buttonValue.toString()
 			}));
 			return;
 		} else if (buttonData.buttonTarget === 'buttonPage') {
@@ -217,6 +218,12 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							<SubmissionModal
 								key={buttonData.buttonText}
 								buttonText={buttonData.buttonText}
+								yamlData={yamlData}
+								currentState={currentState}
+								dotrainText={dotrainText}
+								setError={setError}
+							/>
+							<CodemirrorModal
 								yamlData={yamlData}
 								currentState={currentState}
 								dotrainText={dotrainText}

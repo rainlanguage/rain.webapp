@@ -81,4 +81,30 @@ describe('WithdrawalModal', () => {
 		const errorMessage = await screen.findByText(/Amount exceeds vault balance/i);
 		expect(errorMessage).toBeInTheDocument();
 	});
+	it('disables button when 0 withdrawal', async () => {
+		render(<WithdrawalModal vault={mockVault} network={mockNetwork} />);
+
+		const triggerButton = screen.getByText(/Withdraw/i);
+		fireEvent.click(triggerButton);
+
+		const input = screen.getByTestId('withdrawal-input') as HTMLInputElement;
+
+		await fireEvent.change(input, { target: { value: '0' } });
+
+		const submitButton = screen.getByTestId('withdraw-button') as HTMLButtonElement;
+		expect(submitButton).toBeDisabled();
+	});
+	it('disables button when withdrawal amount is empty string', async () => {
+		render(<WithdrawalModal vault={mockVault} network={mockNetwork} />);
+
+		const triggerButton = screen.getByText(/Withdraw/i);
+		fireEvent.click(triggerButton);
+
+		const input = screen.getByTestId('withdrawal-input') as HTMLInputElement;
+
+		await fireEvent.change(input, { target: { value: '' } });
+
+		const submitButton = screen.getByTestId('withdraw-button') as HTMLButtonElement;
+		expect(submitButton).toBeDisabled();
+	});
 });

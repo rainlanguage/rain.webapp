@@ -76,11 +76,14 @@ export const transactionAnalytics = () => `
 }`;
 
 export const getTransactionAnalyticsData = async (orderHash: string, network: string) => {
-	const subgraphUrl =
-		getNetworkSubgraphs()[network as keyof ReturnType<typeof getNetworkSubgraphs>];
-	if (subgraphUrl) {
+	// Find the network's subgraph by matching the network name
+	const subgraphInfo = getNetworkSubgraphs().find(
+		(net) => net.name.toLowerCase() === network.toLowerCase()
+	);
+
+	if (subgraphInfo?.subgraphUrl) {
 		try {
-			const response = await fetch(subgraphUrl, {
+			const response = await fetch(subgraphInfo.subgraphUrl, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -101,7 +104,7 @@ export const getTransactionAnalyticsData = async (orderHash: string, network: st
 				);
 				return {
 					...orderByHash,
-					order: { ...orderByHash.order, network, subgraphUrl }
+					order: { ...orderByHash.order, network, subgraphUrl: subgraphInfo.subgraphUrl }
 				};
 			}
 		} catch (error: unknown) {

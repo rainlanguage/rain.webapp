@@ -1,5 +1,5 @@
 'use client';
-import { getTransactionAnalyticsData } from '@/app/_queries/strategyAnalytics';
+import { getStrategyAnalytics } from '@/app/_queries/getStrategyAnalytics';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { TokenAndBalance } from './TokenAndBalance';
 import { formatTimestampSecondsAsLocal } from '../_services/dates';
@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import { waitForTransactionReceipt } from '@wagmi/core';
 import { config } from '../providers';
 import { Badge } from 'flowbite-react';
+import { getNetworkSubgraphs } from '../_queries/subgraphs';
 
 interface props {
 	orderHash: string;
@@ -51,28 +52,17 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 	const queryClient = useQueryClient();
 	const { switchChainAsync } = useSwitchChain();
 	const { connectModalOpen, openConnectModal } = useConnectModal();
-	const query = useQuery({
-		queryKey: [SYNCED_QUERY_KEY, QUERY_KEY, orderHash],
-		queryFn: () => getTransactionAnalyticsData(orderHash, network),
-		enabled: !!orderHash
-	});
 	const [removalStatus, setRemovalStatus] = useState(RemovalStatus.Idle);
-
-	useEffect(() => {
-		const interval = setInterval(async () => {
-			await queryClient.refetchQueries({
-				queryKey: [SYNCED_QUERY_KEY],
-				exact: false
-			});
-		}, 10000);
-		return () => clearInterval(interval);
-	}, []);
-
 	const { writeContractAsync } = useWriteContract();
-
 	const address = useAccount().address;
 	const userchain = useAccount().chain;
 	const chain = SupportedChains[network as keyof typeof SupportedChains];
+
+	const [pollingInterval, setPollingInterval] = useState<number>(10000);
+
+	const subgraphUrl = getNetworkSubgraphs().find(
+		(net) => net.name.toLowerCase() === network.toLowerCase()
+	)?.subgraphUrl;
 
 	const switchChain = async () => {
 		if (userchain && chain.id !== userchain.id) {
@@ -89,11 +79,11 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 		await switchChain();
 		try {
 			const orderStruct = [orderBookJson.abi[17].inputs[2]];
-			const order = decodeAbiParameters(orderStruct, query.data.order.orderBytes)[0];
+			const order = decodeAbiParameters(orderStruct, query.data.orderBytes)[0];
 
 			const hash = await writeContractAsync({
 				abi: orderBookJson.abi,
-				address: query.data.order.orderbook.id,
+				address: query.data.orderbook.id,
 				functionName: 'removeOrder2',
 				args: [order, []],
 				chainId: chain.id
@@ -105,7 +95,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 				confirmations: 1
 			});
 
-			while (query.data.order.active) {
+			while (query.data.active) {
 				await new Promise((resolve) => setTimeout(resolve, 1000));
 				await query.refetch();
 			}
@@ -124,11 +114,26 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 		});
 	};
 
+	const query = useQuery({
+		queryKey: [SYNCED_QUERY_KEY, QUERY_KEY, orderHash],
+		queryFn: () => getStrategyAnalytics(orderHash, network, subgraphUrl as string),
+		enabled: !!orderHash && !!subgraphUrl,
+		retry: 2,
+		refetchInterval: pollingInterval
+	});
+
+	useEffect(() => {
+		if (query.isError) {
+			setPollingInterval(0);
+		}
+	}, [query]);
+
 	return (
 		<div className="container flex-grow pt-8 pb-safe">
-			{query.isLoading && <div>Loading...</div>}
-			{query.isError && <div>{query.error.message}</div>}
-			{query.data && (
+			{!subgraphUrl && <div data-testid="no-sg-error">No subgraph found for this network</div>}
+			{query.isLoading && <div data-testid="loading-indicator">Loading...</div>}
+			{query.isError && <div data-testid="query-error">{query.error.message}</div>}
+			{query.data && subgraphUrl && (
 				<>
 					<div className="flex flex-col gap-y-4">
 						<div className="flex md:flex-row flex-col gap-4 justify-between items-center mb-8">
@@ -138,12 +143,12 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 									data-testid="strategy-status"
 									size="2xl"
 									className="py-2 px-4"
-									color={query.data.order.active ? 'green' : 'red'}
+									color={query.data.active ? 'green' : 'red'}
 								>
-									{query.data.order.active ? 'Active' : 'Inactive'}
+									{query.data.active ? 'Active' : 'Inactive'}
 								</Badge>
 
-								{query.data.order.active && (
+								{query.data.active && (
 									<Button
 										data-testid="remove-strategy-btn"
 										className={removalStatus !== RemovalStatus.Idle ? 'animate-pulse' : ''}
@@ -165,22 +170,24 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 							<span className="break-words">{orderHash}</span>
 						</Property>
 						<Property name="Transaction ID">
-							<span className="break-words">{query.data.transaction.id}</span>
+							<span className="break-words">{query.data.addEvents[0].transaction.id}</span>
 						</Property>
 						<Property
 							name="Created"
-							value={formatTimestampSecondsAsLocal(BigInt(query.data.transaction.timestamp))}
+							value={formatTimestampSecondsAsLocal(
+								BigInt(query.data.addEvents[0].transaction.timestamp)
+							)}
 						/>
-						<Property name="Active" value={query.data.order.active ? 'Active' : 'Inactive'} />
+						<Property name="Active" value={query.data.active ? 'Active' : 'Inactive'} />
 						<Property name="Owner">
-							<span className="break-words">{query.data.order.owner}</span>
+							<span className="break-words">{query.data.owner}</span>
 						</Property>
-						<Property name="Number of trades" value={query.data.order.trades?.length || '0'} />
+						<Property name="Number of trades" value={query.data.trades?.length || '0'} />
 						<div className="grid md:grid-cols-2 gap-4">
-							{query.data.order.inputs && (
+							{query.data.inputs && (
 								<div className="flex flex-col gap-2">
 									<h2 className="font-semibold mb-2">Input tokens</h2>
-									{query.data.order.inputs.map((vault: Input, i: number) => {
+									{query.data.inputs.map((vault: Input, i: number) => {
 										return (
 											<div key={i}>
 												<TokenAndBalance
@@ -195,10 +202,10 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 									})}
 								</div>
 							)}
-							{query.data.order.inputs && (
+							{query.data.inputs && (
 								<div className="flex flex-col gap-2">
 									<h2 className="font-semibold mb-2">Output tokens</h2>
-									{query.data.order.outputs.map((vault: Output, i: number) => {
+									{query.data.outputs.map((vault: Output, i: number) => {
 										return (
 											<div key={i}>
 												<TokenAndBalance
@@ -215,8 +222,8 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 							)}
 						</div>
 					</div>
-					<QuotesTable syncedQueryKey={SYNCED_QUERY_KEY} order={query.data.order} />
-					<TradesTable trades={query.data.order.trades} />
+					<QuotesTable syncedQueryKey={SYNCED_QUERY_KEY} order={query.data} />
+					<TradesTable trades={query.data.trades} />
 				</>
 			)}
 		</div>

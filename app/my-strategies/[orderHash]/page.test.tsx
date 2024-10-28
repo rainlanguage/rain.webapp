@@ -89,30 +89,22 @@ const mockOrder = {
 			balance: BigInt('2000000000000000000')
 		}
 	],
+	addEvents: [{ transaction: { id: '0xMockTransactionId', timestamp: BigInt(17000000) } }],
 	orderbook: { id: '0xMockOrderbookAddress' },
 	orderBytes: '0x1234',
 	orderHash: '0x1234',
 	timestampAdded: '2024-02-20T12:00:00Z',
-	addEvents: [],
 	subgraphUrl: 'https://example.com/subgraph'
-};
-const mockQueryData = {
-	transaction: {
-		id: 'some-transaction-id',
-		timestamp: '1234567890'
-	},
-	order: mockOrder
 };
 
 describe('StrategyAnalytics', () => {
 	let refetchQueriesMock: Mock;
-
 	beforeEach(() => {
 		refetchQueriesMock = vi.fn();
 		vi.mocked(useQuery).mockImplementationOnce(
 			() =>
 				({
-					data: mockQueryData,
+					data: mockOrder,
 					isLoading: false,
 					isError: false,
 					error: null
@@ -121,6 +113,9 @@ describe('StrategyAnalytics', () => {
 		vi.mocked(useQuery).mockImplementationOnce(
 			() =>
 				({
+					isLoading: false,
+					isError: false,
+					error: null,
 					data: []
 				}) as any
 		);

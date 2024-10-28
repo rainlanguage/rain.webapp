@@ -1,3 +1,5 @@
+'use client';
+
 import { FrameState } from '../_types/frame';
 import { ProgressBar } from './ProgressBar';
 import { useEffect, useRef, useState } from 'react';

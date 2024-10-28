@@ -44,7 +44,7 @@ export const getNetworkSubgraphs = (): Network[] => {
 		},
 		{
 			chainId: 1,
-			name: 'ethereum',
+			name: 'mainnet',
 			subgraphUrl:
 				'https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn'
 		}

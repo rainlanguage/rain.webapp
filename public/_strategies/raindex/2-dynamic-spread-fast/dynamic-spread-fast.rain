@@ -982,7 +982,7 @@ gui:
       fields:
         - binding: initial-io
           name: Initial price (PAI per WETH)
-          description: The rough USD price you see for WETH on Dextools (e.g. 2500).
+          description: The rough WETH price you see for PAI on Dextools (e.g. 0.0001205).
           min: 1
         - binding: next-trade-multiplier
           name: Next trade multiplier

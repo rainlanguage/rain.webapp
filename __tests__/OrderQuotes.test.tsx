@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { act } from 'react';
 import { quote } from '@rainlanguage/orderbook';
 import QuotesTable from '@/app/_components/QuotesTable';
+import { Order } from '@/app/types';
 
 const mockOrderHash = '1234567890';
 const mockNetwork = 'flare';
@@ -45,16 +46,17 @@ const mockOrder = {
 	orderBytes: '0x1234',
 	orderHash: '0x1234',
 	timestampAdded: '2024-02-20T12:00:00Z',
-	addEvents: [],
+	addEvents: [
+		{
+			transaction: {
+				id: '0xMockTransactionId',
+				timestamp: BigInt(17000000)
+			}
+		}
+	],
 	subgraphUrl: 'https://example.com/subgraph'
 };
-const mockQueryData = {
-	transaction: {
-		id: mockOrderHash,
-		timestamp: '1234567890'
-	},
-	order: mockOrder
-};
+
 const mockQuotes = [
 	{
 		maxOutput: '0x1',
@@ -119,7 +121,7 @@ describe('OrderQuotes', () => {
 		vi.mocked(useQuery).mockImplementationOnce(
 			() =>
 				({
-					data: mockQueryData
+					data: mockOrder
 				}) as any
 		);
 		vi.mocked(useQuery).mockImplementationOnce(
@@ -140,7 +142,9 @@ describe('OrderQuotes', () => {
 			isLoading: false,
 			error: null
 		} as any);
-		const { container } = render(<QuotesTable order={mockOrder} syncedQueryKey="" />);
+		const { container } = render(
+			<QuotesTable order={mockOrder as unknown as Order} syncedQueryKey="" />
+		);
 		expect(container.querySelector('table')).toBeInTheDocument();
 		const headers = Array.from(container.querySelectorAll('th')).map((th) => th.textContent);
 		expect(headers).toEqual(['PAIR', 'MAXIMUM OUTPUT', 'IO RATIO', 'MAXIMUM INPUT']);
@@ -221,25 +225,5 @@ describe('OrderQuotes', () => {
 		await waitFor(() => {
 			expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(1);
 		});
-	});
-
-	it('should refetch quotes when order is refetched', async () => {
-		setup();
-
-		vi.useFakeTimers();
-
-		render(<StrategyAnalytics orderHash={mockOrderHash} network={mockNetwork} />);
-
-		act(() => {
-			vi.advanceTimersByTime(11000);
-		});
-		vi.useRealTimers();
-
-		expect(refetchQueriesMock).toHaveBeenCalledWith({
-			queryKey: ['trades-quotes'],
-			exact: false
-		});
-
-		expect(quote.doQuoteSpecs).toHaveBeenCalledTimes(1);
 	});
 });

@@ -34,7 +34,7 @@ export const FrameImage = ({
 					{isEditing && (
 						<div className="flex items-center gap-2">
 							<input
-								data-testid="input"
+								data-testid="binding-input"
 								className="border-gray-200 rounded-lg border text-xl p-2 w-full max-w-96"
 								type="number"
 								placeholder={currentState.textInputLabel}
@@ -44,6 +44,7 @@ export const FrameImage = ({
 								}}
 							/>
 							<button
+								data-testid="binding-save-button"
 								onClick={() => {
 									const newBindings = {
 										...currentState.bindings,
@@ -64,6 +65,7 @@ export const FrameImage = ({
 						<div className="flex items-center gap-2">
 							{bindingValue}
 							<button
+								data-testid="binding-edit-button"
 								onClick={() => {
 									setIsEditing(true);
 								}}
@@ -107,13 +109,14 @@ export const FrameImage = ({
 						<div className="flex items-center gap-2">
 							<input
 								ref={inputRef}
-								data-testid="input"
+								data-testid="deposit-input"
 								className="border-gray-200 rounded-lg border text-xl p-2 w-full max-w-96"
 								type="number"
 								value={value}
 								onChange={(e) => setValue(Number(e.target.value))}
 							/>
 							<button
+								data-testid="deposit-save-button"
 								onClick={() => {
 									const newDeposits = currentState.deposits.map((v) =>
 										v.tokenInfo.address === tokenInfo.address ? { ...v, amount: Number(value) } : v
@@ -131,7 +134,7 @@ export const FrameImage = ({
 					) : (
 						<div className="flex items-center gap-2">
 							{amount}
-							<button onClick={() => setIsEditing(true)}>
+							<button data-testid="deposit-edit-button" onClick={() => setIsEditing(true)}>
 								<PencilLine />
 							</button>
 						</div>

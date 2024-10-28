@@ -27,7 +27,7 @@ gui:
         - binding: cost-basis-multiplier
           name: Cost basis multiplier
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
-          min: 0
+          min: 1
           presets:
             - name: 1 (auction spread only)
               value: 1
@@ -111,7 +111,7 @@ gui:
         - binding: cost-basis-multiplier
           name: Cost basis multiplier
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
-          min: 0
+          min: 1
           presets:
             - name: 1 (auction spread only)
               value: 1
@@ -201,7 +201,7 @@ gui:
         - binding: cost-basis-multiplier
           name: Cost basis multiplier
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
-          min: 0
+          min: 1
           presets:
             - name: 1 (auction spread only)
               value: 1
@@ -286,7 +286,7 @@ gui:
         - binding: cost-basis-multiplier
           name: Cost basis multiplier
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
-          min: 0
+          min: 1
           presets:
             - name: 1 (auction spread only)
               value: 1
@@ -377,7 +377,7 @@ gui:
         - binding: cost-basis-multiplier
           name: Cost basis multiplier
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
-          min: 0
+          min: 1
           presets:
             - name: 1 (auction spread only)
               value: 1
@@ -467,7 +467,7 @@ gui:
         - binding: cost-basis-multiplier
           name: Cost basis multiplier
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
-          min: 0
+          min: 1
           presets:
             - name: 1 (auction spread only)
               value: 1
@@ -558,7 +558,7 @@ gui:
         - binding: cost-basis-multiplier
           name: Cost basis multiplier
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
-          min: 0
+          min: 1
           presets:
             - name: 1 (auction spread only)
               value: 1
@@ -647,7 +647,7 @@ gui:
         - binding: cost-basis-multiplier
           name: Cost basis multiplier
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
-          min: 0
+          min: 1
           presets:
             - name: 1 (auction spread only)
               value: 1
@@ -735,7 +735,7 @@ gui:
         - binding: cost-basis-multiplier
           name: Cost basis multiplier
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
-          min: 0
+          min: 1
           presets:
             - name: 1 (auction spread only)
               value: 1
@@ -823,7 +823,7 @@ gui:
         - binding: cost-basis-multiplier
           name: Cost basis multiplier
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
-          min: 0
+          min: 1
           presets:
             - name: 1 (auction spread only)
               value: 1
@@ -909,7 +909,7 @@ gui:
         - binding: cost-basis-multiplier
           name: Cost basis multiplier
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
-          min: 0
+          min: 1
           presets:
             - name: 1 (auction spread only)
               value: 1

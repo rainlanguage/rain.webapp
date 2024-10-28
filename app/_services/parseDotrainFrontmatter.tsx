@@ -1,4 +1,4 @@
-import { toHex } from 'viem';
+import { pad, toBytes, toHex } from 'viem';
 import { YamlData } from '../_types/yamlData';
 import _ from 'lodash';
 
@@ -6,7 +6,7 @@ export const getOrderDetailsGivenDeployment = (yamlData: YamlData, deploymentOpt
 	const deployment = yamlData.deployments[deploymentOption];
 	const order = yamlData.orders[deployment.order];
 	const orderBook = yamlData.orderbooks[order.orderbook];
-	const orderBookAddress = toHex(BigInt(orderBook.address));
+	const orderBookAddress = toHex(pad(toBytes(BigInt(orderBook.address)), { size: 20 }));
 	const network = yamlData.networks[order.network];
 
 	const tokens = yamlData.tokens;

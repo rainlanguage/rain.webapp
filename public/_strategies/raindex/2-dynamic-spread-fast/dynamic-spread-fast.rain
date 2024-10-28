@@ -29,8 +29,8 @@ gui:
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
           min: 0
           presets:
-            - name: 0 (auction spread only)
-              value: 0
+            - name: 1 (auction spread only)
+              value: 1
             - name: 1.0005x (0.1% total)
               value: 1.0005
             - name: 1.001x (0.2% total)
@@ -113,8 +113,8 @@ gui:
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
           min: 0
           presets:
-            - name: 0 (auction spread only)
-              value: 0
+            - name: 1 (auction spread only)
+              value: 1
             - name: 1.0005x (0.1% total)
               value: 1.0005
             - name: 1.001x (0.2% total)
@@ -203,8 +203,8 @@ gui:
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
           min: 0
           presets:
-            - name: 0 (auction spread only)
-              value: 0
+            - name: 1 (auction spread only)
+              value: 1
             - name: 1.0005x (0.1% total)
               value: 1.0005
             - name: 1.001x (0.2% total)
@@ -288,8 +288,8 @@ gui:
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
           min: 0
           presets:
-            - name: 0 (auction spread only)
-              value: 0
+            - name: 1 (auction spread only)
+              value: 1
             - name: 1.0005x (0.1% total)
               value: 1.0005
             - name: 1.001x (0.2% total)
@@ -379,8 +379,8 @@ gui:
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
           min: 0
           presets:
-            - name: 0 (auction spread only)
-              value: 0
+            - name: 1 (auction spread only)
+              value: 1
             - name: 1.0005x (0.1% total)
               value: 1.0005
             - name: 1.001x (0.2% total)
@@ -469,8 +469,8 @@ gui:
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
           min: 0
           presets:
-            - name: 0 (auction spread only)
-              value: 0
+            - name: 1 (auction spread only)
+              value: 1
             - name: 1.0005x (0.1% total)
               value: 1.0005
             - name: 1.001x (0.2% total)
@@ -560,8 +560,8 @@ gui:
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
           min: 0
           presets:
-            - name: 0 (auction spread only)
-              value: 0
+            - name: 1 (auction spread only)
+              value: 1
             - name: 1.0005x (0.1% total)
               value: 1.0005
             - name: 1.001x (0.2% total)
@@ -649,8 +649,8 @@ gui:
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
           min: 0
           presets:
-            - name: 0 (auction spread only)
-              value: 0
+            - name: 1 (auction spread only)
+              value: 1
             - name: 1.0005x (0.1% total)
               value: 1.0005
             - name: 1.001x (0.2% total)
@@ -737,8 +737,8 @@ gui:
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
           min: 0
           presets:
-            - name: 0 (auction spread only)
-              value: 0
+            - name: 1 (auction spread only)
+              value: 1
             - name: 1.0005x (0.1% total)
               value: 1.0005
             - name: 1.001x (0.2% total)
@@ -825,8 +825,8 @@ gui:
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
           min: 0
           presets:
-            - name: 0 (auction spread only)
-              value: 0
+            - name: 1 (auction spread only)
+              value: 1
             - name: 1.0005x (0.1% total)
               value: 1.0005
             - name: 1.001x (0.2% total)
@@ -911,8 +911,8 @@ gui:
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
           min: 0
           presets:
-            - name: 0 (auction spread only)
-              value: 0
+            - name: 1 (auction spread only)
+              value: 1
             - name: 1.0005x (0.1% total)
               value: 1.0005
             - name: 1.001x (0.2% total)

@@ -110,7 +110,6 @@ describe('WebappFrame Component', () => {
 		await waitFor(() => {
 			expect(pushStateSpy).toHaveBeenCalled();
 			expect(pushStateSpy).toHaveBeenCalledTimes(1);
-			console.log(pushStateSpy.mock.calls[0]);
 		});
 		pushStateSpy.mockRestore();
 	});
@@ -290,7 +289,7 @@ describe('WebappFrame Component', () => {
 			expect(screen.queryAllByText('1000')).toHaveLength(2);
 		});
 	});
-	it.skip('pre-fills input with previous value', async () => {
+	it('pre-fills input with previous value', async () => {
 		const mockedReviewState = {
 			strategyName: 'Fixed limit',
 			strategyDescription: 'Fixed limit order strategy\n',
@@ -334,52 +333,75 @@ describe('WebappFrame Component', () => {
 			textInputLabel: '',
 			error: null,
 			isWebapp: true,
-			tokenInfos: [
-				{
-					yamlName: 'base-weth',
-					address: '0x4200000000000000000000000000000000000006',
-					decimals: 18,
-					symbol: 'WETH',
-					name: 'Wrapped Ether'
-				},
-				{
-					yamlName: 'base-usdc',
-					address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-					decimals: 6,
-					symbol: 'USDC',
-					name: 'USD Coin'
-				},
-				{
-					yamlName: 'flare-wflr',
-					address: '0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d',
-					decimals: 18,
-					symbol: 'WFLR',
-					name: 'Wrapped Flare'
-				},
-				{
-					yamlName: 'flare-sflr',
-					address: '0x12e605bc104e93B45e1aD99F9e555f659051c2BB',
-					decimals: 18,
-					symbol: 'sFLR',
-					name: 'Staked FLR'
-				},
-				{
-					yamlName: 'flare-eusdt',
-					address: '0x96B41289D90444B8adD57e6F265DB5aE8651DF29',
-					decimals: 6,
-					symbol: 'eUSDT',
-					name: 'Enosys USDT'
-				}
-			],
+			tokenInfos: fixturedTokenInfos,
 			requiresTokenApproval: false
 		};
+
 		(useSearchParams as Mock).mockReturnValue({
 			get: vi.fn(() => 'mockstate'),
 			set: vi.fn(() => JSON.stringify(mockedReviewState))
 		});
 		(decompress as Mock).mockResolvedValue(JSON.stringify(mockedReviewState));
 
-		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
+		// 	JSON.stringify({
+		// 		strategyName: 'Fixed limit',
+		// 		strategyDescription: 'Fixed limit order strategy\n',
+		// 		currentStep: 'deposit',
+		// 		deploymentOption: {
+		// 			deployment: 'base-weth-usdc',
+		// 			name: 'Buy WETH with USDC on Base.',
+		// 			description: 'Buy WETH with USDC for fixed price on Base network.',
+		// 			deposits: [[Object]],
+		// 			fields: [[Object]]
+		// 		},
+		// 		bindings: { 'fixed-io': '1000' },
+		// 		deposits: [],
+		// 		buttonPage: 0,
+		// 		buttonMax: 10,
+		// 		textInputLabel: '',
+		// 		error: null,
+		// 		isWebapp: true,
+		// 		tokenInfos: [
+		// 			{
+		// 				yamlName: 'base-weth',
+		// 				address: '0x4200000000000000000000000000000000000006',
+		// 				decimals: 18,
+		// 				symbol: 'WETH',
+		// 				name: 'Wrapped Ether'
+		// 			},
+		// 			{
+		// 				yamlName: 'base-usdc',
+		// 				address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+		// 				decimals: 6,
+		// 				symbol: 'USDC',
+		// 				name: 'USD Coin'
+		// 			},
+		// 			{
+		// 				yamlName: 'flare-wflr',
+		// 				address: '0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d',
+		// 				decimals: 18,
+		// 				symbol: 'WFLR',
+		// 				name: 'Wrapped Flare'
+		// 			},
+		// 			{
+		// 				yamlName: 'flare-sflr',
+		// 				address: '0x12e605bc104e93B45e1aD99F9e555f659051c2BB',
+		// 				decimals: 18,
+		// 				symbol: 'sFLR',
+		// 				name: 'Staked FLR'
+		// 			},
+		// 			{
+		// 				yamlName: 'flare-eusdt',
+		// 				address: '0x96B41289D90444B8adD57e6F265DB5aE8651DF29',
+		// 				decimals: 6,
+		// 				symbol: 'eUSDT',
+		// 				name: 'Enosys USDT'
+		// 			}
+		// 		],
+		// 		requiresTokenApproval: false
+		// 	})
+		// );
+
 		(generateButtonsData as Mock).mockReturnValue([
 			{
 				buttonTarget: 'buttonValue',
@@ -392,12 +414,32 @@ describe('WebappFrame Component', () => {
 				buttonText: 'Deposit tokens and deploy strategy'
 			}
 		]);
-		render(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="" />);
+
+		const { rerender } = render(
+			<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="" />
+		);
 
 		await waitFor(() => {
 			expect(screen.getByText('Review choices')).toBeInTheDocument();
 			expect(screen.queryAllByText('Buy WETH with USDC on Base.')).toHaveLength(2);
-			expect(screen.queryAllByText('1000')).toHaveLength(2);
+		});
+
+		const backButton = screen.getByRole('button', { name: '←' });
+		expect(backButton).toBeInTheDocument();
+		await userEvent.click(backButton);
+
+		(generateButtonsData as Mock).mockReturnValue([
+			{
+				buttonTarget: 'textInputLabel',
+				buttonValue: 'customButton',
+				buttonText: 'Custom'
+			}
+		]);
+		rerender(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="" />);
+
+		await waitFor(() => {
+			expect(screen.getByTestId('input')).toBeInTheDocument();
+			expect(screen.getByTestId('input')).toHaveValue(1000);
 		});
 	});
 });

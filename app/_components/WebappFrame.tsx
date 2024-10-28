@@ -74,19 +74,19 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	const buttonsData = generateButtonsData(yamlData, currentState);
 
 	const setInputValueAsLastValue = () => {
-		console.log('setting input text');
 		const lastBindingKey = Object.keys(currentState.bindings).pop();
 		const lastBindingValue = lastBindingKey ? currentState.bindings[lastBindingKey] : '';
 		const lastDeposit = currentState.deposits[currentState.deposits.length - 1];
+
 		setInputText(lastDeposit?.amount?.toString() || lastBindingValue.toString() || ('' as string));
 	};
 
 	const updateUrl = async (updatedState: FrameState) => {
 		const url = new URL(window.location.href);
-		console.log('updated!', updatedState);
+
 		const jsonString = JSON.stringify(updatedState);
 		const compressed = await compress(jsonString);
-		console.log('compressed', compressed);
+
 		url.searchParams.set('currentState', compressed);
 		await window.history.pushState({}, '', url);
 	};
@@ -97,7 +97,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		if (encodedState) {
 			try {
 				const decompressedState = await decompress(encodedState);
-				console.log('decomp', decompressedState);
 
 				return {
 					...JSON.parse(decompressedState),
@@ -120,10 +119,8 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	const initializeState = async () => {
-		console.log('INITIALIZING STATE');
 		try {
 			const urlState = await getUrlState();
-			console.log('URL STATE', urlState);
 
 			if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
 		} catch {
@@ -200,10 +197,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	};
 
 	useEffect(() => {
-		console.log(buttonsData);
-	}, [buttonsData]);
-
-	useEffect(() => {
 		const filteredButtons = buttonsData.filter(
 			(buttonData) => buttonData.buttonValue !== 'back' && buttonData.buttonValue !== 'finalSubmit'
 		);
@@ -266,7 +259,8 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							key={buttonData.buttonText}
 							onClick={async () => {
 								await handleButtonClick(buttonData);
-							}}>
+							}}
+						>
 							{buttonData.buttonText}
 						</Button>
 					);
@@ -288,7 +282,8 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					<DialogClose asChild>
 						<button
 							className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
-							onClick={() => setError(null)}>
+							onClick={() => setError(null)}
+						>
 							Close
 						</button>
 					</DialogClose>

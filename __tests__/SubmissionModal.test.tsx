@@ -159,36 +159,30 @@ describe('SubmissionModal', () => {
 			</Providers>
 		);
 
-		// Click to open the modal
 		const openButton = screen.getByText(/Deposit tokens and deploy strategy/i);
 		fireEvent.click(openButton);
 
-		// Check if disclaimer is visible
 		const disclaimerTitle = await screen.findByText(/Wait!/i);
 		expect(disclaimerTitle).toBeInTheDocument();
 
-		// Accept the disclaimer
 		const acceptButton = screen.getByText(/I understand/i);
 		fireEvent.click(acceptButton);
 
 		await waitFor(() => expect(screen.queryByText(/Wait!/i)).not.toBeInTheDocument());
 	});
 	it('Sets an error if user rejects transactions', async () => {
-		const mockSetError = vi.fn(); // Mock the setError function
+		const mockSetError = vi.fn();
 
-		// Mock writeContractAsync to throw an error
 		(useWriteContract as Mock).mockReturnValue({
 			writeContractAsync: vi
 				.fn()
 				.mockRejectedValue(new Error('There was an error performing multicall'))
 		});
 
-		// Mock readContract to return a specific balance value
 		(readContract as Mock).mockResolvedValue({
 			data: BigInt('156879426436436000')
 		});
 
-		// Render the component with the mocked setError function
 		render(
 			<Providers>
 				<SubmissionModal
@@ -196,23 +190,19 @@ describe('SubmissionModal', () => {
 					currentState={mockCurrentState as unknown as FrameState}
 					buttonText="Deposit tokens and deploy strategy"
 					dotrainText={mockDotrainText}
-					setError={mockSetError} // Pass the mock setError function
+					setError={mockSetError}
 				/>
 			</Providers>
 		);
 
-		// Click to open the modal
 		const openButton = screen.getByText(/Deposit tokens and deploy strategy/i);
 		await userEvent.click(openButton);
 
-		// Accept the disclaimer
 		const acceptButton = screen.getByText(/I understand/i);
 		fireEvent.click(acceptButton);
 
-		// Wait for the error to be handled
 		await waitFor(() => expect(mockSetError).toHaveBeenCalled());
 
-		// Check that the error message passed to setError is correct
 		expect(mockSetError).toHaveBeenCalledWith(
 			expect.stringContaining('There was an error when confirming the transaction in your wallet.')
 		);
@@ -237,7 +227,7 @@ describe('SubmissionModal', () => {
 					currentState={mockCurrentState as unknown as FrameState}
 					buttonText="Deposit tokens and deploy strategy"
 					dotrainText={mockDotrainText}
-					setError={mockSetError} // Pass the mock setError function
+					setError={mockSetError}
 				/>
 			</Providers>
 		);

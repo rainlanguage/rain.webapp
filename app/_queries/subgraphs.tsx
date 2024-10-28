@@ -41,6 +41,12 @@ export const getNetworkSubgraphs = (): Network[] => {
 			name: 'polygon',
 			subgraphUrl:
 				'https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.6/gn'
+		},
+		{
+			chainId: 1,
+			name: 'ethereum',
+			subgraphUrl:
+				'https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn'
 		}
 	];
 };

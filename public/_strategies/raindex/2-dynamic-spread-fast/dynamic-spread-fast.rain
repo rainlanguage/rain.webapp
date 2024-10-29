@@ -1026,8 +1026,10 @@ gui:
         - binding: max-amount
           name: Max amount
           description: The maximum amount of WETH that will be offered in a single auction.
-          min: 3
+          min: 1
           presets:
+            - name: 1 WETH
+              value: 1
             - name: 3 WETH
               value: 3
             - name: 5 WETH

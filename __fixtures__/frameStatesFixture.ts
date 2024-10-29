@@ -13,7 +13,17 @@ export const fieldsFrameState = {
 		fields: [
 			{
 				binding: 'fixed-io',
-				min: 1000
+				min: 1000,
+				presets: [
+					{
+						name: 'Zero preset',
+						value: 0
+					},
+					{
+						name: 'Thousand preset',
+						value: 1000
+					}
+				]
 			}
 		]
 	},

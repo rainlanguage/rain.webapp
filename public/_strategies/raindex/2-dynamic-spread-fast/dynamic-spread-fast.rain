@@ -1039,7 +1039,7 @@ gui:
         - binding: min-amount
           name: Minimum amount
           description: The minimum amount of WETH that will be offered in a single auction.
-          min: 0
+          min: 0.001
           presets:
             - name: 0.001 WETH
               value: 0.001

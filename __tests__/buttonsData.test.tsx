@@ -133,8 +133,8 @@ describe('generateButtonsData', () => {
 			fieldsFrameState as unknown as FrameState
 		);
 
-		expect(buttonsData).toHaveLength(2);
-		expect(buttonsData[1]).toEqual({
+		expect(buttonsData).toHaveLength(4);
+		expect(buttonsData[3]).toEqual({
 			buttonTarget: 'textInputLabel',
 			buttonText: 'Custom',
 			buttonValue: 'Enter a number greater than or equal to 1000'
@@ -167,6 +167,18 @@ describe('generateButtonsData', () => {
 			buttonTarget: 'buttonValue',
 			buttonValue: 'finalSubmit',
 			buttonText: 'Deposit tokens and deploy strategy'
+		});
+	});
+
+	it('returns the zero value preset', () => {
+		const buttonsData = generateButtonsData(
+			yamlDataFixture as unknown as YamlData,
+			fieldsFrameState as unknown as FrameState
+		);
+		expect(buttonsData[1]).toEqual({
+			buttonTarget: 'buttonValue',
+			buttonValue: '0',
+			buttonText: 'Zero preset'
 		});
 	});
 });

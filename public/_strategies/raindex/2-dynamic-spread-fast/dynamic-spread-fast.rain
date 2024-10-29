@@ -1015,10 +1015,6 @@ gui:
           description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
           min: 600
           presets:
-            - name: 1 hour (3600)
-              value: 3600
-            - name: 2 hours (7200)
-              value: 7200
             - name: 4 hours (14400)
               value: 14400
             - name: 8 hours (28800)
@@ -1026,29 +1022,29 @@ gui:
         - binding: max-amount
           name: Max amount
           description: The maximum amount of WETH that will be offered in a single auction.
-          min: 0
+          min: 3
           presets:
-            - name: 0.005 WETH
-              value: 0.005
-            - name: 0.01 WETH
-              value: 0.01 
-            - name: 0.02 WETH
-              value: 0.02
-            - name: 0.05 WETH
-              value: 0.05
+            - name: 3 WETH
+              value: 3
+            - name: 5 WETH
+              value: 5
+            - name: 10 WETH
+              value: 10
+            - name: 20 WETH
+              value: 20
         - binding: min-amount
           name: Minimum amount
           description: The minimum amount of WETH that will be offered in a single auction.
-          min: 0.001
+          min: 1
           presets:
-            - name: 0.001 WETH
-              value: 0.001
-            - name: 0.002 WETH
-              value: 0.002
-            - name: 0.005 WETH
-              value: 0.005
-            - name: 0.01 WETH
-              value: 0.01
+            - name: 1 WETH
+              value: 1
+            - name: 1.25 WETH
+              value: 1.25
+            - name: 1.5 WETH
+              value: 1.5
+            - name: 2 WETH
+              value: 2
       deposits:
         - token: ethereum-pai
           min: 0

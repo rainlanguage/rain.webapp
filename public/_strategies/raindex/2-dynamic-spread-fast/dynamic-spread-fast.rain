@@ -1019,6 +1019,10 @@ gui:
               value: 14400
             - name: 8 hours (28800)
               value: 28800
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
         - binding: max-amount
           name: Max amount
           description: The maximum amount of WETH that will be offered in a single auction.

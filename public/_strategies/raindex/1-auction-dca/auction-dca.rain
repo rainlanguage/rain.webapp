@@ -35,7 +35,7 @@ deployers:
     address: 0x9B0D254bd858208074De3d2DaF5af11b3D2F377F
     network: arbitrum
   ethereum:
-    address: 0xE3989Ea7486c0F418C764e6c511e86f6E8830FAb
+    address: 0xd19581a021f4704ad4eBfF68258e7A0a9DB1CD77
     network: ethereum
 
 tokens:

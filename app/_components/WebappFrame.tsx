@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { generateButtonsData } from '../_services/buttonsData';
 import { YamlData } from '../_types/yamlData';
 import { FrameImage } from './FrameImage';
@@ -86,12 +86,14 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 		const jsonString = JSON.stringify(updatedState);
 		const compressed = await compress(jsonString);
+
 		url.searchParams.set('currentState', compressed);
 		await window.history.pushState({}, '', url);
 	};
 
 	const getUrlState = async () => {
 		const encodedState = searchParams.get('currentState');
+
 		if (encodedState) {
 			try {
 				const decompressedState = await decompress(encodedState);
@@ -112,24 +114,15 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					};
 				}
 			}
-		} else {
-			console.log('no encoded state, returning default state');
-			return {
-				...defaultState,
-				requiresTokenApproval: false,
-				isWebapp: true
-			};
 		}
 		return null;
 	};
 
 	const initializeState = async () => {
-		console.log('initializeState');
 		try {
 			const urlState = await getUrlState();
 
 			if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
-			else console.log('no url state');
 		} catch {
 			throw new Error('Error decoding state:');
 		} finally {
@@ -139,12 +132,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	useEffect(() => {
 		initializeState();
-		console.log('searchParams', searchParams);
 	}, [searchParams]);
-
-	useEffect(() => {
-		console.log('STATE UPDATED', currentState);
-	}, [currentState]);
 
 	useEffect(() => {
 		const fetchTokenInfos = async () => {
@@ -187,13 +175,10 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			return;
 		} else if (buttonData.buttonTarget === 'buttonValue' && buttonData.buttonValue === 'back') {
 			setInputValueAsLastValue();
-			setCurrentState((prevState) => {
-				console.log(prevState);
-				return {
-					...prevState,
-					textInputLabel: ''
-				};
-			});
+			setCurrentState((prevState) => ({
+				...prevState,
+				textInputLabel: ''
+			}));
 		} else setInputText('');
 
 		const updatedState = getUpdatedFrameState(
@@ -274,7 +259,8 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							key={buttonData.buttonText}
 							onClick={async () => {
 								await handleButtonClick(buttonData);
-							}}>
+							}}
+						>
 							{buttonData.buttonText}
 						</Button>
 					);
@@ -296,7 +282,8 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					<DialogClose asChild>
 						<button
 							className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
-							onClick={() => setError(null)}>
+							onClick={() => setError(null)}
+						>
 							Close
 						</button>
 					</DialogClose>

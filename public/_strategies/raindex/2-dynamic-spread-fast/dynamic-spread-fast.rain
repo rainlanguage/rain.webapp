@@ -1129,14 +1129,14 @@ gui:
         - binding: min-amount
           name: Minimum amount
           description: The minimum amount of WETH that will be offered in a single auction.
-          min: 0
+          min: 0.02
           presets:
-            - name: 0.01 ETH
-              value: 0.01
-            - name: 0.1 ETH
-              value: 0.1
-            - name: 1 ETH
-              value: 1
+            - name: 0.02 ETH
+              value: 0.02
+            - name: 0.2 ETH
+              value: 0.2
+            - name: 2 ETH
+              value: 2
 
       deposits:
         - token: linea-clip

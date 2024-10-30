@@ -981,7 +981,7 @@ gui:
       fields:
         - binding: initial-io
           name: Initial price (USDC per WLTH)
-          description: The rough USDC price you see for WLTH on Dextools (e.g. 0.01).
+          description: The rough USDC price you see for WLTH on Dextools (e.g. 0.035).
           min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier

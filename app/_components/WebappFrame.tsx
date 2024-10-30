@@ -93,7 +93,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	const getUrlState = async () => {
 		const encodedState = searchParams.get('currentState');
-
 		if (encodedState) {
 			try {
 				const decompressedState = await decompress(encodedState);
@@ -121,8 +120,8 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	const initializeState = async () => {
 		try {
 			const urlState = await getUrlState();
-
 			if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
+			else setCurrentState((prev) => ({ ...prev, ...defaultState }));
 		} catch {
 			throw new Error('Error decoding state:');
 		} finally {
@@ -259,8 +258,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							key={buttonData.buttonText}
 							onClick={async () => {
 								await handleButtonClick(buttonData);
-							}}
-						>
+							}}>
 							{buttonData.buttonText}
 						</Button>
 					);
@@ -282,8 +280,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					<DialogClose asChild>
 						<button
 							className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
-							onClick={() => setError(null)}
-						>
+							onClick={() => setError(null)}>
 							Close
 						</button>
 					</DialogClose>

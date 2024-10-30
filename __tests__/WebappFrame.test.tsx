@@ -9,7 +9,7 @@ import { compress, decompress } from '@/app/_services/compress';
 import userEvent from '@testing-library/user-event';
 import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
 import { useSearchParams } from 'next/navigation';
-
+import { defaultFrameStateFixedLimit } from '@/__fixtures__/frameStatesFixture';
 vi.mock('@/app/_services/parseDotrainFrontmatter', () => ({
 	getOrderDetailsGivenDeployment: vi.fn()
 }));
@@ -59,22 +59,23 @@ describe('WebappFrame Component', () => {
 		(useWriteContract as Mock).mockReturnValue({ writeContractAsync: vi.fn() });
 	});
 
-	it('shows input field when only one "Custom" button is present', async () => {
+	it.only('shows input field when only one "Custom" button is present', async () => {
 		(useSearchParams as Mock).mockReturnValue({
 			get: vi.fn(),
 			set: vi.fn()
 		});
+		(decompress as Mock).mockResolvedValue(JSON.stringify(defaultFrameStateFixedLimit));
 		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
 		(generateButtonsData as Mock).mockReturnValue([
 			{ buttonValue: 'customValue', buttonText: 'Custom' }
 		]);
-		render(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="" />);
+		render(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="base-weth-usdc" />);
 		await waitFor(() => {
 			expect(screen.getByTestId('input')).toBeInTheDocument();
 		});
 	});
 
-	it('updates the URL with the current state', async () => {
+	it.only('updates the URL with the current state', async () => {
 		(useSearchParams as Mock).mockReturnValue({
 			get: vi.fn(),
 			set: vi.fn()
@@ -88,7 +89,7 @@ describe('WebappFrame Component', () => {
 			{ buttonValue: 'customValue', buttonText: 'Custom' }
 		]);
 
-		render(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="" />);
+		render(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="base-weth-usdc" />);
 
 		await waitFor(() => {
 			expect(screen.getByTestId('input')).toBeInTheDocument();
@@ -110,7 +111,7 @@ describe('WebappFrame Component', () => {
 		pushStateSpy.mockRestore();
 	});
 
-	it('updates the URL with the current state when a preset button is clicked', async () => {
+	it.only('updates the URL with the current state when a preset button is clicked', async () => {
 		(useSearchParams as Mock).mockReturnValue({
 			get: vi.fn(),
 			set: vi.fn()
@@ -125,7 +126,7 @@ describe('WebappFrame Component', () => {
 		]);
 
 		const pushStateSpy = vi.spyOn(window.history, 'pushState');
-		render(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="" />);
+		render(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="base-weth-usdc" />);
 
 		await waitFor(() => {
 			expect(screen.getByTestId('button-presetValue')).toBeInTheDocument();
@@ -146,7 +147,7 @@ describe('WebappFrame Component', () => {
 		pushStateSpy.mockRestore();
 	});
 
-	it('renders the correct text input placeholder', async () => {
+	it.only('renders the correct text input placeholder', async () => {
 		(useSearchParams as Mock).mockReturnValue({
 			get: vi.fn(),
 			set: vi.fn()
@@ -175,7 +176,7 @@ describe('WebappFrame Component', () => {
 
 		expect(screen.getByPlaceholderText('Some placeholder value')).toBeInTheDocument();
 	});
-	it('pre-fills form values based on URL state', async () => {
+	it.only('pre-fills form values based on URL state', async () => {
 		const mockedReviewState = {
 			strategyName: 'Fixed limit',
 			strategyDescription: 'Fixed limit order strategy\n',
@@ -285,7 +286,7 @@ describe('WebappFrame Component', () => {
 			expect(screen.queryAllByText('1000')).toHaveLength(2);
 		});
 	});
-	it('pre-fills input with previous value', async () => {
+	it.only('pre-fills input with previous value', async () => {
 		const mockedReviewState = {
 			strategyName: 'Fixed limit',
 			strategyDescription: 'Fixed limit order strategy\n',
@@ -377,6 +378,27 @@ describe('WebappFrame Component', () => {
 		await waitFor(() => {
 			expect(screen.getByTestId('input')).toBeInTheDocument();
 			expect(screen.getByTestId('input')).toHaveValue(1000);
+		});
+	});
+	it.only('sets default state if getUrlState does not provide a URL state', async () => {
+		(useSearchParams as Mock).mockReturnValue({
+			get: vi.fn(() => null),
+			set: vi.fn()
+		});
+
+		(decompress as Mock).mockResolvedValue(undefined);
+
+		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
+
+		(generateButtonsData as Mock).mockReturnValue([
+			{ buttonValue: 'initialButton', buttonText: 'Start' }
+		]);
+
+		render(<WebappFrame dotrainText={fixedLimitFixture} deploymentOption="base-weth-usdc" />);
+
+		// Check for the first field step to be rendered
+		await waitFor(() => {
+			expect(screen.getByText('WETH price in USDC ($ per ETH)')).toBeInTheDocument();
 		});
 	});
 });

@@ -258,7 +258,8 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							key={buttonData.buttonText}
 							onClick={async () => {
 								await handleButtonClick(buttonData);
-							}}>
+							}}
+						>
 							{buttonData.buttonText}
 						</Button>
 					);
@@ -280,7 +281,8 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					<DialogClose asChild>
 						<button
 							className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
-							onClick={() => setError(null)}>
+							onClick={() => setError(null)}
+						>
 							Close
 						</button>
 					</DialogClose>

@@ -216,7 +216,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			<div className="w-full top-0">
 				<ProgressBar currentState={currentState} />
 			</div>
-			<FrameImage currentState={currentState} />
+			<FrameImage currentState={currentState} setCurrentState={setCurrentState} />
 			{currentState.textInputLabel && (
 				<div className="flex justify-center mb-4">
 					<input

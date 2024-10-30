@@ -1118,7 +1118,7 @@ gui:
         - binding: max-amount
           name: Max amount
           description: The maximum amount of WETH that will be offered in a single auction.
-          min: 0.005
+          min: 0.02
           presets:
             - name: 0.1 ETH
               value: 0.1
@@ -1129,7 +1129,7 @@ gui:
         - binding: min-amount
           name: Minimum amount
           description: The minimum amount of WETH that will be offered in a single auction.
-          min: 0.02
+          min: 0.005
           presets:
             - name: 0.02 ETH
               value: 0.02

@@ -6,23 +6,37 @@ networks:
     chain-id: 42161
     network-id: 42161
     currency: ETH
+  bsc:
+    rpc: https://rpc.ankr.com/bsc
+    chain-id: 56
+    network-id: 56
+    currency: BNB
 
 metaboards:
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-arbitrum/0.1/gn
+  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
 
 subgraphs:
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
+  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/0.1/gn
 
 orderbooks:
   arbitrum:
     address: 0x550878091b2B1506069F61ae59e3A5484Bca9166
     network: arbitrum
     subgraph: arbitrum
+  bsc:
+    address: 0xd2938E7c9fe3597F78832CE780Feb61945c377d7
+    network: bsc
+    subgraph: bsc
 
 deployers:
   arbitrum:
     address: 0x9B0D254bd858208074De3d2DaF5af11b3D2F377F
     network: arbitrum
+  bsc:
+    address: 0xA2f56F8F74B7d04d61f281BE6576b6155581dcBA
+    network: bsc
 
 tokens:
   arbitrum-wbtc:
@@ -33,6 +47,14 @@ tokens:
     network: arbitrum
     address: 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1
     decimals: 18
+  bsc-tft:
+    network: bsc
+    address: 0x8f0FB159380176D324542b3a7933F0C2Fd0c2bbf
+    decimals: 7
+  bsc-busd:
+    network: bsc
+    address: 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56
+    decimals: 18
 
 orders:
   arbitrum-wbtc-weth:
@@ -42,6 +64,20 @@ orders:
       - token: arbitrum-weth
     outputs:
       - token: arbitrum-wbtc
+  bsc-tft-busd:
+    orderbook: bsc
+    network: bsc
+    inputs:
+      - token: bsc-busd
+    outputs:
+      - token: bsc-tft
+  bsc-busd-tft:
+    orderbook: bsc
+    network: bsc
+    inputs:
+      - token: bsc-tft
+    outputs:
+      - token: bsc-busd
 
 scenarios:
   arbitrum:
@@ -49,11 +85,22 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
+  bsc:
+    orderbook: bsc
+    runs: 1
+    bindings:
+      raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
 
 deployments:
   arbitrum-wbtc-weth:
     order: arbitrum-wbtc-weth
     scenario: arbitrum
+  bsc-tft-busd:
+    order: bsc-tft-busd
+    scenario: bsc
+  bsc-busd-tft:
+    order: bsc-busd-tft
+    scenario: bsc
 
 gui:
   name: Auction based cost averaging
@@ -239,6 +286,266 @@ gui:
               value: 50
             - name: 100
               value: 100
+
+    - deployment: bsc-tft-busd
+      name: Sell TFT for BUSD on BSC.
+      description: >
+        Swap TFT for BUSD on BSC.
+      deposits:
+        - token: bsc-tft
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+            - 100000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (TFT per period)
+          description: >
+            The amount of TFT to spend each budget period.
+
+            For example, if the budget is daily and this is 1000 then 1000 TFT will be sold for BUSD each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (TFT)
+          description: >
+            The maximum amount of TFT to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (TFT)
+          description: >
+            The minimum amount of TFT to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline BUSD per TFT
+          description: >
+            The absolute minimum amount of BUSD per TFT that the auction will trade at.
+          presets:
+            - name: 0.01
+              value: 0.01
+            - name: 0.02
+              value: 0.02
+            - name: 0.05
+              value: 0.05
+            - name: 0.1
+              value: 0.1
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff BUSD per TFT
+          description: >
+            The initial BUSD per TFT to kickoff the first auction.
+          min: 0
+          presets:
+            - name: 0.1
+              value: 0.1
+            - name: 0.2
+              value: 0.2
+            - name: 0.5
+              value: 0.5
+
+    - deployment: bsc-busd-tft
+      name: Sell BUSD for TFT on BSC.
+      description: >
+        Swap BUSD for TFT on BSC.
+      deposits:
+        - token: bsc-busd
+          min: 0
+          presets:
+            - 0
+            - 10
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (BUSD per period)
+          description: >
+            The amount of BUSD to spend each budget period.
+
+            For example, if the budget is daily and this is 100 then 100 BUSD will be sold for TFT each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (BUSD)
+          description: >
+            The maximum amount of BUSD to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (BUSD)
+          description: >
+            The minimum amount of BUSD to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline TFT per BUSD
+          description: >
+            The absolute minimum amount of TFT per BUSD that the auction will trade at.
+          presets:
+            - name: 5
+              value: 5
+            - name: 10
+              value: 10
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff TFT per BUSD
+          description: >
+            The initial TFT per BUSD to kickoff the first auction.
+          min: 0
+          presets:
+            - name: 10
+              value: 10
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
 
 ---
 #raindex-subparser !Raindex subparser.

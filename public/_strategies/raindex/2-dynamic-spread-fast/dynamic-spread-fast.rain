@@ -1169,7 +1169,7 @@ scenarios:
     orderbook: bsc
     runs: 1
     bindings:
-      raindex-subparser: 0x7130d2A12B7ED2458f1fB614fDd0E93DF51Ef1B2
+      raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       history-cap: '1e50'
     scenarios:
       tft-busd:

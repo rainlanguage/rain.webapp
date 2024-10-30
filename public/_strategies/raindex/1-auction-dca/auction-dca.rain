@@ -344,7 +344,7 @@ gui:
         - binding: baseline
           name: Baseline WETH per PAI
           description: >
-            The absolute minimum amount of WETH per PAI that the auction will trade at.
+            The absolute minimum amount of WETH per PAI that the auction will trade at. (e.g. 0.0001 WETH per PAI)
           min: 0
           presets:
             - name: 0.0001
@@ -379,7 +379,7 @@ gui:
         - binding: initial-io
           name: Kickoff WETH per PAI
           description: >
-            The initial WETH per PAI to kickoff the first auction.
+            The initial WETH per PAI to kickoff the first auction. (e.g. 0.00015 WETH per PAI)
           min: 0
           presets:
             - name: 0.001
@@ -446,7 +446,7 @@ gui:
         - binding: baseline
           name: Baseline PAI per WETH
           description: >
-            The absolute minimum amount of PAI per WETH that the auction will trade at.
+            The absolute minimum amount of PAI per WETH that the auction will trade at. (e.g. 5000 PAI per WETH)
           min: 0
           presets:
             - name: 500
@@ -481,7 +481,7 @@ gui:
         - binding: initial-io
           name: Kickoff PAI per WETH
           description: >
-            The initial PAI per WETH to kickoff the first auction.
+            The initial PAI per WETH to kickoff the first auction. (e.g. 6500 PAI per WETH)
           min: 0
           presets:
             - name: 1000

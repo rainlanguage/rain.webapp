@@ -59,7 +59,7 @@ describe('WebappFrame Component', () => {
 		(useWriteContract as Mock).mockReturnValue({ writeContractAsync: vi.fn() });
 	});
 
-	it.only('shows input field when only one "Custom" button is present', async () => {
+	it('shows input field when only one "Custom" button is present', async () => {
 		(useSearchParams as Mock).mockReturnValue({
 			get: vi.fn(),
 			set: vi.fn()
@@ -75,7 +75,7 @@ describe('WebappFrame Component', () => {
 		});
 	});
 
-	it.only('updates the URL with the current state', async () => {
+	it('updates the URL with the current state', async () => {
 		(useSearchParams as Mock).mockReturnValue({
 			get: vi.fn(),
 			set: vi.fn()
@@ -111,7 +111,7 @@ describe('WebappFrame Component', () => {
 		pushStateSpy.mockRestore();
 	});
 
-	it.only('updates the URL with the current state when a preset button is clicked', async () => {
+	it('updates the URL with the current state when a preset button is clicked', async () => {
 		(useSearchParams as Mock).mockReturnValue({
 			get: vi.fn(),
 			set: vi.fn()
@@ -147,7 +147,7 @@ describe('WebappFrame Component', () => {
 		pushStateSpy.mockRestore();
 	});
 
-	it.only('renders the correct text input placeholder', async () => {
+	it('renders the correct text input placeholder', async () => {
 		(useSearchParams as Mock).mockReturnValue({
 			get: vi.fn(),
 			set: vi.fn()
@@ -176,7 +176,7 @@ describe('WebappFrame Component', () => {
 
 		expect(screen.getByPlaceholderText('Some placeholder value')).toBeInTheDocument();
 	});
-	it.only('pre-fills form values based on URL state', async () => {
+	it('pre-fills form values based on URL state', async () => {
 		const mockedReviewState = {
 			strategyName: 'Fixed limit',
 			strategyDescription: 'Fixed limit order strategy\n',
@@ -286,7 +286,7 @@ describe('WebappFrame Component', () => {
 			expect(screen.queryAllByText('1000')).toHaveLength(2);
 		});
 	});
-	it.only('pre-fills input with previous value', async () => {
+	it('pre-fills input with previous value', async () => {
 		const mockedReviewState = {
 			strategyName: 'Fixed limit',
 			strategyDescription: 'Fixed limit order strategy\n',
@@ -380,7 +380,7 @@ describe('WebappFrame Component', () => {
 			expect(screen.getByTestId('input')).toHaveValue(1000);
 		});
 	});
-	it.only('sets default state if getUrlState does not provide a URL state', async () => {
+	it('sets default state if getUrlState does not provide a URL state', async () => {
 		(useSearchParams as Mock).mockReturnValue({
 			get: vi.fn(() => null),
 			set: vi.fn()

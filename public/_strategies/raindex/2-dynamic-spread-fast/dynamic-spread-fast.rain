@@ -1073,7 +1073,7 @@ gui:
 
       fields:
         - binding: initial-io
-          name: Initial price (WETH per CLIP)
+          name: Initial price (WETH per CLIP) (e.g. 0.000049801852465796 WETH per CLIP)
           description: The rough WETH price you see for CLIP on Dextools.
           min: 0
         - binding: next-trade-multiplier
@@ -1118,7 +1118,7 @@ gui:
         - binding: max-amount
           name: Max amount
           description: The maximum amount of WETH that will be offered in a single auction.
-          min: 0
+          min: 0.005
           presets:
             - name: 0.1 ETH
               value: 0.1
@@ -1329,7 +1329,7 @@ subgraphs:
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
   polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
   ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn
-  linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-linea/0.1/gn
+  linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-linea/2024-10-14-12fc/gn
 
 orderbooks:
   flare:

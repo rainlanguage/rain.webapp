@@ -2,8 +2,8 @@
 
 import { FrameState } from '../_types/frame';
 import { ProgressBar } from './ProgressBar';
-import { useEffect, useRef, useState } from 'react';
-import { PencilLine, Save } from 'lucide-react';
+import { useState } from 'react';
+import { PencilLine } from 'lucide-react';
 
 export const FrameImage = ({
 	currentState,
@@ -12,6 +12,9 @@ export const FrameImage = ({
 	currentState: FrameState;
 	setCurrentState: React.Dispatch<React.SetStateAction<FrameState>>;
 }) => {
+	const [editingBinding, setEditingBinding] = useState<string | null>(null);
+	const [editingDeposit, setEditingDeposit] = useState<string | null>(null);
+
 	const EditableBindingRow = ({
 		name,
 		binding,
@@ -21,8 +24,8 @@ export const FrameImage = ({
 		binding: string;
 		bindingValue: string | number;
 	}) => {
-		const [isEditing, setIsEditing] = useState(false);
 		const [value, setValue] = useState(bindingValue);
+		const isEditing = editingBinding === binding;
 
 		return (
 			<tr className="border-t border-gray-300 table-row py-3" tw="border-t border-gray-300">
@@ -46,6 +49,7 @@ export const FrameImage = ({
 								}}
 							/>
 							<button
+								className="text-sm p-2 rounded-md bg-blue-500 text-white"
 								data-testid="binding-save-button"
 								onClick={() => {
 									const newBindings = {
@@ -56,23 +60,23 @@ export const FrameImage = ({
 										...currentState,
 										bindings: newBindings
 									});
-									setIsEditing(false);
+									setEditingBinding(null);
 								}}
 							>
-								<Save size={30} />
+								Save
 							</button>
 						</div>
 					)}
 					{!isEditing && (
-						<div className="flex items-center gap-2">
+						<div className="flex items-center justify-between">
 							{bindingValue}
 							<button
 								data-testid="binding-edit-button"
 								onClick={() => {
-									setIsEditing(true);
+									setEditingBinding(binding);
 								}}
 							>
-								<PencilLine />
+								<PencilLine size={20} />
 							</button>
 						</div>
 					)}
@@ -88,15 +92,8 @@ export const FrameImage = ({
 		tokenInfo: any;
 		amount: string | number;
 	}) => {
-		const [isEditing, setIsEditing] = useState(false);
 		const [value, setValue] = useState(amount);
-		const inputRef = useRef<HTMLInputElement>(null);
-
-		useEffect(() => {
-			if (isEditing && inputRef.current) {
-				inputRef.current.focus();
-			}
-		}, [isEditing]);
+		const isEditing = editingDeposit === tokenInfo.address;
 
 		return (
 			<tr className="border-t border-gray-300 table-row" tw="border-t border-gray-300">
@@ -110,7 +107,6 @@ export const FrameImage = ({
 					{isEditing ? (
 						<div className="flex items-center gap-2">
 							<input
-								ref={inputRef}
 								data-testid="deposit-input"
 								className="border-gray-200 rounded-lg border text-xl p-2 w-full max-w-96"
 								type="number"
@@ -118,6 +114,7 @@ export const FrameImage = ({
 								onChange={(e) => setValue(Number(e.target.value))}
 							/>
 							<button
+								className="text-sm p-2 rounded-md bg-blue-500 text-white"
 								data-testid="deposit-save-button"
 								onClick={() => {
 									const newDeposits = currentState.deposits.map((v) =>
@@ -127,17 +124,20 @@ export const FrameImage = ({
 										...currentState,
 										deposits: newDeposits
 									});
-									setIsEditing(false);
+									setEditingDeposit(null);
 								}}
 							>
-								<Save size={30} />
+								Save
 							</button>
 						</div>
 					) : (
-						<div className="flex items-center gap-2">
+						<div className="flex items-center justify-between">
 							{amount}
-							<button data-testid="deposit-edit-button" onClick={() => setIsEditing(true)}>
-								<PencilLine />
+							<button
+								data-testid="deposit-edit-button"
+								onClick={() => setEditingDeposit(tokenInfo.address)}
+							>
+								<PencilLine size={20} />
 							</button>
 						</div>
 					)}

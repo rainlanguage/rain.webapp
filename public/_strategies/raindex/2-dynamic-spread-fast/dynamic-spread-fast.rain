@@ -981,7 +981,7 @@ gui:
       fields:
         - binding: initial-io
           name: Initial price (BUSD per TFT)
-          description: The rough USD price you see for TFT on Dextools.
+          description: The rough USD price you see for TFT on Dextools (e.g. 0.009)
           min: 1
         - binding: next-trade-multiplier
           name: Next trade multiplier

@@ -342,7 +342,7 @@ gui:
         - binding: baseline
           name: Baseline USDC per PAID
           description: >
-            The absolute minimum amount of USDC per PAID that the auction will trade at.
+            The absolute minimum amount of USDC per PAID that the auction will trade at (e.g. 0.03 USDC per PAID)
           min: 0
           presets:
             - name: 0.01
@@ -377,7 +377,7 @@ gui:
         - binding: initial-io
           name: Kickoff USDC per PAID
           description: >
-            The initial USDC per PAID to kickoff the first auction.
+            The initial USDC per PAID to kickoff the first auction (e.g. 0.05 USDC per PAID)
           min: 0
           presets:
             - name: 0.05
@@ -440,7 +440,7 @@ gui:
         - binding: baseline
           name: Baseline PAID per USDC
           description: >
-            The absolute minimum amount of PAID per USDC that the auction will trade at.
+            The absolute minimum amount of PAID per USDC that the auction will trade at (e.g. 10 PAID per USDC)
           min: 0
           presets:
             - name: 10
@@ -475,7 +475,7 @@ gui:
         - binding: initial-io
           name: Kickoff PAID per USDC
           description: >
-            The initial PAID per USDC to kickoff the first auction.
+            The initial PAID per USDC to kickoff the first auction (e.g. 20 PAID per USDC)
           min: 0
           presets:
             - name: 20

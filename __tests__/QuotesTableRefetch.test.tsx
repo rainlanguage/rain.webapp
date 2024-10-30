@@ -110,7 +110,7 @@ vi.mock('@rainlanguage/orderbook', async (importOriginal) => {
 	};
 });
 
-describe('OrderQuotes', () => {
+describe('Quotes table refetch functions', () => {
 	let refetchQueriesMock: Mock;
 
 	const setup = () => {
@@ -143,7 +143,7 @@ describe('OrderQuotes', () => {
 			error: null
 		} as any);
 		const { container } = render(
-			<QuotesTable order={mockOrder as unknown as Order} syncedQueryKey="" />
+			<QuotesTable order={mockOrder as unknown as Order} syncedQueryKey="" subgraphUrl="url.com" />
 		);
 		expect(container.querySelector('table')).toBeInTheDocument();
 		const headers = Array.from(container.querySelectorAll('th')).map((th) => th.textContent);

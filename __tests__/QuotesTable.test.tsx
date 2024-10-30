@@ -26,6 +26,33 @@ describe('QuotesTable Component', () => {
 		vi.clearAllMocks();
 	});
 
+	it('displays loading indicator when data is being fetched', () => {
+		(useQuery as Mock).mockReturnValue({
+			data: null,
+			isLoading: true,
+			isError: false
+		});
+
+		render(
+			<QuotesTable syncedQueryKey="testKey" order={mockOrder} subgraphUrl="https://example.com" />
+		);
+		expect(screen.getByText('Loading quotes...')).toBeInTheDocument();
+	});
+
+	it('displays error message when query fails', () => {
+		(useQuery as Mock).mockReturnValue({
+			data: null,
+			isLoading: false,
+			isError: true,
+			error: { message: 'Failed to fetch data' }
+		});
+
+		render(
+			<QuotesTable syncedQueryKey="testKey" order={mockOrder} subgraphUrl="https://example.com" />
+		);
+		expect(screen.getByText('Failed to fetch data')).toBeInTheDocument();
+	});
+
 	it('renders the table with data when query is successful', () => {
 		(useQuery as Mock).mockReturnValue({
 			data: [
@@ -40,26 +67,17 @@ describe('QuotesTable Component', () => {
 			isError: false
 		});
 
-		render(<QuotesTable syncedQueryKey="testKey" order={mockOrder} />);
+		render(
+			<QuotesTable syncedQueryKey="testKey" order={mockOrder} subgraphUrl="https://example.com" />
+		);
 		expect(screen.getByRole('table')).toBeInTheDocument();
 		expect(screen.getByText('TKA/TKB')).toBeInTheDocument();
 	});
-	it('should not rendeer the table if subgraph URL is not included in the order', () => {
-		(useQuery as Mock).mockReturnValue({
-			data: [
-				{
-					maxOutput: '0x10',
-					ratio: '0x2',
-					inputIOIndex: 0,
-					outputIOIndex: 0
-				}
-			],
-			isLoading: false,
-			isError: false
-		});
 
-		render(<QuotesTable syncedQueryKey="testKey" order={{ ...mockOrder, subgraphUrl: '' }} />);
-		expect(screen.queryByRole('table')).toBeNull();
-		expect(screen.queryByText('TKA/TKB')).toBeNull();
+	it('shows an error if no quotes data is found', () => {
+		(useQuery as Mock).mockReturnValue({ data: [], isLoading: false, isError: false });
+
+		render(<QuotesTable syncedQueryKey="testKey" order={mockOrder} subgraphUrl={'0x0x0'} />);
+		expect(screen.getByText('No quotes found')).toBeInTheDocument();
 	});
 });

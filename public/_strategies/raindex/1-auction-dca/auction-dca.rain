@@ -11,14 +11,21 @@ networks:
     chain-id: 8453
     network-id: 8453
     currency: ETH
+  ethereum:
+    rpc: https://rpc.ankr.com/eth
+    chain-id: 1
+    network-id: 1
+    currency: ETH
 
 metaboards:
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-arbitrum/0.1/gn
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base/0.1/gn
+  ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/metadata-mainnet/2024-10-25-2857/gn
 
 subgraphs:
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.1/gn
+  ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn
 
 orderbooks:
   arbitrum:
@@ -29,6 +36,10 @@ orderbooks:
     address: 0xd2938e7c9fe3597f78832ce780feb61945c377d7
     network: base
     subgraph: base
+  ethereum:
+    address: 0x0eA6d458488d1cf51695e1D6e4744e6FB715d37C
+    network: ethereum
+    subgraph: ethereum
 
 deployers:
   arbitrum:
@@ -37,6 +48,9 @@ deployers:
   base:
     address: 0xC1A14cE2fd58A3A2f99deCb8eDd866204eE07f8D
     network: base
+  ethereum:
+    address: 0xd19581a021f4704ad4eBfF68258e7A0a9DB1CD77
+    network: ethereum
 
 tokens:
   arbitrum-wbtc:
@@ -54,6 +68,14 @@ tokens:
   base-paid:
     network: base
     address: 0x655A51e6803faF50D4acE80fa501af2F29C856cF
+    decimals: 18
+  ethereum-weth:
+    network: ethereum
+    address: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    decimals: 18
+  ethereum-pai:
+    network: ethereum
+    address: 0x13E4b8CfFe704d3De6F19E52b201d92c21EC18bD
     decimals: 18
 
 orders:
@@ -78,6 +100,20 @@ orders:
       - token: base-usdc
     outputs:
       - token: base-paid
+  ethereum-pai-weth:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-weth
+    outputs:
+      - token: ethereum-pai
+  ethereum-weth-pai:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-pai
+    outputs:
+      - token: ethereum-weth
 
 scenarios:
   arbitrum:
@@ -90,6 +126,11 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+  ethereum:
+    orderbook: ethereum
+    runs: 1
+    bindings:
+      raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
 
 deployments:
   arbitrum-wbtc-weth:
@@ -101,6 +142,12 @@ deployments:
   base-paid-usdc:
     order: base-paid-usdc
     scenario: base
+  ethereum-pai-weth:
+    order: ethereum-pai-weth
+    scenario: ethereum
+  ethereum-weth-pai:
+    order: ethereum-weth-pai
+    scenario: ethereum
 
 gui:
   name: Auction based cost averaging
@@ -483,6 +530,211 @@ gui:
             - name: 50
               value: 50
 
+    
+
+    - deployment: ethereum-pai-weth
+      name: Sell PAI for WETH on Ethereum.
+      description: >
+        Swap PAI for WETH on Ethereum mainnet.
+      deposits:
+        - token: ethereum-pai
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+            - 5000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (PAI per period)
+          description: >
+            The amount of PAI to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (PAI)
+          description: >
+            The maximum amount of PAI to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (PAI)
+          description: >
+            The minimum amount of PAI to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline WETH per PAI
+          description: >
+            The absolute minimum amount of WETH per PAI that the auction will trade at. (e.g. 0.0001 WETH per PAI)
+          min: 0
+          presets:
+            - name: 0.0001
+              value: 0.0001
+            - name: 0.0005
+              value: 0.0005
+            - name: 0.001
+              value: 0.001
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff WETH per PAI
+          description: >
+            The initial WETH per PAI to kickoff the first auction. (e.g. 0.00015 WETH per PAI)
+          min: 0
+          presets:
+            - name: 0.001
+              value: 0.001
+            - name: 0.002
+              value: 0.002
+            - name: 0.005
+              value: 0.005
+
+    - deployment: ethereum-weth-pai
+      name: Sell WETH for PAI on Ethereum.
+      description: >
+        Swap WETH for PAI on Ethereum mainnet.
+      deposits:
+        - token: ethereum-weth
+          min: 0
+          presets:
+            - 0
+            - 0.1
+            - 0.5
+            - 1
+            - 2
+            - 5
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (WETH per period)
+          description: >
+            The amount of WETH to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (WETH)
+          description: >
+            The maximum amount of WETH to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (WETH)
+          description: >
+            The minimum amount of WETH to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline PAI per WETH
+          description: >
+            The absolute minimum amount of PAI per WETH that the auction will trade at. (e.g. 5000 PAI per WETH)
+          min: 0
+          presets:
+            - name: 500
+              value: 500
+            - name: 1000
+              value: 1000
+            - name: 2000
+              value: 2000
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff PAI per WETH
+          description: >
+            The initial PAI per WETH to kickoff the first auction. (e.g. 6500 PAI per WETH)
+          min: 0
+          presets:
+            - name: 1000
+              value: 1000
+            - name: 2000
+              value: 2000
+            - name: 5000
+              value: 5000
 ---
 #raindex-subparser !Raindex subparser.
 

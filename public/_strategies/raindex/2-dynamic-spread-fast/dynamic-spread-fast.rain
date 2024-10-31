@@ -1291,9 +1291,9 @@ scenarios:
       wlth-usdc:
         runs: 1
         bindings:
-          amount-token: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
-          initial-output-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
-          initial-input-token: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
+          amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+          initial-output-token: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
+          initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
   flare:
     orderbook: flare
     runs: 1
@@ -1536,6 +1536,7 @@ tokens:
   base-wlth:
     network: base
     address: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
+    decimals: 18
   ethereum-pai:
     network: ethereum
     address: 0x13E4b8CfFe704d3De6F19E52b201d92c21EC18bD

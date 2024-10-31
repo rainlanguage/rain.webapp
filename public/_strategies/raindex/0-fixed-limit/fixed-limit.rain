@@ -65,7 +65,7 @@ tokens:
     decimals: 6
   flare-weth:
     network: flare
-    address: 0x1b78D5a1D8C35B836d1DA35D5fC9d15EE2245dC9
+    address: 0x1502FA4be69d526124D453619276FacCab275d3D
     decimals: 18
 
 orders:

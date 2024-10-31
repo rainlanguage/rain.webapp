@@ -61,7 +61,7 @@ tokens:
     decimals: 6
   flare-usdce:
     network: flare
-    address: 0x28a92dde19D9989F39A49905d7C9C2FAc7799bDf
+    address: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
     decimals: 6
   flare-weth:
     network: flare

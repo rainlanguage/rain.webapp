@@ -53,7 +53,7 @@ tokens:
     decimals: 6
   base-paid:
     network: base
-    address: 0x5EE0fE440a4cA7F41bCF06b20c2A30a404E21069
+    address: 0x655A51e6803faF50D4acE80fa501af2F29C856cF
     decimals: 18
 
 orders:

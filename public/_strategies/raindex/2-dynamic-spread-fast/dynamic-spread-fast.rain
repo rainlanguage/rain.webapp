@@ -1248,7 +1248,7 @@ gui:
       fields:
         - binding: initial-io
           name: Initial price (WETH per UMJA)
-          description: The rough WETH price you see for UMJA on Dextools.
+          description: The rough WETH price you see for UMJA on Dextools (.eg. 0.0000058637)
           min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier

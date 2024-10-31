@@ -174,10 +174,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			return;
 		} else if (buttonData.buttonTarget === 'buttonValue' && buttonData.buttonValue === 'back') {
 			setInputValueAsLastValue();
-			setCurrentState((prevState) => ({
-				...prevState,
-				textInputLabel: ''
-			}));
+			window.history.back();
 		} else setInputText('');
 
 		const updatedState = getUpdatedFrameState(
@@ -216,7 +213,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			<div className="w-full top-0">
 				<ProgressBar currentState={currentState} />
 			</div>
-			<FrameImage currentState={currentState} setCurrentState={setCurrentState} />
+			<FrameImage currentState={currentState} />
 			{currentState.textInputLabel && (
 				<div className="flex justify-center mb-4">
 					<input
@@ -258,8 +255,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							key={buttonData.buttonText}
 							onClick={async () => {
 								await handleButtonClick(buttonData);
-							}}
-						>
+							}}>
 							{buttonData.buttonText}
 						</Button>
 					);
@@ -281,8 +277,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					<DialogClose asChild>
 						<button
 							className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
-							onClick={() => setError(null)}
-						>
+							onClick={() => setError(null)}>
 							Close
 						</button>
 					</DialogClose>

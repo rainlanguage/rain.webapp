@@ -90,16 +90,16 @@ orders:
     orderbook: base
     network: base
     inputs:
-      - token: base-paid
-    outputs:
       - token: base-usdc
+    outputs:
+      - token: base-paid
   base-paid-usdc:
     orderbook: base
     network: base
     inputs:
-      - token: base-usdc
-    outputs:
       - token: base-paid
+    outputs:
+      - token: base-usdc
   ethereum-pai-weth:
     orderbook: ethereum
     network: ethereum

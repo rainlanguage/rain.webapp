@@ -6,6 +6,11 @@ networks:
     chain-id: 42161
     network-id: 42161
     currency: ETH
+  base:
+    rpc: https://mainnet.base.org
+    chain-id: 8453
+    network-id: 8453
+    currency: ETH
   ethereum:
     rpc: https://rpc.ankr.com/eth
     chain-id: 1
@@ -14,10 +19,12 @@ networks:
 
 metaboards:
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-arbitrum/0.1/gn
+  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base/0.1/gn
   ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/metadata-mainnet/2024-10-25-2857/gn
 
 subgraphs:
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
+  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.1/gn
   ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn
 
 orderbooks:
@@ -25,6 +32,10 @@ orderbooks:
     address: 0x550878091b2B1506069F61ae59e3A5484Bca9166
     network: arbitrum
     subgraph: arbitrum
+  base:
+    address: 0xd2938e7c9fe3597f78832ce780feb61945c377d7
+    network: base
+    subgraph: base
   ethereum:
     address: 0x0eA6d458488d1cf51695e1D6e4744e6FB715d37C
     network: ethereum
@@ -34,6 +45,9 @@ deployers:
   arbitrum:
     address: 0x9B0D254bd858208074De3d2DaF5af11b3D2F377F
     network: arbitrum
+  base:
+    address: 0xC1A14cE2fd58A3A2f99deCb8eDd866204eE07f8D
+    network: base
   ethereum:
     address: 0xd19581a021f4704ad4eBfF68258e7A0a9DB1CD77
     network: ethereum
@@ -46,6 +60,14 @@ tokens:
   arbitrum-weth:
     network: arbitrum
     address: 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1
+    decimals: 18
+  base-usdc:
+    network: base
+    address: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+    decimals: 6
+  base-paid:
+    network: base
+    address: 0x655A51e6803faF50D4acE80fa501af2F29C856cF
     decimals: 18
   ethereum-weth:
     network: ethereum
@@ -64,6 +86,20 @@ orders:
       - token: arbitrum-weth
     outputs:
       - token: arbitrum-wbtc
+  base-usdc-paid:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-usdc
+    outputs:
+      - token: base-paid
+  base-paid-usdc:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-paid
+    outputs:
+      - token: base-usdc
   ethereum-pai-weth:
     orderbook: ethereum
     network: ethereum
@@ -85,6 +121,11 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
+  base:
+    orderbook: base
+    runs: 1
+    bindings:
+      raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
   ethereum:
     orderbook: ethereum
     runs: 1
@@ -95,6 +136,12 @@ deployments:
   arbitrum-wbtc-weth:
     order: arbitrum-wbtc-weth
     scenario: arbitrum
+  base-usdc-paid:
+    order: base-usdc-paid
+    scenario: base
+  base-paid-usdc:
+    order: base-paid-usdc
+    scenario: base
   ethereum-pai-weth:
     order: ethereum-pai-weth
     scenario: ethereum
@@ -286,6 +333,204 @@ gui:
               value: 50
             - name: 100
               value: 100
+
+    - deployment: base-usdc-paid
+      name: Sell PAID for USDC on Base.
+      description: >
+        Sell PAID for USDC on Base.
+      deposits:
+        - token: base-paid
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (PAID per period)
+          description: >
+            The amount of PAID to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (PAID)
+          description: >
+            The maximum amount of PAID to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (PAID)
+          description: >
+            The minimum amount of PAID to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline USDC per PAID
+          description: >
+            The absolute minimum amount of USDC per PAID that the auction will trade at (e.g. 0.03 USDC per PAID)
+          min: 0
+          presets:
+            - name: 0.01
+              value: 0.01
+            - name: 0.02
+              value: 0.02
+            - name: 0.05
+              value: 0.05
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDC per PAID
+          description: >
+            The initial USDC per PAID to kickoff the first auction (e.g. 0.05 USDC per PAID)
+          min: 0
+          presets:
+            - name: 0.05
+              value: 0.05
+            - name: 0.1
+              value: 0.1
+
+    - deployment: base-paid-usdc
+      name: Buy PAID with USDC on Base.
+      description: >
+        Buy PAID with USDC on Base.
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline PAID per USDC
+          description: >
+            The absolute minimum amount of PAID per USDC that the auction will trade at (e.g. 10 PAID per USDC)
+          min: 0
+          presets:
+            - name: 10
+              value: 10
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff PAID per USDC
+          description: >
+            The initial PAID per USDC to kickoff the first auction (e.g. 20 PAID per USDC)
+          min: 0
+          presets:
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+
+    
 
     - deployment: ethereum-pai-weth
       name: Sell PAI for WETH on Ethereum.
@@ -490,7 +735,6 @@ gui:
               value: 2000
             - name: 5000
               value: 5000
-
 ---
 #raindex-subparser !Raindex subparser.
 

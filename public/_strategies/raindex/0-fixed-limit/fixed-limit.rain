@@ -59,6 +59,14 @@ tokens:
     network: flare
     address: 0x96B41289D90444B8adD57e6F265DB5aE8651DF29
     decimals: 6
+  flare-usdce:
+    network: flare
+    address: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
+    decimals: 6
+  flare-weth:
+    network: flare
+    address: 0x1502FA4be69d526124D453619276FacCab275d3D
+    decimals: 18
 
 orders:
   base-weth-usdc:
@@ -82,6 +90,13 @@ orders:
       - token: flare-sflr
     outputs:
       - token: flare-wflr
+  flare-weth-usdce:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-weth
+    outputs:
+      - token: flare-usdce
 
 scenarios:
   base:
@@ -108,6 +123,10 @@ scenarios:
         runs: 1
         bindings:
           fixed-io-output-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
+      weth-usdce:
+        runs: 1
+        bindings:
+          fixed-io-output-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
 
 deployments:
   base-weth-usdc:
@@ -119,6 +138,9 @@ deployments:
   flare-slfr-wflr:
     order: flare-slfr-wflr
     scenario: flare.sflr-wflr
+  flare-weth-usdce:
+    order: flare-weth-usdce
+    scenario: flare.weth-usdce
 
 gui:
   name: Fixed limit
@@ -181,6 +203,26 @@ gui:
         - binding: fixed-io
           name: SFLR price in WFLR (WFLR per SFLR)
           min: 1
+
+    - deployment: flare-weth-usdce
+      name: Buy WETH with USDC.e on Flare.
+      description:
+        Buy WETH with USDC.e (Bridged USDC on Stargate) for fixed price on Flare network.
+      deposits:
+        - token: flare-usdce
+          min: 0
+          presets:
+            - 0
+            - 10
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: fixed-io
+          name: WETH price in USDC.e ($ per ETH)
+          min: 1000
+
 ---
 #raindex-subparser !The subparser to use.
 

@@ -22,18 +22,18 @@ const QuotesTable = ({ syncedQueryKey, order, subgraphUrl }: props) => {
 	const { ...chains } = allChains;
 	const orderChainKey = Object.keys(chains).find((chain) => chain === order.network);
 	const quoteOrder = {
-		id: "",
+		id: '',
 		orderBytes: order.orderBytes,
 		orderHash: order.orderHash,
 		owner: order.owner,
-		outputs: order.outputs.map(output => ({
-			id: "",
+		outputs: order.outputs.map((output) => ({
+			id: '',
 			token: {
-			  id: "",
-			  address: output.token.address,
-			  name: output.token.name,
-			  symbol: output.token.symbol,
-			  decimals: output.token.decimals.toString(),
+				id: '',
+				address: output.token.address,
+				name: output.token.name,
+				symbol: output.token.symbol,
+				decimals: output.token.decimals.toString()
 			},
 			balance: output.balance.toString(),
 			vaultId: output.vaultId.toString(),
@@ -42,17 +42,17 @@ const QuotesTable = ({ syncedQueryKey, order, subgraphUrl }: props) => {
 			ordersAsInput: [],
 			balanceChanges: [],
 			orderbook: {
-			  id: order.orderbook.id,
-			},
+				id: order.orderbook.id
+			}
 		})),
-		inputs: order.inputs.map(input => ({
-			id: "",
+		inputs: order.inputs.map((input) => ({
+			id: '',
 			token: {
-			  id: "",
-			  address: input.token.address,
-			  name: input.token.name,
-			  symbol: input.token.symbol,
-			  decimals: input.token.decimals.toString(),
+				id: '',
+				address: input.token.address,
+				name: input.token.name,
+				symbol: input.token.symbol,
+				decimals: input.token.decimals.toString()
 			},
 			balance: input.balance.toString(),
 			vaultId: input.vaultId.toString(),
@@ -61,18 +61,18 @@ const QuotesTable = ({ syncedQueryKey, order, subgraphUrl }: props) => {
 			ordersAsInput: [],
 			balanceChanges: [],
 			orderbook: {
-			  id: order.orderbook.id,
-			},
+				id: order.orderbook.id
+			}
 		})),
 		orderbook: {
-			id: order.orderbook.id,
+			id: order.orderbook.id
 		},
-		active: order.active === "true",
+		active: order.active === 'true',
 		addEvents: [],
 		meta: null,
-		timestampAdded: "",
-		trades: [],
-	  }
+		timestampAdded: '',
+		trades: []
+	};
 
 	const query = useQuery<BatchOrderQuotesResponse[]>({
 		queryKey: [syncedQueryKey, QUERY_KEY, order.orderHash],
@@ -84,8 +84,11 @@ const QuotesTable = ({ syncedQueryKey, order, subgraphUrl }: props) => {
 		if (!subgraphUrl) return;
 		if (orderChainKey === undefined) return;
 		try {
-			const result = await quote.getOrderQuote([quoteOrder], (chains as any)[orderChainKey].rpcUrls.default.http[0])
-			return result
+			const result = await quote.getOrderQuote(
+				[quoteOrder],
+				(chains as any)[orderChainKey].rpcUrls.default.http[0]
+			);
+			return result;
 		} catch (e: unknown) {
 			if (e instanceof Error) {
 				throw new Error(e.message);
@@ -112,13 +115,11 @@ const QuotesTable = ({ syncedQueryKey, order, subgraphUrl }: props) => {
 					{query.data &&
 						(query.data.length > 0 ? (
 							query.data.map((quote, i: number) => {
-								if (quote  === undefined) return null;
-								if (quote.data  === undefined) return null;
+								if (quote === undefined) return null;
+								if (quote.data === undefined) return null;
 								return (
 									<Table.Row key={i} data-testid="data">
-										<Table.Cell>
-											{quote.pair.pairName}
-										</Table.Cell>
+										<Table.Cell>{quote.pair.pairName}</Table.Cell>
 										<Table.Cell>
 											{formatEther(fromHex(quote.data?.maxOutput as `0x${string}`, 'bigint'))}
 										</Table.Cell>

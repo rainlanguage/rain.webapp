@@ -1,9 +1,10 @@
 import { Table } from 'flowbite-react';
 import { useQuery } from '@tanstack/react-query';
 import { quote } from '@rainlanguage/orderbook';
+import { BatchOrderQuotesResponse } from '@rainlanguage/orderbook/quote';
 import * as allChains from 'wagmi/chains';
 import { formatEther, formatUnits, fromHex } from 'viem';
-import { Input, Order, Output } from '../types';
+import { Order } from '../types';
 
 export type QuotesTableRef = {
 	getQuotes: () => Promise<void>;
@@ -20,46 +21,71 @@ export const QUERY_KEY = 'quotes';
 const QuotesTable = ({ syncedQueryKey, order, subgraphUrl }: props) => {
 	const { ...chains } = allChains;
 	const orderChainKey = Object.keys(chains).find((chain) => chain === order.network);
-	const specs = order.inputs.reduce((acc: quote.QuoteSpec[], input: Input, inputIndex: number) => {
-		return [
-			...acc,
-			...order.outputs.reduce((acc: quote.QuoteSpec[], output: Output, outputIndex: number) => {
-				// Prevents TokenSelfTrade error
-				if (order.inputs[inputIndex].token.address === order.outputs[outputIndex].token.address) {
-					return acc;
-				}
+	const quoteOrder = {
+		id: "",
+		orderBytes: order.orderBytes,
+		orderHash: order.orderHash,
+		owner: order.owner,
+		outputs: order.outputs.map(output => ({
+			id: "",
+			token: {
+			  id: "",
+			  address: output.token.address,
+			  name: output.token.name,
+			  symbol: output.token.symbol,
+			  decimals: output.token.decimals.toString(),
+			},
+			balance: output.balance.toString(),
+			vaultId: output.vaultId.toString(),
+			owner: order.owner,
+			ordersAsOutput: [],
+			ordersAsInput: [],
+			balanceChanges: [],
+			orderbook: {
+			  id: order.orderbook.id,
+			},
+		})),
+		inputs: order.inputs.map(input => ({
+			id: "",
+			token: {
+			  id: "",
+			  address: input.token.address,
+			  name: input.token.name,
+			  symbol: input.token.symbol,
+			  decimals: input.token.decimals.toString(),
+			},
+			balance: input.balance.toString(),
+			vaultId: input.vaultId.toString(),
+			owner: order.owner,
+			ordersAsOutput: [],
+			ordersAsInput: [],
+			balanceChanges: [],
+			orderbook: {
+			  id: order.orderbook.id,
+			},
+		})),
+		orderbook: {
+			id: order.orderbook.id,
+		},
+		active: order.active === "true",
+		addEvents: [],
+		meta: null,
+		timestampAdded: "",
+		trades: [],
+	  }
 
-				return [
-					...acc,
-					{
-						orderHash: order.orderHash,
-						inputIOIndex: inputIndex,
-						outputIOIndex: outputIndex,
-						signedContext: [],
-						orderbook: order.orderbook.id
-					}
-				];
-			}, [])
-		];
-	}, []);
-
-	const query = useQuery<quote.OrderQuoteValue[]>({
+	const query = useQuery<BatchOrderQuotesResponse[]>({
 		queryKey: [syncedQueryKey, QUERY_KEY, order.orderHash],
-		queryFn: () => getQuotes(order, specs),
+		queryFn: () => getQuotes(),
 		enabled: orderChainKey !== undefined && subgraphUrl !== undefined
 	});
 
-	const getQuotes = async (order: Order, specs: quote.QuoteSpec[]) => {
+	const getQuotes = async () => {
 		if (!subgraphUrl) return;
 		if (orderChainKey === undefined) return;
 		try {
-			const result = await quote.doQuoteSpecs(
-				specs,
-				subgraphUrl,
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				(chains as any)[orderChainKey].rpcUrls.default.http[0]
-			);
-			return result;
+			const result = await quote.getOrderQuote([quoteOrder], (chains as any)[orderChainKey].rpcUrls.default.http[0])
+			return result
 		} catch (e: unknown) {
 			if (e instanceof Error) {
 				throw new Error(e.message);
@@ -85,24 +111,24 @@ const QuotesTable = ({ syncedQueryKey, order, subgraphUrl }: props) => {
 					)}
 					{query.data &&
 						(query.data.length > 0 ? (
-							query.data.map((quote: quote.OrderQuoteValue, i: number) => {
-								if (typeof quote === 'string') return null;
+							query.data.map((quote, i: number) => {
+								if (quote  === undefined) return null;
+								if (quote.data  === undefined) return null;
 								return (
 									<Table.Row key={i} data-testid="data">
 										<Table.Cell>
-											{order.inputs[specs[i].inputIOIndex].token.symbol}/
-											{order.outputs[specs[i].outputIOIndex].token.symbol}
+											{quote.pair.pairName}
 										</Table.Cell>
 										<Table.Cell>
-											{formatEther(fromHex(quote.maxOutput as `0x${string}`, 'bigint'))}
+											{formatEther(fromHex(quote.data?.maxOutput as `0x${string}`, 'bigint'))}
 										</Table.Cell>
 										<Table.Cell>
-											{formatEther(fromHex(quote.ratio as `0x${string}`, 'bigint'))}
+											{formatEther(fromHex(quote.data?.ratio as `0x${string}`, 'bigint'))}
 										</Table.Cell>
 										<Table.Cell>
 											{formatUnits(
-												fromHex(quote.maxOutput as `0x${string}`, 'bigint') *
-													fromHex(quote.ratio as `0x${string}`, 'bigint'),
+												fromHex(quote.data?.maxOutput as `0x${string}`, 'bigint') *
+													fromHex(quote.data?.ratio as `0x${string}`, 'bigint'),
 												36
 											)}
 										</Table.Cell>

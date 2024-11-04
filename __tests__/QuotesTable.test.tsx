@@ -16,8 +16,20 @@ describe('QuotesTable Component', () => {
 	const mockOrder: Order = {
 		orderHash: '0x123',
 		network: 'polygon',
-		inputs: [{ token: { address: '0xTokenA', symbol: 'TKA', decimals: BigInt(18) } }] as Input[],
-		outputs: [{ token: { address: '0xTokenB', symbol: 'TKB', decimals: BigInt(18) } }] as Output[],
+		inputs: [
+			{
+				token: { address: '0xTokenA', symbol: 'TKA', decimals: BigInt(18) },
+				balance: BigInt(0),
+				vaultId: BigInt(0)
+			}
+		] as Input[],
+		outputs: [
+			{
+				token: { address: '0xTokenB', symbol: 'TKB', decimals: BigInt(18) },
+				balance: BigInt(0),
+				vaultId: BigInt(0)
+			}
+		] as Output[],
 		orderbook: { id: 'orderbook-id' },
 		subgraphUrl: 'https://subgraph-url.com'
 	} as unknown as Order;
@@ -57,10 +69,17 @@ describe('QuotesTable Component', () => {
 		(useQuery as Mock).mockReturnValue({
 			data: [
 				{
-					maxOutput: '0x10',
-					ratio: '0x2',
-					inputIOIndex: 0,
-					outputIOIndex: 0
+					data: {
+						maxOutput: '0x10',
+						ratio: '0x2',
+						inputIOIndex: 0,
+						outputIOIndex: 0
+					},
+					pair: {
+						pairName: 'TKA/TKB',
+						inputIndex: 0,
+						outputIndex: 0
+					}
 				}
 			],
 			isLoading: false,

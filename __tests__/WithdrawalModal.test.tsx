@@ -1,7 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi } from 'vitest';
 import { WithdrawalModal } from '@/app/_components/WithdrawalModal';
-import { formatUnits } from 'viem';
 import { Input } from '@/app/types';
 
 vi.mock('wagmi', async (importOriginal) => {
@@ -28,9 +27,12 @@ const mockNetwork = 'flare';
 
 describe('WithdrawalModal', () => {
 	it('updates input value to max balance with long decimal precision on "Max" button click', async () => {
-		render(<WithdrawalModal vault={mockVault} network={mockNetwork} />);
+		const vault: Input = {
+			...mockVault,
+			balance: BigInt('391122697166452913136') // This was rounding to 391.1226971664529
+		};
+		render(<WithdrawalModal vault={vault} network={mockNetwork} />);
 
-		// Open modal by clicking the trigger
 		const triggerButton = screen.getByText(/Withdraw/i);
 		fireEvent.click(triggerButton);
 
@@ -38,9 +40,7 @@ describe('WithdrawalModal', () => {
 		fireEvent.click(maxButton);
 
 		const input = screen.getByTestId('withdrawal-input') as HTMLInputElement;
-		const expectedValue = formatUnits(mockVault.balance, Number(mockVault.token.decimals));
-		expect(input.value).toBe(expectedValue);
-		expect(input.value).toBe('0.156879426436436');
+		expect(input.value).toBe('391.122697166452913136');
 	});
 	it('allows typing of decimal places in the input field', async () => {
 		render(<WithdrawalModal vault={mockVault} network={mockNetwork} />);

@@ -51,13 +51,6 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 
 	const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
-		setError(null);
-		if (BigInt(rawAmount) > BigInt(vault.balance)) {
-			setError('Amount exceeds vault balance');
-		}
-	}, [rawAmount, vault.balance]);
-
 	const address = useAccount().address;
 	const userchain = useAccount().chain;
 	const chain = SupportedChains[network as keyof typeof SupportedChains];
@@ -78,19 +71,16 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 	const withdrawalAmount = form.watch('withdrawalAmount');
 
 	useEffect(() => {
-		const parsedRawAmount = parseUnits(
-			withdrawalAmount.toString(),
-			Number(vault.token.decimals)
-		).toString();
-		setRawAmount(parsedRawAmount);
-		if (BigInt(parsedRawAmount) > vault.balance) {
+		const parsedRawAmount = parseUnits(withdrawalAmount.toString(), Number(vault.token.decimals));
+		setRawAmount(parsedRawAmount.toString());
+		if (BigInt(parsedRawAmount) > BigInt(vault.balance)) {
 			setError('Amount exceeds vault balance');
 		} else {
 			setError(null);
 		}
-	}, [withdrawalAmount]);
+	}, [withdrawalAmount, vault.balance]);
 
-	const withdraw = async (amount: string) => {
+	const withdraw = async () => {
 		if (!address && !connectModalOpen) {
 			openConnectModal?.();
 			return;
@@ -101,7 +91,7 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 				abi: orderBookJson.abi,
 				address: vault.orderbook.id as `0x${string}`,
 				functionName: 'withdraw2',
-				args: [vault.token.address, BigInt(vault.vaultId), BigInt(amount), []]
+				args: [vault.token.address, BigInt(vault.vaultId), BigInt(rawAmount), []]
 			});
 			onSuccess?.();
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -116,9 +106,8 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 		} else if (!vault.balance) {
 			return setError('No balance found');
 		}
-		const formattedBalance = formatUnits(vault.balance, Number(vault.token.decimals));
-		form.setValue('withdrawalAmount', Number(formattedBalance));
-		setRawAmount(vault.balance.toString());
+		const formattedBalance = formatUnits(BigInt(vault.balance), Number(vault.token.decimals));
+		form.setValue('withdrawalAmount', formattedBalance as unknown as number);
 		form.setFocus('withdrawalAmount');
 	};
 
@@ -140,8 +129,7 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 					<Form {...form}>
 						<form
 							onSubmit={form.handleSubmit(async () => {
-								// Always submit the raw amount stored in state
-								await withdraw(rawAmount);
+								await withdraw();
 								setOpen(false);
 							})}
 							className="space-y-8"
@@ -151,7 +139,9 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 								name="withdrawalAmount"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Amount</FormLabel>
+										<FormLabel>
+											Available amount: {formatUnits(vault.balance, Number(vault.token.decimals))}
+										</FormLabel>
 										<FormControl>
 											<Input
 												data-testid={'withdrawal-input'}

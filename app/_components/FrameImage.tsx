@@ -1,7 +1,151 @@
+'use client';
+
 import { FrameState } from '../_types/frame';
 import { ProgressBar } from './ProgressBar';
+import { useState } from 'react';
+import { PencilLine } from 'lucide-react';
 
-export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
+export const FrameImage = ({
+	currentState,
+	setCurrentState
+}: {
+	currentState: FrameState;
+	setCurrentState: React.Dispatch<React.SetStateAction<FrameState>>;
+}) => {
+	const [editingBinding, setEditingBinding] = useState<string | null>(null);
+	const [editingDeposit, setEditingDeposit] = useState<string | null>(null);
+
+	const EditableBindingRow = ({
+		name,
+		binding,
+		bindingValue
+	}: {
+		name: string;
+		binding: string;
+		bindingValue: string | number;
+	}) => {
+		const [value, setValue] = useState(bindingValue);
+		const isEditing = editingBinding === binding;
+
+		return (
+			<tr className="border-t border-gray-300 table-row py-3" tw="border-t border-gray-300">
+				<td
+					className="lg:p-3 p-2 font-regular text-gray-700"
+					tw="p-4 font-semibold text-gray-700 w-[300px] leading-tight"
+				>
+					{name}
+				</td>
+				<td className="px-4 text-gray-600 " tw="px-4 py-2 text-gray-600">
+					{isEditing && (
+						<div className="flex items-center gap-2">
+							<input
+								data-testid="binding-input"
+								className="border-gray-200 rounded-lg border text-xl p-2 w-full max-w-96"
+								type="number"
+								placeholder={currentState.textInputLabel}
+								value={value}
+								onChange={(e) => {
+									setValue(e.target.value);
+								}}
+							/>
+							<button
+								className="text-sm p-2 rounded-md bg-blue-500 text-white"
+								data-testid="binding-save-button"
+								onClick={() => {
+									const newBindings = {
+										...currentState.bindings,
+										[binding]: value
+									};
+									setCurrentState({
+										...currentState,
+										bindings: newBindings
+									});
+									setEditingBinding(null);
+								}}
+							>
+								Save
+							</button>
+						</div>
+					)}
+					{!isEditing && (
+						<div className="flex items-center justify-between">
+							{bindingValue}
+							<button
+								data-testid="binding-edit-button"
+								onClick={() => {
+									setEditingBinding(binding);
+								}}
+							>
+								<PencilLine size={20} />
+							</button>
+						</div>
+					)}
+				</td>
+			</tr>
+		);
+	};
+
+	const EditableDepositRow = ({
+		tokenInfo,
+		amount
+	}: {
+		tokenInfo: any;
+		amount: string | number;
+	}) => {
+		const [value, setValue] = useState(amount);
+		const isEditing = editingDeposit === tokenInfo.address;
+
+		return (
+			<tr className="border-t border-gray-300 table-row" tw="border-t border-gray-300">
+				<td
+					className="p-2 lg:p-3 font-regular text-gray-700"
+					tw="px-4 py-4 font-semibold text-gray-700 w-[300px] leading-tight"
+				>
+					{tokenInfo.symbol}
+				</td>
+				<td className="px-4 text-gray-600" tw="px-4 py-2 text-gray-600">
+					{isEditing ? (
+						<div className="flex items-center gap-2">
+							<input
+								data-testid="deposit-input"
+								className="border-gray-200 rounded-lg border text-xl p-2 w-full max-w-96"
+								type="number"
+								value={value}
+								onChange={(e) => setValue(Number(e.target.value))}
+							/>
+							<button
+								className="text-sm p-2 rounded-md bg-blue-500 text-white"
+								data-testid="deposit-save-button"
+								onClick={() => {
+									const newDeposits = currentState.deposits.map((v) =>
+										v.tokenInfo.address === tokenInfo.address ? { ...v, amount: Number(value) } : v
+									);
+									setCurrentState({
+										...currentState,
+										deposits: newDeposits
+									});
+									setEditingDeposit(null);
+								}}
+							>
+								Save
+							</button>
+						</div>
+					) : (
+						<div className="flex items-center justify-between">
+							{amount}
+							<button
+								data-testid="deposit-edit-button"
+								onClick={() => setEditingDeposit(tokenInfo.address)}
+							>
+								<PencilLine size={20} />
+							</button>
+						</div>
+					)}
+				</td>
+			</tr>
+		);
+	};
+
 	return (
 		<div
 			className={`flex flex-col md:justify-center items-center md:text-[50px] text-center text-[30px] relative flex-grow px-8`}
@@ -92,21 +236,12 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 								);
 								if (!field) return;
 								return (
-									<tr
+									<EditableBindingRow
 										key={binding}
-										className="border-t border-gray-300 table-row py-3"
-										tw="border-t border-gray-300"
-									>
-										<td
-											className="lg:p-3 p-2 font-regular text-gray-700"
-											tw="p-4 font-semibold text-gray-700 w-[300px] leading-tight"
-										>
-											{field.name}
-										</td>
-										<td className="px-4 text-gray-600 " tw="px-4 py-2 text-gray-600">
-											{currentState.bindings[binding]}
-										</td>
-									</tr>
+										name={field.name}
+										binding={binding}
+										bindingValue={currentState.bindings[binding]}
+									/>
 								);
 							})}
 							<tr className="flex flex-col lg:table-row py-3" tw="border-t border-gray-300">
@@ -117,25 +252,9 @@ export const FrameImage = ({ currentState }: { currentState: FrameState }) => {
 									Deposits
 								</td>
 							</tr>
-							{currentState.deposits.map(({ tokenInfo, amount }) => {
-								return (
-									<tr
-										key={tokenInfo.address}
-										className="border-t border-gray-300 table-row"
-										tw="border-t border-gray-300"
-									>
-										<td
-											className="p-2 lg:p-3 font-regular text-gray-700"
-											tw="px-4 py-4 font-semibold text-gray-700 w-[300px] leading-tight"
-										>
-											{tokenInfo.symbol}
-										</td>
-										<td className="px-4 text-gray-600" tw="px-4 py-2 text-gray-600">
-											{amount}
-										</td>
-									</tr>
-								);
-							})}
+							{currentState.deposits.map(({ tokenInfo, amount }) => (
+								<EditableDepositRow key={tokenInfo.address} tokenInfo={tokenInfo} amount={amount} />
+							))}
 						</tbody>
 					</table>
 				) : (

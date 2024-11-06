@@ -81,8 +81,9 @@ export const SubmissionModal = ({
 	const [submissionState, setSubmissionState] = useState<SubmissionStatus>(
 		SubmissionStatus.ApprovingTokens
 	);
-	const [tokenDeposits, setTokenDeposits] = useState<TokenDepositWithStatus[]>(
-		currentState.deposits
+	const [tokenDeposits, setTokenDeposits] = useState<TokenDepositWithStatus[]>([]);
+	useEffect(() => {
+		const deposits = currentState.deposits
 			.map((deposit) => ({
 				tokenAddress: deposit.tokenInfo.address as Hex,
 				tokenInfo: currentState.tokenInfos.find(
@@ -92,8 +93,9 @@ export const SubmissionModal = ({
 				referrals: deposit.referrals,
 				status: TokenDepositStatus.Pending
 			}))
-			.filter((deposit) => deposit.amount > 0)
-	);
+			.filter((deposit) => deposit.amount > 0);
+		setTokenDeposits(deposits);
+	}, [currentState]);
 
 	const [open, setOpen] = useState(false);
 	const [showFinalMessage, setShowFinalMessage] = useState(false);

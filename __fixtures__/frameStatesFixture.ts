@@ -1,3 +1,5 @@
+import { Address } from 'viem';
+
 export const fieldsFrameState = {
 	currentStep: 'fields',
 	deploymentOption: {
@@ -11,7 +13,17 @@ export const fieldsFrameState = {
 		fields: [
 			{
 				binding: 'fixed-io',
-				min: 1000
+				min: 1000,
+				presets: [
+					{
+						name: 'Zero preset',
+						value: 0
+					},
+					{
+						name: 'Thousand preset',
+						value: 1000
+					}
+				]
 			}
 		]
 	},
@@ -47,4 +59,59 @@ export const depositFrameState = {
 			symbol: 'USDC'
 		}
 	]
+};
+
+export const reviewFrameState = {
+	currentStep: 'review',
+	bindings: { 'fixed-io-1': '1000', 'fixed-io-2': '3000' },
+	deploymentOption: {
+		name: 'Test Deployment',
+		fields: [
+			{
+				binding: 'fixed-io-1',
+				value: '1000',
+				name: 'Fixed IO',
+				description: 'Fixed IO Description'
+			},
+			{
+				binding: 'fixed-io-2',
+				value: '3000',
+				name: 'Fixed IO 2',
+				description: 'Fixed IO 2 Description'
+			}
+		],
+		deposit: {
+			token: 'base-usdc'
+		},
+		deposits: [],
+		deployment: 'some-deployment',
+		description: 'Test Description'
+	},
+	deposits: [
+		{
+			tokenInfo: {
+				yamlName: 'base-usdc',
+				symbol: 'USDC',
+				decimals: 6,
+				name: 'USD Coin',
+				address: '0xabcd' as Address
+			},
+			amount: 4000
+		}
+	],
+	buttonPage: 0,
+	buttonMax: 4,
+	tokenInfos: [
+		{
+			yamlName: 'base-usdc',
+			symbol: 'USDC',
+			decimals: 6,
+			name: 'USD Coin',
+			address: '0xabcd' as Address
+		}
+	],
+	strategyName: '',
+	strategyDescription: '',
+	textInputLabel: '',
+	error: null
 };

@@ -35,7 +35,7 @@ export const TableCellLink = ({ children }: { children: React.ReactNode }) => {
 				<a
 					href={link}
 					data-testid="order-row-link"
-					className="flex items-center justify-start h-full w-full p-4 text-inherit no-underline hover:bg-gray-50 visited:text-gray-500"
+					className="flex items-center justify-start w-full p-4 text-inherit no-underline hover:bg-gray-50 visited:text-gray-500"
 				>
 					{children}
 				</a>

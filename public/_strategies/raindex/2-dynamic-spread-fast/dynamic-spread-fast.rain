@@ -975,6 +975,97 @@ gui:
             - 0.05
             - 0.2
             - 0.4
+    - deployment: ethereum-pai-weth
+      name: PAI<>WETH on Ethereum.
+      description: Rotate PAI and WETH on Ethereum.
+
+      fields:
+        - binding: initial-io
+          name: Initial price (WETH per PAI)
+          description: The rough WETH price you see for PAI on Dextools (e.g. 0.0001205).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of WETH that will be offered in a single auction.
+          min: 1
+          presets:
+            - name: 1 WETH
+              value: 1
+            - name: 3 WETH
+              value: 3
+            - name: 5 WETH
+              value: 5
+            - name: 10 WETH
+              value: 10
+            - name: 20 WETH
+              value: 20
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of WETH that will be offered in a single auction.
+          min: 1
+          presets:
+            - name: 1 WETH
+              value: 1
+            - name: 1.25 WETH
+              value: 1.25
+            - name: 1.5 WETH
+              value: 1.5
+            - name: 2 WETH
+              value: 2
+      deposits:
+        - token: ethereum-pai
+          min: 0
+          presets:
+            - 0
+            - 1000
+            - 5000
+            - 10000
+        - token: ethereum-weth
+          min: 0
+          presets:
+            - 0
+            - 0.5
+            - 2
+            - 4
     - deployment: bsc-busd-tft
       name: BUSD<>TFT on BSC.
       description: Rotate BUSD and TFT on BSC.
@@ -1109,6 +1200,12 @@ scenarios:
           amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
           initial-output-token: 0x655A51e6803faF50D4acE80fa501af2F29C856cF
           initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+      wlth-usdc:
+        runs: 1
+        bindings:
+          amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+          initial-output-token: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
+          initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
   flare:
     orderbook: flare
     runs: 1
@@ -1178,6 +1275,32 @@ scenarios:
           amount-token: 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56
           initial-output-token: 0x8f0FB159380176D324542b3a7933F0C2Fd0c2bbf
           initial-input-token: 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56
+  ethereum:
+    orderbook: ethereum
+    runs: 1
+    bindings:
+      raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
+      history-cap: '1e50'
+    scenarios:
+      pai-weth:
+        runs: 1
+        bindings:
+          amount-token: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+          initial-output-token: 0x13E4b8CfFe704d3De6F19E52b201d92c21EC18bD
+          initial-input-token: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+  linea:
+    orderbook: linea
+    runs: 1
+    bindings:
+      raindex-subparser: 0xF77b3c3f61af5a3cE7f7CE3cfFc117491104432E
+      history-cap: '1e50'
+    scenarios:
+      clip-weth:
+        runs: 1
+        bindings:
+          amount-token: 0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f
+          initial-output-token: 0x4Ea77a86d6E70FfE8Bb947FC86D68a7F086f198a
+          initial-input-token: 0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f
 
 networks:
   flare:
@@ -1205,6 +1328,16 @@ networks:
     chain-id: 56
     network-id: 56
     currency: BNB
+  ethereum:
+    rpc: https://rpc.ankr.com/eth
+    chain-id: 1
+    network-id: 1
+    currency: ETH
+  linea:
+    rpc: https://rpc.linea.build
+    chain-id: 59144
+    network-id: 59144
+    currency: ETH
 
 metaboards:
   flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
@@ -1212,6 +1345,8 @@ metaboards:
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-arbitrum/0.1/gn
   polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-polygon/0.1/gn
   bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-bsc/0.1/gn
+  ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/metadata-mainnet/2024-10-25-2857/gn
+  linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-linea-0xed7d6156/1.0.0/gn
 
 subgraphs:
   flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
@@ -1219,6 +1354,8 @@ subgraphs:
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
   polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
   bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
+  ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn
+  linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-linea/2024-10-14-12fc/gn
 
 orderbooks:
   flare:
@@ -1239,6 +1376,14 @@ orderbooks:
     address: 0xd2938E7c9fe3597F78832CE780Feb61945c377d7
     network: bsc
     subgraph: bsc
+  ethereum:
+    address: 0x0eA6d458488d1cf51695e1D6e4744e6FB715d37C
+    network: ethereum
+    subgraph: ethereum
+  linea:
+    address: 0x22410e2a46261a1B1e3899a072f303022801C764
+    network: linea
+    subgraph: linea
 
 deployers:
   flare:
@@ -1252,6 +1397,12 @@ deployers:
   polygon:
     address: 0xE7116BC05C8afe25e5B54b813A74F916B5D42aB1
     network: polygon
+  ethereum:
+    address: 0xd19581a021f4704ad4eBfF68258e7A0a9DB1CD77
+    network: ethereum
+  linea:
+    address: 0xA2f56F8F74B7d04d61f281BE6576b6155581dcBA
+    network: linea
 
 tokens:
   arbitrum-usdc:
@@ -1325,6 +1476,26 @@ tokens:
   bsc-busd:
     network: bsc
     address: 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56
+    decimals: 18
+  base-wlth:
+    network: base
+    address: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
+    decimals: 18
+  ethereum-pai:
+    network: ethereum
+    address: 0x13E4b8CfFe704d3De6F19E52b201d92c21EC18bD
+    decimals: 18
+  ethereum-weth:
+    network: ethereum
+    address: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    decimals: 18
+  linea-clip:
+    network: linea
+    address: 0x4Ea77a86d6E70FfE8Bb947FC86D68a7F086f198a
+    decimals: 18
+  linea-weth:
+    network: linea
+    address: 0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f
     decimals: 18
 
 orders:
@@ -1436,6 +1607,33 @@ orders:
     outputs:
       - token: bsc-tft
       - token: bsc-busd
+  base-wlth-usdc:
+    network: base
+    orderbook: base
+    inputs:
+      - token: base-wlth
+      - token: base-usdc
+    outputs:
+      - token: base-wlth
+      - token: base-usdc
+  ethereum-pai-weth:
+    network: ethereum
+    orderbook: ethereum
+    inputs:
+      - token: ethereum-pai
+      - token: ethereum-weth
+    outputs:
+      - token: ethereum-pai
+      - token: ethereum-weth
+  linea-clip-weth:
+    network: linea
+    orderbook: linea
+    inputs:
+      - token: linea-clip
+      - token: linea-weth
+    outputs:
+      - token: linea-clip
+      - token: linea-weth
 
 deployments:
   arbitrum-wbtc-weth:
@@ -1474,6 +1672,15 @@ deployments:
   bsc-tft-busd:
     order: bsc-tft-busd
     scenario: bsc.tft-busd
+  base-wlth-usdc:
+    order: base-wlth-usdc
+    scenario: base.wlth-usdc
+  ethereum-pai-weth:
+    order: ethereum-pai-weth
+    scenario: ethereum.pai-weth
+  linea-clip-weth:
+    order: linea-clip-weth
+    scenario: linea.clip-weth
 ---
 #raindex-subparser !Subparser for the Raindex.
 

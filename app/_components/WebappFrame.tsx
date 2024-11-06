@@ -16,7 +16,7 @@ import { TriangleAlert } from 'lucide-react';
 import { TokenInfo, getTokenInfos } from '../_services/getTokenInfo';
 import { Button, Spinner } from 'flowbite-react';
 import ShareStateAsUrl from './ShareStateAsUrl';
-import { decompress } from '../_services/compress';
+import { compress, decompress } from '../_services/compress';
 import { CodemirrorModal } from './CodemirrorModal';
 import { Button as ButtonType } from '../types';
 
@@ -71,6 +71,25 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 	const [inputText, setInputText] = useState<string>('');
 
 	const searchParams = useSearchParams();
+	const buttonsData = generateButtonsData(yamlData, currentState);
+
+	const setInputValueAsLastValue = () => {
+		const lastBindingKey = Object.keys(currentState.bindings).pop();
+		const lastBindingValue = lastBindingKey ? currentState.bindings[lastBindingKey] : '';
+		const lastDeposit = currentState.deposits[currentState.deposits.length - 1];
+
+		setInputText(lastDeposit?.amount?.toString() || lastBindingValue.toString() || ('' as string));
+	};
+
+	const updateUrl = async (updatedState: FrameState) => {
+		const url = new URL(window.location.href);
+
+		const jsonString = JSON.stringify(updatedState);
+		const compressed = await compress(jsonString);
+
+		url.searchParams.set('currentState', compressed);
+		await window.history.pushState({}, '', url);
+	};
 
 	const getUrlState = async () => {
 		const encodedState = searchParams.get('currentState');
@@ -85,7 +104,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 				};
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (e: any) {
-				// If decompression fails, try decoding the state without decompression
 				if (e.message.includes('not correctly encoded')) {
 					const decodedState = decodeURI(encodedState);
 					return {
@@ -99,19 +117,21 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		return null;
 	};
 
+	const initializeState = async () => {
+		try {
+			const urlState = await getUrlState();
+			if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
+			else setCurrentState((prev) => ({ ...prev, ...defaultState }));
+		} catch {
+			throw new Error('Error decoding state:');
+		} finally {
+			setLoading((prev) => ({ ...prev, decodingState: false }));
+		}
+	};
+
 	useEffect(() => {
-		const initializeState = async () => {
-			try {
-				const urlState = await getUrlState();
-				if (urlState) setCurrentState((prev) => ({ ...prev, ...urlState }));
-			} catch {
-				throw new Error('Error decoding state:');
-			} finally {
-				setLoading((prev) => ({ ...prev, decodingState: false }));
-			}
-		};
 		initializeState();
-	}, [searchParams]); // Run only when searchParams change
+	}, [searchParams]);
 
 	useEffect(() => {
 		const fetchTokenInfos = async () => {
@@ -140,7 +160,6 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	const handleButtonClick = async (buttonData: ButtonType) => {
 		setError(null);
-
 		if (buttonData.buttonTarget === 'textInputLabel') {
 			setCurrentState((prevState) => ({
 				...prevState,
@@ -154,11 +173,9 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			}));
 			return;
 		} else if (buttonData.buttonTarget === 'buttonValue' && buttonData.buttonValue === 'back') {
-			setCurrentState((prevState) => ({
-				...prevState,
-				textInputLabel: ''
-			}));
-		}
+			setInputValueAsLastValue();
+			window.history.back();
+		} else setInputText('');
 
 		const updatedState = getUpdatedFrameState(
 			yamlData,
@@ -167,14 +184,13 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			inputText
 		);
 
-		setCurrentState({ ...updatedState });
-
-		if (inputText) {
-			setInputText('');
-		}
+		setCurrentState(() => {
+			updateUrl(updatedState);
+			return {
+				...updatedState
+			};
+		});
 	};
-
-	const buttonsData = generateButtonsData(yamlData, currentState);
 
 	useEffect(() => {
 		const filteredButtons = buttonsData.filter(
@@ -214,7 +230,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 			<div className="flex flex-wrap gap-2 justify-center md:pb-20 pb-8 px-8 pt-10">
 				{buttonsData.map((buttonData, i: number) => {
 					return buttonData.buttonValue === 'finalSubmit' ? (
-						<div key={i} className="flex gap-2 flex-wrap justify-center">
+						<div key={i} data-testid="final-submit" className="flex gap-2 flex-wrap justify-center">
 							<SubmissionModal
 								key={buttonData.buttonText}
 								buttonText={buttonData.buttonText}
@@ -233,6 +249,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 						</div>
 					) : (
 						<Button
+							data-testid={`button-${buttonData.buttonValue}`}
 							color="primary"
 							size="sm"
 							key={buttonData.buttonText}

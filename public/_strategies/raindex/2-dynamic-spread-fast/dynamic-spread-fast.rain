@@ -1053,16 +1053,16 @@ gui:
           min: 0
           presets:
             - 0
-            - 100
-            - 500
-            - 1000
+            - 2000
+            - 10000
+            - 20000
         - token: bsc-tft
           min: 0
           presets:
             - 0
-            - 100
-            - 500
-            - 1000
+            - 250000
+            - 1250000
+            - 2500000
 
 scenarios:
   arbitrum:

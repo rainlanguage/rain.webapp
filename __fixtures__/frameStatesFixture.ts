@@ -61,6 +61,39 @@ export const depositFrameState = {
 	]
 };
 
+export const defaultFrameStateFixedLimit = {
+	strategyName: 'Fixed limit',
+	strategyDescription: 'Fixed limit order strategy\n',
+	currentStep: 'fields',
+	deploymentOption: {
+		deployment: 'base-weth-usdc',
+		name: 'Buy WETH with USDC on Base.',
+		description: 'Buy WETH with USDC for fixed price on Base network.',
+		deposits: [
+			{
+				token: 'base-usdc',
+				min: 0,
+				presets: [0, 10, 100, 1000, 10000]
+			}
+		],
+		fields: [
+			{
+				binding: 'fixed-io',
+				name: 'WETH price in USDC ($ per ETH)',
+				min: 1000
+			}
+		]
+	},
+	bindings: {},
+	deposits: [],
+	buttonPage: 0,
+	buttonMax: 10,
+	textInputLabel: 'Enter a number greater than or equal to 1000',
+	error: null,
+	isWebapp: true,
+	tokenInfos: []
+};
+
 export const reviewFrameState = {
 	currentStep: 'review',
 	bindings: { 'fixed-io-1': '1000', 'fixed-io-2': '3000' },

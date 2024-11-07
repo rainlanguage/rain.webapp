@@ -1161,7 +1161,7 @@ gui:
         - binding: initial-io
           name: Initial price (BUSD per TFT)
           description: The rough USD price you see for TFT on Dextools (e.g. 0.009)
-          min: 1
+          min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier
           description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.

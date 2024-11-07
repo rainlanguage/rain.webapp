@@ -1,4 +1,4 @@
-import { mainnet, polygon, arbitrum, base, flare, linea } from 'wagmi/chains';
+import { mainnet, polygon, arbitrum, base, flare, linea, bsc } from 'wagmi/chains';
 
 export const SupportedChains = {
 	mainnet,
@@ -6,6 +6,7 @@ export const SupportedChains = {
 	arbitrum,
 	base,
 	flare,
-	linea
+	linea,
+	bsc
 } as const;
-export const SupportedChainsList = [mainnet, polygon, arbitrum, base, flare, linea] as const;
+export const SupportedChainsList = [mainnet, polygon, arbitrum, base, flare, linea, bsc] as const;

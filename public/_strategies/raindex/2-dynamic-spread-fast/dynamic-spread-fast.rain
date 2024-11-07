@@ -1154,7 +1154,7 @@ gui:
             - 0.5
             - 2
             - 4
-    - deployment: bsc-busd-tft
+    - deployment: bsc-tft-busd
       name: BUSD<>TFT on BSC.
       description: Rotate BUSD and TFT on BSC.
       fields:

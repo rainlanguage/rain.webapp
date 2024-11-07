@@ -1682,6 +1682,9 @@ deployers:
   linea:
     address: 0xA2f56F8F74B7d04d61f281BE6576b6155581dcBA
     network: linea
+  bsc:
+    address: 0xA2f56F8F74B7d04d61f281BE6576b6155581dcBA
+    network: bsc
 
 tokens:
   arbitrum-usdc:

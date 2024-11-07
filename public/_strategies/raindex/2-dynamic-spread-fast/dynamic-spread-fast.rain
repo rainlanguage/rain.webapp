@@ -975,6 +975,94 @@ gui:
             - 0.05
             - 0.2
             - 0.4
+
+    - deployment: linea-clip-weth
+      name: CLIP<>WETH on Linea.
+      description: Rotate CLIP and WETH on Linea.
+
+      fields:
+        - binding: initial-io
+          name: Initial price (WETH per CLIP) (e.g. 0.000049801852465796 WETH per CLIP)
+          description: The rough WETH price you see for CLIP on Dextools.
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of WETH that will be offered in a single auction.
+          min: 0.02
+          presets:
+            - name: 0.1 ETH
+              value: 0.1
+            - name: 1 ETH
+              value: 1
+            - name: 10 ETH
+              value: 10
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of WETH that will be offered in a single auction.
+          min: 0.005
+          presets:
+            - name: 0.02 ETH
+              value: 0.02
+            - name: 0.2 ETH
+              value: 0.2
+            - name: 2 ETH
+              value: 2
+
+      deposits:
+        - token: linea-clip
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+        - token: linea-weth
+          min: 0
+          presets:
+            - 0
+            - 0.1
+            - 1
+            - 10
+
     - deployment: ethereum-pai-weth
       name: PAI<>WETH on Ethereum.
       description: Rotate PAI and WETH on Ethereum.
@@ -1066,16 +1154,14 @@ gui:
             - 0.5
             - 2
             - 4
-
-    - deployment: linea-clip-weth
-      name: CLIP<>WETH on Linea.
-      description: Rotate CLIP and WETH on Linea.
-
+    - deployment: bsc-busd-tft
+      name: BUSD<>TFT on BSC.
+      description: Rotate BUSD and TFT on BSC.
       fields:
         - binding: initial-io
-          name: Initial price (WETH per CLIP) (e.g. 0.000049801852465796 WETH per CLIP)
-          description: The rough WETH price you see for CLIP on Dextools.
-          min: 0
+          name: Initial price (BUSD per TFT)
+          description: The rough USD price you see for TFT on Dextools (e.g. 0.009)
+          min: 1
         - binding: next-trade-multiplier
           name: Next trade multiplier
           description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
@@ -1117,131 +1203,45 @@ gui:
               value: 28800
         - binding: max-amount
           name: Max amount
-          description: The maximum amount of WETH that will be offered in a single auction.
-          min: 0.02
+          description: The maximum amount of BUSD that will be offered in a single auction.
+          min: 80
           presets:
-            - name: 0.1 ETH
-              value: 0.1
-            - name: 1 ETH
-              value: 1
-            - name: 10 ETH
-              value: 10
-        - binding: min-amount
-          name: Minimum amount
-          description: The minimum amount of WETH that will be offered in a single auction.
-          min: 0.005
-          presets:
-            - name: 0.02 ETH
-              value: 0.02
-            - name: 0.2 ETH
-              value: 0.2
-            - name: 2 ETH
-              value: 2
-
-      deposits:
-        - token: linea-clip
-          min: 0
-          presets:
-            - 0
-            - 100
-            - 1000
-            - 10000
-        - token: linea-weth
-          min: 0
-          presets:
-            - 0
-            - 0.1
-            - 1
-            - 10
-
-    - deployment: base-wlth-usdc
-      name: WLTH<>USDC on Base.
-      description: Rotate WLTH and USDC on Base.
-      fields:
-        - binding: initial-io
-          name: Initial price (USDC per WLTH)
-          description: The rough USDC price you see for WLTH on Dextools (e.g. 0.035).
-          min: 0
-        - binding: next-trade-multiplier
-          name: Next trade multiplier
-          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
-          min: 1
-          presets:
-            - name: 1.01x
-              value: 1.01
-            - name: 1.02x
-              value: 1.02
-            - name: 1.05x
-              value: 1.05
-        - binding: cost-basis-multiplier
-          name: Cost basis multiplier
-          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
-          min: 1
-          presets:
-            - name: 1 (auction spread only)
-              value: 1
-            - name: 1.0005x (0.1% total)
-              value: 1.0005
-            - name: 1.001x (0.2% total)
-              value: 1.001
-            - name: 1.0025x (0.5% total)
-              value: 1.0025
-            - name: 1.005x (1% total)
-              value: 1.005
-        - binding: time-per-epoch
-          name: Time per halving (seconds)
-          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
-          min: 600
-          presets:
-            - name: 1 hour (3600)
-              value: 3600
-            - name: 2 hours (7200)
-              value: 7200
-            - name: 4 hours (14400)
-              value: 14400
-            - name: 8 hours (28800)
-              value: 28800
-        - binding: max-amount
-          name: Max amount
-          description: The maximum amount of USDC that will be offered in a single auction.
-          min: 5
-          presets:
-            - name: $10
-              value: 10
-            - name: $20
-              value: 20
-            - name: $50
-              value: 50
             - name: $100
               value: 100
+            - name: $200
+              value: 200
+            - name: $500
+              value: 500
+            - name: $1000
+              value: 1000
         - binding: min-amount
           name: Minimum amount
-          description: The minimum amount of USDC that will be offered in a single auction.
-          min: 5
+          description: The minimum amount of BUSD that will be offered in a single auction.
+          min: 80
           presets:
-            - name: $5
-              value: 5
-            - name: $10
-              value: 10
-            - name: $20
-              value: 20
+            - name: $80
+              value: 80
+            - name: $100
+              value: 100
+            - name: $150
+              value: 150
+            - name: $200
+              value: 200
       deposits:
-        - token: base-usdc
+        - token: bsc-busd
           min: 0
           presets:
             - 0
-            - 100
-            - 200
-            - 500
-            - 1000
-        - token: base-wlth
-          min: 0
-          presets:
-            - 0
-            - 1000
-            - 5000
+            - 2000
             - 10000
             - 20000
+        - token: bsc-tft
+          min: 0
+          presets:
+            - 0
+            - 250000
+            - 1250000
+            - 2500000
     - deployment: arbitrum-weth-umja
       name: WETH<>UMJA on Arbitrum.
       description: Rotate WETH and UMJA on Arbitrum.
@@ -1444,6 +1444,19 @@ scenarios:
           amount-token: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
           initial-output-token: 0xd0e9c8f5Fae381459cf07Ec506C1d2896E8b5df6
           initial-input-token: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
+  bsc:
+    orderbook: bsc
+    runs: 1
+    bindings:
+      raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+      history-cap: '1e50'
+    scenarios:
+      tft-busd:
+        runs: 1
+        bindings:
+          amount-token: 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56
+          initial-output-token: 0x8f0FB159380176D324542b3a7933F0C2Fd0c2bbf
+          initial-input-token: 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56
   ethereum:
     orderbook: ethereum
     runs: 1
@@ -1492,6 +1505,11 @@ networks:
     chain-id: 137
     network-id: 137
     currency: POL
+  bsc:
+    rpc: https://rpc.ankr.com/bsc
+    chain-id: 56
+    network-id: 56
+    currency: BNB
   ethereum:
     rpc: https://rpc.ankr.com/eth
     chain-id: 1
@@ -1508,6 +1526,7 @@ metaboards:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-arbitrum/0.1/gn
   polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-polygon/0.1/gn
+  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-bsc/0.1/gn
   ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/metadata-mainnet/2024-10-25-2857/gn
   linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-linea-0xed7d6156/1.0.0/gn
 
@@ -1516,6 +1535,7 @@ subgraphs:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
   polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
+  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
   ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn
   linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-linea/2024-10-14-12fc/gn
 
@@ -1534,6 +1554,10 @@ orderbooks:
     address: 0x7D2f700b1f6FD75734824EA4578960747bdF269A
     network: polygon
     subgraph: polygon
+  bsc:
+    address: 0xd2938E7c9fe3597F78832CE780Feb61945c377d7
+    network: bsc
+    subgraph: bsc
   ethereum:
     address: 0x0eA6d458488d1cf51695e1D6e4744e6FB715d37C
     network: ethereum
@@ -1631,6 +1655,14 @@ tokens:
     network: polygon
     address: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
     decimals: 6
+  bsc-tft:
+    network: bsc
+    address: 0x8f0FB159380176D324542b3a7933F0C2Fd0c2bbf
+    decimals: 7
+  bsc-busd:
+    network: bsc
+    address: 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56
+    decimals: 18
   base-wlth:
     network: base
     address: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
@@ -1761,6 +1793,15 @@ orders:
     outputs:
       - token: polygon-usdc
       - token: polygon-ioen
+  bsc-tft-busd:
+    network: bsc
+    orderbook: bsc
+    inputs:
+      - token: bsc-tft
+      - token: bsc-busd
+    outputs:
+      - token: bsc-tft
+      - token: bsc-busd
   base-wlth-usdc:
     network: base
     orderbook: base
@@ -1826,6 +1867,9 @@ deployments:
   polygon-usdc-ioen:
     order: polygon-usdc-ioen
     scenario: polygon.usdc-ioen
+  bsc-tft-busd:
+    order: bsc-tft-busd
+    scenario: bsc.tft-busd
   base-wlth-usdc:
     order: base-wlth-usdc
     scenario: base.wlth-usdc

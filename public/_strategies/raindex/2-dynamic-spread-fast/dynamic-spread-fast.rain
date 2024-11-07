@@ -1048,6 +1048,24 @@ gui:
               value: 50
             - name: 100 sFLR
               value: 100
+      deposits:
+        - token: flare-sflr
+          min: 0
+          presets:
+            - 4000
+            - 7500
+            - 15000
+            - 30000
+            - 60000
+        - token: flare-joule
+          min: 0
+          presets:
+            - 2500
+            - 5000
+            - 10000
+            - 20000
+            - 40000
+
 
     - deployment: linea-clip-weth
       name: CLIP<>WETH on Linea.

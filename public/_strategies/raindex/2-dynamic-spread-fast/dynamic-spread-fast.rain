@@ -990,12 +990,12 @@ gui:
           description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
           min: 1
           presets:
-            - name: 1.001x
-              value: 1.001
-            - name: 1.002x
-              value: 1.002
-            - name: 1.005x
-              value: 1.005
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
         - binding: cost-basis-multiplier
           name: Cost basis multiplier
           description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.

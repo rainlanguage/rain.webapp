@@ -52,7 +52,7 @@ export const getFieldPresetsButtons = (field: Field): Button[] => {
 		...(field.presets
 			? field.presets
 					// Field must have a value to be displayed
-					.filter((preset: Preset) => preset.value)
+					.filter((preset: Preset) => 'value' in preset)
 					//  If no name exists on the preset, display the value
 					.map((preset: Preset) => ({
 						buttonTarget: 'buttonValue',

@@ -1,3 +1,5 @@
+'use client';
+
 import { FrameImage } from '../../../../_components/FrameImage';
 import { generateButtonsData } from '../../../../_services/buttonsData';
 import { getUpdatedFrameState } from '../../../../_services/frameState';
@@ -12,11 +14,17 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import yaml from 'js-yaml';
 import { FrameState as FrameJsFrameState } from 'frames.js/next/types';
-import { getTokenInfos } from '@/app/_services/getTokenInfo';
+import { getTokenInfosForDeployment } from '@/app/_services/getTokenInfo';
+import { useEffect, useState } from 'react';
 
 const handleRequest = frames(async (ctx) => {
 	const yamlData = ctx.yamlData;
 	let currentState: FrameState = ctx.state as unknown as FrameState;
+
+	const [state, setState] = useState<FrameState>(currentState);
+	useEffect(() => {
+		setState(currentState);
+	}, [currentState]);
 
 	// Handle state restoration from URL after transactions
 	if (ctx.url.searchParams.has('currentState')) {
@@ -41,8 +49,15 @@ const handleRequest = frames(async (ctx) => {
 	}
 
 	// Get token infos from YAML
-	if (currentState && !currentState.tokenInfos.length) {
-		const tokenInfos = await getTokenInfos(yamlData);
+	if (
+		currentState &&
+		!currentState.tokenInfos.length &&
+		currentState.deploymentOption?.deployment
+	) {
+		const tokenInfos = await getTokenInfosForDeployment(
+			yamlData,
+			currentState.deploymentOption.deployment
+		);
 		currentState.tokenInfos = tokenInfos;
 	}
 
@@ -76,7 +91,7 @@ const handleRequest = frames(async (ctx) => {
 	const [dmSansLightData] = await Promise.all([dmSansLight]);
 
 	return {
-		image: <FrameImage currentState={currentState} />,
+		image: <FrameImage currentState={state} setCurrentState={setState} />,
 		buttons: getFrameButtons(buttonsData, currentState as unknown as FrameJsFrameState, ctx.url),
 		textInput: currentState.textInputLabel,
 		state: currentState as unknown as FrameJsFrameState,

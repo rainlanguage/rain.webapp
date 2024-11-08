@@ -982,8 +982,8 @@ gui:
 
       fields:
         - binding: initial-io
-          name: Initial price (JOULE per sFLR)
-          description: The rough initial JOULE to sFLR ratio (e.g. 1.5298).
+          name: Initial price (sFLR per JOULE)
+          description: The rough initial sFLR to JOULE ratio (e.g. 1.5298).
           min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier

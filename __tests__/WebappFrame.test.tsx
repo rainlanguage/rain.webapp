@@ -4,7 +4,7 @@ import { Mock, vi } from 'vitest';
 import { generateButtonsData } from '@/app/_services/buttonsData';
 import { fixturedTokenInfos } from '@/__fixtures__/tokenInfos';
 import { fixedLimitFixture } from '@/__fixtures__/fixedLimitYamlData';
-import { getTokenInfos } from '@/app/_services/getTokenInfo';
+import { getTokenInfosForDeployment } from '@/app/_services/getTokenInfo';
 import { compress, decompress } from '@/app/_services/compress';
 import userEvent from '@testing-library/user-event';
 import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
@@ -39,7 +39,7 @@ vi.mock('next/navigation', async (importActual) => {
 });
 
 vi.mock('@/app/_services/getTokenInfo', () => ({
-	getTokenInfos: vi.fn()
+	getTokenInfosForDeployment: vi.fn()
 }));
 
 vi.mock('@/app/_services/buttonsData', () => ({
@@ -65,7 +65,7 @@ describe('WebappFrame Component', () => {
 			set: vi.fn()
 		});
 		(decompress as Mock).mockResolvedValue(JSON.stringify(defaultFrameStateFixedLimit));
-		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
+		(getTokenInfosForDeployment as Mock).mockResolvedValue(fixturedTokenInfos);
 		(generateButtonsData as Mock).mockReturnValue([
 			{ buttonValue: 'customValue', buttonText: 'Custom' }
 		]);
@@ -84,7 +84,7 @@ describe('WebappFrame Component', () => {
 		(compress as Mock).mockResolvedValue(mockCompressedState);
 		const pushStateSpy = vi.spyOn(window.history, 'pushState');
 
-		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
+		(getTokenInfosForDeployment as Mock).mockResolvedValue(fixturedTokenInfos);
 		(generateButtonsData as Mock).mockReturnValue([
 			{ buttonValue: 'customValue', buttonText: 'Custom' }
 		]);
@@ -119,7 +119,7 @@ describe('WebappFrame Component', () => {
 		const mockCompressedState = 'mockCompressedState';
 
 		(compress as Mock).mockResolvedValue(mockCompressedState);
-		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
+		(getTokenInfosForDeployment as Mock).mockResolvedValue(fixturedTokenInfos);
 		(generateButtonsData as Mock).mockReturnValue([
 			{ buttonValue: 'presetValue', buttonText: 'Preset' },
 			{ buttonValue: 'presetValue2', buttonText: 'Preset2' }
@@ -152,7 +152,7 @@ describe('WebappFrame Component', () => {
 			get: vi.fn(),
 			set: vi.fn()
 		});
-		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
+		(getTokenInfosForDeployment as Mock).mockResolvedValue(fixturedTokenInfos);
 		(generateButtonsData as Mock).mockReturnValue([
 			{ buttonTarget: 'buttonValue', buttonValue: '0', buttonText: '0 USDC' },
 			{ buttonTarget: 'buttonValue', buttonValue: '10', buttonText: '10 USDC' },
@@ -265,7 +265,7 @@ describe('WebappFrame Component', () => {
 		});
 		(decompress as Mock).mockResolvedValue(JSON.stringify(mockedReviewState));
 
-		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
+		(getTokenInfosForDeployment as Mock).mockResolvedValue(fixturedTokenInfos);
 		(generateButtonsData as Mock).mockReturnValue([
 			{
 				buttonTarget: 'buttonValue',
@@ -388,7 +388,7 @@ describe('WebappFrame Component', () => {
 
 		(decompress as Mock).mockResolvedValue(undefined);
 
-		(getTokenInfos as Mock).mockResolvedValue(fixturedTokenInfos);
+		(getTokenInfosForDeployment as Mock).mockResolvedValue(fixturedTokenInfos);
 
 		(generateButtonsData as Mock).mockReturnValue([
 			{ buttonValue: 'initialButton', buttonText: 'Start' }

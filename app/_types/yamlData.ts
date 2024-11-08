@@ -1,3 +1,5 @@
+import { Hex } from 'viem';
+
 export interface Field {
 	binding: string;
 	name: string;
@@ -28,7 +30,6 @@ export interface DeploymentOption {
 	name: string;
 	description: string;
 	fields: Field[];
-	deposit: Deposit;
 	deposits: Deposit[];
 }
 
@@ -47,6 +48,8 @@ interface Network {
 
 interface Orderbook {
 	address: string;
+	network: string;
+	subgraph: string;
 }
 
 interface Deployer {
@@ -73,13 +76,15 @@ interface Order {
 }
 
 interface ScenarioBinding {
-	[key: string]: number;
+	[key: string]: number | Hex;
 }
 
 interface Scenario {
-	deployer: string;
-	runs: number;
+	deployer?: string;
+	runs?: number;
 	bindings: ScenarioBinding;
+	orderbook?: string;
+	scenarios?: { [key: string]: Scenario };
 }
 
 interface Deployment {
@@ -88,8 +93,10 @@ interface Deployment {
 }
 
 export interface YamlData {
+	'raindex-version'?: string;
 	networks: { [key: string]: Network };
 	subgraphs: { [key: string]: string };
+	metaboards: { [key: string]: string };
 	orderbooks: { [key: string]: Orderbook };
 	deployers: { [key: string]: Deployer };
 	tokens: { [key: string]: Token };

@@ -1068,8 +1068,6 @@ gui:
             - name: 5000
               value: 5000
 
-
-
     - deployment: arbitrum-weth-boner
       name: Sell WETH for BONER on Arbitrum.
       description: >
@@ -1127,7 +1125,7 @@ gui:
         - binding: baseline
           name: Baseline BONER per WETH
           description: >
-            The absolute minimum amount of BONER per WETH that the auction will trade at. (e.g. 50,000,000 BONER per WETH)
+            The absolute minimum amount of BONER per WETH that the auction will trade at. (e.g. 50000000 BONER per WETH)
           min: 0
           presets:
             - name: 50000000
@@ -1162,7 +1160,7 @@ gui:
         - binding: initial-io
           name: Kickoff BONER per WETH
           description: >
-            The initial BONER per WETH to kickoff the first auction. (e.g. 80,000,000 BONER per WETH)
+            The initial BONER per WETH to kickoff the first auction. (e.g. 80000000 BONER per WETH)
           min: 0
           presets:
             - name: 70000000
@@ -1174,9 +1172,9 @@ gui:
 
 
     - deployment: arbitrum-boner-weth:
-      name: Sell BONER for WETH on Ethereum.
+      name: Sell BONER for WETH on Arbitrum.
       description: >
-        Swap BONER for WETH on Ethereum mainnet.
+        Swap BONER for WETH on Arbitrum.
       deposits:
         - token: arbitrum-boner
           min: 0

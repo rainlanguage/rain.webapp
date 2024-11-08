@@ -1,4 +1,6 @@
-export const yamlDataFixture = {
+import { YamlData } from '@/app/_types/yamlData';
+
+export const yamlDataFixture: YamlData = {
 	'raindex-version': '8898591f3bcaa21dc91dc3b8584330fc405eadfa',
 	networks: {
 		base: {

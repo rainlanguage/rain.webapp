@@ -13,7 +13,7 @@ import { SubmissionModal } from './SubmissionModal';
 import { useSearchParams } from 'next/navigation';
 import { Dialog, DialogClose, DialogContent } from '@/components/ui/dialog';
 import { TriangleAlert } from 'lucide-react';
-import { TokenInfo, getTokenInfos } from '../_services/getTokenInfo';
+import { TokenInfo, getTokenInfosForDeployment } from '../_services/getTokenInfo';
 import { Button, Spinner } from 'flowbite-react';
 import ShareStateAsUrl from './ShareStateAsUrl';
 import { compress, decompress } from '../_services/compress';
@@ -135,11 +135,18 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 
 	useEffect(() => {
 		const fetchTokenInfos = async () => {
-			if (currentState.tokenInfos.length === 0 && !loading.fetchingTokens) {
+			if (
+				currentState.tokenInfos.length === 0 &&
+				!loading.fetchingTokens &&
+				currentState.deploymentOption?.deployment
+			) {
 				try {
 					setLoading((prev) => ({ ...prev, fetchingTokens: true }));
 
-					const tokenInfos = await getTokenInfos(yamlData);
+					const tokenInfos = await getTokenInfosForDeployment(
+						yamlData,
+						currentState.deploymentOption?.deployment
+					);
 
 					setCurrentState((prevState) => ({
 						...prevState,
@@ -156,7 +163,12 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 		if (!loading.decodingState) {
 			fetchTokenInfos();
 		}
-	}, [yamlData, currentState.tokenInfos.length, loading.decodingState]); // Dependent on decodingState to ensure token fetch happens after decoding
+	}, [
+		yamlData,
+		currentState.tokenInfos.length,
+		loading.decodingState,
+		currentState.deploymentOption?.deployment
+	]); // Dependent on decodingState to ensure token fetch happens after decoding
 
 	const handleButtonClick = async (buttonData: ButtonType) => {
 		setError(null);
@@ -255,8 +267,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 							key={buttonData.buttonText}
 							onClick={async () => {
 								await handleButtonClick(buttonData);
-							}}
-						>
+							}}>
 							{buttonData.buttonText}
 						</Button>
 					);
@@ -278,8 +289,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					<DialogClose asChild>
 						<button
 							className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors"
-							onClick={() => setError(null)}
-						>
+							onClick={() => setError(null)}>
 							Close
 						</button>
 					</DialogClose>

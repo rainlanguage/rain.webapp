@@ -21,18 +21,25 @@ networks:
     chain-id: 1
     network-id: 1
     currency: ETH
+  polygon:
+    rpc: https://rpc.ankr.com/polygon
+    chain-id: 137
+    network-id: 137
+    currency: POL
 
 metaboards:
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-arbitrum/0.1/gn
   bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base/0.1/gn
   ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/metadata-mainnet/2024-10-25-2857/gn
+  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-polygon/0.1/gn
 
 subgraphs:
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
   bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/0.1/gn
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.1/gn
   ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn
+  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
 
 orderbooks:
   arbitrum:
@@ -51,6 +58,10 @@ orderbooks:
     address: 0x0eA6d458488d1cf51695e1D6e4744e6FB715d37C
     network: ethereum
     subgraph: ethereum
+  polygon:
+    address: 0x7D2f700b1f6FD75734824EA4578960747bdF269A
+    network: polygon
+    subgraph: polygon
 
 deployers:
   arbitrum:
@@ -65,6 +76,10 @@ deployers:
   ethereum:
     address: 0xd19581a021f4704ad4eBfF68258e7A0a9DB1CD77
     network: ethereum
+  polygon:
+    address: 0xE7116BC05C8afe25e5B54b813A74F916B5D42aB1
+    network: polygon
+
 
 tokens:
   arbitrum-wbtc:
@@ -102,6 +117,14 @@ tokens:
   arbitrum-boner:
     network: arbitrum
     address: 0xf9ca0ec182a94f6231df9b14bd147ef7fb9fa17c
+    decimals: 18
+  polygon-usdc:
+    network: polygon
+    address: 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174
+    decimals: 6
+  polygon-goon:
+    network: polygon
+    address: 0x433cde5a82b5e0658da3543b47a375dffd126eb6
     decimals: 18
 
 orders:
@@ -168,6 +191,20 @@ orders:
       - token: arbitrum-boner
     outputs:
       - token: arbitrum-weth
+  polygon-usdc-goon:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-usdc
+    outputs:
+      - token: polygon-goon
+  polygon-goon-usdc:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-goon
+    outputs:
+      - token: polygon-usdc
 
 scenarios:
   arbitrum:
@@ -190,6 +227,12 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
+  polygon:
+    orderbook: polygon
+    runs: 1
+    bindings:
+      raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
+  
 
 deployments:
   arbitrum-wbtc-weth:
@@ -219,8 +262,13 @@ deployments:
   arbitrum-boner-weth:
     order: arbitrum-boner-weth
     scenario: arbitrum
+  polygon-usdc-goon:
+    order: polygon-usdc-goon
+    scenario: polygon
+  polygon-goon-usdc:
+    order: polygon-goon-usdc
+    scenario: polygon
   
-
 gui:
   name: Auction based cost averaging
   description: >
@@ -1272,6 +1320,212 @@ gui:
               value: 0.00000002
             - name: 0.00000003
               value: 0.00000003
+
+    - deployment: polygon-usdc-goon
+      name: Sell USDC for GOON on Polygon.
+      description: >
+        Swap USDC for GOON on Polygon.
+      deposits:
+        - token: polygon-usdc
+          min: 0
+          presets:
+            - 0
+            - 25
+            - 50
+            - 100
+            - 250
+            - 1000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline GOON per USDC
+          description: >
+            The absolute minimum amount of BONER per WETH that the auction will trade at. (e.g. 400 GOON per USDC)
+          min: 0
+          presets:
+            - name: 400
+              value: 400
+            - name: 500
+              value: 500
+            - name: 600
+              value: 600
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff GOON per USDC
+          description: >
+            The initial GOON per USDC to kickoff the first auction. (e.g. 500 GOON per USDC)
+          min: 0
+          presets:
+            - name: 500
+              value: 500
+            - name: 600
+              value: 600
+            - name: 700
+              value: 700
+
+    - deployment: polygon-goon-usdc
+      name: Sell GOON for USDC on Polygon.
+      description: >
+        Swap GOON for USDC on Polygon.
+      deposits:
+        - token: polygon-goon
+          min: 0
+          presets:
+            - 0
+            - 10000
+            - 50000
+            - 100000
+            - 500000
+            - 1000000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (GOON per period)
+          description: >
+            The amount of GOON to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (GOON)
+          description: >
+            The maximum amount of GOON to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (GOON)
+          description: >
+            The minimum amount of GOON to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline USDC per GOON
+          description: >
+            The absolute minimum amount of USDC per GOON that the auction will trade at. (e.g. 0.0015 USDC per GOON)
+          min: 0
+          presets:
+            - name: 0.0015
+              value: 0.0015
+            - name: 0.0025
+              value: 0.0025
+            - name: 0.0050
+              value: 0.0050
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDC per GOON
+          description: >
+            The initial USDC per GOON to kickoff the first auction. (e.g. 0.0015 USDC per GOON)
+          min: 0
+          presets:
+            - name: 0.0020
+              value: 0.0020
+            - name: 0.0040
+              value: 0.0040
+            - name: 0.0060
+              value: 0.0060
+
+
 
 ---
 #raindex-subparser !Raindex subparser.

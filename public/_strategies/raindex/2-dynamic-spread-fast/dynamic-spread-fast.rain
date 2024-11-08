@@ -984,7 +984,7 @@ gui:
         - binding: initial-io
           name: Initial price (sFLR per JOULE)
           description: The rough initial sFLR to JOULE ratio (e.g. 1.5298).
-          min: 0
+          min: 1
         - binding: next-trade-multiplier
           name: Next trade multiplier
           description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.

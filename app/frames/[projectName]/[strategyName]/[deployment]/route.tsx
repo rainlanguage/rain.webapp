@@ -14,7 +14,7 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import yaml from 'js-yaml';
 import { FrameState as FrameJsFrameState } from 'frames.js/next/types';
-import { getTokenInfos } from '@/app/_services/getTokenInfo';
+import { getTokenInfosForDeployment } from '@/app/_services/getTokenInfo';
 import { useEffect, useState } from 'react';
 
 const handleRequest = frames(async (ctx) => {
@@ -49,8 +49,15 @@ const handleRequest = frames(async (ctx) => {
 	}
 
 	// Get token infos from YAML
-	if (currentState && !currentState.tokenInfos.length) {
-		const tokenInfos = await getTokenInfos(yamlData);
+	if (
+		currentState &&
+		!currentState.tokenInfos.length &&
+		currentState.deploymentOption?.deployment
+	) {
+		const tokenInfos = await getTokenInfosForDeployment(
+			yamlData,
+			currentState.deploymentOption.deployment
+		);
 		currentState.tokenInfos = tokenInfos;
 	}
 

@@ -883,6 +883,81 @@ gui:
             - 5000
             - 10000
             - 20000
+    - deployment: base-usdc-blood
+      name: USDC<>BLOOD on Base.
+      description: Rotate USDC and BLOOD on Base.
+
+      fields:
+        - binding: initial-io
+          name: Initial price (USDC per BLOOD)
+          description: The rough USDC price you see for BLOOD on Dextools (e.g. 0.00004834799901478809).
+          min: 1
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of USDC that will be offered in a single auction.
+          min: 5
+          presets:
+            - name: $10
+              value: 10
+            - name: $20
+              value: 20
+            - name: $50
+              value: 50
+            - name: $100
+              value: 100
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of USDC that will be offered in a single auction.
+          min: 5
+          presets:
+            - name: $5
+              value: 5
+            - name: $10
+              value: 10
+            - name: $20
+              value: 20
+
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 500
+            - 1000
+        - token: base-blood
+          min: 0
+          presets:
+            - 0
+            - 2500000
+            - 4500000
+            - 10000000
+            - 20000000
 
 
 
@@ -937,6 +1012,13 @@ scenarios:
           amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
           initial-output-token: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
           initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+      usdc-blood:
+        runs: 1
+        bindings:
+          amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+          initial-output-token: 0x3982E57fF1b193Ca8eb03D16Db268Bd4B40818f8
+          initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+      
   flare:
     orderbook: flare
     runs: 1
@@ -1081,6 +1163,10 @@ tokens:
   base-weth:
     network: base
     address: 0x4200000000000000000000000000000000000006
+    decimals: 18
+  base-blood:
+    network: base
+    address: 0x3982E57fF1b193Ca8eb03D16Db268Bd4B40818f8
     decimals: 18
   base-paid:
     network: base
@@ -1236,6 +1322,15 @@ orders:
     outputs:
       - token: base-usdc
       - token: base-wlth
+  base-usdc-blood:
+    network: base
+    orderbook: base
+    inputs:
+      - token: base-usdc
+      - token: base-blood
+    outputs:
+      - token: base-usdc
+      - token: base-blood
 
 deployments:
   arbitrum-wbtc-weth:

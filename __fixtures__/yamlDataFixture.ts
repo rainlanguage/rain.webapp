@@ -81,12 +81,14 @@ export const yamlDataFixture: YamlData = {
 			network: 'base',
 			inputs: [
 				{
-					token: 'base-weth'
+					token: 'base-weth',
+					'vault-id': '0x0'
 				}
 			],
 			outputs: [
 				{
-					token: 'base-usdc'
+					token: 'base-usdc',
+					'vault-id': '0x0'
 				}
 			]
 		},
@@ -95,12 +97,14 @@ export const yamlDataFixture: YamlData = {
 			network: 'flare',
 			inputs: [
 				{
-					token: 'flare-wflr'
+					token: 'flare-wflr',
+					'vault-id': '0x0'
 				}
 			],
 			outputs: [
 				{
-					token: 'flare-eusdt'
+					token: 'flare-eusdt',
+					'vault-id': '0x0'
 				}
 			]
 		},
@@ -109,12 +113,14 @@ export const yamlDataFixture: YamlData = {
 			network: 'flare',
 			inputs: [
 				{
-					token: 'flare-sflr'
+					token: 'flare-sflr',
+					'vault-id': '0x0'
 				}
 			],
 			outputs: [
 				{
-					token: 'flare-wflr'
+					token: 'flare-wflr',
+					'vault-id': '0x0'
 				}
 			]
 		}
@@ -190,6 +196,7 @@ export const yamlDataFixture: YamlData = {
 					{
 						binding: 'fixed-io',
 						name: 'WETH price in USDC ($ per ETH)',
+						description: 'The price of WETH in USDC',
 						min: 1000,
 						presets: [
 							{
@@ -219,6 +226,7 @@ export const yamlDataFixture: YamlData = {
 					{
 						binding: 'fixed-io',
 						name: 'WFLR price in eUSDT ($ per WFLR)',
+						description: 'The price of WFLR in eUSDT',
 						min: 0
 					}
 				]
@@ -238,6 +246,7 @@ export const yamlDataFixture: YamlData = {
 					{
 						binding: 'fixed-io',
 						name: 'SFLR price in WFLR (WFLR per SFLR)',
+						description: 'The price of SFLR in WFLR',
 						min: 1
 					}
 				]

@@ -1171,7 +1171,7 @@ gui:
               value: 100000000
 
 
-    - deployment: arbitrum-boner-weth:
+    - deployment: arbitrum-boner-weth
       name: Sell BONER for WETH on Arbitrum.
       description: >
         Swap BONER for WETH on Arbitrum.

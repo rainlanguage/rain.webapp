@@ -976,6 +976,97 @@ gui:
             - 0.2
             - 0.4
 
+    - deployment: flare-sflr-joule
+      name: sFLR<>JOULE on Flare.
+      description: Rotate sFLR (Sceptre staked FLR) and JOULE on Flare.
+
+      fields:
+        - binding: initial-io
+          name: Initial price (sFLR per JOULE)
+          description: The rough initial sFLR to JOULE ratio (e.g. 1.5298).
+          min: 1
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of sFLR that will be offered in a single auction.
+          min: 0
+          presets:
+            - name: 100 sFLR
+              value: 100
+            - name: 500 sFLR
+              value: 500
+            - name: 1000 sFLR
+              value: 1000
+            - name: 5000 sFLR
+              value: 5000
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of sFLR that will be offered in a single auction.
+          min: 0
+          presets:
+            - name: 10 sFLR
+              value: 10
+            - name: 50 sFLR
+              value: 50
+            - name: 100 sFLR
+              value: 100
+      deposits:
+        - token: flare-sflr
+          min: 0
+          presets:
+            - 4000
+            - 7500
+            - 15000
+            - 30000
+            - 60000
+        - token: flare-joule
+          min: 0
+          presets:
+            - 2500
+            - 5000
+            - 10000
+            - 20000
+            - 40000
+
+
     - deployment: linea-clip-weth
       name: CLIP<>WETH on Linea.
       description: Rotate CLIP and WETH on Linea.
@@ -1154,14 +1245,14 @@ gui:
             - 0.5
             - 2
             - 4
-    - deployment: bsc-busd-tft
+    - deployment: bsc-tft-busd
       name: BUSD<>TFT on BSC.
       description: Rotate BUSD and TFT on BSC.
       fields:
         - binding: initial-io
           name: Initial price (BUSD per TFT)
           description: The rough USD price you see for TFT on Dextools (e.g. 0.009)
-          min: 1
+          min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier
           description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
@@ -1488,6 +1579,12 @@ scenarios:
           amount-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
           initial-output-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
           initial-input-token: 0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d
+      sflr-joule:
+        runs: 1
+        bindings:
+          amount-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
+          initial-output-token: 0xE6505f92583103AF7ed9974DEC451A7Af4e3A3bE
+          initial-input-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
       wflr-eusdt:
         runs: 1
         bindings:
@@ -1725,6 +1822,10 @@ tokens:
     network: flare
     address: 0x1502FA4be69d526124D453619276FacCab275d3D
     decimals: 18
+  flare-joule:
+    network: flare
+    address: 0xE6505f92583103AF7ed9974DEC451A7Af4e3A3bE
+    decimals: 18
   polygon-wmatic:
     network: polygon
     address: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
@@ -1847,6 +1948,15 @@ orders:
     outputs:
       - token: flare-sflr
       - token: flare-wflr
+  flare-sflr-joule:
+    network: flare
+    orderbook: flare
+    inputs:
+      - token: flare-sflr
+      - token: flare-joule
+    outputs:
+      - token: flare-sflr
+      - token: flare-joule
   flare-usdce-weth:
     network: flare
     orderbook: flare
@@ -1948,6 +2058,9 @@ deployments:
   flare-usdce-weth:
     order: flare-usdce-weth
     scenario: flare.usdce-weth
+  flare-sflr-joule:
+    order: flare-sflr-joule
+    scenario: flare.sflr-joule
   polygon-quick-old-quick:
     order: polygon-quick-old-quick
     scenario: polygon.quick-old-quick

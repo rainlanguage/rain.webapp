@@ -3,6 +3,7 @@ import { createPublicClient, http } from 'viem';
 
 interface Network {
 	'chain-id': number;
+	rpc: string;
 }
 
 export const getPublicClient = (network: Network) => {
@@ -20,6 +21,6 @@ export const getPublicClient = (network: Network) => {
 	}
 	return createPublicClient({
 		chain,
-		transport: http()
+		transport: http(network.rpc)
 	});
 };

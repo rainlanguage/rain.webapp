@@ -10,10 +10,27 @@ export interface TokenInfo {
 	address: Address;
 }
 
-export const getTokenInfos = async (yaml: YamlData): Promise<TokenInfo[]> => {
+export const getTokenInfosForDeployment = async (
+	yaml: YamlData,
+	deployment: string
+): Promise<TokenInfo[]> => {
 	const tokenInfos = [];
 
-	for (const [tokenName, token] of Object.entries(yaml.tokens)) {
+	// get the order for the deployment
+	const order = yaml.orders[deployment];
+	// get the inputs and outputs of the order
+	const inputs = order.inputs;
+	const outputs = order.outputs;
+
+	// push those to a set to avoid duplicates
+	const tokenNames = new Set([...inputs, ...outputs].map((input) => input.token));
+
+	// create a new object with the tokens
+	const tokens = Object.fromEntries(
+		Array.from(tokenNames).map((tokenName) => [tokenName, yaml.tokens[tokenName]])
+	);
+
+	for (const [tokenName, token] of Object.entries(tokens)) {
 		if (!isHex(token.address))
 			throw new Error(`Token address for ${tokenName} is not a hex string: got ${token.address}`);
 

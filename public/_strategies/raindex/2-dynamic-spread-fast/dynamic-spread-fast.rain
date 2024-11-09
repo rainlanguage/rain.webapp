@@ -1516,6 +1516,7 @@ scenarios:
     bindings:
       raindex-subparser: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
       history-cap: '1e50'
+      shy-epoch: 0.05
     scenarios:
       wbtc-weth:
         runs: 1
@@ -1541,6 +1542,7 @@ scenarios:
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       history-cap: '1e50'
+      shy-epoch: 0.05
     scenarios:
       usdc-weth:
         runs: 1
@@ -1572,6 +1574,7 @@ scenarios:
     bindings:
       raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
       history-cap: '1e50'
+      shy-epoch: 0.05
     scenarios:
       sflr-wflr:
         runs: 1
@@ -1609,6 +1612,7 @@ scenarios:
     bindings:
       raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
       history-cap: '1e50'
+      shy-epoch: 0.05
     scenarios:
       quick-old-quick:
         runs: 1
@@ -1634,6 +1638,7 @@ scenarios:
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       history-cap: '1e50'
+      shy-epoch: 0.05
     scenarios:
       tft-busd:
         runs: 1
@@ -1647,6 +1652,7 @@ scenarios:
     bindings:
       raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
       history-cap: '1e50'
+      shy-epoch: 0.05
     scenarios:
       pai-weth:
         runs: 1
@@ -1660,6 +1666,7 @@ scenarios:
     bindings:
       raindex-subparser: 0xF77b3c3f61af5a3cE7f7CE3cfFc117491104432E
       history-cap: '1e50'
+      shy-epoch: 0.05
     scenarios:
       clip-weth:
         runs: 1
@@ -2088,6 +2095,7 @@ deployments:
 #min-amount !Amount will decay down to this number each epoch.
 #max-amount !Amount will decay down from this number each epoch.
 #time-per-epoch !Duration of one unit of streaming amount and io ratio halflife.
+#shy-epoch !Epoch below which only the minimum amount is offered.
 #next-trade-multiplier !Start next auction at this x the last trade.
 #history-cap !The max amount of trade history kept for cost basis tracking (denominated in same token as tranche size).
 #amount-token !The token that is the amount token for the strategy. This denominates tranche sizes.
@@ -2207,8 +2215,9 @@ epochs: div(duration time-per-epoch);
 #amount-for-epoch
 epoch io:,
 decay: call<'halflife>(epoch),
+shy-decay: every(greater-than(epoch shy-epoch) decay),
 variable-component: sub(max-amount min-amount),
-base-amount: add(min-amount mul(variable-component decay)),
+base-amount: add(min-amount mul(variable-component shy-decay)),
 _: if(call<'amount-is-output>() base-amount mul(base-amount inv(io)));
 
 #io-for-epoch

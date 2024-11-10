@@ -1369,6 +1369,9 @@ deployments:
   base-usdc-wlth:
     order: base-usdc-wlth
     scenario: base.usdc-wlth
+  base-usdc-blood:
+    order: base-usdc-blood
+    scenario: base.usdc-blood
 
 ---
 #raindex-subparser !Subparser for the Raindex.

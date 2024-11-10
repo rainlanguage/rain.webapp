@@ -2026,6 +2026,15 @@ orders:
     outputs:
       - token: arbitrum-weth
       - token: arbitrum-umja
+  arbitrum-glo-lusd:
+    network: arbitrum
+    orderbook: arbitrum
+    inputs:
+      - token: arbitrum-glo
+      - token: arbitrum-lusd
+    outputs:
+      - token: arbitrum-glo
+      - token: arbitrum-lusd
   base-usdc-weth:
     network: base
     orderbook: base
@@ -2172,6 +2181,9 @@ deployments:
   arbitrum-weth-umja:
     order: arbitrum-weth-umja
     scenario: arbitrum.weth-umja
+  arbitrum-glo-lusd:
+    order: arbitrum-glo-lusd
+    scenario: arbitrum.glo-lusd
   base-usdc-weth:
     order: base-usdc-weth
     scenario: base.usdc-weth

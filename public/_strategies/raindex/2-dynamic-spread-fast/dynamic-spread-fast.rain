@@ -353,6 +353,96 @@ gui:
             - 0.1
             - 0.2
             - 0.5
+    - deployment: base-lucky-weth
+      name: LUCKY<>WETH on Base.
+      description: Rotate LUCKY and WETH on Base.
+
+      fields:
+        - binding: initial-io
+          name: Initial price (WETH per LUCKY)
+          description: The rough LUCKY price you see for WETH on Dextools (e.g. 0.0000009419).
+          min: 0   
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of LUCKY that will be offered in a single auction.
+          min: 1550
+          presets:
+            - name: 3100
+              value: 3100
+            - name: 6200
+              value: 6200
+            - name: 15550
+              value: 15550
+            - name: 30900
+              value: 30900
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of LUCKY that will be offered in a single auction.
+          min: 1550
+          presets:
+            - name: 1550
+              value: 1550
+            - name: 3100
+              value: 3100
+            - name: 6200
+              value: 6200
+
+      deposits:
+        - token: base-lucky
+          min: 0
+          presets:
+            - 0
+            - 30000
+            - 60000
+            - 150000
+            - 300000
+        - token: base-weth
+          min: 0
+          presets:
+            - 0
+            - 0.05
+            - 0.1
+            - 0.2
+            - 0.5
 
     - deployment: base-usdc-paid
       name: USDC<>PAID on Base.
@@ -1551,6 +1641,12 @@ scenarios:
           amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
           initial-output-token: 0x4200000000000000000000000000000000000006
           initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+      lucky-weth:
+        runs: 1
+        bindings:
+          amount-token: 0x2C002ffEC41568d138Acc36f5894d6156398D539
+          initial-output-token: 0x2C002ffEC41568d138Acc36f5894d6156398D539
+          initial-input-token: 0x4200000000000000000000000000000000000006
       usdc-toshi:
         runs: 1
         bindings:
@@ -1893,6 +1989,10 @@ tokens:
     network: base
     address: 0x3982E57fF1b193Ca8eb03D16Db268Bd4B40818f8
     decimals: 18
+  base-lucky:
+    network: base
+    address: 0x2C002ffEC41568d138Acc36f5894d6156398D539
+    decimals: 18
 
 orders:
   arbitrum-wbtc-weth:
@@ -1930,6 +2030,15 @@ orders:
       - token: base-weth
     outputs:
       - token: base-usdc
+      - token: base-weth
+  base-lucky-weth:
+    network: base
+    orderbook: base
+    inputs:
+      - token: base-lucky
+      - token: base-weth
+    outputs:
+      - token: base-lucky
       - token: base-weth
   base-usdc-toshi:
     network: base
@@ -2071,6 +2180,9 @@ deployments:
   base-usdc-weth:
     order: base-usdc-weth
     scenario: base.usdc-weth
+  base-lucky-weth:
+    order: base-lucky-weth
+    scenario: base.lucky-weth
   base-usdc-toshi:
     order: base-usdc-toshi
     scenario: base.usdc-toshi

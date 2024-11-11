@@ -360,8 +360,8 @@ gui:
       fields:
         - binding: initial-io
           name: Initial price (LUCKY per WETH)
-          description: The rough LUCKY price you see for WETH on Dextools (e.g. 970541).
-          min: 0
+          description: The rough LUCKY price you see for WETH on Dextools (e.g. 0.00000069419).
+          min: 0   
         - binding: next-trade-multiplier
           name: Next trade multiplier
           description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.

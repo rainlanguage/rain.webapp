@@ -1644,7 +1644,7 @@ scenarios:
       lucky-weth:
         runs: 1
         bindings:
-          amount-token: 0x4200000000000000000000000000000000000006
+          amount-token: 0x2C002ffEC41568d138Acc36f5894d6156398D539
           initial-output-token: 0x2C002ffEC41568d138Acc36f5894d6156398D539
           initial-input-token: 0x4200000000000000000000000000000000000006
       usdc-toshi:

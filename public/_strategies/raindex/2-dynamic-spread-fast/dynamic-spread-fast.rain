@@ -1065,7 +1065,95 @@ gui:
             - 10000
             - 20000
             - 40000
+    - deployment: base-usdc-blood
+      name: USDC<>BLOOD on Base.
+      description: Rotate USDC and BLOOD on Base.
 
+      fields:
+        - binding: initial-io
+          name: Initial price (USDC per BLOOD)
+          description: The rough USDC price you see for BLOOD on Dex Screener (e.g. 0.00004834799901478809).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of USDC that will be offered in a single auction.
+          min: 5
+          presets:
+            - name: $10
+              value: 10
+            - name: $20
+              value: 20
+            - name: $50
+              value: 50
+            - name: $100
+              value: 100
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of USDC that will be offered in a single auction.
+          min: 5
+          presets:
+            - name: $5
+              value: 5
+            - name: $10
+              value: 10
+            - name: $20
+              value: 20
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 500
+            - 1000
+        - token: base-blood
+          min: 0
+          presets:
+            - 0
+            - 2500000
+            - 4500000
+            - 10000000
+            - 20000000
 
     - deployment: linea-clip-weth
       name: CLIP<>WETH on Linea.
@@ -1421,94 +1509,7 @@ gui:
             - 5000
             - 10000
             - 20000
-    - deployment: base-wlth-usdc
-      name: WLTH<>USDC on Base.
-      description: Rotate WLTH and USDC on Base.
-      fields:
-        - binding: initial-io
-          name: Initial price (USDC per WLTH)
-          description: The rough USDC price you see for WLTH on Dextools (e.g. 0.035).
-          min: 0
-        - binding: next-trade-multiplier
-          name: Next trade multiplier
-          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
-          min: 1
-          presets:
-            - name: 1.01x
-              value: 1.01
-            - name: 1.02x
-              value: 1.02
-            - name: 1.05x
-              value: 1.05
-        - binding: cost-basis-multiplier
-          name: Cost basis multiplier
-          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
-          min: 1
-          presets:
-            - name: 1 (auction spread only)
-              value: 1
-            - name: 1.0005x (0.1% total)
-              value: 1.0005
-            - name: 1.001x (0.2% total)
-              value: 1.001
-            - name: 1.0025x (0.5% total)
-              value: 1.0025
-            - name: 1.005x (1% total)
-              value: 1.005
-        - binding: time-per-epoch
-          name: Time per halving (seconds)
-          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
-          min: 600
-          presets:
-            - name: 1 hour (3600)
-              value: 3600
-            - name: 2 hours (7200)
-              value: 7200
-            - name: 4 hours (14400)
-              value: 14400
-            - name: 8 hours (28800)
-              value: 28800
-        - binding: max-amount
-          name: Max amount
-          description: The maximum amount of USDC that will be offered in a single auction.
-          min: 5
-          presets:
-            - name: $10
-              value: 10
-            - name: $20
-              value: 20
-            - name: $50
-              value: 50
-            - name: $100
-              value: 100
-        - binding: min-amount
-          name: Minimum amount
-          description: The minimum amount of USDC that will be offered in a single auction.
-          min: 5
-          presets:
-            - name: $5
-              value: 5
-            - name: $10
-              value: 10
-            - name: $20
-              value: 20
-      deposits:
-        - token: base-usdc
-          min: 0
-          presets:
-            - 0
-            - 100
-            - 200
-            - 500
-            - 1000
-        - token: base-wlth
-          min: 0
-          presets:
-            - 0
-            - 1000
-            - 5000
-            - 10000
-            - 20000
+
 scenarios:
   arbitrum:
     orderbook: arbitrum
@@ -1516,6 +1517,7 @@ scenarios:
     bindings:
       raindex-subparser: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
       history-cap: '1e50'
+      shy-epoch: 0.05
     scenarios:
       wbtc-weth:
         runs: 1
@@ -1541,6 +1543,7 @@ scenarios:
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       history-cap: '1e50'
+      shy-epoch: 0.05
     scenarios:
       usdc-weth:
         runs: 1
@@ -1566,12 +1569,20 @@ scenarios:
           amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
           initial-output-token: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
           initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+      usdc-blood:
+        runs: 1
+        bindings:
+          amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+          initial-output-token: 0x3982E57fF1b193Ca8eb03D16Db268Bd4B40818f8
+          initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+      
   flare:
     orderbook: flare
     runs: 1
     bindings:
       raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
       history-cap: '1e50'
+      shy-epoch: 0.05
     scenarios:
       sflr-wflr:
         runs: 1
@@ -1609,6 +1620,7 @@ scenarios:
     bindings:
       raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
       history-cap: '1e50'
+      shy-epoch: 0.05
     scenarios:
       quick-old-quick:
         runs: 1
@@ -1634,6 +1646,7 @@ scenarios:
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       history-cap: '1e50'
+      shy-epoch: 0.05
     scenarios:
       tft-busd:
         runs: 1
@@ -1647,6 +1660,7 @@ scenarios:
     bindings:
       raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
       history-cap: '1e50'
+      shy-epoch: 0.05
     scenarios:
       pai-weth:
         runs: 1
@@ -1660,6 +1674,7 @@ scenarios:
     bindings:
       raindex-subparser: 0xF77b3c3f61af5a3cE7f7CE3cfFc117491104432E
       history-cap: '1e50'
+      shy-epoch: 0.05
     scenarios:
       clip-weth:
         runs: 1
@@ -1874,6 +1889,10 @@ tokens:
     network: linea
     address: 0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f
     decimals: 18
+  base-blood:
+    network: base
+    address: 0x3982E57fF1b193Ca8eb03D16Db268Bd4B40818f8
+    decimals: 18
 
 orders:
   arbitrum-wbtc-weth:
@@ -2029,6 +2048,15 @@ orders:
     outputs:
       - token: linea-clip
       - token: linea-weth
+  base-usdc-blood:
+    network: base
+    orderbook: base
+    inputs:
+      - token: base-usdc
+      - token: base-blood
+    outputs:
+      - token: base-usdc
+      - token: base-blood
 
 deployments:
   arbitrum-wbtc-weth:
@@ -2082,12 +2110,17 @@ deployments:
   linea-clip-weth:
     order: linea-clip-weth
     scenario: linea.clip-weth
+  base-usdc-blood:
+    order: base-usdc-blood
+    scenario: base.usdc-blood
+  
 ---
 #raindex-subparser !Subparser for the Raindex.
 
 #min-amount !Amount will decay down to this number each epoch.
 #max-amount !Amount will decay down from this number each epoch.
 #time-per-epoch !Duration of one unit of streaming amount and io ratio halflife.
+#shy-epoch !Epoch below which only the minimum amount is offered.
 #next-trade-multiplier !Start next auction at this x the last trade.
 #history-cap !The max amount of trade history kept for cost basis tracking (denominated in same token as tranche size).
 #amount-token !The token that is the amount token for the strategy. This denominates tranche sizes.
@@ -2207,8 +2240,9 @@ epochs: div(duration time-per-epoch);
 #amount-for-epoch
 epoch io:,
 decay: call<'halflife>(epoch),
+shy-decay: every(greater-than(epoch shy-epoch) decay),
 variable-component: sub(max-amount min-amount),
-base-amount: add(min-amount mul(variable-component decay)),
+base-amount: add(min-amount mul(variable-component shy-decay)),
 _: if(call<'amount-is-output>() base-amount mul(base-amount inv(io)));
 
 #io-for-epoch

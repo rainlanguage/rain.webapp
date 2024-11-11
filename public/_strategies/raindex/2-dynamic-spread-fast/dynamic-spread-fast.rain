@@ -359,8 +359,8 @@ gui:
 
       fields:
         - binding: initial-io
-          name: Initial price (LUCKY per WETH)
-          description: The rough LUCKY price you see for WETH on Dextools (e.g. 0.00000069419).
+          name: Initial price (WETH per LUCKY)
+          description: The rough LUCKY price you see for WETH on Dextools (e.g. 0.0000009419).
           min: 0   
         - binding: next-trade-multiplier
           name: Next trade multiplier
@@ -1644,9 +1644,9 @@ scenarios:
       lucky-weth:
         runs: 1
         bindings:
-          amount-token: 0x2C002ffEC41568d138Acc36f5894d6156398D539
-          initial-output-token: 0x4200000000000000000000000000000000000006
-          initial-input-token: 0x2C002ffEC41568d138Acc36f5894d6156398D539
+          amount-token: 0x4200000000000000000000000000000000000006
+          initial-output-token: 0x2C002ffEC41568d138Acc36f5894d6156398D539
+          initial-input-token: 0x4200000000000000000000000000000000000006
       usdc-toshi:
         runs: 1
         bindings:

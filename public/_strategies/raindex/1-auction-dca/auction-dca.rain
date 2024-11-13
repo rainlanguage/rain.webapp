@@ -926,12 +926,12 @@ gui:
             The absolute minimum amount of LUCKY per WETH that the auction will trade at (e.g. 1000000 LUCKY per WETH)
           min: 0
           presets:
-            - name: 1000000
-              value: 1000000
+            - name: 1500000
+              value: 1500000
+            - name: 2000000
+              value: 2000000
             - name: 3000000
               value: 3000000
-            - name: 5000000
-              value: 5000000
         - binding: next-trade-multiplier
           name: Auction start multiplier
           description: >
@@ -961,10 +961,10 @@ gui:
             The initial LUCKY per WETH to kickoff the first auction (e.g. 2000000 LUCKY per WETH)
           min: 0
           presets:
-            - name: 2500000
-              value: 2500000
             - name: 5000000
               value: 5000000
+            - name: 6000000
+              value: 6000000
 
     - deployment: base-weth-lucky
       name: Sell LUCKY for WETH on Base.
@@ -1025,12 +1025,12 @@ gui:
             The absolute minimum amount of WETH per LUCKY that the auction will trade at (e.g. 0.0000004 WETH per LUCKY)
           min: 0
           presets:
-            - name: 0.0000002
-              value: 0.0000002
-            - name: 0.0000004
-              value: 0.0000004
             - name: 0.0000006
               value: 0.0000006
+            - name: 0.0000004
+              value: 0.0000004
+            - name: 0.0000002
+              value: 0.0000002
         - binding: next-trade-multiplier
           name: Auction start multiplier
           description: >
@@ -1060,10 +1060,10 @@ gui:
             The initial WETH per LUCKY to kickoff the first auction (e.g. 0.0000003 LUCKY per WETH)
           min: 0
           presets:
-            - name: 0.0000003
-              value: 0.0000003
-            - name: 0.000005
-              value: 0.000005
+            - name: 0.0000006
+              value: 0.0000006
+            - name: 0.000009
+              value: 0.000009
 
     - deployment: ethereum-pai-weth
       name: Sell PAI for WETH on Ethereum.

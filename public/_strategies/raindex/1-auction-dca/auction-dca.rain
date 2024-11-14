@@ -205,6 +205,7 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
+      subparser-0: ''
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
   bsc:
@@ -212,6 +213,7 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+      subparser-0: ''
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
   base:
@@ -219,6 +221,7 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+      subparser-0: ''
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
   ethereum:
@@ -226,6 +229,7 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
+      subparser-0: ''
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
   flare-sflr-baseline:
@@ -234,6 +238,7 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
+      subparser-0: 0xDA259E28BeFA660c5eAAD738f26F80D9dbc8aC09
       baseline-fn: '''sflr-baseline'
       initial-io-fn: '''sflr-baseline'
       next-trade-baseline-multiplier: 0
@@ -1390,6 +1395,7 @@ gui:
 
 ---
 #raindex-subparser !Raindex subparser.
+#subparser-0 !Subparser 0.
 
 #time-per-amount-epoch !Duration of one unit of streaming amount halflife.
 #amount-per-epoch !Amount of output token to approve for buying per epoch.
@@ -1496,11 +1502,11 @@ _: baseline;
 _: sflr-exchange-rate();
 
 #handle-add-order
-using-words-from raindex-subparser
+using-words-from raindex-subparser subparser-0
 :call<'set-initial-time>();
 
 #calculate-io
-using-words-from raindex-subparser
+using-words-from raindex-subparser subparser-0
 amount-epochs
 trade-epochs:call<'get-epoch>(),
 max-output: call<'amount-for-epoch>(amount-epochs),

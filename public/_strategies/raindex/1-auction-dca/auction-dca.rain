@@ -1320,7 +1320,7 @@ gui:
             - name: 1.5
               value: 1.5
 
-    - deployment: flow-sflr-wflr
+    - deployment: flare-sflr-wflr
       name: Sell WFLR for SFLR on Flare based on underlying collateral.
       description: >
         Swap WFLR for SFLR on Flare based on underlying collateral.

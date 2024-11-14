@@ -185,6 +185,20 @@ orders:
       - token: base-weth
     outputs:
       - token: base-lucky
+  base-lucky-usdc:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-lucky
+    outputs:
+      - token: base-usdc
+  base-usdc-lucky:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-usdc
+    outputs:
+      - token: base-lucky
   ethereum-pai-weth:
     orderbook: ethereum
     network: ethereum
@@ -286,6 +300,12 @@ deployments:
     scenario: base
   base-lucky-weth:
     order: base-lucky-weth
+    scenario: base
+  base-usdc-lucky:
+    order: base-usdc-lucky
+    scenario: base
+  base-lucky-usdc:
+    order: base-lucky-usdc
     scenario: base
   ethereum-pai-weth:
     order: ethereum-pai-weth
@@ -1143,6 +1163,202 @@ gui:
               value: 0.0000006
             - name: 0.000009
               value: 0.000009
+
+    - deployment: base-usdc-lucky
+      name: Sell LUCKY for USDC on Base.
+      description: >
+        Sell LUCKY for USDC on Base.
+      deposits:
+        - token: base-lucky
+          min: 0
+          presets:
+            - 0
+            - 500000
+            - 1500000
+            - 2500000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (LUCKY per period)
+          description: >
+            The amount of LUCKY to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (LUCKY)
+          description: >
+            The maximum amount of LUCKY to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (LUCKY)
+          description: >
+            The minimum amount of LUCKY to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline USDC per LUCKY
+          description: >
+            The absolute minimum amount of USDC per LUCKY that the auction will trade at (e.g. 0.0015 USDC per LUCKY)
+          min: 0
+          presets:
+            - name: 0.0005
+              value: 0.0005
+            - name: 0.0008
+              value: 0.0008
+            - name: 0.0010
+              value: 0.0010
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDC per LUCKY
+          description: >
+            The initial USDC per LUCKY to kickoff the first auction (e.g. 0.05 USDC per LUCKY)
+          min: 0
+          presets:
+            - name: 0.001595
+              value: 0.001595
+            - name: 0.0016
+              value: 0.0016
+
+    - deployment: base-lucky-usdc
+      name: Buy LUCKY with USDC on Base.
+      description: >
+        Buy LUCKY with USDC on Base.
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline LUCKY per USDC
+          description: >
+            The absolute minimum amount of LUCKY per USDC that the auction will trade at (e.g. 600 LUCKY per USDC)
+          min: 0
+          presets:
+            - name: 400
+              value: 400
+            - name: 500
+              value: 500
+            - name: 600
+              value: 600
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff LUCKY per USDC
+          description: >
+            The initial LUCKY per USDC to kickoff the first auction (e.g.600 LUCKY per USDC)
+          min: 0
+          presets:
+            - name: 623
+              value: 623
+            - name: 650
+              value: 650
 
     - deployment: ethereum-pai-weth
       name: Sell PAI for WETH on Ethereum.

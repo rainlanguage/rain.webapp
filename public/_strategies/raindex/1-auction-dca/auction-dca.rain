@@ -205,7 +205,7 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
-      subparser-0: ''
+      subparser-0: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
   bsc:
@@ -213,7 +213,7 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
-      subparser-0: ''
+      subparser-0: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
   base:
@@ -221,7 +221,7 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
-      subparser-0: ''
+      subparser-0: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
   ethereum:
@@ -229,7 +229,7 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
-      subparser-0: ''
+      subparser-0: 0x22410e2a46261a1B1e3899a072f303022801C764
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
   flare-sflr-baseline:

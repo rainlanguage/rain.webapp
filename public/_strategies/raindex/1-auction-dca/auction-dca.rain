@@ -230,6 +230,7 @@ scenarios:
       initial-io-fn: '''constant-initial-io'
   flare-sflr-baseline:
     orderbook: flare
+    deployer: flare
     runs: 1
     bindings:
       raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC

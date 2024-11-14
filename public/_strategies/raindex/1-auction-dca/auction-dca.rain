@@ -238,7 +238,7 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
-      subparser-0: 0xDA259E28BeFA660c5eAAD738f26F80D9dbc8aC09
+      subparser-0: 0x915E36ef882941816356bC3718Df868054F868aD
       baseline-fn: '''sflr-baseline'
       initial-io-fn: '''sflr-baseline'
       next-trade-baseline-multiplier: 0

@@ -100,6 +100,15 @@ vi.mock('viem/actions', async (importOriginal) => {
 	};
 });
 
+vi.mock('viem', async (importOriginal) => {
+	const original = await importOriginal();
+	return {
+		...(original as object),
+		getAddress: vi.fn().mockReturnValue('0xMockOwner'),
+		isAddressEqual: vi.fn().mockReturnValue(true)
+	};
+});
+
 vi.mock('@rainlanguage/orderbook', async (importOriginal) => {
 	const original = await importOriginal();
 	return {

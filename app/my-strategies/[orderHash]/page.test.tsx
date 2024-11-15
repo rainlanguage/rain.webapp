@@ -1,6 +1,7 @@
 import StrategyAnalytics from '@/app/_components/StrategyAnalytics';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { act, render, screen, waitFor, within, fireEvent } from '@testing-library/react';
+import { isAddressEqual } from 'viem';
 import { Mock, vi } from 'vitest';
 
 vi.mock('@tanstack/react-query', async () => {
@@ -36,6 +37,15 @@ vi.mock('viem/actions', async (importOriginal) => {
 	return {
 		...(original as object),
 		readContract: vi.fn().mockResolvedValue(BigInt('1000000000000000000'))
+	};
+});
+
+vi.mock('viem', async (importOriginal) => {
+	const original = await importOriginal();
+	return {
+		...(original as object),
+		getAddress: vi.fn().mockReturnValue('0xMockOwner'),
+		isAddressEqual: vi.fn().mockReturnValue(true)
 	};
 });
 
@@ -226,6 +236,7 @@ describe('StrategyAnalytics', () => {
 					data: []
 				}) as any
 		);
+		vi.mocked(isAddressEqual).mockReturnValue(false);
 
 		render(<StrategyAnalytics orderHash={mockOrderHash} network={mockNetwork} />);
 		expect(screen.queryByRole('button', { name: /Deposit/i })).not.toBeInTheDocument();

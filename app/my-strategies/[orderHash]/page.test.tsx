@@ -207,7 +207,7 @@ describe('StrategyAnalytics', () => {
 	});
 
 	it('should not show deposit and withdraw buttons if the user is not the owner', () => {
-		vi.mocked(useQuery).mockReset()
+		vi.mocked(useQuery).mockReset();
 		vi.mocked(useQuery).mockImplementationOnce(
 			() =>
 				({

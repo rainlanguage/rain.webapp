@@ -17,6 +17,7 @@ import { waitForTransactionReceipt } from '@wagmi/core';
 import { config } from '../providers';
 import { Badge } from 'flowbite-react';
 import { getNetworkSubgraphs } from '../_queries/subgraphs';
+import { isAddressEqual, getAddress } from 'viem';
 
 interface props {
 	orderHash: string;
@@ -196,9 +197,10 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 													withdraw
 													network={network}
 													onDepositWithdrawSuccess={refetchQuotes}
-													showDepositWithdraw={
-														address?.toLowerCase() === query.data.owner.toLowerCase()
-													}
+													showDepositWithdraw={isAddressEqual(
+														getAddress(address || ''),
+														getAddress(query.data.owner)
+													)}
 												/>
 											</div>
 										);
@@ -217,9 +219,10 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 													withdraw
 													network={network}
 													onDepositWithdrawSuccess={refetchQuotes}
-													showDepositWithdraw={
-														address?.toLowerCase() === query.data.owner.toLowerCase()
-													}
+													showDepositWithdraw={isAddressEqual(
+														getAddress(address || ''),
+														getAddress(query.data.owner)
+													)}
 												/>
 											</div>
 										);

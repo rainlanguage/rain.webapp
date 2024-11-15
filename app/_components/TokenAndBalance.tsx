@@ -8,13 +8,15 @@ export function TokenAndBalance({
 	withdraw,
 	deposit,
 	network,
-	onDepositWithdrawSuccess
+	onDepositWithdrawSuccess,
+	showDepositWithdraw
 }: {
 	input: Input | Output;
 	network: string;
 	withdraw?: boolean;
 	deposit?: boolean;
 	onDepositWithdrawSuccess?: () => void;
+	showDepositWithdraw?: boolean;
 }) {
 	return (
 		<div
@@ -28,10 +30,10 @@ export function TokenAndBalance({
 				</div>
 			</div>
 			<div className="flex gap-2">
-				{deposit && (
+				{deposit && showDepositWithdraw && (
 					<DepositModal vault={input} network={network} onSuccess={onDepositWithdrawSuccess} />
 				)}
-				{withdraw && (
+				{withdraw && showDepositWithdraw && (
 					<WithdrawalModal vault={input} network={network} onSuccess={onDepositWithdrawSuccess} />
 				)}
 			</div>

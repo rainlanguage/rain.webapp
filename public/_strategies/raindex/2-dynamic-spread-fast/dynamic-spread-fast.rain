@@ -1990,6 +1990,12 @@ scenarios:
           amount-token: 0x93b346b6BC2548dA6A1E7d98E9a421B42541425b
           initial-output-token: 0xCB8FA9a76b8e203D8C3797bF438d8FB81Ea3326A
           initial-input-token: 0x93b346b6BC2548dA6A1E7d98E9a421B42541425b
+      glo-lusd:
+        runs: 1
+        bindings:
+          amount-token: 0x4F604735c1cF31399C6E711D5962b2B3E0225AD3
+          initial-output-token: 0x93b346b6BC2548dA6A1E7d98E9a421B42541425b
+          initial-input-token: 0x4F604735c1cF31399C6E711D5962b2B3E0225AD3
   base:
     orderbook: base
     runs: 1

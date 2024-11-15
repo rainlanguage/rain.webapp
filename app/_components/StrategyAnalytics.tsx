@@ -196,7 +196,9 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 													withdraw
 													network={network}
 													onDepositWithdrawSuccess={refetchQuotes}
-													showDepositWithdraw={address === query.data.owner}
+													showDepositWithdraw={
+														address?.toLowerCase() === query.data.owner.toLowerCase()
+													}
 												/>
 											</div>
 										);
@@ -215,7 +217,9 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 													withdraw
 													network={network}
 													onDepositWithdrawSuccess={refetchQuotes}
-													showDepositWithdraw={address === query.data.owner}
+													showDepositWithdraw={
+														address?.toLowerCase() === query.data.owner.toLowerCase()
+													}
 												/>
 											</div>
 										);

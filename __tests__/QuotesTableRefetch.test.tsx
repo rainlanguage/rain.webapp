@@ -77,7 +77,7 @@ vi.mock('wagmi', async (importOriginal) => {
 	const original = await importOriginal();
 	return {
 		...(original as object),
-		useAccount: () => ({ address: '0xMockAddress', chain: { id: 1 } }),
+		useAccount: () => ({ address: '0xMockOwner', chain: { id: 1 } }),
 		useReadContract: vi.fn(() => ({ readContract: vi.fn() })),
 		useWriteContract: vi.fn(() => ({ writeContractAsync: vi.fn() })),
 		useSwitchChain: vi.fn(() => ({ switchChainAsync: vi.fn() }))

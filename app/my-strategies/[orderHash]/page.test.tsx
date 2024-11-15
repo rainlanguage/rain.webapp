@@ -16,7 +16,7 @@ vi.mock('wagmi', async (importOriginal) => {
 	const original = await importOriginal();
 	return {
 		...(original as object),
-		useAccount: () => ({ address: '0xMockAddress', chain: { id: 1 } }),
+		useAccount: () => ({ address: '0xMockOwner', chain: { id: 1 } }),
 		useReadContract: vi.fn(() => ({ readContract: vi.fn() })),
 		useWriteContract: vi.fn(() => ({ writeContractAsync: vi.fn() })),
 		useSwitchChain: vi.fn(() => ({ switchChainAsync: vi.fn() }))
@@ -204,5 +204,31 @@ describe('StrategyAnalytics', () => {
 		await waitFor(() => {
 			expect(refetchQueriesMock).toHaveBeenCalled();
 		});
+	});
+
+	it('should not show deposit and withdraw buttons if the user is not the owner', () => {
+		vi.mocked(useQuery).mockReset()
+		vi.mocked(useQuery).mockImplementationOnce(
+			() =>
+				({
+					data: { ...mockOrder, owner: '0xDifferentOwner' },
+					isLoading: false,
+					isError: false,
+					error: null
+				}) as any
+		);
+		vi.mocked(useQuery).mockImplementationOnce(
+			() =>
+				({
+					isLoading: false,
+					isError: false,
+					error: null,
+					data: []
+				}) as any
+		);
+
+		render(<StrategyAnalytics orderHash={mockOrderHash} network={mockNetwork} />);
+		expect(screen.queryByRole('button', { name: /Deposit/i })).not.toBeInTheDocument();
+		expect(screen.queryByRole('button', { name: /Withdraw/i })).not.toBeInTheDocument();
 	});
 });

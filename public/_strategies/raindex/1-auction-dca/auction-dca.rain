@@ -134,6 +134,10 @@ tokens:
     network: flare
     address: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
     decimals: 18
+  flare-usdce:
+    network: flare
+    address: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
+    decimals: 6
 
 orders:
   arbitrum-wbtc-weth:
@@ -234,6 +238,13 @@ orders:
       - token: flare-sflr
     outputs:
       - token: flare-wflr
+  flare-usdce-wflr:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-usdce
+    outputs:
+      - token: flare-wflr
 
 scenarios:
   arbitrum:
@@ -266,6 +277,14 @@ scenarios:
     bindings:
       raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
       subparser-0: 0x22410e2a46261a1B1e3899a072f303022801C764
+      baseline-fn: '''constant-baseline'
+      initial-io-fn: '''constant-initial-io'
+  flare:
+    orderbook: flare
+    runs: 1
+    bindings:
+      raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
+      subparser-0: 0x915E36ef882941816356bC3718Df868054F868aD
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
   flare-sflr-baseline:
@@ -322,6 +341,9 @@ deployments:
   flare-sflr-wflr:
     order: flare-sflr-wflr
     scenario: flare-sflr-baseline
+  flare-usdce-wflr:
+    order: flare-usdce-wflr
+    scenario: flare
 
 gui:
   name: Auction based cost averaging
@@ -1834,7 +1856,100 @@ gui:
               value: 1.02
             - name: 1.05x
               value: 1.05
+    - deployment: flare-usdce-wflr
+      name: Sell WFLR for USDC.e on Flare.
+      description: >
+        Swap WFLR for USDC.e on Flare.
+      deposits:
+        - token: flare-wflr
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 500
+            - 1000
+            - 2000
 
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (WFLR per period)
+          description: >
+            The amount of WFLR to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (WFLR)
+          description: >
+            The maximum amount of WFLR to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (WFLR)
+          description: >
+            The minimum amount of WFLR to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline USDC.e per WFLR
+          description: >
+            The absolute minimum amount of USDC.e per WFLR that the auction will trade at. (e.g. 0.02 USDC.e per WFLR)
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDC.e per WFLR
+          description: >
+            The initial USDC.e per WFLR to kickoff the first auction. (e.g. 0.02 USDC.e per WFLR)
+          min: 0
+          presets:
+            - name: 4
+              value: 4
+            - name: 6
+              value: 6
+            - name: 9
+              value: 9
 ---
 #raindex-subparser !Raindex subparser.
 #subparser-0 !Subparser 0.

@@ -310,6 +310,9 @@ scenarios:
       next-trade-baseline-multiplier: 0
 
 deployments:
+  arbitrum-usdc-weth:
+    order: arbitrum-usdc-weth
+    scenario: arbitrum
   arbitrum-wbtc-weth:
     order: arbitrum-wbtc-weth
     scenario: arbitrum

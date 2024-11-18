@@ -86,6 +86,10 @@ tokens:
     network: arbitrum
     address: 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1
     decimals: 18
+  arbitrum-usdc:
+    network: arbitrum
+    address: 0xaf88d065e77c8cC2239327C5EDb3A432268e5831
+    decimals: 6
   bsc-tft:
     network: bsc
     address: 0x8f0FB159380176D324542b3a7933F0C2Fd0c2bbf
@@ -147,6 +151,13 @@ orders:
       - token: arbitrum-weth
     outputs:
       - token: arbitrum-wbtc
+  arbitrum-usdc-weth:
+    orderbook: arbitrum
+    network: arbitrum
+    inputs:
+      - token: arbitrum-usdc
+    outputs:
+      - token: arbitrum-weth
   bsc-tft-busd:
     orderbook: bsc
     network: bsc
@@ -299,6 +310,9 @@ scenarios:
       next-trade-baseline-multiplier: 0
 
 deployments:
+  arbitrum-usdc-weth:
+    order: arbitrum-usdc-weth
+    scenario: arbitrum
   arbitrum-wbtc-weth:
     order: arbitrum-wbtc-weth
     scenario: arbitrum
@@ -357,6 +371,129 @@ gui:
     The strategy works by repeatedly auctioning off tokens with an exponential
     decay in the price, that resets each trade.
   deployments:
+    - deployment: arbitrum-usdc-weth
+      name: Sell WETH for USDC on Arbitrum.
+      description: >
+        DCA WETH for USDC on Arbitrum.
+      deposits:
+        - token: arbitrum-weth
+          min: 0
+          presets:
+            - 0
+            - 0.01
+            - 0.1
+            - 1
+            - 10
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (WETH per period)
+          description: >
+            The amount of WETH to spend each budget period.
+
+            For example, if the budget is daily and this is 0.1 then 0.1 WETH will be sold for USDC each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (WETH)
+          description: >
+            The maximum amount of WETH to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (WETH)
+          description: >
+            The minimum amount of WETH to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline USDC per WETH
+          description: >
+            The absolute minimum amount of USDC per WETH that the auction will trade at (e.g. 3000).
+          min: 1000
+          presets:
+            - name: 2500
+              value: 2500
+            - name: 3000
+              value: 3000
+            - name: 3500
+              value: 3500
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff USDC per WETH
+          description: >
+            The initial USDC per WETH to kickoff the first auction (e.g. 3080).
+          min: 1000
+
     - deployment: arbitrum-wbtc-weth
       name: Sell WBTC for WETH on Arbitrum.
       description: >

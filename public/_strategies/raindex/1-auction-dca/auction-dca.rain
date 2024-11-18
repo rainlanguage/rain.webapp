@@ -423,6 +423,7 @@ gui:
           name: Auction period (in seconds)
           description: >
             The auction period is the time between each auction price halvening.
+          min: 600
           presets:
             - name: Every 20 minutes (1200)
               value: 1200
@@ -444,6 +445,7 @@ gui:
           name: Baseline USDC per WETH
           description: >
             The absolute minimum amount of USDC per WETH that the auction will trade at (e.g. 3000).
+          min: 1000
           presets:
             - name: 2500
               value: 2500
@@ -469,6 +471,7 @@ gui:
           name: Auction end multiplier
           description: >
             The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
           presets:
             - name: Disabled (0)
               value: 0
@@ -486,7 +489,7 @@ gui:
           name: Kickoff USDC per WETH
           description: >
             The initial USDC per WETH to kickoff the first auction (e.g. 3080).
-          min: 0
+          min: 1000
 
     - deployment: arbitrum-wbtc-weth
       name: Sell WBTC for WETH on Arbitrum.

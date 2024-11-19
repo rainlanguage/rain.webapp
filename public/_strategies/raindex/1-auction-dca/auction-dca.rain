@@ -1830,13 +1830,6 @@ gui:
           description: >
             The absolute minimum amount of WETH per LOCK that the auction will trade at. (e.g. 0.0001 WETH per LOCK)
           min: 0
-          presets:
-            - name: 0.00005
-              value: 0.00005
-            - name: 0.00008
-              value: 0.00008
-            - name: 0.0001
-              value: 0.0001
         - binding: next-trade-multiplier
           name: Auction start multiplier
           description: >
@@ -1865,13 +1858,6 @@ gui:
           description: >
             The initial WETH per LOCK to kickoff the first auction. (e.g. 0.00015 WETH per LOCK)
           min: 0
-          presets:
-            - name: 0.00011
-              value: 0.00011
-            - name: 0.00012
-              value: 0.00012
-            - name: 0.00013
-              value: 0.00013
 
     - deployment: ethereum-lock-weth
       name: Sell WETH for LOCK on Ethereum.
@@ -1932,13 +1918,6 @@ gui:
           description: >
             The absolute minimum amount of LOCK per WETH that the auction will trade at. (e.g. 5000 LOCK per WETH)
           min: 0
-          presets:
-            - name: 5000
-              value: 5000
-            - name: 6000
-              value: 6000
-            - name: 7000
-              value: 7000
         - binding: next-trade-multiplier
           name: Auction start multiplier
           description: >
@@ -1967,13 +1946,6 @@ gui:
           description: >
             The initial LOCK per WETH to kickoff the first auction. (e.g. 7000 LOCK per WETH)
           min: 0
-          presets:
-            - name: 6500
-              value: 6500
-            - name: 7000
-              value: 7000
-            - name: 7500
-              value: 7500
 
     - deployment: ethereum-usdc-nmt
       name: Sell NMT for USDC on Ethereum.
@@ -2238,13 +2210,6 @@ gui:
           description: >
             The absolute minimum amount of USDT per LOCK that the auction will trade at. (e.g. 0.4 USDT per LOCK)
           min: 0
-          presets:
-            - name: 0.2
-              value: 0.2
-            - name: 0.3
-              value: 0.3
-            - name: 0.4
-              value: 0.4
         - binding: next-trade-multiplier
           name: Auction start multiplier
           description: >
@@ -2273,13 +2238,6 @@ gui:
           description: >
             The initial USDT per LOCK to kickoff the first auction. (e.g. 9 USDT per LOCK)
           min: 0
-          presets:
-            - name: 0.2
-              value: 0.2
-            - name: 0.3
-              value: 0.3
-            - name: 0.4
-              value: 0.4
 
     - deployment: ethereum-lock-usdt
       name: Sell USDT for LOCK on Ethereum.
@@ -2340,13 +2298,6 @@ gui:
           description: >
             The absolute minimum amount of LOCK per USDT that the auction will trade at. (e.g. 2 LOCK per USDT)
           min: 0
-          presets:
-            - name: 1
-              value: 1
-            - name: 1.5
-              value: 1.5
-            - name: 2
-              value: 2
         - binding: next-trade-multiplier
           name: Auction start multiplier
           description: >
@@ -2375,13 +2326,6 @@ gui:
           description: >
             The initial LOCK per USDT to kickoff the first auction. (e.g. 0.9 LOCK per USDT)
           min: 0
-          presets:
-            - name: 1.5
-              value: 1.5
-            - name: 2
-              value: 2
-            - name: 2.5
-              value: 2.5
 
     - deployment: flare-sflr-wflr
       name: Sell WFLR for SFLR on Flare based on underlying collateral.

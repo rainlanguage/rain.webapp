@@ -1,4 +1,13 @@
-The dynamic spread strategy for market-making uses time-based adjustments to maintain liquidity by narrowing spreads as market conditions stabilize, while recalculating averages and trade sizes to mitigate risks during trends.
+The dynamic spread strategy with optional fast exit for market-making uses
+time-based adjustments to maintain liquidity by narrowing spreads as market
+conditions stabilize, while recalculating averages and trade sizes to mitigate
+risks during trends.
+
+The optional fast exit means that off-trend trades are sized to immediately
+counter all previous on-trend trades, plus some small profit.
+
+The goal is that this version of dynamic spread is more defensive during drawn
+out trends, by aggressively resetting itself every opportunity that it has.
 
 <div class="video-container">
   <iframe

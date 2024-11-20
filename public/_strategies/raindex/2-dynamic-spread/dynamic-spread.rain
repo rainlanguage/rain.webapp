@@ -1707,7 +1707,7 @@ gui:
         - binding: max-amount
           name: Max amount
           description: The maximum amount of BUSD that will be offered in a single auction.
-          min: 80
+          min: 50
           presets:
             - name: $100
               value: 100
@@ -1720,7 +1720,7 @@ gui:
         - binding: min-amount
           name: Minimum amount
           description: The minimum amount of BUSD that will be offered in a single auction.
-          min: 80
+          min: 20
           presets:
             - name: $80
               value: 80

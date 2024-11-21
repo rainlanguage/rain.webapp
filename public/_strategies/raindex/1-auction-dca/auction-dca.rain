@@ -302,6 +302,7 @@ scenarios:
       subparser-0: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
   bsc:
     orderbook: bsc
     runs: 1
@@ -310,6 +311,7 @@ scenarios:
       subparser-0: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
   base:
     orderbook: base
     runs: 1
@@ -318,6 +320,7 @@ scenarios:
       subparser-0: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
   ethereum:
     orderbook: ethereum
     runs: 1
@@ -326,6 +329,7 @@ scenarios:
       subparser-0: 0x22410e2a46261a1B1e3899a072f303022801C764
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
   flare:
     orderbook: flare
     runs: 1
@@ -334,6 +338,7 @@ scenarios:
       subparser-0: 0x915E36ef882941816356bC3718Df868054F868aD
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
   flare-sflr-baseline:
     orderbook: flare
     deployer: flare
@@ -344,6 +349,7 @@ scenarios:
       baseline-fn: '''sflr-baseline'
       initial-io-fn: '''sflr-baseline'
       next-trade-baseline-multiplier: 0
+      shy-epoch: 0.05
 
 deployments:
   arbitrum-usdc-weth:

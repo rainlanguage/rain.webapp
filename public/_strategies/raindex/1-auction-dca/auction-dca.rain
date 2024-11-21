@@ -2607,6 +2607,7 @@ io: call<'io-for-epoch>(trade-epochs),
 :call<'set-last-trade>(io);
 
 #handle-io
-:ensure(greater-than-or-equal-to(output-vault-decrease() min-trade-amount) "Min trade amount."),
+min-amount: mul(min-trade-amount 0.9),
+:ensure(greater-than-or-equal-to(output-vault-decrease() min-amount) "Min trade amount."),
 used: get(hash(order-hash() amount-used-key)),
 :set(hash(order-hash() amount-used-key) add(used output-vault-decrease()));

@@ -126,7 +126,7 @@ scenarios:
       weth-usdce:
         runs: 1
         bindings:
-          fixed-io-output-token: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
+          fixed-io-output-token: 0x1502FA4be69d526124D453619276FacCab275d3D
 
 deployments:
   base-weth-usdc:

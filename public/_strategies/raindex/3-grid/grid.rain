@@ -1,0 +1,354 @@
+raindex-version: 9fe04a07eb335d721287fe8d176f7313e49d6d5a
+
+deployers:
+  base:
+    address: 0xC1A14cE2fd58A3A2f99deCb8eDd866204eE07f8D
+    network: base
+
+tokens:
+  base-usdc:
+    network: base
+    address: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+  base-weth:
+    network: base
+    address: 0x4200000000000000000000000000000000000006
+
+orders:
+  base:
+    orderbook: base
+    inputs:
+      - token: base-usdc
+      - token: base-weth
+    outputs:
+      - token: base-usdc
+      - token: base-weth
+
+scenarios:
+  base:
+    bindings:
+      orderbook-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+
+      amount-token: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+      tranche-size-expr: '''no-growth'
+      tranche-size-base: 10
+      tranche-size-growth: 0
+      history-cap: 30
+
+      # Needs to be set to market price at order add time.
+      initial-output-token: 0x4200000000000000000000000000000000000006
+      initial-input-token: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+      initial-io-ratio: 2412
+
+      # Relative distance from the midpoint for tranche 0.
+      # E.g. 0.0005 is 0.05% spread which means total spread is 1%.
+      spread: 0.0005
+      io-ratio-expr: '''exponential-growth'
+      # e.g. 0.1% per tranche
+      io-ratio-growth: 0.001
+
+      # 60 * 60 * 24
+      seconds-per-tranche: 86400
+
+      # After any trade happens we pause before recharging.
+      # Delay is to observe market feedback to the previous trade, e.g. to
+      # potentially offer the next tranche at a different price for some time
+      # before recharging back to the previous price.
+      # Too long and people could grief to stop recharging.
+      # Too quick and it will be difficult to move between tranches.
+      # The default here is 5 minutes (units are seconds) and probably never
+      # needs to be changed.
+      tranche-space-recharge-delay: 300
+
+      # When a tranche is completely cleared, the next tranche MAY be jumped
+      # into partially. For example, if tranches are 90% shy (i.e. 0.9) then
+      # if a tranche is cleared completely then the next tranche will be
+      # started at 10% of its maximum size. This means that the capital
+      # requirements for the strategy to reprice itself as the market moves
+      # are reduced.
+      # This MUST be set to a value less than 1e18, else it will entirely
+      # skip tranches.
+      # Shyness MAY be set to 0, in which case every tranche will be fully
+      # available as it is entered.
+      tranche-space-shyness: 0.9
+
+      # Minimum trade size, if you put in a trade for less than x% of a
+      # tranche it wont clear.
+      # Mitigates people pinging strat for dust orders to stop recharging.
+      min-tranche-space-diff: 0.1
+
+      # Snap to the nearest tranche to avoid dust issues at the edges, either
+      # due to rounding in the evm or potentially malicious trades.
+      # 0.01 is 1%
+      tranche-space-snap-threshold: 0.01
+
+    scenarios:
+      prod:
+        bindings:
+          get-last-tranche-space-expr: '''get-last-tranche-space-prod'
+          set-last-tranche-space-expr: '''set-last-tranche-space-prod'
+          set-last-trade-io-ratio-expr: '''set-last-trade-io-ratio-prod'
+          get-last-trade-io-ratio-expr: '''get-last-trade-io-ratio-prod'
+          get-times-expr: '''get-times-prod'
+          set-last-trade-time-expr: '''set-last-trade-time-prod'
+          get-cost-basis-io-ratio-expr: '''get-cost-basis-io-ratio-prod'
+          set-cost-basis-io-ratio-expr: '''set-cost-basis-io-ratio-prod'
+          plottables: '''plottables-prod'
+      test:
+        runs: 10000
+        bindings:
+          get-last-tranche-space-expr: '''get-last-tranche-space-test'
+          set-last-tranche-space-expr: '''set-last-tranche-space-test'
+          set-last-trade-io-ratio-expr: '''set-last-trade-io-ratio-test'
+          get-last-trade-io-ratio-expr: '''get-last-trade-io-ratio-test'
+          set-last-trade-time-expr: '''set-last-trade-time-test'
+          get-times-expr: '''get-times-test'
+          get-cost-basis-io-ratio-expr: '''get-cost-basis-io-ratio-test'
+          set-cost-basis-io-ratio-expr: '''set-cost-basis-io-ratio-test'
+          plottables: '''plottables-test'
+          max-test-tranche-space: 20
+          test-last-update-time: 0
+          test-now: 0
+
+charts:
+  base:
+    scenario: base.prod
+
+deployments:
+  base:
+    scenario: base.prod
+    order: base
+
+---
+#orderbook-subparser !The subparser for the Orderbook
+
+#amount-token !The token that is the amount token for the strategy. This denominates tranche sizes.
+#tranche-size-expr !The binding to get the tranche size for the current tranche space.
+#tranche-size-base !Base tranche size is the size of the smallest tranche, denominated in output token.
+#tranche-size-growth !The exponential growth factor of the size of each tranche. E.g. 0.01 is 1% output amount growth per tranche.
+#history-cap !The max amount of trade history kept for cost basis tracking (denominated in same token as tranche size).
+
+#initial-input-token !The token that is the initial input token for the strategy.
+#initial-output-token !The token that is the initial output token for the strategy.
+#initial-io-ratio !The IO ratio that the strategy starts at. The quote token is the output so that the IO ratio looks like a CEX price.
+
+#spread !The relative distance from the midpoint for tranche 0. E.g. 0.01 is 1% spread which means total spread is 2%.
+#io-ratio-expr !The binding to get the IO ratio for the current tranche space.
+#io-ratio-growth !The exponential growth factor of the IO ratio. E.g. 0.01 is 1% io-ratio growth per tranche.
+
+#seconds-per-tranche !The duration in seconds that it takes to recharge a tranche.
+#tranche-space-recharge-delay !The duration in seconds that no recharging occurs after a trade occurs.
+
+#tranche-space-shyness !The shyness of the liquidity in tranches. E.g. 0.9 is 90% shy.
+
+#min-tranche-space-diff !The minimum tranche space difference that is allowed per trade. Prevents dusting the strat to stop it recharging.
+#tranche-space-snap-threshold !The threshold in tranche space to snap to the nearest tranche to avoid dust issues at the edges.
+
+#get-last-trade-io-ratio-expr !The binding to get the last trade IO ratio.
+#set-last-trade-io-ratio-expr !The binding to set the last trade IO ratio.
+#get-cost-basis-io-ratio-expr !The binding to get the cost basis IO ratio.
+#set-cost-basis-io-ratio-expr !The binding to set the cost basis IO ratio.
+#get-times-expr !The binding to get the times.
+#set-last-trade-time-expr !The binding to set the last trade time.
+#get-last-tranche-space-expr !The binding to get the last tranche space and update time.
+#set-last-tranche-space-expr !The binding to set the last tranche space and update time.
+#plottables !The binding for additional things we want to plot during testing.
+
+#max-test-tranche-space !The maximum tranche space that will appear on the test chart.
+#test-tranche-space-before !Returned by get-test-last-tranche to allow the tranche space before to be bound for testing.
+#test-last-update-time !Returned by get-test-last-tranche to allow the last update time to be bound for testing.
+#test-now !Returned by get-test-last-tranche to allow the current time to be bound for testing.
+
+#last-trade-output-token-key "last-trade-output-token"
+#last-trade-io-ratio-key "last-io-ratio"
+#last-trade-time-key "last-trade-time"
+#tranche-space-key "tranche-space"
+#vwaio-key "io-ratio"
+
+/* Initialize new order */
+
+#handle-add-order
+  using-words-from orderbook-subparser
+  :set(hash(order-hash() last-trade-output-token-key) initial-output-token),
+  :set(hash(order-hash() last-trade-io-ratio-key) initial-io-ratio),
+  :set(hash(order-hash() initial-input-token initial-output-token) 1e-18),
+  :set(hash(order-hash() initial-input-token initial-output-token vwaio-key) initial-io-ratio);
+
+/* Calculate IO */
+
+#calculate-io
+  using-words-from orderbook-subparser
+  current-tranche-floor
+  current-tranche-headroom
+  tranche-total-size:
+    call<'calculate-tranche>(),
+  /* calculate io ratio */
+  midpoint: any(
+    call<'get-cost-basis-io-ratio-expr>()
+    call<'get-last-trade-io-ratio-expr>()
+  ),
+  io-ratio-base: mul(midpoint add(1 spread)),
+  tranche-io-ratio: call<'io-ratio-expr>(io-ratio-base io-ratio-growth current-tranche-floor),
+  /* calculate amount */
+  amount-available: mul(tranche-total-size current-tranche-headroom),
+  amount: if(call<'amount-is-output>() amount-available div(amount-available tranche-io-ratio)),
+
+  io-ratio: tranche-io-ratio,
+  :call<'set-last-trade-io-ratio-expr>(io-ratio),
+  :call<'plottables>(amount io-ratio);
+
+#calculate-tranche
+  last-tranche-space: call<'get-last-tranche-space-expr>(),
+  current-time last-trade-time: call<'get-times-expr>(),
+  recharge-duration: saturating-sub(current-time add(last-trade-time tranche-space-recharge-delay)),
+  recharged-tranche-space: div(recharge-duration seconds-per-tranche),
+  tranche-space-now: saturating-sub(last-tranche-space recharged-tranche-space),
+  current-tranche-floor: floor(tranche-space-now),
+  current-tranche-headroom: headroom(tranche-space-now),
+  tranche-total-size: call<tranche-size-expr>(tranche-size-base tranche-size-growth current-tranche-floor);
+
+#amount-is-output
+  _: equal-to(amount-token output-token());
+
+#get-times-prod
+  current-time: now(),
+  last-trade-time: get(hash(order-hash() input-token() output-token() last-trade-time-key));
+
+#get-last-trade-io-ratio-prod
+  stored-last-trade-io: any(get(hash(order-hash() last-trade-io-ratio-key)) initial-io-ratio),
+  _: if(
+    equal-to(output-token() get(hash(order-hash() last-trade-output-token-key)))
+    stored-last-trade-io
+    inv(stored-last-trade-io));
+
+#set-last-trade-io-ratio-prod
+  io-ratio:,
+  :set(hash(order-hash() last-trade-output-token-key) output-token()),
+  :set(hash(order-hash() last-trade-io-ratio-key) io-ratio);
+
+#set-last-trade-time-prod
+  :set(hash(order-hash() input-token() output-token() last-trade-time-key) now());
+
+#get-last-tranche-space-prod
+  _: get(hash(order-hash() input-token() output-token() tranche-space-key));
+
+#set-last-tranche-space-prod
+  tranche-space
+  tranche-space-diff:,
+  other-tranche-space: get(hash(order-hash() output-token() input-token() tranche-space-key)),
+  new-other-tranche-space: saturating-sub(other-tranche-space tranche-space-diff),
+  :set(hash(order-hash() input-token() output-token() tranche-space-key) tranche-space),
+  :set(hash(order-hash() output-token() input-token() tranche-space-key) new-other-tranche-space);
+
+#get-cost-basis-io-ratio-prod
+  this-vwaio: get(hash(order-hash() input-token() output-token() vwaio-key)),
+  other-vwaio: get(hash(order-hash() output-token() input-token() vwaio-key)),
+  _: any(this-vwaio inv(any(other-vwaio max-value())));
+
+#set-cost-basis-io-ratio-prod
+  /* first reduce outstanding inventory */
+  other-total-out-key: hash(order-hash() output-token() input-token()),
+  other-vwaio-key: hash(order-hash() output-token() input-token() vwaio-key),
+  other-total-out: get(other-total-out-key),
+  other-vwaio: get(other-vwaio-key),
+  other-reduction-out: min(other-total-out input-vault-increase()),
+  reduced-other-total-out: sub(other-total-out other-reduction-out),
+  :set(other-total-out-key reduced-other-total-out),
+  :set(other-vwaio-key every(reduced-other-total-out other-vwaio)),
+
+  /* then increase our inventory */
+  total-out-key: hash(order-hash() input-token() output-token()),
+  this-vwaio-key: hash(order-hash() input-token() output-token() vwaio-key),
+  total-out: get(total-out-key),
+  vwaio: get(this-vwaio-key),
+  total-in: mul(total-out vwaio),
+  remaining-in: sub(input-vault-increase() other-reduction-out),
+  new-in: add(total-in remaining-in),
+  remaining-out: div(remaining-in calculated-io-ratio()),
+  new-out: add(total-out remaining-out),
+  new-vwaio: every(new-out div(new-in any(new-out max-value()))),
+  cap-out: if(call<'amount-is-output>() history-cap div(history-cap any(new-vwaio calculated-io-ratio()))),
+  capped-out: min(new-out cap-out),
+  :set(total-out-key capped-out),
+  :set(this-vwaio-key new-vwaio);
+
+/* Handle IO */
+
+#handle-io
+  tranche-space-before
+  _
+  _
+  tranche-total-size: call<'calculate-tranche>(),
+  tranche-amount-diff: if(
+    call<'amount-is-output>()
+    output-vault-decrease()
+    input-vault-increase()
+  ),
+  tranche-space-diff: div(tranche-amount-diff tranche-total-size),
+  tranche-space-after: add(tranche-space-before tranche-space-diff),
+  /* Snap tranche space to the nearest tranche to avoid dust issues at the edges */
+  tranche-space-after-snapped: snap-to-unit(tranche-space-snap-threshold tranche-space-after),
+  shy-tranche-space: if(
+    is-zero(frac(tranche-space-after-snapped))
+    add(tranche-space-after-snapped tranche-space-shyness)
+    tranche-space-after-snapped),
+  :ensure(
+    greater-than-or-equal-to(tranche-space-after-snapped add(tranche-space-before min-tranche-space-diff))
+    "Minimum trade size not met."
+  ),
+  :call<'set-last-trade-time-expr>(),
+  :call<'set-last-tranche-space-expr>(shy-tranche-space tranche-space-diff),
+  :call<'set-cost-basis-io-ratio-expr>();
+
+/* Growth functions */
+
+#exponential-growth
+  base rate t:,
+  _: exponential-growth(base rate t);
+
+#linear-growth
+  base rate t:,
+  _: linear-growth(base rate t);
+
+#no-growth
+  base _ _:,
+  _: base;
+
+/* Test bindings */
+
+#plottables-test
+  amount
+  io-ratio:,
+  input-amount: mul(amount io-ratio),
+  effective-price: inv(io-ratio);
+
+#plottables-prod
+  amount
+  io-ratio:;
+
+#get-last-tranche-space-test
+  _: mod(test-tranche-space-before max-test-tranche-space);
+
+#set-last-tranche-space-test
+  _:;
+
+#set-last-tranche-test
+  _:;
+
+#get-last-trade-io-ratio-test
+  _: 1;
+
+#set-last-trade-io-ratio-test
+  _:;
+
+#get-times-test
+  current-time: test-now,
+  last-trade-time: test-now;
+
+#set-last-trade-time-test
+  :;
+
+#set-cost-basis-io-ratio-test
+  :;
+
+#get-cost-basis-io-ratio-test
+  _ _ _: 1 1 1;

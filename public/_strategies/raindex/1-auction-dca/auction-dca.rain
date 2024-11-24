@@ -1043,15 +1043,7 @@ gui:
           name: Baseline BUSD per TFT
           description: >
             The absolute minimum amount of BUSD per TFT that the auction will trade at (e.g. 0.007 BUSD per TFT).
-          presets:
-            - name: 5
-              value: 5
-            - name: 10
-              value: 10
-            - name: 20
-              value: 20
-            - name: 50
-              value: 50
+          min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
           description: >
@@ -1088,13 +1080,6 @@ gui:
           description: >
             The initial BUSD per TFT to kickoff the first auction (e.g. 0.009 BUSD per TFT)
           min: 0
-          presets:
-            - name: 10
-              value: 10
-            - name: 20
-              value: 20
-            - name: 50
-              value: 50
 
     - deployment: base-usdc-paid
       name: Sell PAID for USDC on Base.

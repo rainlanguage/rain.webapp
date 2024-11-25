@@ -101,6 +101,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 				await query.refetch();
 			}
 			setRemovalStatus(RemovalStatus.Removed);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (e: any) {
 			setRemovalStatus(RemovalStatus.Idle);
 			console.error('error', e.message);

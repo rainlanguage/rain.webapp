@@ -102,6 +102,7 @@ const WebappFrame = ({ dotrainText, deploymentOption }: props) => {
 					requiresTokenApproval: false,
 					isWebapp: true
 				};
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (e: any) {
 				if (e.message.includes('not correctly encoded')) {
 					const decodedState = decodeURI(encodedState);

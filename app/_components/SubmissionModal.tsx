@@ -265,6 +265,7 @@ export const SubmissionModal = ({
 					functionName: 'multicall',
 					args: [[addOrderCalldata, ...depositCalldatas]]
 				});
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (e: any) {
 				throw new Error(
 					e.details || 'There was an error when confirming the transaction in your wallet.'
@@ -280,6 +281,7 @@ export const SubmissionModal = ({
 
 			if (!receipt) throw new Error('The deployment transaction reverted, please try again.');
 			setSubmissionState(SubmissionStatus.Done);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (e: any) {
 			if (
 				e?.cause?.message?.includes('addEthereumChain') ||

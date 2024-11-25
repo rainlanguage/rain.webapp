@@ -770,7 +770,7 @@ gui:
           name: Baseline USDC per WBTC
           description: >
             The absolute minimum amount of USDC per WBTC that the auction will
-            trade at.
+            trade at (e.g. 95000).
           min: 1
         - binding: next-trade-multiplier
           name: Auction start multiplier

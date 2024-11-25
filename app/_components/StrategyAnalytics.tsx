@@ -130,7 +130,12 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 	}, [query]);
 
 	// is the owner of the strategy the connected wallet?
-	const isOwner = address && isAddressEqual(getAddress(address), getAddress(query.data.owner));
+	const isOwner =
+		address &&
+		query?.data?.owner &&
+		isAddressEqual(getAddress(address), getAddress(query.data.owner));
+
+	console.log({ address, owner: query?.data?.owner });
 
 	return (
 		<div className="container flex-grow pt-8 pb-safe">

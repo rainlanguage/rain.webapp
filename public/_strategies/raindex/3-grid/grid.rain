@@ -68,7 +68,6 @@ scenarios:
         # Needs to be set to market price at order add time.
         initial-output-token: 0x4200000000000000000000000000000000000006
         initial-input-token: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
-        initial-io-ratio: 2412
 
         # Relative distance from the midpoint for tranche 0.
         # E.g. 0.0005 is 0.05% spread which means total spread is 1%.
@@ -143,6 +142,9 @@ gui:
             - 1
             - 10
       fields:
+        - binding: initial-io-ratio
+          name: Initial USDC per WETH (e.g. 3500)
+          min: 1000
 
 ---
 #orderbook-subparser !The subparser for the Orderbook

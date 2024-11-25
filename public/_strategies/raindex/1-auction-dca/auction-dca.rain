@@ -177,6 +177,13 @@ orders:
       - token: arbitrum-weth
     outputs:
       - token: arbitrum-usdc
+  arbitrum-usdc-wbtc:
+    orderbook: arbitrum
+    network: arbitrum
+    inputs:
+      - token: arbitrum-usdc
+    outputs:
+      - token: arbitrum-wbtc
   bsc-tft-busd:
     orderbook: bsc
     network: bsc
@@ -372,6 +379,9 @@ scenarios:
 deployments:
   arbitrum-usdc-weth:
     order: arbitrum-usdc-weth
+    scenario: arbitrum
+  arbitrum-usdc-wbtc:
+    order: arbitrum-usdc-wbtc
     scenario: arbitrum
   arbitrum-weth-usdc:
     order: arbitrum-weth-usdc
@@ -681,6 +691,124 @@ gui:
             The initial WETH per USDC to kickoff the first auction (e.g. 0.0003).
           min: 0
 
+    - deployment: arbitrum-usdc-wbtc
+      name: Sell WBTC for USDC on Arbitrum.
+      description: >
+        Auction WBTC for USDC on Arbitrum over time.
+      deposits:
+        - token: arbitrum-wbtc
+          min: 0
+          presets:
+            - 0
+            - 0.0001
+            - 0.001
+            - 0.01
+            - 0.1
+            - 0.2
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (WBTC per period)
+          description: >
+            The amount of WBTC to spend each budget period.
+
+            For example, if the budget is daily and this is 0.01 then 0.01 WBTC will be sold for WETH each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (WBTC)
+          description: >
+            The maximum amount of WBTC to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (WBTC)
+          description: >
+            The minimum amount of WBTC to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline USDC per WBTC
+          description: >
+            The absolute minimum amount of USDC per WBTC that the auction will
+            trade at.
+          min: 1
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff USDC per WBTC
+          description: >
+            The initial USDC per WBTC to kickoff the first auction (e.g. 100000).
+          min: 1
+
     - deployment: arbitrum-wbtc-weth
       name: Sell WBTC for WETH on Arbitrum.
       description: >
@@ -776,15 +904,7 @@ gui:
             ETH/BTC ratio is worse than 0.05.
 
             This can be set to 0 to disable the baseline.
-          presets:
-            - name: 10
-              value: 10
-            - name: 20
-              value: 20
-            - name: 25
-              value: 25
-            - name: 30
-              value: 30
+          min: 1
         - binding: next-trade-multiplier
           name: Auction start multiplier
           description: >
@@ -845,14 +965,7 @@ gui:
             price should be fine.
 
             This should be greater than the baseline.
-          min: 0
-          presets:
-            - name: 30
-              value: 30
-            - name: 50
-              value: 50
-            - name: 100
-              value: 100
+          min: 1
 
     - deployment: bsc-tft-busd
       name: Buy TFT with BUSD on BSC.

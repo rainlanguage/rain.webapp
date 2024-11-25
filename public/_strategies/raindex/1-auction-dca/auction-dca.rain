@@ -2782,7 +2782,7 @@ target-amount: add(min-trade-amount mul(variable-component shy-decay)),
 capped-unused: min(unused target-amount);
 
 #halflife
-max-val epoch:,
+epoch:,
 /**
  * Shrinking the multiplier like this
  * then applying it 10 times allows for
@@ -2801,7 +2801,6 @@ multiplier:
   power(0.5 div(epoch 10)),
 val:
   mul(
-    max-val
     multiplier
     multiplier
     multiplier
@@ -2821,7 +2820,7 @@ max-next-trade: any(mul(last-io next-trade-multiplier) call<'initial-io-fn>()),
 baseline-next-trade: mul(last-io next-trade-baseline-multiplier),
 real-baseline: max(baseline-next-trade call<'baseline-fn>()),
 variable-component: saturating-sub(max-next-trade real-baseline),
-above-baseline: call<'halflife>(variable-component epoch),
+above-baseline: mul(variable-component call<'halflife>(epoch)),
 _: add(real-baseline above-baseline);
 
 #constant-initial-io

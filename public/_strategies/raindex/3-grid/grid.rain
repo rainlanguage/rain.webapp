@@ -37,6 +37,7 @@ tokens:
 orders:
   base-weth-usdc:
     orderbook: base
+    network: base
     inputs:
       - token: base-usdc
       - token: base-weth
@@ -46,6 +47,8 @@ orders:
 
 scenarios:
   base:
+    orderbook: base
+    runs: 1
     bindings:
       orderbook-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       get-last-tranche-space-expr: '''get-last-tranche-space-prod'

@@ -71,6 +71,27 @@ describe('StrategyAnalytics', () => {
 		});
 	});
 
+	it('wont show the removal button if no wallet is connected', () => {
+		(useQuery as Mock).mockImplementationOnce(() => ({
+			data: {
+				active: false,
+				orderBytes: '0xorderBytes',
+				orderbook: { id: '0xorderbook' },
+				inputs: [],
+				outputs: [],
+				trades: [],
+				addEvents: [{ transaction: { id: '0xtransaction', timestamp: '1700000000' } }],
+				owner: '0x1234567890123456789012345678901234567890'
+			},
+			isLoading: false,
+			isError: false,
+			refetch: vi.fn()
+		}));
+		(useAccount as Mock).mockReturnValue({ address: null });
+		render(<StrategyAnalytics orderHash="0xtransaction" network="flare" />);
+		expect(screen.queryByTestId('remove-strategy-btn')).not.toBeInTheDocument();
+	});
+
 	it('renders no removal button if the strategy is inactive', () => {
 		(useQuery as Mock).mockImplementationOnce(() => ({
 			data: {
@@ -80,7 +101,8 @@ describe('StrategyAnalytics', () => {
 				inputs: [],
 				outputs: [],
 				trades: [],
-				addEvents: [{ transaction: { id: '0xtransaction', timestamp: '1700000000' } }]
+				addEvents: [{ transaction: { id: '0xtransaction', timestamp: '1700000000' } }],
+				owner: '0x1234567890123456789012345678901234567890'
 			},
 			isLoading: false,
 			isError: false,

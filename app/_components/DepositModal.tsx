@@ -170,7 +170,6 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 						hash: approveTx,
 						confirmations: 1
 					});
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				} catch (e: any) {
 					setDepositState(TokenDepositStatus.Error);
 					console.error(e.message, e.details);
@@ -202,7 +201,6 @@ export const DepositModal = ({ vault, network, onSuccess }: DepositModalProps) =
 			setDepositState(TokenDepositStatus.Done);
 			refetchBalance?.();
 			onSuccess?.();
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: any) {
 			setDepositState(TokenDepositStatus.Error);
 			console.error(error.message);

@@ -7,7 +7,6 @@ export const getPaginatedButtons = (
 	allButtons: Button[],
 	buttonPage: number,
 	buttonMax = 4
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any[] => {
 	const buttonPageOffset = buttonPage * 3;
 	let buttonEndIndex = buttonPageOffset + buttonMax;

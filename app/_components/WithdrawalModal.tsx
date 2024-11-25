@@ -94,7 +94,6 @@ export const WithdrawalModal = ({ vault, network, onSuccess }: WithdrawalModalPr
 				args: [vault.token.address, BigInt(vault.vaultId), BigInt(rawAmount), []]
 			});
 			onSuccess?.();
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: any) {
 			console.error(error.message);
 		}

@@ -62,57 +62,58 @@ scenarios:
       plottables: '''plottables-prod'
     scenarios:
       weth-usdc:
-        amount-token: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
-        tranche-size-expr: '''no-growth'
-        tranche-size-base: 10
-        tranche-size-growth: 0
-        history-cap: 30
+        bindings:
+          amount-token: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+          tranche-size-expr: '''no-growth'
+          tranche-size-base: 10
+          tranche-size-growth: 0
+          history-cap: 30
 
-        # Needs to be set to market price at order add time.
-        initial-output-token: 0x4200000000000000000000000000000000000006
-        initial-input-token: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+          # Needs to be set to market price at order add time.
+          initial-output-token: 0x4200000000000000000000000000000000000006
+          initial-input-token: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
 
-        # Relative distance from the midpoint for tranche 0.
-        # E.g. 0.0005 is 0.05% spread which means total spread is 1%.
-        spread: 0.0005
-        io-ratio-expr: '''exponential-growth'
-        # e.g. 0.1% per tranche
-        io-ratio-growth: 0.001
+          # Relative distance from the midpoint for tranche 0.
+          # E.g. 0.0005 is 0.05% spread which means total spread is 1%.
+          spread: 0.0005
+          io-ratio-expr: '''exponential-growth'
+          # e.g. 0.1% per tranche
+          io-ratio-growth: 0.001
 
-        # 60 * 60 * 24
-        seconds-per-tranche: 86400
+          # 60 * 60 * 24
+          seconds-per-tranche: 86400
 
-        # After any trade happens we pause before recharging.
-        # Delay is to observe market feedback to the previous trade, e.g. to
-        # potentially offer the next tranche at a different price for some time
-        # before recharging back to the previous price.
-        # Too long and people could grief to stop recharging.
-        # Too quick and it will be difficult to move between tranches.
-        # The default here is 5 minutes (units are seconds) and probably never
-        # needs to be changed.
-        tranche-space-recharge-delay: 300
+          # After any trade happens we pause before recharging.
+          # Delay is to observe market feedback to the previous trade, e.g. to
+          # potentially offer the next tranche at a different price for some time
+          # before recharging back to the previous price.
+          # Too long and people could grief to stop recharging.
+          # Too quick and it will be difficult to move between tranches.
+          # The default here is 5 minutes (units are seconds) and probably never
+          # needs to be changed.
+          tranche-space-recharge-delay: 300
 
-        # When a tranche is completely cleared, the next tranche MAY be jumped
-        # into partially. For example, if tranches are 90% shy (i.e. 0.9) then
-        # if a tranche is cleared completely then the next tranche will be
-        # started at 10% of its maximum size. This means that the capital
-        # requirements for the strategy to reprice itself as the market moves
-        # are reduced.
-        # This MUST be set to a value less than 1e18, else it will entirely
-        # skip tranches.
-        # Shyness MAY be set to 0, in which case every tranche will be fully
-        # available as it is entered.
-        tranche-space-shyness: 0.9
+          # When a tranche is completely cleared, the next tranche MAY be jumped
+          # into partially. For example, if tranches are 90% shy (i.e. 0.9) then
+          # if a tranche is cleared completely then the next tranche will be
+          # started at 10% of its maximum size. This means that the capital
+          # requirements for the strategy to reprice itself as the market moves
+          # are reduced.
+          # This MUST be set to a value less than 1e18, else it will entirely
+          # skip tranches.
+          # Shyness MAY be set to 0, in which case every tranche will be fully
+          # available as it is entered.
+          tranche-space-shyness: 0.9
 
-        # Minimum trade size, if you put in a trade for less than x% of a
-        # tranche it wont clear.
-        # Mitigates people pinging strat for dust orders to stop recharging.
-        min-tranche-space-diff: 0.1
+          # Minimum trade size, if you put in a trade for less than x% of a
+          # tranche it wont clear.
+          # Mitigates people pinging strat for dust orders to stop recharging.
+          min-tranche-space-diff: 0.1
 
-        # Snap to the nearest tranche to avoid dust issues at the edges, either
-        # due to rounding in the evm or potentially malicious trades.
-        # 0.01 is 1%
-        tranche-space-snap-threshold: 0.01
+          # Snap to the nearest tranche to avoid dust issues at the edges, either
+          # due to rounding in the evm or potentially malicious trades.
+          # 0.01 is 1%
+          tranche-space-snap-threshold: 0.01
 
 deployments:
   base-weth-usdc:

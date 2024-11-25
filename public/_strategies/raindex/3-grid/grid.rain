@@ -1,4 +1,23 @@
-raindex-version: 9fe04a07eb335d721287fe8d176f7313e49d6d5a
+raindex-version: 8898591f3bcaa21dc91dc3b8584330fc405eadfa
+
+networks:
+  base:
+    rpc: https://mainnet.base.org
+    chain-id: 8453
+    network-id: 8453
+    currency: ETH
+
+metaboards:
+  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
+
+subgraphs:
+  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
+
+orderbooks:
+  base:
+    address: 0xd2938e7c9fe3597f78832ce780feb61945c377d7
+    network: base
+    subgraph: base
 
 deployers:
   base:
@@ -8,13 +27,15 @@ deployers:
 tokens:
   base-usdc:
     network: base
-    address: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+    address: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+    decimals: 6
   base-weth:
     network: base
     address: 0x4200000000000000000000000000000000000006
+    decimals: 18
 
 orders:
-  base:
+  base-weth-usdc:
     orderbook: base
     inputs:
       - token: base-usdc
@@ -27,96 +48,101 @@ scenarios:
   base:
     bindings:
       orderbook-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
-
-      amount-token: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
-      tranche-size-expr: '''no-growth'
-      tranche-size-base: 10
-      tranche-size-growth: 0
-      history-cap: 30
-
-      # Needs to be set to market price at order add time.
-      initial-output-token: 0x4200000000000000000000000000000000000006
-      initial-input-token: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
-      initial-io-ratio: 2412
-
-      # Relative distance from the midpoint for tranche 0.
-      # E.g. 0.0005 is 0.05% spread which means total spread is 1%.
-      spread: 0.0005
-      io-ratio-expr: '''exponential-growth'
-      # e.g. 0.1% per tranche
-      io-ratio-growth: 0.001
-
-      # 60 * 60 * 24
-      seconds-per-tranche: 86400
-
-      # After any trade happens we pause before recharging.
-      # Delay is to observe market feedback to the previous trade, e.g. to
-      # potentially offer the next tranche at a different price for some time
-      # before recharging back to the previous price.
-      # Too long and people could grief to stop recharging.
-      # Too quick and it will be difficult to move between tranches.
-      # The default here is 5 minutes (units are seconds) and probably never
-      # needs to be changed.
-      tranche-space-recharge-delay: 300
-
-      # When a tranche is completely cleared, the next tranche MAY be jumped
-      # into partially. For example, if tranches are 90% shy (i.e. 0.9) then
-      # if a tranche is cleared completely then the next tranche will be
-      # started at 10% of its maximum size. This means that the capital
-      # requirements for the strategy to reprice itself as the market moves
-      # are reduced.
-      # This MUST be set to a value less than 1e18, else it will entirely
-      # skip tranches.
-      # Shyness MAY be set to 0, in which case every tranche will be fully
-      # available as it is entered.
-      tranche-space-shyness: 0.9
-
-      # Minimum trade size, if you put in a trade for less than x% of a
-      # tranche it wont clear.
-      # Mitigates people pinging strat for dust orders to stop recharging.
-      min-tranche-space-diff: 0.1
-
-      # Snap to the nearest tranche to avoid dust issues at the edges, either
-      # due to rounding in the evm or potentially malicious trades.
-      # 0.01 is 1%
-      tranche-space-snap-threshold: 0.01
-
+      get-last-tranche-space-expr: '''get-last-tranche-space-prod'
+      set-last-tranche-space-expr: '''set-last-tranche-space-prod'
+      set-last-trade-io-ratio-expr: '''set-last-trade-io-ratio-prod'
+      get-last-trade-io-ratio-expr: '''get-last-trade-io-ratio-prod'
+      get-times-expr: '''get-times-prod'
+      set-last-trade-time-expr: '''set-last-trade-time-prod'
+      get-cost-basis-io-ratio-expr: '''get-cost-basis-io-ratio-prod'
+      set-cost-basis-io-ratio-expr: '''set-cost-basis-io-ratio-prod'
+      plottables: '''plottables-prod'
     scenarios:
-      prod:
-        bindings:
-          get-last-tranche-space-expr: '''get-last-tranche-space-prod'
-          set-last-tranche-space-expr: '''set-last-tranche-space-prod'
-          set-last-trade-io-ratio-expr: '''set-last-trade-io-ratio-prod'
-          get-last-trade-io-ratio-expr: '''get-last-trade-io-ratio-prod'
-          get-times-expr: '''get-times-prod'
-          set-last-trade-time-expr: '''set-last-trade-time-prod'
-          get-cost-basis-io-ratio-expr: '''get-cost-basis-io-ratio-prod'
-          set-cost-basis-io-ratio-expr: '''set-cost-basis-io-ratio-prod'
-          plottables: '''plottables-prod'
-      test:
-        runs: 10000
-        bindings:
-          get-last-tranche-space-expr: '''get-last-tranche-space-test'
-          set-last-tranche-space-expr: '''set-last-tranche-space-test'
-          set-last-trade-io-ratio-expr: '''set-last-trade-io-ratio-test'
-          get-last-trade-io-ratio-expr: '''get-last-trade-io-ratio-test'
-          set-last-trade-time-expr: '''set-last-trade-time-test'
-          get-times-expr: '''get-times-test'
-          get-cost-basis-io-ratio-expr: '''get-cost-basis-io-ratio-test'
-          set-cost-basis-io-ratio-expr: '''set-cost-basis-io-ratio-test'
-          plottables: '''plottables-test'
-          max-test-tranche-space: 20
-          test-last-update-time: 0
-          test-now: 0
+      weth-usdc:
+        amount-token: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+        tranche-size-expr: '''no-growth'
+        tranche-size-base: 10
+        tranche-size-growth: 0
+        history-cap: 30
 
-charts:
-  base:
-    scenario: base.prod
+        # Needs to be set to market price at order add time.
+        initial-output-token: 0x4200000000000000000000000000000000000006
+        initial-input-token: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+        initial-io-ratio: 2412
+
+        # Relative distance from the midpoint for tranche 0.
+        # E.g. 0.0005 is 0.05% spread which means total spread is 1%.
+        spread: 0.0005
+        io-ratio-expr: '''exponential-growth'
+        # e.g. 0.1% per tranche
+        io-ratio-growth: 0.001
+
+        # 60 * 60 * 24
+        seconds-per-tranche: 86400
+
+        # After any trade happens we pause before recharging.
+        # Delay is to observe market feedback to the previous trade, e.g. to
+        # potentially offer the next tranche at a different price for some time
+        # before recharging back to the previous price.
+        # Too long and people could grief to stop recharging.
+        # Too quick and it will be difficult to move between tranches.
+        # The default here is 5 minutes (units are seconds) and probably never
+        # needs to be changed.
+        tranche-space-recharge-delay: 300
+
+        # When a tranche is completely cleared, the next tranche MAY be jumped
+        # into partially. For example, if tranches are 90% shy (i.e. 0.9) then
+        # if a tranche is cleared completely then the next tranche will be
+        # started at 10% of its maximum size. This means that the capital
+        # requirements for the strategy to reprice itself as the market moves
+        # are reduced.
+        # This MUST be set to a value less than 1e18, else it will entirely
+        # skip tranches.
+        # Shyness MAY be set to 0, in which case every tranche will be fully
+        # available as it is entered.
+        tranche-space-shyness: 0.9
+
+        # Minimum trade size, if you put in a trade for less than x% of a
+        # tranche it wont clear.
+        # Mitigates people pinging strat for dust orders to stop recharging.
+        min-tranche-space-diff: 0.1
+
+        # Snap to the nearest tranche to avoid dust issues at the edges, either
+        # due to rounding in the evm or potentially malicious trades.
+        # 0.01 is 1%
+        tranche-space-snap-threshold: 0.01
 
 deployments:
-  base:
-    scenario: base.prod
-    order: base
+  base-weth-usdc:
+    order: base-weth-usdc
+    scenario: base.weth-usdc
+
+gui:
+  name: Grid
+  description: >
+    Grid order strategy.
+  deployments:
+    - deployment: base-weth-usdc
+      name: Grid trade WETH<>USDC on Base.
+      description:
+        Grid trade WETH and USDC on Base network.
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 0
+            - 10
+            - 100
+            - 1000
+            - 10000
+        - token: base-weth
+          min: 0
+          presets:
+            - 0
+            - 0.1
+            - 1
+            - 10
+      fields:
 
 ---
 #orderbook-subparser !The subparser for the Orderbook

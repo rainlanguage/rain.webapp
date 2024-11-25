@@ -134,8 +134,6 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 		query?.data?.owner &&
 		isAddressEqual(getAddress(address), getAddress(query.data.owner));
 
-	console.log({ address, owner: query?.data?.owner });
-
 	return (
 		<div className="container flex-grow pt-8 pb-safe">
 			{!subgraphUrl && <div data-testid="no-sg-error">No subgraph found for this network</div>}
@@ -151,8 +149,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 									data-testid="strategy-status"
 									size="2xl"
 									className="py-2 px-4"
-									color={query.data.active ? 'green' : 'red'}
-								>
+									color={query.data.active ? 'green' : 'red'}>
 									{query.data.active ? 'Active' : 'Inactive'}
 								</Badge>
 
@@ -162,8 +159,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 										className={removalStatus !== RemovalStatus.Idle ? 'animate-pulse' : ''}
 										onClick={() => {
 											removeOrder();
-										}}
-									>
+										}}>
 										{removalStatus}
 									</Button>
 								)}

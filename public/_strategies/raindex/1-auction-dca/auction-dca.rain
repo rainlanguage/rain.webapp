@@ -320,6 +320,7 @@ scenarios:
       subparser-0: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
   bsc:
     orderbook: bsc
     runs: 1
@@ -328,6 +329,7 @@ scenarios:
       subparser-0: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
   base:
     orderbook: base
     runs: 1
@@ -336,6 +338,7 @@ scenarios:
       subparser-0: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
   ethereum:
     orderbook: ethereum
     runs: 1
@@ -344,6 +347,7 @@ scenarios:
       subparser-0: 0x22410e2a46261a1B1e3899a072f303022801C764
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
   flare:
     orderbook: flare
     runs: 1
@@ -352,6 +356,7 @@ scenarios:
       subparser-0: 0x915E36ef882941816356bC3718Df868054F868aD
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
   flare-sflr-baseline:
     orderbook: flare
     deployer: flare
@@ -362,6 +367,7 @@ scenarios:
       baseline-fn: '''sflr-baseline'
       initial-io-fn: '''sflr-baseline'
       next-trade-baseline-multiplier: 0
+      shy-epoch: 0.05
 
 deployments:
   arbitrum-usdc-weth:
@@ -2723,6 +2729,7 @@ gui:
 #max-trade-amount !Each trade will be capped at this many tokens.
 
 #time-per-trade-epoch !Duration of one unit of io ratio halflife.
+#shy-epoch !Epoch below which only the minimum amount is offered.
 #baseline !Minimum io ratio. This component of the io ratio is ignored by the halflife calculations.
 
 #baseline-fn !Function to calculate the baseline for the next trade.
@@ -2763,14 +2770,19 @@ amount-epochs: div(total-duration time-per-amount-epoch),
 trade-epochs: saturating-sub(div(duration time-per-trade-epoch) ratio-freeze-epochs);
 
 #amount-for-epoch
-amount-epochs:,
+amount-epochs
+trade-epochs:,
 total-available: linear-growth(0 amount-per-epoch amount-epochs),
 used: get(hash(order-hash() amount-used-key)),
 unused: sub(total-available used),
-capped-unused: min(unused max-trade-amount);
+decay: call<'halflife>(trade-epochs),
+shy-decay: every(greater-than(trade-epochs shy-epoch) decay),
+variable-component: sub(max-trade-amount min-trade-amount),
+target-amount: add(min-trade-amount mul(variable-component shy-decay)),
+capped-unused: min(unused target-amount);
 
 #halflife
-max-val epoch:,
+epoch:,
 /**
  * Shrinking the multiplier like this
  * then applying it 10 times allows for
@@ -2789,7 +2801,6 @@ multiplier:
   power(0.5 div(epoch 10)),
 val:
   mul(
-    max-val
     multiplier
     multiplier
     multiplier
@@ -2809,7 +2820,7 @@ max-next-trade: any(mul(last-io next-trade-multiplier) call<'initial-io-fn>()),
 baseline-next-trade: mul(last-io next-trade-baseline-multiplier),
 real-baseline: max(baseline-next-trade call<'baseline-fn>()),
 variable-component: saturating-sub(max-next-trade real-baseline),
-above-baseline: call<'halflife>(variable-component epoch),
+above-baseline: mul(variable-component call<'halflife>(epoch)),
 _: add(real-baseline above-baseline);
 
 #constant-initial-io
@@ -2829,11 +2840,12 @@ using-words-from raindex-subparser subparser-0
 using-words-from raindex-subparser subparser-0
 amount-epochs
 trade-epochs:call<'get-epoch>(),
-max-output: call<'amount-for-epoch>(amount-epochs),
+max-output: call<'amount-for-epoch>(amount-epochs trade-epochs),
 io: call<'io-for-epoch>(trade-epochs),
 :call<'set-last-trade>(io);
 
 #handle-io
-:ensure(greater-than-or-equal-to(output-vault-decrease() min-trade-amount) "Min trade amount."),
+min-amount: mul(min-trade-amount 0.9),
+:ensure(greater-than-or-equal-to(output-vault-decrease() min-amount) "Min trade amount."),
 used: get(hash(order-hash() amount-used-key)),
 :set(hash(order-hash() amount-used-key) add(used output-vault-decrease()));

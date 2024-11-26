@@ -97,6 +97,9 @@ gui:
 #tranche-space-snap-threshold !The threshold for snapping the tranche space to the nearest unit.
 #min-tranche-space-diff !The minimum difference between the tranche space before and after.
 
+#handle-add-order
+:;
+
 #calculate-io
   using-words-from raindex-subparser
   current-tranche-floor

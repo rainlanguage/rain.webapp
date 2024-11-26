@@ -90,7 +90,7 @@ orders:
       - token: flare-sflr
     outputs:
       - token: flare-wflr
-  flare-weth-usdce:
+  flare-usdce-weth:
     orderbook: flare
     network: flare
     inputs:
@@ -123,7 +123,7 @@ scenarios:
         runs: 1
         bindings:
           fixed-io-output-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
-      weth-usdce:
+      usdce-weth:
         runs: 1
         bindings:
           fixed-io-output-token: 0x1502FA4be69d526124D453619276FacCab275d3D
@@ -138,9 +138,9 @@ deployments:
   flare-slfr-wflr:
     order: flare-slfr-wflr
     scenario: flare.sflr-wflr
-  flare-weth-usdce:
-    order: flare-weth-usdce
-    scenario: flare.weth-usdce
+  flare-usdce-weth:
+    order: flare-usdce-weth
+    scenario: flare.usdce-weth
 
 gui:
   name: Fixed limit
@@ -204,7 +204,7 @@ gui:
           name: SFLR price in WFLR (WFLR per SFLR)
           min: 1
 
-    - deployment: flare-weth-usdce
+    - deployment: flare-usdce-weth
       name: Buy WETH with USDC.e on Flare.
       description:
         Buy WETH with USDC.e (Bridged USDC on Stargate) for fixed price on Flare network.

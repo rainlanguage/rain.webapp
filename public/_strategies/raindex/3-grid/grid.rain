@@ -51,17 +51,11 @@ scenarios:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       tranche-space-snap-threshold: 0.05
       min-tranche-space-diff: 0.1
-    scenarios:
-      usdc-weth:
-        bindings:
-          amount-token: 0x4200000000000000000000000000000000000006
-          initial-output-token: 0x4200000000000000000000000000000000000006
-          initial-input-token: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
 
 deployments:
   base-usdc-weth:
     order: base-usdc-weth
-    scenario: base.usdc-weth
+    scenario: base
 
 gui:
   name: Grid
@@ -111,7 +105,6 @@ gui:
     call<'calculate-tranche>(),
   tranche-io-ratio: call<'linear-growth>(baseline-io-ratio io-ratio-growth current-tranche-floor),
   amount-available: mul(tranche-total-size current-tranche-headroom),
-  amount: if(call<'amount-is-output>() amount-available div(amount-available tranche-io-ratio)),
   io-ratio: tranche-io-ratio;
 
 #handle-io
@@ -119,11 +112,7 @@ gui:
   _
   _
   tranche-total-size: call<'calculate-tranche>(),
-  tranche-amount-diff: if(
-    call<'amount-is-output>()
-    output-vault-decrease()
-    input-vault-increase()
-  ),
+  tranche-amount-diff: output-vault-decrease(),
   tranche-space-diff: div(tranche-amount-diff tranche-total-size),
   tranche-space-after: add(tranche-space-before tranche-space-diff),
   tranche-space-after-snapped: snap-to-unit(tranche-space-snap-threshold tranche-space-after),
@@ -138,9 +127,6 @@ gui:
   current-tranche-floor: floor(last-tranche-space),
   current-tranche-headroom: headroom(last-tranche-space),
   tranche-total-size: tranche-size;
-
-#amount-is-output
-  _: equal-to(amount-token output-token());
 
 #linear-growth
   base rate t:,

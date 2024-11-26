@@ -135,7 +135,7 @@ gui:
       fields:
         - binding: baseline-io-ratio
           name: Baseline WETH per PAI (e.g. 0.0001317)
-          min: 1000
+          min: 0
         - binding: io-ratio-growth
           name: IO ratio growth per tranche (e.g. 0.000002857)
           min: 0

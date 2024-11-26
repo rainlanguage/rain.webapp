@@ -35,14 +35,12 @@ tokens:
     decimals: 18
 
 orders:
-  base-weth-usdc:
+  base-usdc-weth:
     orderbook: base
     network: base
     inputs:
       - token: base-usdc
-      - token: base-weth
     outputs:
-      - token: base-usdc
       - token: base-weth
 
 scenarios:
@@ -51,17 +49,19 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+      tranche-space-snap-threshold: 0.05
+      min-tranche-space-diff: 0.1
     scenarios:
-      weth-usdc:
+      usdc-weth:
         bindings:
-          amount-token: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+          amount-token: 0x4200000000000000000000000000000000000006
           initial-output-token: 0x4200000000000000000000000000000000000006
           initial-input-token: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
 
 deployments:
-  base-weth-usdc:
-    order: base-weth-usdc
-    scenario: base.weth-usdc
+  base-usdc-weth:
+    order: base-usdc-weth
+    scenario: base.usdc-weth
 
 gui:
   name: Grid
@@ -73,14 +73,6 @@ gui:
       description:
         Grid sell WETH for USDC on Base network.
       deposits:
-        - token: base-usdc
-          min: 0
-          presets:
-            - 0
-            - 10
-            - 100
-            - 1000
-            - 10000
         - token: base-weth
           min: 0
           presets:
@@ -92,6 +84,13 @@ gui:
         - binding: baseline-io-ratio
           name: Baseline USDC per WETH (e.g. 3500)
           min: 1000
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 100)
+          min: 1
+        - binding: tranche-size
+          name: Tranche size in ETH (e.g. 1)
+          min: 0
+
 ---
 
 #raindex-subparser !The subparser for Raindex.

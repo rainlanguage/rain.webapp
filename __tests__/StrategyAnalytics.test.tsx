@@ -39,13 +39,16 @@ vi.mock('@wagmi/core', () => ({
 describe('StrategyAnalytics', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-		(useAccount as Mock).mockReturnValue({ address: '0x123', chain: { id: 1 } });
+		(useAccount as Mock).mockReturnValue({
+			address: '0x1234567890123456789012345678901234567890',
+			chain: { id: 1 }
+		});
 		(useSwitchChain as Mock).mockReturnValue({ switchChainAsync: vi.fn() });
 		(useWriteContract as Mock).mockReturnValue({ writeContractAsync: vi.fn() });
 		(waitForTransactionReceipt as Mock).mockReturnValue({ confirmations: 1 });
 	});
 
-	it('renders the strategy details and removal button', () => {
+	it('renders the strategy details and removal button', async () => {
 		(useQuery as Mock).mockImplementationOnce(() => ({
 			data: {
 				active: true,
@@ -54,18 +57,39 @@ describe('StrategyAnalytics', () => {
 				inputs: [],
 				outputs: [],
 				trades: [],
-				addEvents: [{ transaction: { id: '0xtransaction', timestamp: '1700000000' } }]
+				addEvents: [{ transaction: { id: '0xtransaction', timestamp: '1700000000' } }],
+				owner: '0x1234567890123456789012345678901234567890'
 			},
 			isLoading: false,
 			isError: false,
 			refetch: vi.fn()
 		}));
-		(useQuery as Mock).mockImplementationOnce(() => ({
-			data: []
-		}));
 		render(<StrategyAnalytics orderHash="0xtransaction" network="flare" />);
 		expect(screen.getByText('Strategy Analytics')).toBeInTheDocument();
-		expect(screen.getByText(RemovalStatus.Idle)).toBeInTheDocument();
+		await waitFor(() => {
+			expect(screen.getByText(RemovalStatus.Idle)).toBeInTheDocument();
+		});
+	});
+
+	it('wont show the removal button if no wallet is connected', () => {
+		(useQuery as Mock).mockImplementationOnce(() => ({
+			data: {
+				active: false,
+				orderBytes: '0xorderBytes',
+				orderbook: { id: '0xorderbook' },
+				inputs: [],
+				outputs: [],
+				trades: [],
+				addEvents: [{ transaction: { id: '0xtransaction', timestamp: '1700000000' } }],
+				owner: '0x1234567890123456789012345678901234567890'
+			},
+			isLoading: false,
+			isError: false,
+			refetch: vi.fn()
+		}));
+		(useAccount as Mock).mockReturnValue({ address: null });
+		render(<StrategyAnalytics orderHash="0xtransaction" network="flare" />);
+		expect(screen.queryByTestId('remove-strategy-btn')).not.toBeInTheDocument();
 	});
 
 	it('renders no removal button if the strategy is inactive', () => {
@@ -77,7 +101,8 @@ describe('StrategyAnalytics', () => {
 				inputs: [],
 				outputs: [],
 				trades: [],
-				addEvents: [{ transaction: { id: '0xtransaction', timestamp: '1700000000' } }]
+				addEvents: [{ transaction: { id: '0xtransaction', timestamp: '1700000000' } }],
+				owner: '0x1234567890123456789012345678901234567890'
 			},
 			isLoading: false,
 			isError: false,
@@ -103,7 +128,8 @@ describe('StrategyAnalytics', () => {
 						inputs: [],
 						outputs: [],
 						trades: [],
-						addEvents: [{ transaction: { id: '0xtransaction', timestamp: '1700000000' } }]
+						addEvents: [{ transaction: { id: '0xtransaction', timestamp: '1700000000' } }],
+						owner: '0x1234567890123456789012345678901234567890'
 					},
 					isLoading: false,
 					isError: false,

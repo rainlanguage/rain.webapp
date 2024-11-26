@@ -1,0 +1,142 @@
+raindex-version: 8898591f3bcaa21dc91dc3b8584330fc405eadfa
+
+networks:
+  base:
+    rpc: https://mainnet.base.org
+    chain-id: 8453
+    network-id: 8453
+    currency: ETH
+
+metaboards:
+  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
+
+subgraphs:
+  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
+
+orderbooks:
+  base:
+    address: 0xd2938e7c9fe3597f78832ce780feb61945c377d7
+    network: base
+    subgraph: base
+
+deployers:
+  base:
+    address: 0xC1A14cE2fd58A3A2f99deCb8eDd866204eE07f8D
+    network: base
+
+tokens:
+  base-usdc:
+    network: base
+    address: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+    decimals: 6
+  base-weth:
+    network: base
+    address: 0x4200000000000000000000000000000000000006
+    decimals: 18
+
+orders:
+  base-usdc-weth:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-usdc
+    outputs:
+      - token: base-weth
+
+scenarios:
+  base:
+    orderbook: base
+    runs: 1
+    bindings:
+      raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+      tranche-space-min-headroom: 0.25
+
+deployments:
+  base-usdc-weth:
+    order: base-usdc-weth
+    scenario: base
+
+gui:
+  name: Grid
+  description: >
+    Grid order strategy sell ETH for USDC.
+  deployments:
+    - deployment: base-usdc-weth
+      name: Grid sell WETH for USDC on Base.
+      description:
+        Grid sell WETH for USDC on Base network.
+      deposits:
+        - token: base-weth
+          min: 0
+          presets:
+            - 0
+            - 0.1
+            - 1
+            - 10
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline USDC per WETH (e.g. 3500)
+          min: 1000
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 100)
+          min: 1
+        - binding: tranche-size
+          name: Tranche size in ETH (e.g. 1)
+          min: 0
+
+---
+
+#raindex-subparser !The subparser for Raindex.
+
+#baseline-io-ratio !The IO ratio that the strategy starts at. The quote token is the output so that the IO ratio looks like a CEX price.
+#io-ratio-growth !The growth rate of the IO ratio.
+#tranche-size !The size of each tranche in amount token.
+
+#tranche-space-min-headroom !The minimum headroom for the tranche space.
+
+#handle-add-order
+:;
+
+#calculate-io
+  using-words-from raindex-subparser
+  current-tranche-floor
+  current-tranche-headroom
+  tranche-total-size:
+    call<'calculate-tranche>(),
+  tranche-io-ratio: call<'linear-growth>(baseline-io-ratio io-ratio-growth current-tranche-floor),
+  amount-available: mul(tranche-total-size current-tranche-headroom),
+  io-ratio: tranche-io-ratio;
+
+#handle-io
+  tranche-space-before
+  _
+  _
+  tranche-total-size: call<'calculate-tranche>(),
+  tranche-amount-diff: output-vault-decrease(),
+  tranche-space-diff: div(tranche-amount-diff tranche-total-size),
+  tranche-space-after: add(tranche-space-before tranche-space-diff),
+  :ensure(
+    any(
+      is-zero(frac(tranche-space-after))
+      greater-than-or-equal-to(headroom(tranche-space-after) tranche-space-min-headroom)
+    )
+    "Trade causes dust."
+  ),
+  :call<'set-last-tranche-space>(tranche-space-after);
+
+#calculate-tranche
+  last-tranche-space: call<'get-last-tranche-space>(),
+  current-tranche-floor: floor(last-tranche-space),
+  current-tranche-headroom: headroom(last-tranche-space),
+  tranche-total-size: tranche-size;
+
+#linear-growth
+  base rate t:,
+  _: linear-growth(base rate t);
+
+#get-last-tranche-space
+  _: get(order-hash());
+
+#set-last-tranche-space
+  tranche-space:,
+  :set(order-hash() tranche-space);

@@ -49,8 +49,7 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
-      tranche-space-snap-threshold: 0.05
-      min-tranche-space-diff: 0.1
+      tranche-space-min-headroom: 0.25
 
 deployments:
   base-usdc-weth:
@@ -92,10 +91,8 @@ gui:
 #baseline-io-ratio !The IO ratio that the strategy starts at. The quote token is the output so that the IO ratio looks like a CEX price.
 #io-ratio-growth !The growth rate of the IO ratio.
 #tranche-size !The size of each tranche in amount token.
-#amount-token !The token that the strategy is denominated in.
 
-#tranche-space-snap-threshold !The threshold for snapping the tranche space to the nearest unit.
-#min-tranche-space-diff !The minimum difference between the tranche space before and after.
+#tranche-space-min-headroom !The minimum headroom for the tranche space.
 
 #handle-add-order
 :;
@@ -118,12 +115,14 @@ gui:
   tranche-amount-diff: output-vault-decrease(),
   tranche-space-diff: div(tranche-amount-diff tranche-total-size),
   tranche-space-after: add(tranche-space-before tranche-space-diff),
-  tranche-space-after-snapped: snap-to-unit(tranche-space-snap-threshold tranche-space-after),
   :ensure(
-    greater-than-or-equal-to(tranche-space-after-snapped add(tranche-space-before min-tranche-space-diff))
-    "Minimum trade size not met."
+    any(
+      is-zero(frac(tranche-space-after))
+      greater-than-or-equal-to(headroom(tranche-space-after) tranche-space-min-headroom)
+    )
+    "Trade causes dust."
   ),
-  :call<'set-last-tranche-space>(tranche-space-after-snapped);
+  :call<'set-last-tranche-space>(tranche-space-after);
 
 #calculate-tranche
   last-tranche-space: call<'get-last-tranche-space>(),

@@ -64,11 +64,11 @@ orders:
       - token: base-usdc
     outputs:
       - token: base-weth
-  bsc-usdc-tft:
+  bsc-busd-tft:
     orderbook: bsc
     network: bsc
     inputs:
-      - token: bsc-usdc
+      - token: bsc-busd
     outputs:
       - token: bsc-tft
 
@@ -90,8 +90,8 @@ deployments:
   base-usdc-weth:
     order: base-usdc-weth
     scenario: base
-  bsc-usdc-tft:
-    order: bsc-usdc-tft
+  bsc-busd-tft:
+    order: bsc-busd-tft
     scenario: bsc
 
 gui:
@@ -122,10 +122,10 @@ gui:
           name: Tranche size in ETH (e.g. 1)
           min: 0
 
-    - deployment: bsc-usdc-tft
-      name: Grid sell TFT for USDC on BSC.
+    - deployment: bsc-busd-tft
+      name: Grid sell TFT for BUSD on BSC.
       description:
-        Grid sell TFT for USDC on BSC network.
+        Grid sell TFT for BUSD on BSC network.
       deposits:
         - token: bsc-tft
           min: 0
@@ -136,7 +136,7 @@ gui:
             - 10000
       fields:
         - binding: baseline-io-ratio
-          name: Baseline USDC per TFT (e.g. 0.012)
+          name: Baseline BUSD per TFT (e.g. 0.012)
           min: 0
         - binding: io-ratio-growth
           name: IO ratio growth per tranche (e.g. 0.005)

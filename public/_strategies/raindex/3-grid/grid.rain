@@ -112,6 +112,7 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+      tranche-space-min-headroom: 0.25
   polygon:
     orderbook: polygon
     runs: 1

@@ -180,7 +180,7 @@ tokens:
     network: polygon
     address: 0x3c59798620e5fEC0Ae6dF1A19c6454094572Ab92
     decimals: 18
-  
+
 orders:
   arbitrum-wbtc-weth:
     orderbook: arbitrum
@@ -3291,9 +3291,10 @@ initial-time: call<'get-initial-time>(),
 last-time _: call<'get-last-trade>(),
 duration: sub(now() any(last-time initial-time)),
 total-duration: sub(now() initial-time),
-ratio-freeze-epochs: div(min-trade-amount amount-per-epoch),
+ratio-freeze-amount-epochs: div(min-trade-amount amount-per-epoch),
+ratio-freeze-trade-epochs: mul(ratio-freeze-amount-epochs div(time-per-amount-epoch time-per-trade-epoch)),
 amount-epochs: div(total-duration time-per-amount-epoch),
-trade-epochs: saturating-sub(div(duration time-per-trade-epoch) ratio-freeze-epochs);
+trade-epochs: saturating-sub(div(duration time-per-trade-epoch) ratio-freeze-trade-epochs);
 
 #amount-for-epoch
 amount-epochs

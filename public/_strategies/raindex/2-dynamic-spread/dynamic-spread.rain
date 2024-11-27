@@ -1368,7 +1368,7 @@ gui:
               value: 0
         - binding: initial-io
           name: Initial price (USDC.e per WFLR)
-          description: The rough USD price you see for WFLR on Dextools (e.g. 0.99).
+          description: The rough USD price you see for WFLR on Dextools (e.g. 0.022).
           min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier

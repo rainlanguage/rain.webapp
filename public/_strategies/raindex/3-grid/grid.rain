@@ -11,14 +11,28 @@ networks:
     chain-id: 1
     network-id: 1 
     currency: ETH
-
-metaboards:
-  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
-  ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/metadata-mainnet/2024-10-25-2857/gn
+  bsc:
+    rpc: https://rpc.ankr.com/bsc
+    chain-id: 56
+    network-id: 56
+    currency: BNB
+  polygon:
+    rpc: https://rpc.ankr.com/polygon
+    chain-id: 137
+    network-id: 137
+    currency: POL
 
 subgraphs:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
   ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn
+  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
+  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
+
+metaboards:
+  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
+  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-bsc/0.1/gn
+  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-polygon/0.1/gn
+  ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/metadata-mainnet/2024-10-25-2857/gn
 
 orderbooks:
   base:
@@ -29,6 +43,14 @@ orderbooks:
     address: 0x0eA6d458488d1cf51695e1D6e4744e6FB715d37C
     network: ethereum
     subgraph: ethereum
+  bsc:
+    address: 0xd2938E7c9fe3597F78832CE780Feb61945c377d7
+    network: bsc
+    subgraph: bsc
+  polygon:
+    address: 0x7D2f700b1f6FD75734824EA4578960747bdF269A
+    network: polygon
+    subgraph: polygon
 
 deployers:
   base:
@@ -37,6 +59,12 @@ deployers:
   ethereum:
     address: 0xd19581a021f4704ad4eBfF68258e7A0a9DB1CD77
     network: ethereum
+  bsc:
+    address: 0xA2f56F8F74B7d04d61f281BE6576b6155581dcBA
+    network: bsc
+  polygon:
+    address: 0xE7116BC05C8afe25e5B54b813A74F916B5D42aB1
+    network: polygon
 
 tokens:
   base-usdc:
@@ -55,6 +83,21 @@ tokens:
     network: ethereum
     address: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
     decimals: 18
+  bsc-tft:
+    network: bsc
+    address: 0x8f0FB159380176D324542b3a7933F0C2Fd0c2bbf
+    decimals: 7
+  bsc-busd:
+    network: bsc
+    address: 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56
+  polygon-usdc:
+    network: polygon
+    address: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
+    decimals: 6
+  polygon-ioen:
+    network: polygon
+    address: 0xd0e9c8f5Fae381459cf07Ec506C1d2896E8b5df6
+    decimals: 18
 
 orders:
   base-usdc-weth:
@@ -71,6 +114,20 @@ orders:
       - token: ethereum-weth
     outputs:
       - token: ethereum-pai
+  bsc-busd-tft:
+    orderbook: bsc
+    network: bsc
+    inputs:
+      - token: bsc-busd
+    outputs:
+      - token: bsc-tft
+  polygon-usdc-ioen:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-usdc
+    outputs:
+      - token: polygon-ioen
 
 scenarios:
   base:
@@ -85,6 +142,18 @@ scenarios:
     bindings:
       raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
       tranche-space-min-headroom: 0.25
+  bsc:
+    orderbook: bsc
+    runs: 1
+    bindings:
+      raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+      tranche-space-min-headroom: 0.25
+  polygon:
+    orderbook: polygon
+    runs: 1
+    bindings:
+      raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
+      tranche-space-min-headroom: 0.25
 
 deployments:
   base-usdc-weth:
@@ -93,6 +162,12 @@ deployments:
   ethereum-weth-pai:
     order: ethereum-weth-pai
     scenario: ethereum
+  bsc-busd-tft:
+    order: bsc-busd-tft
+    scenario: bsc
+  polygon-usdc-ioen:
+    order: polygon-usdc-ioen
+    scenario: polygon
 
 gui:
   name: Grid
@@ -121,6 +196,7 @@ gui:
         - binding: tranche-size
           name: Tranche size in ETH (e.g. 1)
           min: 0
+          
     - deployment: ethereum-weth-pai
       name: Grid sell PAI for WETH on Ethereum.
       description:
@@ -142,6 +218,53 @@ gui:
         - binding: tranche-size
           name: Tranche size in PAI (e.g. 1000)
           min: 0
+
+    - deployment: bsc-busd-tft
+      name: Grid sell TFT for BUSD on BSC.
+      description:
+        Grid sell TFT for BUSD on BSC network.
+      deposits:
+        - token: bsc-tft
+          min: 0
+          presets:
+            - 0
+            - 1000
+            - 5000
+            - 10000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline BUSD per TFT (e.g. 0.012)
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 0.005)
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in TFT (e.g. 1000)
+          min: 0
+
+    - deployment: polygon-usdc-ioen
+      name: Grid sell IOEN for USDC on Polygon.
+      description:
+        Grid sell IOEN for USDC on Polygon network.
+      deposits:
+        - token: polygon-ioen
+          min: 0
+          presets:
+            - 0
+            - 100000
+            - 200000
+            - 1000000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline USDC per IOEN (e.g. 0.0027)
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 0.0001)
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in IOEN (e.g. 100000)
+          min: 0
+
 
 ---
 

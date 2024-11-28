@@ -6,6 +6,11 @@ networks:
     chain-id: 8453
     network-id: 8453
     currency: ETH
+  ethereum:
+    rpc: https://rpc.ankr.com/eth
+    chain-id: 1
+    network-id: 1 
+    currency: ETH
   bsc:
     rpc: https://rpc.ankr.com/bsc
     chain-id: 56
@@ -17,21 +22,27 @@ networks:
     network-id: 137
     currency: POL
 
+subgraphs:
+  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
+  ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn
+  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
+  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
+
 metaboards:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
   bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-bsc/0.1/gn
   polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-polygon/0.1/gn
-
-subgraphs:
-  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
-  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
-  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
+  ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/metadata-mainnet/2024-10-25-2857/gn
 
 orderbooks:
   base:
     address: 0xd2938e7c9fe3597f78832ce780feb61945c377d7
     network: base
     subgraph: base
+  ethereum:
+    address: 0x0eA6d458488d1cf51695e1D6e4744e6FB715d37C
+    network: ethereum
+    subgraph: ethereum
   bsc:
     address: 0xd2938E7c9fe3597F78832CE780Feb61945c377d7
     network: bsc
@@ -45,6 +56,9 @@ deployers:
   base:
     address: 0xC1A14cE2fd58A3A2f99deCb8eDd866204eE07f8D
     network: base
+  ethereum:
+    address: 0xd19581a021f4704ad4eBfF68258e7A0a9DB1CD77
+    network: ethereum
   bsc:
     address: 0xA2f56F8F74B7d04d61f281BE6576b6155581dcBA
     network: bsc
@@ -60,6 +74,14 @@ tokens:
   base-weth:
     network: base
     address: 0x4200000000000000000000000000000000000006
+    decimals: 18
+  ethereum-pai:
+    network: ethereum
+    address: 0x13E4b8CfFe704d3De6F19E52b201d92c21EC18bD
+    decimals: 18
+  ethereum-weth:
+    network: ethereum
+    address: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
     decimals: 18
   bsc-tft:
     network: bsc
@@ -85,6 +107,13 @@ orders:
       - token: base-usdc
     outputs:
       - token: base-weth
+  ethereum-weth-pai:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-weth
+    outputs:
+      - token: ethereum-pai
   bsc-busd-tft:
     orderbook: bsc
     network: bsc
@@ -107,6 +136,12 @@ scenarios:
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       tranche-space-min-headroom: 0.25
+  ethereum:
+    orderbook: ethereum
+    runs: 1
+    bindings:
+      raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
+      tranche-space-min-headroom: 0.25
   bsc:
     orderbook: bsc
     runs: 1
@@ -124,6 +159,9 @@ deployments:
   base-usdc-weth:
     order: base-usdc-weth
     scenario: base
+  ethereum-weth-pai:
+    order: ethereum-weth-pai
+    scenario: ethereum
   bsc-busd-tft:
     order: bsc-busd-tft
     scenario: bsc
@@ -134,7 +172,7 @@ deployments:
 gui:
   name: Grid
   description: >
-    Grid order strategy sell ETH for USDC.
+    Grid order strategy
   deployments:
     - deployment: base-usdc-weth
       name: Grid sell WETH for USDC on Base.
@@ -157,6 +195,28 @@ gui:
           min: 1
         - binding: tranche-size
           name: Tranche size in ETH (e.g. 1)
+          min: 0
+          
+    - deployment: ethereum-weth-pai
+      name: Grid sell PAI for WETH on Ethereum.
+      description:
+        Grid sell PAI for WETH on Ethereum Mainnet.
+      deposits:
+        - token: ethereum-pai
+          min: 0
+          presets:
+            - 1000
+            - 10000
+            - 100000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline WETH per PAI (e.g. 0.0001317)
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 0.000002857)
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in PAI (e.g. 1000)
           min: 0
 
     - deployment: bsc-busd-tft

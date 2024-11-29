@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        task: [rainframe-test]
+        task: [rainframe-test, rainix-sol-legal]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:

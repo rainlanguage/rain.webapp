@@ -91,7 +91,6 @@ gui:
 #cooldown !The time in seconds between possible trades.
 #base-bounty 0.0000003
 #max-bounty 0.00005
-#init-bounty 0.00001
 #increase-bounty-time-sec 15
 
 #calculate-io
@@ -108,15 +107,11 @@ open-trade-time: add(last-trade cooldown),
 :set(order-hash() block-timestamp()),
 open-trade-seconds-passed: sub(block-timestamp() open-trade-time),
 factor: add(floor(div(open-trade-seconds-passed increase-bounty-time-sec)) 1),
-bounty: if(
-  last-trade
-  min(max-bounty mul(base-bounty factor))
-  init-bounty
-),
+bounty: min(max-bounty mul(base-bounty factor)),
 _ _: bounty 0;
 
 #handle-io
 :;
 
 #handle-add-order
-:;
+:set(order-hash() block-timestamp());

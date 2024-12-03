@@ -85,13 +85,34 @@ gui:
               value: 300
             - name: 1 hour (3600)
               value: 3600
+        - binding: min-bounty
+          name: Minimum bounty to give to the solver (in ETH).
+          min: 0
+          presets:
+            - value: 0
+            - value:  0.0000003
+        - binding: max-bounty
+          name: Maximum bounty to give to the solver (in ETH).
+          min: 0
+          presets:
+            - value: 0.00005
+        - binding: time-per-epoch
+          name: Total auction duration in seconds.
+          min: 1
+          presets:
+            - name: 5 minutes
+              value: 300
+            - name: 15 minutes
+              value: 900
+            - name: 1 hour
+              value: 3600
 
 ---
 #raindex-subparser !The subparser contract address for Raindex.
 #cooldown !The time in seconds between possible trades.
-#base-bounty 0.0000003
-#max-bounty 0.00005
-#increase-bounty-time-sec 15
+#min-bounty !The minimum bounty to give to the solver.
+#max-bounty !The maximum bounty to give to the solver.
+#time-per-epoch !The time in seconds for an epoch. There is only one epoch in this strategy.
 
 #calculate-io
 using-words-from raindex-subparser
@@ -105,9 +126,10 @@ open-trade-time: add(last-trade cooldown),
   "Cooldown"
 ),
 :set(order-hash() now()),
-open-trade-seconds-passed: sub(now() open-trade-time),
-factor: add(floor(div(open-trade-seconds-passed increase-bounty-time-sec)) 1),
-bounty: min(max-bounty mul(base-bounty factor)),
+duration: sub(now() open-trade-time),
+epoch: div(duration time-per-epoch),
+auction-bounty: linear-growth(min-bounty sub(max-bounty min-bounty) epoch),
+bounty: min(max-bounty auction-bounty),
 ratio: 0;
 
 #handle-io

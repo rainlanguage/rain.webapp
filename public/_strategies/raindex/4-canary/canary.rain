@@ -37,6 +37,7 @@ tokens:
 orders:
   base:
     orderbook: base
+    network: base
     inputs:
       # Input is irrelevant because we always set the IO ratio to 0.
       - token: usdc

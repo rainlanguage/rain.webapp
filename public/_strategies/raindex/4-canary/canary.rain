@@ -108,7 +108,7 @@ open-trade-time: add(last-trade cooldown),
 open-trade-seconds-passed: sub(now() open-trade-time),
 factor: add(floor(div(open-trade-seconds-passed increase-bounty-time-sec)) 1),
 bounty: min(max-bounty mul(base-bounty factor)),
-_ _: bounty 0;
+ratio: 0;
 
 #handle-io
 :;

@@ -71,6 +71,7 @@ gui:
         - token: base-weth
           min: 0
           presets:
+            - 0
             - 0.001
             - 0.01
       fields:

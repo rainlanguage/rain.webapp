@@ -40,9 +40,9 @@ orders:
     network: base
     inputs:
       # Input is irrelevant because we always set the IO ratio to 0.
-      - token: usdc
+      - token: base-usdc
     outputs:
-      - token: weth
+      - token: base-weth
 
 scenarios:
   base:

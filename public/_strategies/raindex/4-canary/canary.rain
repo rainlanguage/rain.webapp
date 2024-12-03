@@ -99,13 +99,13 @@ last-trade: get(order-hash()),
 open-trade-time: add(last-trade cooldown),
 :ensure(
   greater-than(
-    block-timestamp()
+    now()
     open-trade-time
   )
   "Cooldown"
 ),
-:set(order-hash() block-timestamp()),
-open-trade-seconds-passed: sub(block-timestamp() open-trade-time),
+:set(order-hash() now()),
+open-trade-seconds-passed: sub(now() open-trade-time),
 factor: add(floor(div(open-trade-seconds-passed increase-bounty-time-sec)) 1),
 bounty: min(max-bounty mul(base-bounty factor)),
 _ _: bounty 0;
@@ -115,4 +115,4 @@ _ _: bounty 0;
 
 #handle-add-order
 using-words-from raindex-subparser
-:set(order-hash() block-timestamp());
+:set(order-hash() now());

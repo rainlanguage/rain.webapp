@@ -114,4 +114,5 @@ _ _: bounty 0;
 :;
 
 #handle-add-order
+using-words-from raindex-subparser
 :set(order-hash() block-timestamp());

@@ -21,18 +21,25 @@ networks:
     chain-id: 137
     network-id: 137
     currency: POL
+  bsc:
+    rpc: https://rpc.ankr.com/bsc
+    chain-id: 56
+    network-id: 56
+    currency: BNB
 
 subgraphs:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
   flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
   polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
+  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
 
 metaboards:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-arbitrum/0.1/gn
   flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
   polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-polygon/0.1/gn
+  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-bsc/0.1/gn
 
 orderbooks:
   base:
@@ -51,6 +58,10 @@ orderbooks:
     address: 0x7D2f700b1f6FD75734824EA4578960747bdF269A
     network: polygon
     subgraph: polygon
+  bsc:
+    address: 0xd2938E7c9fe3597F78832CE780Feb61945c377d7
+    network: bsc
+    subgraph: bsc
 
 deployers:
   base:
@@ -65,6 +76,9 @@ deployers:
   polygon:
     address: 0xE7116BC05C8afe25e5B54b813A74F916B5D42aB1
     network: polygon
+  bsc:
+    address: 0xA2f56F8F74B7d04d61f281BE6576b6155581dcBA
+    network: bsc
 
 tokens:
   base-usdc:
@@ -99,6 +113,14 @@ tokens:
     network: polygon
     address: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
     decimals: 18
+  bsc-usdt:
+    network: bsc
+    address: 0x55d398326f99059fF775485246999027B3197955
+    decimals: 18
+  bsc-wbnb:
+    network: bsc
+    address: 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c
+    decimals: 18
 
 orders:
   base:
@@ -131,6 +153,13 @@ orders:
       - token: polygon-usdt
     outputs:
       - token: polygon-wpol
+  bsc:
+    orderbook: bsc
+    inputs:
+      # Input is irrelevant because we always set the IO ratio to 0.
+      - token: bsc-usdt
+    outputs:
+      - token: bsc-wbnb
 
 scenarios:
   base:
@@ -157,6 +186,12 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
+  bsc:
+    deployer: bsc
+    orderbook: bsc
+    runs: 1
+    bindings:
+      raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
 
 deployments:
   base:
@@ -171,6 +206,9 @@ deployments:
   polygon:
     order: polygon
     scenario: polygon
+  bsc:
+    order: bsc
+    scenario: bsc
 
 gui:
   name: Canary
@@ -309,6 +347,7 @@ gui:
               value: 900
             - name: 1 hour
               value: 3600
+
     - deployment: polygon
       name: Canary on Polygon.
       description:
@@ -342,6 +381,50 @@ gui:
           min: 0
           presets:
             - value: 0.01
+        - binding: time-per-epoch
+          name: Total auction duration in seconds.
+          min: 1
+          presets:
+            - name: 5 minutes
+              value: 300
+            - name: 15 minutes
+              value: 900
+            - name: 1 hour
+              value: 3600
+    
+    - deployment: bsc
+      name: Canary on BSC.
+      description:
+        A simple strategy that gives a bounty to the solver regularly.
+      deposits:
+        - token: bsc-wbnb
+          min: 0
+          presets:
+            - 0
+            - 0.01
+            - 0.05
+      fields:
+        - binding: cooldown
+          name: Cooldown between possible trades in seconds.
+          min: 120
+          presets:
+            - name: Two minutes (120)
+              value: 120
+            - name: Five minutes (300)
+              value: 300
+            - name: 1 hour (3600)
+              value: 3600
+        - binding: min-bounty
+          name: Minimum bounty to give to the solver (in POL).
+          min: 0
+          presets:
+            - value: 0
+            - value:  0.0001
+        - binding: max-bounty
+          name: Maximum bounty to give to the solver (in POL).
+          min: 0
+          presets:
+            - value: 0.0075
         - binding: time-per-epoch
           name: Total auction duration in seconds.
           min: 1

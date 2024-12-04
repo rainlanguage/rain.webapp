@@ -415,13 +415,13 @@ gui:
             - name: 1 hour (3600)
               value: 3600
         - binding: min-bounty
-          name: Minimum bounty to give to the solver (in POL).
+          name: Minimum bounty to give to the solver (in BNB).
           min: 0
           presets:
             - value: 0
             - value:  0.0001
         - binding: max-bounty
-          name: Maximum bounty to give to the solver (in POL).
+          name: Maximum bounty to give to the solver (in BNB).
           min: 0
           presets:
             - value: 0.0075

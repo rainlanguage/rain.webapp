@@ -26,6 +26,11 @@ networks:
     chain-id: 56
     network-id: 56
     currency: BNB
+  linea:
+    rpc: https://rpc.linea.build
+    chain-id: 59144
+    network-id: 59144
+    currency: ETH
 
 subgraphs:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
@@ -33,6 +38,7 @@ subgraphs:
   flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
   polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
   bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
+  linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-linea/2024-10-14-12fc/gn
 
 metaboards:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
@@ -40,6 +46,7 @@ metaboards:
   flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
   polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-polygon/0.1/gn
   bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-bsc/0.1/gn
+  linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-linea-0xed7d6156/1.0.0/gn
 
 orderbooks:
   base:
@@ -62,6 +69,10 @@ orderbooks:
     address: 0xd2938E7c9fe3597F78832CE780Feb61945c377d7
     network: bsc
     subgraph: bsc
+  linea:
+    address: 0x22410e2a46261a1B1e3899a072f303022801C764
+    network: linea
+    subgraph: linea
 
 deployers:
   base:
@@ -79,6 +90,9 @@ deployers:
   bsc:
     address: 0xA2f56F8F74B7d04d61f281BE6576b6155581dcBA
     network: bsc
+  linea:
+    address: 0xA2f56F8F74B7d04d61f281BE6576b6155581dcBA
+    network: linea
 
 tokens:
   base-usdc:
@@ -121,6 +135,14 @@ tokens:
     network: bsc
     address: 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c
     decimals: 18
+  linea-usdt:
+    network: linea
+    address: 0xA219439258ca9da29E9Cc4cE5596924745e12B93
+    decimals: 6
+  linea-weth:
+    network: linea
+    address: 0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f
+    decimals: 18
 
 orders:
   base:
@@ -160,6 +182,14 @@ orders:
       - token: bsc-usdt
     outputs:
       - token: bsc-wbnb
+  linea:
+    orderbook: linea
+    network: linea
+    inputs:
+      # Input is irrelevant because we always set the IO ratio to 0.
+      - token: linea-usdt
+    outputs:
+      - token: linea-weth
 
 scenarios:
   base:
@@ -192,6 +222,11 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+  linea:
+    orderbook: linea
+    runs: 1
+    bindings:
+      raindex-subparser: 0xF77b3c3f61af5a3cE7f7CE3cfFc117491104432E
 
 deployments:
   base:
@@ -209,6 +244,9 @@ deployments:
   bsc:
     order: bsc
     scenario: bsc
+  linea:
+    order: linea
+    scenario: linea
 
 gui:
   name: Canary
@@ -425,6 +463,50 @@ gui:
           min: 0
           presets:
             - value: 0.0075
+        - binding: time-per-epoch
+          name: Total auction duration in seconds.
+          min: 1
+          presets:
+            - name: 5 minutes
+              value: 300
+            - name: 15 minutes
+              value: 900
+            - name: 1 hour
+              value: 3600
+
+    - deployment: linea
+      name: Canary on Linea.
+      description:
+        A simple strategy that gives a bounty to the solver regularly.
+      deposits:
+        - token: linea-weth
+          min: 0
+          presets:
+            - 0
+            - 0.001
+            - 0.01
+      fields:
+        - binding: cooldown
+          name: Cooldown between possible trades in seconds.
+          min: 120
+          presets:
+            - name: Two minutes (120)
+              value: 120
+            - name: Five minutes (300)
+              value: 300
+            - name: 1 hour (3600)
+              value: 3600
+        - binding: min-bounty
+          name: Minimum bounty to give to the solver (in ETH).
+          min: 0
+          presets:
+            - value: 0
+            - value:  0.000004
+        - binding: max-bounty
+          name: Maximum bounty to give to the solver (in ETH).
+          min: 0
+          presets:
+            - value: 0.00075
         - binding: time-per-epoch
           name: Total auction duration in seconds.
           min: 1

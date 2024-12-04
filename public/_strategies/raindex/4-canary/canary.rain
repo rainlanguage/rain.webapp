@@ -11,14 +11,21 @@ networks:
     chain-id: 42161
     network-id: 42161
     currency: ETH
+  flare:
+    rpc: https://rpc.ankr.com/flare
+    chain-id: 14
+    network-id: 14
+    currency: FLR
 
 subgraphs:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
+  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
 
 metaboards:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-arbitrum/0.1/gn
+  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
 
 orderbooks:
   base:
@@ -29,6 +36,10 @@ orderbooks:
     address: 0x550878091b2B1506069F61ae59e3A5484Bca9166
     network: arbitrum
     subgraph: arbitrum
+  flare:
+    address: 0xCEe8Cd002F151A536394E564b84076c41bBBcD4d
+    network: flare
+    subgraph: flare
 
 deployers:
   base:
@@ -37,6 +48,9 @@ deployers:
   arbitrum:
     address: 0x9B0D254bd858208074De3d2DaF5af11b3D2F377F
     network: arbitrum
+  flare:
+    address: 0xE3989Ea7486c0F418C764e6c511e86f6E8830FAb
+    network: flare
 
 tokens:
   base-usdc:
@@ -54,6 +68,14 @@ tokens:
   arb-weth:
     network: arbitrum
     address: 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1
+    decimals: 18
+  flare-usdt:
+    network: flare
+    address: 0x0B38e83B86d491735fEaa0a791F65c2B99535396
+    decimals: 6
+  flare-wflr:
+    network: flare
+    address: 0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d
     decimals: 18
 
 orders:
@@ -73,6 +95,13 @@ orders:
       - token: arb-usdt
     outputs:
       - token: arb-weth
+  flare:
+    orderbook: flare
+    inputs:
+      # Input is irrelevant because we always set the IO ratio to 0.
+      - token: flare-usdt
+    outputs:
+      - token: flare-wflr
 
 scenarios:
   base:
@@ -87,6 +116,12 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
+  flare:
+    deployer: flare
+    orderbook: flare
+    runs: 1
+    bindings:
+      raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
 
 deployments:
   base:
@@ -95,6 +130,9 @@ deployments:
   arbitrum:
     order: arbitrum
     scenario: arbitrum
+  flare:
+    order: flare
+    scenario: flare
 
 gui:
   name: Canary
@@ -176,6 +214,50 @@ gui:
             - value:  0.0000003
         - binding: max-bounty
           name: Maximum bounty to give to the solver (in ETH).
+          min: 0
+          presets:
+            - value: 0.00005
+        - binding: time-per-epoch
+          name: Total auction duration in seconds.
+          min: 1
+          presets:
+            - name: 5 minutes
+              value: 300
+            - name: 15 minutes
+              value: 900
+            - name: 1 hour
+              value: 3600
+
+    - deployment: flare
+      name: Canary on Flare.
+      description:
+        A simple strategy that gives a bounty to the solver regularly.
+      deposits:
+        - token: flare-weth
+          min: 0
+          presets:
+            - 0
+            - 0.001
+            - 0.01
+      fields:
+        - binding: cooldown
+          name: Cooldown between possible trades in seconds.
+          min: 120
+          presets:
+            - name: Two minutes (120)
+              value: 120
+            - name: Five minutes (300)
+              value: 300
+            - name: 1 hour (3600)
+              value: 3600
+        - binding: min-bounty
+          name: Minimum bounty to give to the solver (in FLR).
+          min: 0
+          presets:
+            - value: 0
+            - value:  0.0000003
+        - binding: max-bounty
+          name: Maximum bounty to give to the solver (in FLR).
           min: 0
           presets:
             - value: 0.00005

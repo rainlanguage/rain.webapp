@@ -151,7 +151,7 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
-  orderbook: polygon
+  polygon:
     deployer: polygon
     orderbook: polygon
     runs: 1

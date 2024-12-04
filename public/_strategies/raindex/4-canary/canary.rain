@@ -237,8 +237,8 @@ gui:
           min: 0
           presets:
             - 0
-            - 0.001
-            - 0.01
+            - 10
+            - 100
       fields:
         - binding: cooldown
           name: Cooldown between possible trades in seconds.
@@ -255,12 +255,12 @@ gui:
           min: 0
           presets:
             - value: 0
-            - value:  0.0000003
+            - value:  0.002
         - binding: max-bounty
           name: Maximum bounty to give to the solver (in FLR).
           min: 0
           presets:
-            - value: 0.00005
+            - value: 0.15
         - binding: time-per-epoch
           name: Total auction duration in seconds.
           min: 1

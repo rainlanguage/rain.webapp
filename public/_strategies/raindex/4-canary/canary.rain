@@ -16,16 +16,23 @@ networks:
     chain-id: 14
     network-id: 14
     currency: FLR
+  polygon:
+    rpc: https://rpc.ankr.com/polygon
+    chain-id: 137
+    network-id: 137
+    currency: POL
 
 subgraphs:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
   flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
+  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
 
 metaboards:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-arbitrum/0.1/gn
   flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
+  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-polygon/0.1/gn
 
 orderbooks:
   base:
@@ -40,6 +47,10 @@ orderbooks:
     address: 0xCEe8Cd002F151A536394E564b84076c41bBBcD4d
     network: flare
     subgraph: flare
+  polygon:
+    address: 0x7D2f700b1f6FD75734824EA4578960747bdF269A
+    network: polygon
+    subgraph: polygon
 
 deployers:
   base:
@@ -51,6 +62,9 @@ deployers:
   flare:
     address: 0xE3989Ea7486c0F418C764e6c511e86f6E8830FAb
     network: flare
+  polygon:
+    address: 0xE7116BC05C8afe25e5B54b813A74F916B5D42aB1
+    network: polygon
 
 tokens:
   base-usdc:
@@ -77,6 +91,14 @@ tokens:
     network: flare
     address: 0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d
     decimals: 18
+  polygon-usdt:
+    network: polygon
+    address: 0xc2132D05D31c914a87C6611C10748AEb04B58e8F
+    decimals: 6
+  polygon-wpol:
+    network: polygon
+    address: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
+    decimals: 18
 
 orders:
   base:
@@ -102,6 +124,13 @@ orders:
       - token: flare-usdt
     outputs:
       - token: flare-wflr
+  polygon:
+    orderbook: polygon
+    inputs:
+      # Input is irrelevant because we always set the IO ratio to 0.
+      - token: polygon-usdt
+    outputs:
+      - token: polygon-wpol
 
 scenarios:
   base:
@@ -122,6 +151,12 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
+  orderbook: polygon
+    deployer: polygon
+    orderbook: polygon
+    runs: 1
+    bindings:
+      raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
 
 deployments:
   base:
@@ -133,6 +168,9 @@ deployments:
   flare:
     order: flare
     scenario: flare
+  polygon:
+    order: polygon
+    scenario: polygon
 
 gui:
   name: Canary
@@ -261,6 +299,49 @@ gui:
           min: 0
           presets:
             - value: 0.15
+        - binding: time-per-epoch
+          name: Total auction duration in seconds.
+          min: 1
+          presets:
+            - name: 5 minutes
+              value: 300
+            - name: 15 minutes
+              value: 900
+            - name: 1 hour
+              value: 3600
+    - deployment: polygon
+      name: Canary on Polygon.
+      description:
+        A simple strategy that gives a bounty to the solver regularly.
+      deposits:
+        - token: polygon-wpol
+          min: 0
+          presets:
+            - 0
+            - 1
+            - 10
+      fields:
+        - binding: cooldown
+          name: Cooldown between possible trades in seconds.
+          min: 120
+          presets:
+            - name: Two minutes (120)
+              value: 120
+            - name: Five minutes (300)
+              value: 300
+            - name: 1 hour (3600)
+              value: 3600
+        - binding: min-bounty
+          name: Minimum bounty to give to the solver (in POL).
+          min: 0
+          presets:
+            - value: 0
+            - value:  0.001
+        - binding: max-bounty
+          name: Maximum bounty to give to the solver (in POL).
+          min: 0
+          presets:
+            - value: 0.01
         - binding: time-per-epoch
           name: Total auction duration in seconds.
           min: 1

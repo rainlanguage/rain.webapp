@@ -188,6 +188,10 @@ tokens:
     network: polygon
     address: 0x874e178A2f3f3F9d34db862453Cd756E7eAb0381
     decimals: 18
+  polygon-ioen:
+    network: polygon
+    address: 0xd0e9c8f5Fae381459cf07Ec506C1d2896E8b5df6
+    decimals: 18
 
 orders:
   arbitrum-wbtc-weth:
@@ -386,6 +390,20 @@ orders:
       - token: polygon-usdce
     outputs:
       - token: polygon-gfi
+  polygon-usdc-ioen:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-usdc
+    outputs:
+      - token: polygon-ioen
+  polygon-ioen-usdc:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-ioen
+    outputs:
+      - token: polygon-usdc
 
 scenarios:
   arbitrum:
@@ -481,6 +499,12 @@ deployments:
     scenario: polygon
   polygon-usdce-gfi:
     order: polygon-usdce-gfi
+    scenario: polygon
+  polygon-ioen-usdc:
+    order: polygon-ioen-usdc
+    scenario: polygon
+  polygon-usdc-ioen:
+    order: polygon-usdc-ioen
     scenario: polygon
   bsc-tft-busd:
     order: bsc-tft-busd
@@ -1638,6 +1662,238 @@ gui:
           name: Kickoff GFI per USDCe
           description: >
             The initial GFI per USDCe to kickoff the first auction (e.g. 250).
+          min: 0
+
+    - deployment: polygon-usdc-ioen
+      name: Sell IOEN for USDC on Polygon.
+      description: >
+        DCA IOEN for USDC on Polygon.
+      deposits:
+        - token: polygon-ioen
+          min: 0
+          presets:
+            - 0
+            - 100000
+            - 200000
+            - 1000000
+            - 2000000
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (IOEN per period)
+          description: >
+            The amount of IOEN to spend each budget period.
+
+            For example, if the budget is daily and this is 10000 then 10000 IOEN will be sold for USDC each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (IOEN)
+          description: >
+            The maximum amount of IOEN to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (IOEN)
+          description: >
+            The minimum amount of IOEN to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline USDC per IOEN
+          description: >
+            The absolute minimum amount of USDC per IOEN that the auction will trade at (e.g. 0.002942).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff USDC per IOEN
+          description: >
+            The initial USDC per IOEN to kickoff the first auction (e.g. 0.002942).
+          min: 0
+
+    - deployment: polygon-ioen-usdc
+      name: Buy IOEN with USDC on Polygon.
+      description: >
+        DCA USDC for IOEN on Polygon.
+      deposits:
+        - token: polygon-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 5000
+            - 10000
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+
+            For example, if the budget is daily and this is 100 then 100 USDC will be sold for IOEN each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline IOEN per USDC
+          description: >
+            The absolute minimum amount of IOEN per USDC that the auction will trade at (e.g. 330).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff IOEN per USDC
+          description: >
+            The initial IOEN per USDC to kickoff the first auction (e.g. 330).
           min: 0
 
     - deployment: bsc-tft-busd

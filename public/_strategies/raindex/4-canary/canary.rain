@@ -1,0 +1,140 @@
+raindex-version: 8898591f3bcaa21dc91dc3b8584330fc405eadfa
+
+networks:
+  base:
+    rpc: https://mainnet.base.org
+    chain-id: 8453
+    network-id: 8453
+    currency: ETH
+
+subgraphs:
+  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
+
+metaboards:
+  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
+
+orderbooks:
+  base:
+    address: 0xd2938e7c9fe3597f78832ce780feb61945c377d7
+    network: base
+    subgraph: base
+
+deployers:
+  base:
+    address: 0xC1A14cE2fd58A3A2f99deCb8eDd866204eE07f8D
+    network: base
+
+tokens:
+  base-usdc:
+    network: base
+    address: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+    decimals: 6
+  base-weth:
+    network: base
+    address: 0x4200000000000000000000000000000000000006
+    decimals: 18
+
+orders:
+  base:
+    orderbook: base
+    network: base
+    inputs:
+      # Input is irrelevant because we always set the IO ratio to 0.
+      - token: base-usdc
+    outputs:
+      - token: base-weth
+
+scenarios:
+  base:
+    deployer: base
+    orderbook: base
+    runs: 1
+    bindings:
+      raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+
+deployments:
+  base:
+    order: base
+    scenario: base
+
+gui:
+  name: Canary
+  description: >
+    Does nothing except give a bounty to the solver regularly. Useful to test
+    that there are solvers active on a given network/Raindex deployment.
+  deployments:
+    - deployment: base
+      name: Canary on Base.
+      description:
+        A simple strategy that gives a bounty to the solver regularly.
+      deposits:
+        - token: base-weth
+          min: 0
+          presets:
+            - 0
+            - 0.001
+            - 0.01
+      fields:
+        - binding: cooldown
+          name: Cooldown between possible trades in seconds.
+          min: 120
+          presets:
+            - name: Two minutes (120)
+              value: 120
+            - name: Five minutes (300)
+              value: 300
+            - name: 1 hour (3600)
+              value: 3600
+        - binding: min-bounty
+          name: Minimum bounty to give to the solver (in ETH).
+          min: 0
+          presets:
+            - value: 0
+            - value:  0.0000003
+        - binding: max-bounty
+          name: Maximum bounty to give to the solver (in ETH).
+          min: 0
+          presets:
+            - value: 0.00005
+        - binding: time-per-epoch
+          name: Total auction duration in seconds.
+          min: 1
+          presets:
+            - name: 5 minutes
+              value: 300
+            - name: 15 minutes
+              value: 900
+            - name: 1 hour
+              value: 3600
+
+---
+#raindex-subparser !The subparser contract address for Raindex.
+#cooldown !The time in seconds between possible trades.
+#min-bounty !The minimum bounty to give to the solver.
+#max-bounty !The maximum bounty to give to the solver.
+#time-per-epoch !The time in seconds for an epoch. There is only one epoch in this strategy.
+
+#calculate-io
+using-words-from raindex-subparser
+last-trade: get(order-hash()),
+open-trade-time: add(last-trade cooldown),
+:ensure(
+  greater-than(
+    now()
+    open-trade-time
+  )
+  "Cooldown"
+),
+:set(order-hash() now()),
+duration: sub(now() open-trade-time),
+epoch: div(duration time-per-epoch),
+auction-bounty: linear-growth(min-bounty sub(max-bounty min-bounty) epoch),
+bounty: min(max-bounty auction-bounty),
+ratio: 0;
+
+#handle-io
+:;
+
+#handle-add-order
+using-words-from raindex-subparser
+:set(order-hash() now());

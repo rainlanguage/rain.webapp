@@ -233,7 +233,7 @@ gui:
       description:
         A simple strategy that gives a bounty to the solver regularly.
       deposits:
-        - token: flare-weth
+        - token: flare-wflr
           min: 0
           presets:
             - 0

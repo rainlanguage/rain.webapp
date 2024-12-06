@@ -79,6 +79,10 @@ tokens:
     network: ethereum
     address: 0x13E4b8CfFe704d3De6F19E52b201d92c21EC18bD
     decimals: 18
+  ethereum-mnw:
+    network: ethereum
+    address: 0xd3E4Ba569045546D09CF021ECC5dFe42b1d7f6E4
+    decimals: 18
   ethereum-weth:
     network: ethereum
     address: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
@@ -114,6 +118,13 @@ orders:
       - token: ethereum-weth
     outputs:
       - token: ethereum-pai
+  ethereum-weth-mnw:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-weth
+    outputs:
+      - token: ethereum-mnw
   bsc-busd-tft:
     orderbook: bsc
     network: bsc
@@ -161,6 +172,9 @@ deployments:
     scenario: base
   ethereum-weth-pai:
     order: ethereum-weth-pai
+    scenario: ethereum
+  ethereum-weth-mnw:
+    order: ethereum-weth-mnw
     scenario: ethereum
   bsc-busd-tft:
     order: bsc-busd-tft
@@ -219,6 +233,28 @@ gui:
           name: Tranche size in PAI (e.g. 1000)
           min: 0
 
+    - deployment: ethereum-weth-mnw
+      name: Grid sell MNW for WETH on Ethereum.
+      description:
+        Grid sell MNW for WETH on Ethereum Mainnet.
+      deposits:
+        - token: ethereum-mnw
+          min: 0
+          presets:
+            - 1000
+            - 10000
+            - 100000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline WETH per MNW (e.g. 0.00012)
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 0.00001)
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in MNW (e.g. 2000)
+          min: 0  
+
     - deployment: bsc-busd-tft
       name: Grid sell TFT for BUSD on BSC.
       description:
@@ -264,7 +300,6 @@ gui:
         - binding: tranche-size
           name: Tranche size in IOEN (e.g. 100000)
           min: 0
-
 
 ---
 

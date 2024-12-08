@@ -17,6 +17,7 @@ import { waitForTransactionReceipt } from '@wagmi/core';
 import { config } from '../providers';
 import { Badge } from 'flowbite-react';
 import { getNetworkSubgraphs } from '../_queries/subgraphs';
+import { isAddressEqual, getAddress } from 'viem';
 
 interface props {
 	orderHash: string;
@@ -128,6 +129,12 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 		}
 	}, [query]);
 
+	// is the owner of the strategy the connected wallet?
+	const isOwner =
+		address &&
+		query?.data?.owner &&
+		isAddressEqual(getAddress(address), getAddress(query.data.owner));
+
 	return (
 		<div className="container flex-grow pt-8 pb-safe">
 			{!subgraphUrl && <div data-testid="no-sg-error">No subgraph found for this network</div>}
@@ -148,7 +155,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 									{query.data.active ? 'Active' : 'Inactive'}
 								</Badge>
 
-								{query.data.active && (
+								{query.data.active && isOwner && (
 									<Button
 										data-testid="remove-strategy-btn"
 										className={removalStatus !== RemovalStatus.Idle ? 'animate-pulse' : ''}
@@ -196,6 +203,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 													withdraw
 													network={network}
 													onDepositWithdrawSuccess={refetchQuotes}
+													showDepositWithdraw={isOwner}
 												/>
 											</div>
 										);
@@ -214,6 +222,7 @@ const StrategyAnalytics = ({ orderHash, network }: props) => {
 													withdraw
 													network={network}
 													onDepositWithdrawSuccess={refetchQuotes}
+													showDepositWithdraw={isOwner}
 												/>
 											</div>
 										);

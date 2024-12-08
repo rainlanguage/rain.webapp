@@ -3,6 +3,8 @@
 	"version": "0.0.25",
 	"private": true,
 	"type": "module",
+	"license": "LicenseRef-DCL-1.0",
+	"author": "Rain Open Source LLC",
 	"dependencies": {
 		"@fontsource/dm-sans": "^5.0.22",
 		"@hookform/resolvers": "^3.9.0",

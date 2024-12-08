@@ -21,18 +21,32 @@ networks:
     chain-id: 1
     network-id: 1
     currency: ETH
+  flare:
+    rpc: https://rpc.ankr.com/flare
+    chain-id: 14
+    network-id: 14
+    currency: FLR
+  polygon:
+    rpc: https://rpc.ankr.com/polygon
+    chain-id: 137
+    network-id: 137
+    currency: POL
 
 metaboards:
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-arbitrum/0.1/gn
-  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
+  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-bsc/0.1/gn
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base/0.1/gn
   ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/metadata-mainnet/2024-10-25-2857/gn
+  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
+  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-polygon/0.1/gn
 
 subgraphs:
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
-  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/0.1/gn
+  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.1/gn
   ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn
+  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
+  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
 
 orderbooks:
   arbitrum:
@@ -51,6 +65,12 @@ orderbooks:
     address: 0x0eA6d458488d1cf51695e1D6e4744e6FB715d37C
     network: ethereum
     subgraph: ethereum
+  flare:
+    address: 0xCEe8Cd002F151A536394E564b84076c41bBBcD4d
+  polygon:
+    address: 0x7D2f700b1f6FD75734824EA4578960747bdF269A
+    network: polygon
+    subgraph: polygon
 
 deployers:
   arbitrum:
@@ -65,6 +85,11 @@ deployers:
   ethereum:
     address: 0xd19581a021f4704ad4eBfF68258e7A0a9DB1CD77
     network: ethereum
+  flare:
+    address: 0xE3989Ea7486c0F418C764e6c511e86f6E8830FAb
+  polygon:
+    address: 0xE7116BC05C8afe25e5B54b813A74F916B5D42aB1
+    network: polygon
 
 tokens:
   arbitrum-wbtc:
@@ -75,6 +100,14 @@ tokens:
     network: arbitrum
     address: 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1
     decimals: 18
+  arbitrum-usdc:
+    network: arbitrum
+    address: 0xaf88d065e77c8cC2239327C5EDb3A432268e5831
+    decimals: 6
+  arbitrum-umja:
+    network: arbitrum
+    address: 0x16A500Aec6c37F84447ef04E66c57cfC6254cF92
+    decimals: 18
   bsc-tft:
     network: bsc
     address: 0x8f0FB159380176D324542b3a7933F0C2Fd0c2bbf
@@ -83,6 +116,10 @@ tokens:
     network: bsc
     address: 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56
     decimals: 18
+  base-cbbtc:
+    network: base
+    address: 0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf
+    decimals: 8
   base-usdc:
     network: base
     address: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
@@ -99,6 +136,62 @@ tokens:
     network: ethereum
     address: 0x13E4b8CfFe704d3De6F19E52b201d92c21EC18bD
     decimals: 18
+  base-lucky:
+    network: base
+    address: 0x2C002ffEC41568d138Acc36f5894d6156398D539
+    decimals: 18
+  base-weth:
+    network: base
+    address: 0x4200000000000000000000000000000000000006
+    decimals: 18
+  ethereum-nmt:
+    network: ethereum
+    address: 0x03AA6298F1370642642415EDC0db8b957783e8D6
+    decimals: 18
+  ethereum-usdc:
+    network: ethereum
+    address: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+    decimals: 6
+  ethereum-lock:
+    network: ethereum
+    address: 0x922D8563631B03C2c4cf817f4d18f6883AbA0109
+    decimals: 18
+  ethereum-usdt:
+    network: ethereum
+    address: 0xdAC17F958D2ee523a2206206994597C13D831ec7
+    decimals: 6
+  flare-wflr:
+    network: flare
+    address: 0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d
+    decimals: 18
+  flare-sflr:
+    network: flare
+    address: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
+    decimals: 18
+  flare-usdce:
+    network: flare
+    address: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
+    decimals: 6
+  polygon-usdc:
+    network: polygon
+    address: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
+    decimals: 6
+  polygon-mnw:
+    network: polygon
+    address: 0x3c59798620e5fEC0Ae6dF1A19c6454094572Ab92
+    decimals: 18
+  polygon-usdce:
+    network: polygon
+    address: 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174
+    decimals: 6
+  polygon-gfi:
+    network: polygon
+    address: 0x874e178A2f3f3F9d34db862453Cd756E7eAb0381
+    decimals: 18
+  polygon-ioen:
+    network: polygon
+    address: 0xd0e9c8f5Fae381459cf07Ec506C1d2896E8b5df6
+    decimals: 18
 
 orders:
   arbitrum-wbtc-weth:
@@ -106,6 +199,34 @@ orders:
     network: arbitrum
     inputs:
       - token: arbitrum-weth
+    outputs:
+      - token: arbitrum-wbtc
+  arbitrum-usdc-weth:
+    orderbook: arbitrum
+    network: arbitrum
+    inputs:
+      - token: arbitrum-usdc
+    outputs:
+      - token: arbitrum-weth
+  arbitrum-weth-usdc:
+    orderbook: arbitrum
+    network: arbitrum
+    inputs:
+      - token: arbitrum-weth
+    outputs:
+      - token: arbitrum-usdc
+  arbitrum-usdc-umja:
+    orderbook: arbitrum
+    network: arbitrum
+    inputs:
+      - token: arbitrum-usdc
+    outputs:
+      - token: arbitrum-umja
+  arbitrum-usdc-wbtc:
+    orderbook: arbitrum
+    network: arbitrum
+    inputs:
+      - token: arbitrum-usdc
     outputs:
       - token: arbitrum-wbtc
   bsc-tft-busd:
@@ -122,6 +243,13 @@ orders:
       - token: bsc-busd
     outputs:
       - token: bsc-tft
+  base-cbbtc-usdc:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-cbbtc
+    outputs:
+      - token: base-usdc
   base-usdc-paid:
     orderbook: base
     network: base
@@ -136,6 +264,34 @@ orders:
       - token: base-paid
     outputs:
       - token: base-usdc
+  base-lucky-weth:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-lucky
+    outputs:
+      - token: base-weth
+  base-weth-lucky:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-weth
+    outputs:
+      - token: base-lucky
+  base-lucky-usdc:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-lucky
+    outputs:
+      - token: base-usdc
+  base-usdc-lucky:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-usdc
+    outputs:
+      - token: base-lucky
   ethereum-pai-weth:
     orderbook: ethereum
     network: ethereum
@@ -150,6 +306,104 @@ orders:
       - token: ethereum-pai
     outputs:
       - token: ethereum-weth
+  ethereum-lock-weth:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-lock
+    outputs:
+      - token: ethereum-weth
+  ethereum-weth-lock:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-weth
+    outputs:
+      - token: ethereum-lock
+  ethereum-nmt-usdc:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-nmt
+    outputs:
+      - token: ethereum-usdc
+  ethereum-usdc-nmt:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-usdc
+    outputs:
+      - token: ethereum-nmt
+  ethereum-lock-usdt:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-lock
+    outputs:
+      - token: ethereum-usdt
+  ethereum-usdt-lock:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-usdt
+    outputs:
+      - token: ethereum-lock
+  flare-sflr-wflr:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-sflr
+    outputs:
+      - token: flare-wflr
+  flare-usdce-wflr:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-usdce
+    outputs:
+      - token: flare-wflr
+  polygon-usdc-mnw:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-usdc
+    outputs:
+      - token: polygon-mnw
+  polygon-mnw-usdc:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-mnw
+    outputs:
+      - token: polygon-usdc
+  polygon-gfi-usdce:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-gfi
+    outputs:
+      - token: polygon-usdce
+  polygon-usdce-gfi:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-usdce
+    outputs:
+      - token: polygon-gfi
+  polygon-usdc-ioen:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-usdc
+    outputs:
+      - token: polygon-ioen
+  polygon-ioen-usdc:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-ioen
+    outputs:
+      - token: polygon-usdc
 
 scenarios:
   arbitrum:
@@ -157,37 +411,127 @@ scenarios:
     runs: 1
     bindings:
       raindex-subparser: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
+      subparser-0: 0xb06202aA3Fe7d85171fB7aA5f17011d17E63f382
+      baseline-fn: '''constant-baseline'
+      initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
   bsc:
     orderbook: bsc
     runs: 1
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+      subparser-0: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+      baseline-fn: '''constant-baseline'
+      initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
   base:
     orderbook: base
     runs: 1
     bindings:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+      subparser-0: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+      baseline-fn: '''constant-baseline'
+      initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
+  polygon:
+    orderbook: polygon
+    runs: 1
+    bindings:
+      raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
+      subparser-0: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
+      baseline-fn: '''constant-baseline'
+      initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
   ethereum:
     orderbook: ethereum
     runs: 1
     bindings:
       raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
+      subparser-0: 0x22410e2a46261a1B1e3899a072f303022801C764
+      baseline-fn: '''constant-baseline'
+      initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
+  flare:
+    orderbook: flare
+    runs: 1
+    bindings:
+      raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
+      subparser-0: 0x915E36ef882941816356bC3718Df868054F868aD
+      baseline-fn: '''constant-baseline'
+      initial-io-fn: '''constant-initial-io'
+      shy-epoch: 0.05
+  flare-sflr-baseline:
+    orderbook: flare
+    deployer: flare
+    runs: 1
+    bindings:
+      raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
+      subparser-0: 0x915E36ef882941816356bC3718Df868054F868aD
+      baseline-fn: '''sflr-baseline'
+      initial-io-fn: '''sflr-baseline'
+      next-trade-baseline-multiplier: 0
+      shy-epoch: 0.05
 
 deployments:
+  arbitrum-usdc-weth:
+    order: arbitrum-usdc-weth
+    scenario: arbitrum
+  arbitrum-usdc-umja:
+    order: arbitrum-usdc-umja
+    scenario: arbitrum
+  arbitrum-usdc-wbtc:
+    order: arbitrum-usdc-wbtc
+    scenario: arbitrum
+  arbitrum-weth-usdc:
+    order: arbitrum-weth-usdc
+    scenario: arbitrum
   arbitrum-wbtc-weth:
     order: arbitrum-wbtc-weth
     scenario: arbitrum
+  polygon-mnw-usdc:
+    order: polygon-mnw-usdc
+    scenario: polygon
+  polygon-usdc-mnw:
+    order: polygon-usdc-mnw
+    scenario: polygon
+  polygon-gfi-usdce:
+    order: polygon-gfi-usdce
+    scenario: polygon
+  polygon-usdce-gfi:
+    order: polygon-usdce-gfi
+    scenario: polygon
+  polygon-ioen-usdc:
+    order: polygon-ioen-usdc
+    scenario: polygon
+  polygon-usdc-ioen:
+    order: polygon-usdc-ioen
+    scenario: polygon
   bsc-tft-busd:
     order: bsc-tft-busd
     scenario: bsc
   bsc-busd-tft:
     order: bsc-busd-tft
     scenario: bsc
+  base-cbbtc-usdc:
+    order: base-cbbtc-usdc
+    scenario: base
   base-usdc-paid:
     order: base-usdc-paid
     scenario: base
   base-paid-usdc:
     order: base-paid-usdc
+    scenario: base
+  base-weth-lucky:
+    order: base-weth-lucky
+    scenario: base
+  base-lucky-weth:
+    order: base-lucky-weth
+    scenario: base
+  base-usdc-lucky:
+    order: base-usdc-lucky
+    scenario: base
+  base-lucky-usdc:
+    order: base-lucky-usdc
     scenario: base
   ethereum-pai-weth:
     order: ethereum-pai-weth
@@ -195,6 +539,30 @@ deployments:
   ethereum-weth-pai:
     order: ethereum-weth-pai
     scenario: ethereum
+  ethereum-lock-weth:
+    order: ethereum-lock-weth
+    scenario: ethereum
+  ethereum-weth-lock:
+    order: ethereum-weth-lock
+    scenario: ethereum
+  ethereum-nmt-usdc:
+    order: ethereum-nmt-usdc
+    scenario: ethereum
+  ethereum-usdc-nmt:
+    order: ethereum-usdc-nmt
+    scenario: ethereum
+  ethereum-lock-usdt:
+    order: ethereum-lock-usdt
+    scenario: ethereum
+  ethereum-usdt-lock:
+    order: ethereum-usdt-lock
+    scenario: ethereum
+  flare-sflr-wflr:
+    order: flare-sflr-wflr
+    scenario: flare-sflr-baseline
+  flare-usdce-wflr:
+    order: flare-usdce-wflr
+    scenario: flare
 
 gui:
   name: Auction based cost averaging
@@ -208,6 +576,356 @@ gui:
     The strategy works by repeatedly auctioning off tokens with an exponential
     decay in the price, that resets each trade.
   deployments:
+    - deployment: arbitrum-usdc-weth
+      name: Sell WETH for USDC on Arbitrum.
+      description: >
+        DCA WETH for USDC on Arbitrum.
+      deposits:
+        - token: arbitrum-weth
+          min: 0
+          presets:
+            - 0
+            - 0.01
+            - 0.1
+            - 1
+            - 10
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (WETH per period)
+          description: >
+            The amount of WETH to spend each budget period.
+
+            For example, if the budget is daily and this is 0.1 then 0.1 WETH will be sold for USDC each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (WETH)
+          description: >
+            The maximum amount of WETH to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (WETH)
+          description: >
+            The minimum amount of WETH to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline USDC per WETH
+          description: >
+            The absolute minimum amount of USDC per WETH that the auction will trade at (e.g. 3000).
+          min: 1000
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff USDC per WETH
+          description: >
+            The initial USDC per WETH to kickoff the first auction (e.g. 3080).
+          min: 1000
+
+    - deployment: arbitrum-weth-usdc
+      name: Buy WETH with USDC on Arbitrum.
+      description: >
+        DCA USDC for WETH on Arbitrum.
+      deposits:
+        - token: arbitrum-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 5000
+            - 10000
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+
+            For example, if the budget is daily and this is 100 then 100 USDC will be sold for WETH each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline WETH per USDC
+          description: >
+            The absolute minimum amount of WETH per USDC that the auction will trade at (e.g. 0.0003).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff WETH per USDC
+          description: >
+            The initial WETH per USDC to kickoff the first auction (e.g. 0.0003).
+          min: 0
+
+    - deployment: arbitrum-usdc-wbtc
+      name: Sell WBTC for USDC on Arbitrum.
+      description: >
+        Auction WBTC for USDC on Arbitrum over time.
+      deposits:
+        - token: arbitrum-wbtc
+          min: 0
+          presets:
+            - 0
+            - 0.0001
+            - 0.001
+            - 0.01
+            - 0.1
+            - 0.2
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (WBTC per period)
+          description: >
+            The amount of WBTC to spend each budget period.
+
+            For example, if the budget is daily and this is 0.01 then 0.01 WBTC will be sold for WETH each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (WBTC)
+          description: >
+            The maximum amount of WBTC to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (WBTC)
+          description: >
+            The minimum amount of WBTC to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline USDC per WBTC
+          description: >
+            The absolute minimum amount of USDC per WBTC that the auction will
+            trade at (e.g. 95000).
+          min: 1
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff USDC per WBTC
+          description: >
+            The initial USDC per WBTC to kickoff the first auction (e.g. 100000).
+          min: 1
+
     - deployment: arbitrum-wbtc-weth
       name: Sell WBTC for WETH on Arbitrum.
       description: >
@@ -303,15 +1021,7 @@ gui:
             ETH/BTC ratio is worse than 0.05.
 
             This can be set to 0 to disable the baseline.
-          presets:
-            - name: 10
-              value: 10
-            - name: 20
-              value: 20
-            - name: 25
-              value: 25
-            - name: 30
-              value: 30
+          min: 1
         - binding: next-trade-multiplier
           name: Auction start multiplier
           description: >
@@ -372,14 +1082,819 @@ gui:
             price should be fine.
 
             This should be greater than the baseline.
+          min: 1
+
+    - deployment: arbitrum-usdc-umja
+      name: Sell UMJA for USDC on Arbitrum.
+      description: >
+        DCA UMJA for USDC on Arbitrum.
+      deposits:
+        - token: arbitrum-umja
           min: 0
           presets:
-            - name: 30
-              value: 30
-            - name: 50
-              value: 50
-            - name: 100
-              value: 100
+            - 0
+            - 10000
+            - 100000
+            - 500000
+            - 1000000
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (UMJA per period)
+          description: >
+            The amount of UMJA to spend each budget period.
+
+            For example, if the budget is daily and this is 1000 then 1000 UMJA will be sold for USDC each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (UMJA)
+          description: >
+            The maximum amount of UMJA to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (UMJA)
+          description: >
+            The minimum amount of UMJA to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline USDC per UMJA
+          description: >
+            The absolute minimum amount of USDC per UMJA that the auction will trade at (e.g. 0.015).
+          min: 0.005
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff USDC per UMJA
+          description: >
+            The initial USDC per UMJA to kickoff the first auction (e.g. 0.015).
+          min: 0.005
+
+    - deployment: polygon-usdc-mnw
+      name: Sell MNW for USDC on Polygon.
+      description: >
+        DCA MNW for USDC on Polygon.
+      deposits:
+        - token: polygon-mnw
+          min: 0
+          presets:
+            - 0
+            - 1000
+            - 2000
+            - 10000
+            - 20000
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (MNW per period)
+          description: >
+            The amount of MNW to spend each budget period.
+
+            For example, if the budget is daily and this is 1000 then 1000 MNW will be sold for USDC each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (MNW)
+          description: >
+            The maximum amount of MNW to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (MNW)
+          description: >
+            The minimum amount of MNW to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline USDC per MNW
+          description: >
+            The absolute minimum amount of USDC per MNW that the auction will trade at (e.g. 0.1).
+          min: 0.01
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff USDC per MNW
+          description: >
+            The initial USDC per MNW to kickoff the first auction (e.g. 0.1).
+          min: 0.01
+
+    - deployment: polygon-mnw-usdc
+      name: Buy MNW with USDC on Polygon.
+      description: >
+        DCA USDC for MNW on Polygon.
+      deposits:
+        - token: polygon-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 5000
+            - 10000
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+
+            For example, if the budget is daily and this is 100 then 100 USDC will be sold for MNW each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline MNW per USDC
+          description: >
+            The absolute minimum amount of MNW per USDC that the auction will trade at (e.g. 1.5).
+          min: 0.01
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff MNW per USDC
+          description: >
+            The initial MNW per USDC to kickoff the first auction (e.g. 2.2).
+          min: 0.01
+
+    - deployment: polygon-usdce-gfi
+      name: Sell GFI for USDC.e on Polygon.
+      description: >
+        DCA GFI for USDC.e on Polygon.
+      deposits:
+        - token: polygon-gfi
+          min: 0
+          presets:
+            - 0
+            - 10000
+            - 20000
+            - 100000
+            - 200000
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (GFI per period)
+          description: >
+            The amount of GFI to spend each budget period.
+
+            For example, if the budget is daily and this is 1000 then 1000 GFI will be sold for USDC.e each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (GFI)
+          description: >
+            The maximum amount of GFI to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (GFI)
+          description: >
+            The minimum amount of GFI to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline USDC.e per GFI
+          description: >
+            The absolute minimum amount of USDC.e per GFI that the auction will trade at (e.g. 0.001).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff USDC.e per GFI
+          description: >
+            The initial USDC.e per GFI to kickoff the first auction (e.g. 0.003).
+          min: 0
+
+    - deployment: polygon-gfi-usdce
+      name: Buy GFI with USDCe on Polygon.
+      description: >
+        DCA USDCe for GFI on Polygon.
+      deposits:
+        - token: polygon-usdce
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 5000
+            - 10000
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (USDCe per period)
+          description: >
+            The amount of USDCe to spend each budget period.
+
+            For example, if the budget is daily and this is 100 then 100 USDCe will be sold for GFI each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDCe)
+          description: >
+            The maximum amount of USDCe to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDCe)
+          description: >
+            The minimum amount of USDCe to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline GFI per USDCe
+          description: >
+            The absolute minimum amount of GFI per USDCe that the auction will trade at (e.g. 250).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff GFI per USDCe
+          description: >
+            The initial GFI per USDCe to kickoff the first auction (e.g. 250).
+          min: 0
+
+    - deployment: polygon-usdc-ioen
+      name: Sell IOEN for USDC on Polygon.
+      description: >
+        DCA IOEN for USDC on Polygon.
+      deposits:
+        - token: polygon-ioen
+          min: 0
+          presets:
+            - 0
+            - 100000
+            - 200000
+            - 1000000
+            - 2000000
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (IOEN per period)
+          description: >
+            The amount of IOEN to spend each budget period.
+
+            For example, if the budget is daily and this is 10000 then 10000 IOEN will be sold for USDC each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (IOEN)
+          description: >
+            The maximum amount of IOEN to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (IOEN)
+          description: >
+            The minimum amount of IOEN to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline USDC per IOEN
+          description: >
+            The absolute minimum amount of USDC per IOEN that the auction will trade at (e.g. 0.002942).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff USDC per IOEN
+          description: >
+            The initial USDC per IOEN to kickoff the first auction (e.g. 0.002942).
+          min: 0
+
+    - deployment: polygon-ioen-usdc
+      name: Buy IOEN with USDC on Polygon.
+      description: >
+        DCA USDC for IOEN on Polygon.
+      deposits:
+        - token: polygon-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 5000
+            - 10000
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+
+            For example, if the budget is daily and this is 100 then 100 USDC will be sold for IOEN each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline IOEN per USDC
+          description: >
+            The absolute minimum amount of IOEN per USDC that the auction will trade at (e.g. 330).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff IOEN per USDC
+          description: >
+            The initial IOEN per USDC to kickoff the first auction (e.g. 330).
+          min: 0
 
     - deployment: bsc-tft-busd
       name: Buy TFT with BUSD on BSC.
@@ -458,15 +1973,7 @@ gui:
           name: Baseline TFT per BUSD
           description: >
             The absolute minimum amount of TFT per BUSD that the auction will trade at (e.g. 111.1358)
-          presets:
-            - name: 100
-              value: 100
-            - name: 50
-              value: 50
-            - name: 20
-              value: 20
-            - name: 10
-              value: 10
+          min: 1
         - binding: next-trade-multiplier
           name: Auction start multiplier
           description: >
@@ -502,16 +2009,7 @@ gui:
           name: Kickoff TFT per BUSD
           description: >
             The initial TFT per BUSD to kickoff the first auction.
-          min: 80
-          presets:
-            - name: 80
-              value: 80
-            - name: 100
-              value: 100
-            - name: 120
-              value: 120
-            - name: 150
-              value: 150
+          min: 1
 
     - deployment: bsc-busd-tft
       name: Sell TFT for BUSD on BSC.
@@ -590,15 +2088,7 @@ gui:
           name: Baseline BUSD per TFT
           description: >
             The absolute minimum amount of BUSD per TFT that the auction will trade at (e.g. 0.007 BUSD per TFT).
-          presets:
-            - name: 5
-              value: 5
-            - name: 10
-              value: 10
-            - name: 20
-              value: 20
-            - name: 50
-              value: 50
+          min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
           description: >
@@ -635,14 +2125,122 @@ gui:
           description: >
             The initial BUSD per TFT to kickoff the first auction (e.g. 0.009 BUSD per TFT)
           min: 0
+
+    - deployment: base-cbbtc-usdc
+      name: Buy cbBTC with USDC on Base.
+      description: >
+        Swap USDC for cbBTC on Base.
+      deposits:
+        - token: base-usdc
+          min: 0
           presets:
-            - name: 10
-              value: 10
-            - name: 20
-              value: 20
-            - name: 50
-              value: 50
-              
+            - 0
+            - 10
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+
+            For example, if the budget is daily and this is 100 then 100 USDC will be sold for cbBTC each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline cbBTC per USDC.
+          description: >
+            The absolute minimum amount of cbBTC per USDC that the auction will trade at (e.g. 0.00001 cbBTC per USDC).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff cbBTC per USDC
+          description: >
+            The initial cbBTC per USDC to kickoff the first auction (e.g. 0.00001052631 cbBTC per USDC)
+          min: 0
+
     - deployment: base-usdc-paid
       name: Sell PAID for USDC on Base.
       description: >
@@ -838,6 +2436,400 @@ gui:
               value: 20
             - name: 50
               value: 50
+
+    - deployment: base-lucky-weth
+      name: Buy LUCKY with WETH on Base.
+      description: >
+        Buy LUCKY with WETH on Base.
+      deposits:
+        - token: base-weth
+          min: 0
+          presets:
+            - 0
+            - 0.005
+            - 0.05
+            - 0.5
+            - 1
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (WETH per period)
+          description: >
+            The amount of WETH to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (WETH)
+          description: >
+            The maximum amount of WETH to spend in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (WETH)
+          description: >
+            The minimum amount of WETH to spend in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline LUCKY per WETH
+          description: >
+            The absolute minimum amount of LUCKY per WETH that the auction will trade at (e.g. 1000000 LUCKY per WETH)
+          min: 0
+          presets:
+            - name: 1500000
+              value: 1500000
+            - name: 2000000
+              value: 2000000
+            - name: 3000000
+              value: 3000000
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff LUCKY per WETH
+          description: >
+            The initial LUCKY per WETH to kickoff the first auction (e.g. 2000000 LUCKY per WETH)
+          min: 0
+          presets:
+            - name: 5000000
+              value: 5000000
+            - name: 6000000
+              value: 6000000
+
+    - deployment: base-weth-lucky
+      name: Sell LUCKY for WETH on Base.
+      description: >
+        Swap LUCKY for WETH on Base.
+      deposits:
+        - token: base-lucky
+          min: 0
+          presets:
+            - 0
+            - 12500
+            - 125000
+            - 1250000
+            - 2500000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (LUCKY per period)
+          description: >
+            The amount of LUCKY to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (LUCKY)
+          description: >
+            The maximum amount of LUCKY to spend in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (LUCKY)
+          description: >
+            The minimum amount of LUCKY to spend in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline WETH per LUCKY
+          description: >
+            The absolute minimum amount of WETH per LUCKY that the auction will trade at (e.g. 0.0000004 WETH per LUCKY)
+          min: 0
+          presets:
+            - name: 0.0000006
+              value: 0.0000006
+            - name: 0.0000004
+              value: 0.0000004
+            - name: 0.0000002
+              value: 0.0000002
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff WETH per LUCKY
+          description: >
+            The initial WETH per LUCKY to kickoff the first auction (e.g. 0.0000003 LUCKY per WETH)
+          min: 0
+          presets:
+            - name: 0.0000006
+              value: 0.0000006
+            - name: 0.000009
+              value: 0.000009
+
+    - deployment: base-usdc-lucky
+      name: Sell LUCKY for USDC on Base.
+      description: >
+        Sell LUCKY for USDC on Base.
+      deposits:
+        - token: base-lucky
+          min: 0
+          presets:
+            - 0
+            - 500000
+            - 1500000
+            - 2500000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (LUCKY per period)
+          description: >
+            The amount of LUCKY to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (LUCKY)
+          description: >
+            The maximum amount of LUCKY to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (LUCKY)
+          description: >
+            The minimum amount of LUCKY to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline USDC per LUCKY
+          description: >
+            The absolute minimum amount of USDC per LUCKY that the auction will trade at (e.g. 0.0015 USDC per LUCKY)
+          min: 0
+          presets:
+            - name: 0.0005
+              value: 0.0005
+            - name: 0.0008
+              value: 0.0008
+            - name: 0.0010
+              value: 0.0010
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDC per LUCKY
+          description: >
+            The initial USDC per LUCKY to kickoff the first auction (e.g. 0.05 USDC per LUCKY)
+          min: 0
+          presets:
+            - name: 0.001595
+              value: 0.001595
+            - name: 0.0016
+              value: 0.0016
+
+    - deployment: base-lucky-usdc
+      name: Buy LUCKY with USDC on Base.
+      description: >
+        Buy LUCKY with USDC on Base.
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline LUCKY per USDC
+          description: >
+            The absolute minimum amount of LUCKY per USDC that the auction will trade at (e.g. 600 LUCKY per USDC)
+          min: 0
+          presets:
+            - name: 400
+              value: 400
+            - name: 500
+              value: 500
+            - name: 600
+              value: 600
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff LUCKY per USDC
+          description: >
+            The initial LUCKY per USDC to kickoff the first auction (e.g.600 LUCKY per USDC)
+          min: 0
+          presets:
+            - name: 623
+              value: 623
+            - name: 650
+              value: 650
 
     - deployment: ethereum-pai-weth
       name: Sell PAI for WETH on Ethereum.
@@ -1042,8 +3034,719 @@ gui:
               value: 2000
             - name: 5000
               value: 5000
+
+    - deployment: ethereum-weth-lock
+      name: Sell LOCK for WETH on Ethereum.
+      description: >
+        Swap LOCK for WETH on Ethereum mainnet.
+      deposits:
+        - token: ethereum-lock
+          min: 0
+          presets:
+            - 0
+            - 250
+            - 750
+            - 1250
+            - 5000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (LOCK per period)
+          description: >
+            The amount of LOCK to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (LOCK)
+          description: >
+            The maximum amount of LOCK to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (LOCK)
+          description: >
+            The minimum amount of LOCK to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline WETH per LOCK
+          description: >
+            The absolute minimum amount of WETH per LOCK that the auction will trade at. (e.g. 0.0001 WETH per LOCK)
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff WETH per LOCK
+          description: >
+            The initial WETH per LOCK to kickoff the first auction. (e.g. 0.00015 WETH per LOCK)
+          min: 0
+
+    - deployment: ethereum-lock-weth
+      name: Sell WETH for LOCK on Ethereum.
+      description: >
+        Swap WETH for LOCK on Ethereum mainnet.
+      deposits:
+        - token: ethereum-weth
+          min: 0
+          presets:
+            - 0
+            - 0.1
+            - 0.5
+            - 1
+            - 2
+            - 5
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (WETH per period)
+          description: >
+            The amount of WETH to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (WETH)
+          description: >
+            The maximum amount of WETH to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (WETH)
+          description: >
+            The minimum amount of WETH to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline LOCK per WETH
+          description: >
+            The absolute minimum amount of LOCK per WETH that the auction will trade at. (e.g. 5000 LOCK per WETH)
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff LOCK per WETH
+          description: >
+            The initial LOCK per WETH to kickoff the first auction. (e.g. 7000 LOCK per WETH)
+          min: 0
+
+    - deployment: ethereum-usdc-nmt
+      name: Sell NMT for USDC on Ethereum.
+      description: >
+        Swap NMT for USDC on Ethereum mainnet.
+      deposits:
+        - token: ethereum-nmt
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+            - 5000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (NMT per period)
+          description: >
+            The amount of NMT to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (NMT)
+          description: >
+            The maximum amount of NMT to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (NMT)
+          description: >
+            The minimum amount of NMT to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline USDC per NMT
+          description: >
+            The absolute minimum amount of USDC per NMT that the auction will trade at. (e.g. 2 USDC per NMT)
+          min: 0
+          presets:
+            - name: 1.75
+              value: 1.75
+            - name: 2
+              value: 2
+            - name: 2.25
+              value: 2.25
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDC per NMT
+          description: >
+            The initial USDC per NMT to kickoff the first auction. (e.g. 9 USDC per NMT)
+          min: 0
+          presets:
+            - name: 4
+              value: 4
+            - name: 6
+              value: 6
+            - name: 9
+              value: 9
+
+    - deployment: ethereum-nmt-usdc
+      name: Sell USDC for NMT on Ethereum.
+      description: >
+        Swap USDC for NMT on Ethereum mainnet.
+      deposits:
+        - token: ethereum-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 500
+            - 1000
+            - 2000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline NMT per USDC
+          description: >
+            The absolute minimum amount of NMT per USDC that the auction will trade at. (e.g. 0.4 NMT per USDC)
+          min: 0
+          presets:
+            - name: 0.35
+              value: 0.35
+            - name: 0.4
+              value: 0.4
+            - name: 0.45
+              value: 0.45
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff NMT per USDC
+          description: >
+            The initial NMT per USDC to kickoff the first auction. (e.g. 0.9 NMT per USDC)
+          min: 0
+          presets:
+            - name: 0.8
+              value: 0.8
+            - name: 1.2
+              value: 1.2
+            - name: 1.5
+              value: 1.5
+
+    - deployment: ethereum-usdt-lock
+      name: Sell LOCK for USDT on Ethereum.
+      description: >
+        Swap LOCK for USDT on Ethereum mainnet.
+      deposits:
+        - token: ethereum-lock
+          min: 0
+          presets:
+            - 0
+            - 250
+            - 750
+            - 1250
+            - 5000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (LOCK per period)
+          description: >
+            The amount of LOCK to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (LOCK)
+          description: >
+            The maximum amount of LOCK to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (LOCK)
+          description: >
+            The minimum amount of LOCK to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline USDT per LOCK
+          description: >
+            The absolute minimum amount of USDT per LOCK that the auction will trade at. (e.g. 0.4 USDT per LOCK)
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDT per LOCK
+          description: >
+            The initial USDT per LOCK to kickoff the first auction. (e.g. 9 USDT per LOCK)
+          min: 0
+
+    - deployment: ethereum-lock-usdt
+      name: Sell USDT for LOCK on Ethereum.
+      description: >
+        Swap USDT for LOCK on Ethereum mainnet.
+      deposits:
+        - token: ethereum-usdt
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 500
+            - 1000
+            - 2000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (USDT per period)
+          description: >
+            The amount of USDT to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDT)
+          description: >
+            The maximum amount of USDT to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDT)
+          description: >
+            The minimum amount of USDT to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline LOCK per USDT
+          description: >
+            The absolute minimum amount of LOCK per USDT that the auction will trade at. (e.g. 2 LOCK per USDT)
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff LOCK per USDT
+          description: >
+            The initial LOCK per USDT to kickoff the first auction. (e.g. 0.9 LOCK per USDT)
+          min: 0
+
+    - deployment: flare-sflr-wflr
+      name: Sell WFLR for SFLR on Flare based on underlying collateral.
+      description: >
+        Swap WFLR for SFLR on Flare based on underlying collateral.
+      deposits:
+        - token: flare-wflr
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 500
+            - 1000
+            - 2000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (WFLR per period)
+          description: >
+            The amount of WFLR to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (WFLR)
+          description: >
+            The maximum amount of WFLR to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (WFLR)
+          description: >
+            The minimum amount of WFLR to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+    - deployment: flare-usdce-wflr
+      name: Sell WFLR for USDC.e on Flare.
+      description: >
+        Swap WFLR for USDC.e on Flare.
+      deposits:
+        - token: flare-wflr
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 500
+            - 1000
+            - 2000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (WFLR per period)
+          description: >
+            The amount of WFLR to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (WFLR)
+          description: >
+            The maximum amount of WFLR to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (WFLR)
+          description: >
+            The minimum amount of WFLR to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline USDC.e per WFLR
+          description: >
+            The absolute minimum amount of USDC.e per WFLR that the auction will trade at. (e.g. 0.02 USDC.e per WFLR)
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDC.e per WFLR
+          description: >
+            The initial USDC.e per WFLR to kickoff the first auction. (e.g. 0.02 USDC.e per WFLR)
+          min: 0
 ---
 #raindex-subparser !Raindex subparser.
+#subparser-0 !Subparser 0.
 
 #time-per-amount-epoch !Duration of one unit of streaming amount halflife.
 #amount-per-epoch !Amount of output token to approve for buying per epoch.
@@ -1051,10 +3754,15 @@ gui:
 #max-trade-amount !Each trade will be capped at this many tokens.
 
 #time-per-trade-epoch !Duration of one unit of io ratio halflife.
+#shy-epoch !Epoch below which only the minimum amount is offered.
 #baseline !Minimum io ratio. This component of the io ratio is ignored by the halflife calculations.
+
+#baseline-fn !Function to calculate the baseline for the next trade.
 
 #next-trade-multiplier !Start next auction at this x the last trade.
 #next-trade-baseline-multiplier !Lifts the baseline to here relative to the previous trade.
+
+#initial-io-fn !Function to calculate the initial io ratio for the first trade.
 #initial-io !Strat will be initialized with this as the starting last trade. Must be larger than baseline.
 
 #last-trade-time-key "last-trade-time"
@@ -1082,18 +3790,25 @@ initial-time: call<'get-initial-time>(),
 last-time _: call<'get-last-trade>(),
 duration: sub(now() any(last-time initial-time)),
 total-duration: sub(now() initial-time),
+ratio-freeze-amount-epochs: div(min-trade-amount amount-per-epoch),
+ratio-freeze-trade-epochs: mul(ratio-freeze-amount-epochs div(time-per-amount-epoch time-per-trade-epoch)),
 amount-epochs: div(total-duration time-per-amount-epoch),
-trade-epochs: div(duration time-per-trade-epoch);
+trade-epochs: saturating-sub(div(duration time-per-trade-epoch) ratio-freeze-trade-epochs);
 
 #amount-for-epoch
-amount-epochs:,
-total-available: linear-growth(min-trade-amount amount-per-epoch amount-epochs),
+amount-epochs
+trade-epochs:,
+total-available: linear-growth(0 amount-per-epoch amount-epochs),
 used: get(hash(order-hash() amount-used-key)),
 unused: sub(total-available used),
-capped-unused: min(unused max-trade-amount);
+decay: call<'halflife>(trade-epochs),
+shy-decay: every(greater-than(trade-epochs shy-epoch) decay),
+variable-component: sub(max-trade-amount min-trade-amount),
+target-amount: add(min-trade-amount mul(variable-component shy-decay)),
+capped-unused: min(unused target-amount);
 
 #halflife
-max-val epoch:,
+epoch:,
 /**
  * Shrinking the multiplier like this
  * then applying it 10 times allows for
@@ -1112,7 +3827,6 @@ multiplier:
   power(0.5 div(epoch 10)),
 val:
   mul(
-    max-val
     multiplier
     multiplier
     multiplier
@@ -1128,26 +3842,36 @@ val:
 #io-for-epoch
 epoch:,
 last-io: call<'get-last-trade>(),
-max-next-trade: any(mul(last-io next-trade-multiplier) initial-io),
+max-next-trade: any(mul(last-io next-trade-multiplier) call<'initial-io-fn>()),
 baseline-next-trade: mul(last-io next-trade-baseline-multiplier),
-real-baseline: max(baseline-next-trade baseline),
+real-baseline: max(baseline-next-trade call<'baseline-fn>()),
 variable-component: saturating-sub(max-next-trade real-baseline),
-above-baseline: call<'halflife>(variable-component epoch),
+above-baseline: mul(variable-component call<'halflife>(epoch)),
 _: add(real-baseline above-baseline);
 
+#constant-initial-io
+_: initial-io;
+
+#constant-baseline
+_: baseline;
+
+#sflr-baseline
+_: sflr-exchange-rate();
+
 #handle-add-order
-using-words-from raindex-subparser
+using-words-from raindex-subparser subparser-0
 :call<'set-initial-time>();
 
 #calculate-io
-using-words-from raindex-subparser
+using-words-from raindex-subparser subparser-0
 amount-epochs
 trade-epochs:call<'get-epoch>(),
-max-output: call<'amount-for-epoch>(amount-epochs),
+max-output: call<'amount-for-epoch>(amount-epochs trade-epochs),
 io: call<'io-for-epoch>(trade-epochs),
 :call<'set-last-trade>(io);
 
 #handle-io
-:ensure(greater-than-or-equal-to(output-vault-decrease() min-trade-amount) "Min trade amount."),
+min-amount: mul(min-trade-amount 0.9),
+:ensure(greater-than-or-equal-to(output-vault-decrease() min-amount) "Min trade amount."),
 used: get(hash(order-hash() amount-used-key)),
 :set(hash(order-hash() amount-used-key) add(used output-vault-decrease()));

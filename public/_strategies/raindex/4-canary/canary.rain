@@ -70,7 +70,7 @@ orders:
     network: arbitrum
     inputs:
       # Input is irrelevant because we always set the IO ratio to 0.
-      - token: arbitrum-usdt
+      - token: arbitrum-usdc
     outputs:
       - token: arbitrum-weth
 

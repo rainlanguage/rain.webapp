@@ -1455,7 +1455,7 @@ gui:
           description: >
             The initial MNW per USDC to kickoff the first auction (e.g. 2.2).
           min: 0.01
-    
+
     - deployment: polygon-usdce-gfi
       name: Sell GFI for USDC.e on Polygon.
       description: >
@@ -1997,15 +1997,7 @@ gui:
           name: Baseline TFT per BUSD
           description: >
             The absolute minimum amount of TFT per BUSD that the auction will trade at (e.g. 111.1358)
-          presets:
-            - name: 100
-              value: 100
-            - name: 50
-              value: 50
-            - name: 20
-              value: 20
-            - name: 10
-              value: 10
+          min: 1
         - binding: next-trade-multiplier
           name: Auction start multiplier
           description: >
@@ -2041,16 +2033,7 @@ gui:
           name: Kickoff TFT per BUSD
           description: >
             The initial TFT per BUSD to kickoff the first auction.
-          min: 80
-          presets:
-            - name: 80
-              value: 80
-            - name: 100
-              value: 100
-            - name: 120
-              value: 120
-            - name: 150
-              value: 150
+          min: 1
 
     - deployment: bsc-busd-tft
       name: Sell TFT for BUSD on BSC.

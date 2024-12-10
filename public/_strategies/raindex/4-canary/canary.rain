@@ -61,11 +61,11 @@ tokens:
     network: base
     address: 0x4200000000000000000000000000000000000006
     decimals: 18
-  arb-usdt:
+  arbitrum-usdc:
     network: arbitrum
-    address: 0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9
+    address: 0xaf88d065e77c8cC2239327C5EDb3A432268e5831
     decimals: 6
-  arb-weth:
+  arbitrum-weth:
     network: arbitrum
     address: 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1
     decimals: 18
@@ -92,16 +92,15 @@ orders:
     network: arbitrum
     inputs:
       # Input is irrelevant because we always set the IO ratio to 0.
-      - token: arb-usdt
+      - token: arbitrum-usdc
     outputs:
-      - token: arb-weth
+      - token: arbitrum-weth
   flare:
     orderbook: flare
     inputs:
       # Input is irrelevant because we always set the IO ratio to 0.
       - token: flare-usdt
     outputs:
-      - token: flare-wflr
 
 scenarios:
   base:
@@ -189,7 +188,7 @@ gui:
       description:
         A simple strategy that gives a bounty to the solver regularly.
       deposits:
-        - token: arb-weth
+        - token: arbitrum-weth
           min: 0
           presets:
             - 0

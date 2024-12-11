@@ -127,6 +127,7 @@ orders:
       - token: flare-wflr
   polygon:
     orderbook: polygon
+    network: polygon
     inputs:
       # Input is irrelevant because we always set the IO ratio to 0.
       - token: polygon-usdc

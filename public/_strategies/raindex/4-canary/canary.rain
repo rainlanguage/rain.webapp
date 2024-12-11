@@ -83,9 +83,9 @@ tokens:
     network: arbitrum
     address: 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1
     decimals: 18
-  flare-usdt:
+  flare-usdce:
     network: flare
-    address: 0x0B38e83B86d491735fEaa0a791F65c2B99535396
+    address: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
     decimals: 6
   flare-wflr:
     network: flare
@@ -119,9 +119,10 @@ orders:
       - token: arbitrum-weth
   flare:
     orderbook: flare
+    network: flare
     inputs:
       # Input is irrelevant because we always set the IO ratio to 0.
-      - token: flare-usdt
+      - token: flare-usdce
     outputs:
       - token: flare-wflr
   polygon:

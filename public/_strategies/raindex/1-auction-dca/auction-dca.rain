@@ -1600,7 +1600,7 @@ gui:
             The initial USDT per NHT to kickoff the first auction (e.g. 0.00038).
           min: 0
 
-    - deployment: polygon-mnw-usdt
+    - deployment: polygon-nht-usdt
       name: Buy NHT with USDT on Polygon.
       description: >
         DCA USDT for NHT on Polygon.

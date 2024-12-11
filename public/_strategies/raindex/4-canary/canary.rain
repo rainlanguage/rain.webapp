@@ -91,11 +91,11 @@ tokens:
     network: flare
     address: 0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d
     decimals: 18
-  polygon-usdt:
+  polygon-usdc:
     network: polygon
-    address: 0xc2132D05D31c914a87C6611C10748AEb04B58e8F
+    address: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
     decimals: 6
-  polygon-wpol:
+  polygon-wmatic:
     network: polygon
     address: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
     decimals: 18
@@ -129,9 +129,9 @@ orders:
     orderbook: polygon
     inputs:
       # Input is irrelevant because we always set the IO ratio to 0.
-      - token: polygon-usdt
+      - token: polygon-usdc
     outputs:
-      - token: polygon-wpol
+      - token: polygon-wmatic
 
 scenarios:
   base:
@@ -315,7 +315,7 @@ gui:
       description:
         A simple strategy that gives a bounty to the solver regularly.
       deposits:
-        - token: polygon-wpol
+        - token: polygon-wmatic
           min: 0
           presets:
             - 0

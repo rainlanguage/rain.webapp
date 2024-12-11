@@ -345,6 +345,7 @@ gui:
           presets:
             - value: 0.01
             - value: 0.02
+            - value: 0.05
         - binding: time-per-epoch
           name: Total auction duration in seconds.
           min: 1

@@ -136,6 +136,10 @@ tokens:
     network: ethereum
     address: 0x13E4b8CfFe704d3De6F19E52b201d92c21EC18bD
     decimals: 18
+  ethereum-mnw:
+    network: ethereum
+    address: 0xd3E4Ba569045546D09CF021ECC5dFe42b1d7f6E4
+    decimals: 18
   base-lucky:
     network: base
     address: 0x2C002ffEC41568d138Acc36f5894d6156398D539
@@ -306,6 +310,20 @@ orders:
       - token: ethereum-pai
     outputs:
       - token: ethereum-weth
+  ethereum-mnw-weth:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-mnw
+    outputs:
+      - token: ethereum-weth
+  ethereum-weth-mnw:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-weth
+    outputs:
+      - token: ethereum-mnw
   ethereum-lock-weth:
     orderbook: ethereum
     network: ethereum
@@ -538,6 +556,12 @@ deployments:
     scenario: ethereum
   ethereum-weth-pai:
     order: ethereum-weth-pai
+    scenario: ethereum
+  ethereum-mnw-weth:
+    order: ethereum-mnw-weth
+    scenario: ethereum
+  ethereum-weth-mnw:
+    order: ethereum-weth-mnw
     scenario: ethereum
   ethereum-lock-weth:
     order: ethereum-lock-weth
@@ -3034,6 +3058,189 @@ gui:
               value: 2000
             - name: 5000
               value: 5000
+
+    - deployment: ethereum-weth-mnw
+      name: Sell MNW for WETH on Ethereum.
+      description: >
+        Swap MNW for WETH on Ethereum mainnet.
+      deposits:
+        - token: ethereum-mnw
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+            - 5000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (MNW per period)
+          description: >
+            The amount of MNW to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (MNW)
+          description: >
+            The maximum amount of MNW to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (MNW)
+          description: >
+            The minimum amount of MNW to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline WETH per MNW
+          description: >
+            The absolute minimum amount of WETH per MNW that the auction will trade at. (e.g. 0.0001 WETH per MNW)
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff WETH per MNW
+          description: >
+            The initial WETH per MNW to kickoff the first auction. (e.g. 0.00015 WETH per MNW)
+          min: 0
+
+    - deployment: ethereum-mnw-weth
+      name: Sell WETH for MNW on Ethereum.
+      description: >
+        Swap WETH for MNW on Ethereum mainnet.
+      deposits:
+        - token: ethereum-weth
+          min: 0
+          presets:
+            - 0
+            - 0.1
+            - 0.5
+            - 1
+            - 2
+            - 5
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (WETH per period)
+          description: >
+            The amount of WETH to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (WETH)
+          description: >
+            The maximum amount of WETH to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (WETH)
+          description: >
+            The minimum amount of WETH to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline MNW per WETH
+          description: >
+            The absolute minimum amount of MNW per WETH that the auction will trade at. (e.g. 5000 MNW per WETH)
+          min: 0
+          presets:
+            - name: 500
+              value: 500
+            - name: 1000
+              value: 1000
+            - name: 2000
+              value: 2000
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff MNW per WETH
+          description: >
+            The initial MNW per WETH to kickoff the first auction. (e.g. 6300 MNW per WETH)
+          min: 0
 
     - deployment: ethereum-weth-lock
       name: Sell LOCK for WETH on Ethereum.

@@ -89,33 +89,33 @@ tokens:
     network: base
     address: 0x4200000000000000000000000000000000000006
     decimals: 18
-  arb-usdt:
+  arbitrum-usdc:
     network: arbitrum
-    address: 0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9
+    address: 0xaf88d065e77c8cC2239327C5EDb3A432268e5831
     decimals: 6
-  arb-weth:
+  arbitrum-weth:
     network: arbitrum
     address: 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1
     decimals: 18
-  flare-usdt:
+  flare-usdce:
     network: flare
-    address: 0x0B38e83B86d491735fEaa0a791F65c2B99535396
+    address: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
     decimals: 6
   flare-wflr:
     network: flare
     address: 0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d
     decimals: 18
-  polygon-usdt:
+  polygon-usdc:
     network: polygon
-    address: 0xc2132D05D31c914a87C6611C10748AEb04B58e8F
+    address: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
     decimals: 6
-  polygon-wpol:
+  polygon-wmatic:
     network: polygon
     address: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
     decimals: 18
-  bsc-usdt:
+  bsc-usdc:
     network: bsc
-    address: 0x55d398326f99059fF775485246999027B3197955
+    address: 0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d
     decimals: 18
   bsc-wbnb:
     network: bsc
@@ -136,23 +136,25 @@ orders:
     network: arbitrum
     inputs:
       # Input is irrelevant because we always set the IO ratio to 0.
-      - token: arb-usdt
+      - token: arbitrum-usdc
     outputs:
-      - token: arb-weth
+      - token: arbitrum-weth
   flare:
     orderbook: flare
+    network: flare
     inputs:
       # Input is irrelevant because we always set the IO ratio to 0.
-      - token: flare-usdt
+      - token: flare-usdce
     outputs:
       - token: flare-wflr
   polygon:
     orderbook: polygon
+    network: polygon
     inputs:
       # Input is irrelevant because we always set the IO ratio to 0.
-      - token: polygon-usdt
+      - token: polygon-usdc
     outputs:
-      - token: polygon-wpol
+      - token: polygon-wmatic
   bsc:
     orderbook: bsc
     inputs:
@@ -265,7 +267,7 @@ gui:
       description:
         A simple strategy that gives a bounty to the solver regularly.
       deposits:
-        - token: arb-weth
+        - token: arbitrum-weth
           min: 0
           presets:
             - 0
@@ -353,7 +355,7 @@ gui:
       description:
         A simple strategy that gives a bounty to the solver regularly.
       deposits:
-        - token: polygon-wpol
+        - token: polygon-wmatic
           min: 0
           presets:
             - 0
@@ -381,6 +383,9 @@ gui:
           min: 0
           presets:
             - value: 0.01
+            - value: 0.02
+            - value: 0.05
+            - value: 0.1
         - binding: time-per-epoch
           name: Total auction duration in seconds.
           min: 1
@@ -391,7 +396,7 @@ gui:
               value: 900
             - name: 1 hour
               value: 3600
-    
+
     - deployment: bsc
       name: Canary on BSC.
       description:

@@ -1,3 +1,4 @@
+
 raindex-version: 8898591f3bcaa21dc91dc3b8584330fc405eadfa
 
 gui:
@@ -477,6 +478,192 @@ gui:
             - 5000
             - 10000
             - 20000
+            
+    - deployment: polygon-usdt-nht
+      name: USDT<>NHT on Polygon.
+      description: Rotate USDT and NHT on Polygon.
+
+      fields:
+        - binding: is-fast-exit
+          name: Fast exit?
+          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: initial-io
+          name: Initial price (USDT per NHT)
+          description: The rough USD price you see for NHT on Dextools (e.g. 0.0004).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Maximum amount per auction (USDT)
+          description: The maximum amount of USDT that will be offered in a single auction.
+          min: 0
+          presets:
+            - value: 10
+            - value: 20
+            - value: 50
+            - value: 100
+            - value: 200
+        - binding: min-amount
+          name: Minimum amount per auction (USDT)
+          description: The minimum amount of USDT that will be offered in a single auction.
+          min: 0
+          presets:
+            - value: 10
+            - value: 20
+
+      deposits:
+        - token: polygon-usdt
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+            - 5000
+            - 10000
+        - token: polygon-nht
+          min: 0
+          presets:
+            - 0
+            - 100000
+            - 500000
+            - 1000000
+            - 2000000
+
+    - deployment: polygon-usdce-gfi
+      name: USDCe<>GFI on Polygon.
+      description: Rotate USDCe and GFI on Polygon.
+
+      fields:
+        - binding: is-fast-exit
+          name: Fast exit?
+          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: initial-io
+          name: Initial price (USDCe per GFI)
+          description: The rough USD price you see for GFI on Dextools (e.g. 0.0038).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Maximum amount per auction (USDCe)
+          description: The maximum amount of USDCe that will be offered in a single auction.
+          min: 0
+          presets:
+            - value: 10
+            - value: 20
+            - value: 50
+            - value: 100
+            - value: 200
+        - binding: min-amount
+          name: Minimum amount per auction (USDCe)
+          description: The minimum amount of USDCe that will be offered in a single auction.
+          min: 0
+          presets:
+            - value: 10
+            - value: 20
+
+      deposits:
+        - token: polygon-usdce
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+            - 5000
+            - 10000
+        - token: polygon-gfi
+          min: 0
+          presets:
+            - 0
+            - 10000
+            - 50000
+            - 100000
+            - 200000
 
 
     - deployment: base-usdc-weth
@@ -1837,6 +2024,107 @@ gui:
             - 0.5
             - 2
             - 4
+    
+    - deployment: ethereum-mnw-weth
+      name: MNW<>WETH on Ethereum.
+      description: Rotate MNW and WETH on Ethereum.
+
+      fields:
+        - binding: is-fast-exit
+          name: Fast exit?
+          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: initial-io
+          name: Initial price (WETH per MNW)
+          description: The rough WETH price you see for MNW on Dextools (e.g. 0.00015).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of WETH that will be offered in a single auction.
+          min: 1
+          presets:
+            - name: 1 WETH
+              value: 1
+            - name: 3 WETH
+              value: 3
+            - name: 5 WETH
+              value: 5
+            - name: 10 WETH
+              value: 10
+            - name: 20 WETH
+              value: 20
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of WETH that will be offered in a single auction.
+          min: 1
+          presets:
+            - name: 1 WETH
+              value: 1
+            - name: 1.25 WETH
+              value: 1.25
+            - name: 1.5 WETH
+              value: 1.5
+            - name: 2 WETH
+              value: 2
+      deposits:
+        - token: ethereum-mnw
+          min: 0
+          presets:
+            - 0
+            - 1000
+            - 5000
+            - 10000
+        - token: ethereum-weth
+          min: 0
+          presets:
+            - 0
+            - 0.5
+            - 2
+            - 4
+    
     - deployment: bsc-tft-busd
       name: BUSD<>TFT on BSC.
       description: Rotate BUSD and TFT on BSC.
@@ -2377,6 +2665,18 @@ scenarios:
           amount-token: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
           initial-output-token: 0x3c59798620e5fEC0Ae6dF1A19c6454094572Ab92
           initial-input-token: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
+      usdt-nht:
+        runs: 1
+        bindings:
+          amount-token: 0xc2132D05D31c914a87C6611C10748AEb04B58e8F
+          initial-output-token: 0x84342e932797FC62814189f01F0Fb05F52519708
+          initial-input-token: 0xc2132D05D31c914a87C6611C10748AEb04B58e8F
+      usdce-gfi:
+        runs: 1
+        bindings:
+          amount-token: 0x2791bca1f2de4661ed88a30c99a7a9449aa84174
+          initial-output-token: 0x874e178a2f3f3f9d34db862453cd756e7eab0381
+          initial-input-token: 0x2791bca1f2de4661ed88a30c99a7a9449aa84174
   bsc:
     orderbook: bsc
     runs: 1
@@ -2410,6 +2710,12 @@ scenarios:
         bindings:
           amount-token: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
           initial-output-token: 0x13E4b8CfFe704d3De6F19E52b201d92c21EC18bD
+          initial-input-token: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+      mnw-weth:
+        runs: 1
+        bindings:
+          amount-token: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+          initial-output-token: 0xd3E4Ba569045546D09CF021ECC5dFe42b1d7f6E4
           initial-input-token: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
   linea:
     orderbook: linea
@@ -2612,9 +2918,25 @@ tokens:
     network: polygon
     address: 0x3c59798620e5fEC0Ae6dF1A19c6454094572Ab92
     decimals: 18
+  polygon-gfi:
+    network: polygon
+    address: 0x874e178a2f3f3f9d34db862453cd756e7eab0381
+    decimals: 18
   polygon-usdc:
     network: polygon
     address: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
+    decimals: 6
+  polygon-usdt:
+    network: polygon
+    address: 0xc2132D05D31c914a87C6611C10748AEb04B58e8F
+    decimals: 6
+  polygon-nht:
+    network: polygon
+    address: 0x84342e932797FC62814189f01F0Fb05F52519708
+    decimals: 18
+  polygon-usdce:
+    network: polygon
+    address: 0x2791bca1f2de4661ed88a30c99a7a9449aa84174
     decimals: 6
   bsc-tft:
     network: bsc
@@ -2635,6 +2957,10 @@ tokens:
   ethereum-pai:
     network: ethereum
     address: 0x13E4b8CfFe704d3De6F19E52b201d92c21EC18bD
+    decimals: 18
+  ethereum-mnw:
+    network: ethereum
+    address: 0xd3E4Ba569045546D09CF021ECC5dFe42b1d7f6E4
     decimals: 18
   ethereum-weth:
     network: ethereum
@@ -2811,6 +3137,24 @@ orders:
     outputs:
       - token: polygon-usdc
       - token: polygon-mnw
+  polygon-usdt-nht:
+    network: polygon
+    orderbook: polygon
+    inputs:
+      - token: polygon-usdt
+      - token: polygon-nht
+    outputs:
+      - token: polygon-usdt
+      - token: polygon-nht
+  polygon-usdce-gfi:
+    network: polygon
+    orderbook: polygon
+    inputs:
+      - token: polygon-usdce
+      - token: polygon-gfi
+    outputs:
+      - token: polygon-usdce
+      - token: polygon-gfi
   bsc-tft-busd:
     network: bsc
     orderbook: bsc
@@ -2846,6 +3190,15 @@ orders:
       - token: ethereum-weth
     outputs:
       - token: ethereum-pai
+      - token: ethereum-weth
+  ethereum-mnw-weth:
+    network: ethereum
+    orderbook: ethereum
+    inputs:
+      - token: ethereum-mnw
+      - token: ethereum-weth
+    outputs:
+      - token: ethereum-mnw
       - token: ethereum-weth
   linea-clip-weth:
     network: linea
@@ -2918,6 +3271,12 @@ deployments:
   polygon-usdc-mnw:
     order: polygon-usdc-mnw
     scenario: polygon.usdc-mnw
+  polygon-usdt-nht:
+    order: polygon-usdt-nht
+    scenario: polygon.usdt-nht
+  polygon-usdce-gfi:
+    order: polygon-usdce-gfi
+    scenario: polygon.usdce-gfi
   bsc-tft-busd:
     order: bsc-tft-busd
     scenario: bsc.tft-busd
@@ -2930,6 +3289,9 @@ deployments:
   ethereum-pai-weth:
     order: ethereum-pai-weth
     scenario: ethereum.pai-weth
+  ethereum-mnw-weth:
+    order: ethereum-mnw-weth
+    scenario: ethereum.mnw-weth
   linea-clip-weth:
     order: linea-clip-weth
     scenario: linea.clip-weth

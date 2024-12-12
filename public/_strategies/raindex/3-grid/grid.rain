@@ -141,47 +141,45 @@ orders:
       - token: polygon-ioen
 
 scenarios:
-  base:
-    orderbook: base
+  simple:
     runs: 1
     bindings:
-      raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       tranche-space-min-headroom: 0.25
-  ethereum:
-    orderbook: ethereum
-    runs: 1
-    bindings:
-      raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
-      tranche-space-min-headroom: 0.25
-  bsc:
-    orderbook: bsc
-    runs: 1
-    bindings:
-      raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
-      tranche-space-min-headroom: 0.25
-  polygon:
-    orderbook: polygon
-    runs: 1
-    bindings:
-      raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
-      tranche-space-min-headroom: 0.25
+      tranche-space-recharge-delay: 300
+    scenarios:
+      base:
+        orderbook: base
+        bindings:
+          raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+      ethereum:
+        orderbook: ethereum
+        bindings:
+          raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
+      bsc:
+        orderbook: bsc
+        bindings:
+          raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+      polygon:
+        orderbook: polygon
+        bindings:
+          raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
 
 deployments:
   base-usdc-weth:
     order: base-usdc-weth
-    scenario: base
+    scenario: simple.base
   ethereum-weth-pai:
     order: ethereum-weth-pai
-    scenario: ethereum
+    scenario: simple.ethereum
   ethereum-weth-mnw:
     order: ethereum-weth-mnw
-    scenario: ethereum
+    scenario: simple.ethereum
   bsc-busd-tft:
     order: bsc-busd-tft
-    scenario: bsc
+    scenario: simple.bsc
   polygon-usdc-ioen:
     order: polygon-usdc-ioen
-    scenario: polygon
+    scenario: simple.polygon
 
 gui:
   name: Grid
@@ -210,6 +208,20 @@ gui:
         - binding: tranche-size
           name: Tranche size in ETH (e.g. 1)
           min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
 
     - deployment: ethereum-weth-pai
       name: Grid sell PAI for WETH on Ethereum.
@@ -232,6 +244,20 @@ gui:
         - binding: tranche-size
           name: Tranche size in PAI (e.g. 1000)
           min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
 
     - deployment: ethereum-weth-mnw
       name: Grid sell MNW for WETH on Ethereum.
@@ -254,6 +280,20 @@ gui:
         - binding: tranche-size
           name: Tranche size in MNW (e.g. 2000)
           min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
 
     - deployment: bsc-busd-tft
       name: Grid sell TFT for BUSD on BSC.
@@ -277,6 +317,20 @@ gui:
         - binding: tranche-size
           name: Tranche size in TFT (e.g. 1000)
           min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
 
     - deployment: polygon-usdc-ioen
       name: Grid sell IOEN for USDC on Polygon.
@@ -300,7 +354,20 @@ gui:
         - binding: tranche-size
           name: Tranche size in IOEN (e.g. 100000)
           min: 0
-
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
 ---
 
 #raindex-subparser !The subparser for Raindex.
@@ -348,7 +415,7 @@ gui:
   last-trade-time: call<'get-last-trade-time>(),
   current-time: now(),
   recharge-duration: saturating-sub(current-time add(last-trade-time tranche-space-recharge-delay)),
-  recharged-tranche-space: div(recharge-duration seconds-per-tranche),
+  recharged-tranche-space: every(seconds-per-tranche div(recharge-duration any(seconds-per-tranche max-value()))),
   tranche-space-now: saturating-sub(last-tranche-space recharged-tranche-space),
   current-tranche-floor: floor(tranche-space-now),
   current-tranche-headroom: headroom(tranche-space-now),

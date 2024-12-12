@@ -157,9 +157,10 @@ orders:
       - token: polygon-wmatic
   bsc:
     orderbook: bsc
+    network: bsc
     inputs:
       # Input is irrelevant because we always set the IO ratio to 0.
-      - token: bsc-usdt
+      - token: bsc-usdc
     outputs:
       - token: bsc-wbnb
 

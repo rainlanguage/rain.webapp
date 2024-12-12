@@ -9,7 +9,7 @@ networks:
   ethereum:
     rpc: https://rpc.ankr.com/eth
     chain-id: 1
-    network-id: 1 
+    network-id: 1
     currency: ETH
   bsc:
     rpc: https://rpc.ankr.com/bsc
@@ -210,7 +210,7 @@ gui:
         - binding: tranche-size
           name: Tranche size in ETH (e.g. 1)
           min: 0
-          
+
     - deployment: ethereum-weth-pai
       name: Grid sell PAI for WETH on Ethereum.
       description:
@@ -253,7 +253,7 @@ gui:
           min: 0
         - binding: tranche-size
           name: Tranche size in MNW (e.g. 2000)
-          min: 0  
+          min: 0
 
     - deployment: bsc-busd-tft
       name: Grid sell TFT for BUSD on BSC.
@@ -310,6 +310,8 @@ gui:
 #tranche-size !The size of each tranche in amount token.
 
 #tranche-space-min-headroom !The minimum headroom for the tranche space.
+#tranche-space-recharge-delay !The delay before the tranche space recharges.
+#seconds-per-tranche !The number of seconds per tranche to recharge.
 
 #handle-add-order
 :;
@@ -343,8 +345,13 @@ gui:
 
 #calculate-tranche
   last-tranche-space: call<'get-last-tranche-space>(),
-  current-tranche-floor: floor(last-tranche-space),
-  current-tranche-headroom: headroom(last-tranche-space),
+  last-trade-time: call<'get-last-trade-time>(),
+  current-time: now(),
+  recharge-duration: saturating-sub(current-time add(last-trade-time tranche-space-recharge-delay)),
+  recharged-tranche-space: div(recharge-duration seconds-per-tranche),
+  tranche-space-now: saturating-sub(last-tranche-space recharged-tranche-space),
+  current-tranche-floor: floor(tranche-space-now),
+  current-tranche-headroom: headroom(tranche-space-now),
   tranche-total-size: tranche-size;
 
 #linear-growth
@@ -357,3 +364,9 @@ gui:
 #set-last-tranche-space
   tranche-space:,
   :set(order-hash() tranche-space);
+
+#get-last-trade-time
+  _: get(hash(order-hash()));
+
+#set-last-trade-time
+  :set(hash(order-hash()) now());

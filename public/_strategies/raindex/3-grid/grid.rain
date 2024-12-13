@@ -9,7 +9,7 @@ networks:
   ethereum:
     rpc: https://rpc.ankr.com/eth
     chain-id: 1
-    network-id: 1 
+    network-id: 1
     currency: ETH
   bsc:
     rpc: https://rpc.ankr.com/bsc
@@ -23,7 +23,7 @@ networks:
     currency: POL
 
 subgraphs:
-  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
+  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/2024-12-13-9c39/gn
   ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn
   bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
   polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
@@ -228,7 +228,7 @@ gui:
         - binding: tranche-size
           name: Tranche size in ETH (e.g. 1)
           min: 0
-          
+
     - deployment: ethereum-weth-pai
       name: Grid sell PAI for WETH on Ethereum.
       description:
@@ -271,7 +271,7 @@ gui:
           min: 0
         - binding: tranche-size
           name: Tranche size in MNW (e.g. 2000)
-          min: 0  
+          min: 0
 
     - deployment: bsc-busd-tft
       name: Grid sell TFT for BUSD on BSC.
@@ -339,7 +339,7 @@ gui:
           min: 0
         - binding: tranche-size
           name: Tranche size in MNW (e.g. 2000)
-          min: 0  
+          min: 0
 
 
 ---

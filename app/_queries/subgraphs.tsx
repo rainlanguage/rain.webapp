@@ -16,7 +16,7 @@ export const getNetworkSubgraphs = (): Network[] => {
 			chainId: 8453,
 			name: 'base',
 			subgraphUrl:
-				'https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.9/gn'
+				'https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/2024-12-13-9c39/gn'
 		},
 		{
 			chainId: 56,

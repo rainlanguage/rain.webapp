@@ -74,7 +74,7 @@ metaboards:
   flare-dca: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
 
 subgraphs:
-  flare-dca: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/2024-12-13-9dc7/gn
+  flare-dca: ''
 
 orderbooks:
   flare-dca:

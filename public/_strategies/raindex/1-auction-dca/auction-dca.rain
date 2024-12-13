@@ -1712,8 +1712,6 @@ gui:
             The initial MNW per WETH to kickoff the first auction (e.g. 7460).
           min: 0
 
-
-
     - deployment: polygon-usdce-gfi
       name: Sell GFI for USDC.e on Polygon.
       description: >

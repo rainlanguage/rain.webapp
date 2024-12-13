@@ -26,7 +26,7 @@ networks:
     currency: ETH
 
 subgraphs:
-  base-community: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/2024-12-13-9c39/gn
+  base-community: ''
 
 orderbooks:
   base-community:

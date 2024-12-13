@@ -102,6 +102,14 @@ tokens:
     network: polygon
     address: 0xd0e9c8f5Fae381459cf07Ec506C1d2896E8b5df6
     decimals: 18
+  polygon-weth:
+    network: polygon
+    address: 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619
+    decimals: 18
+  polygon-mnw:
+    network: polygon
+    address: 0x3c59798620e5fEC0Ae6dF1A19c6454094572Ab92
+    decimals: 18
 
 orders:
   base-usdc-weth:
@@ -125,6 +133,13 @@ orders:
       - token: ethereum-weth
     outputs:
       - token: ethereum-mnw
+  polygon-weth-mnw:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-weth
+    outputs:
+      - token: polygon-mnw
   bsc-busd-tft:
     orderbook: bsc
     network: bsc
@@ -181,6 +196,9 @@ deployments:
     scenario: bsc
   polygon-usdc-ioen:
     order: polygon-usdc-ioen
+    scenario: polygon
+  polygon-weth-mnw:
+    order: polygon-weth-mnw
     scenario: polygon
 
 gui:
@@ -300,6 +318,29 @@ gui:
         - binding: tranche-size
           name: Tranche size in IOEN (e.g. 100000)
           min: 0
+
+    - deployment: polygon-weth-mnw
+      name: Grid sell MNW for WETH on Polygon.
+      description:
+        Grid sell MNW for WETH on Polygon Mainnet.
+      deposits:
+        - token: polygon-mnw
+          min: 0
+          presets:
+            - 1000
+            - 10000
+            - 100000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline WETH per MNW (e.g. 0.00012)
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 0.00001)
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in MNW (e.g. 2000)
+          min: 0  
+
 
 ---
 

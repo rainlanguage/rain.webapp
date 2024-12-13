@@ -26,7 +26,7 @@ networks:
     currency: ETH
 
 subgraphs:
-  base-community: ''
+  base-community: https://example.com/subgraph
 
 orderbooks:
   base-community:

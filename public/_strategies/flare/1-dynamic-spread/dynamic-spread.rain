@@ -99,7 +99,7 @@ networks:
 metaboards:
   flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
 subgraphs:
-  flare: ''
+  flare: https://example.com/subgraph
 orderbooks:
   flare:
     address: 0xCEe8Cd002F151A536394E564b84076c41bBBcD4d

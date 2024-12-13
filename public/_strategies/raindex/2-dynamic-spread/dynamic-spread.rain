@@ -2877,13 +2877,13 @@ metaboards:
   linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-linea-0xed7d6156/1.0.0/gn
 
 subgraphs:
-  flare: ''
-  base: ''
-  arbitrum: ''
-  polygon: ''
-  bsc: ''
-  ethereum: ''
-  linea: ''
+  flare: https://example.com/subgraph
+  base: https://example.com/subgraph
+  arbitrum: https://example.com/subgraph
+  polygon: https://example.com/subgraph
+  bsc: https://example.com/subgraph
+  ethereum: https://example.com/subgraph
+  linea: https://example.com/subgraph
 
 orderbooks:
   flare:

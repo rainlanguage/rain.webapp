@@ -23,10 +23,10 @@ networks:
     currency: POL
 
 subgraphs:
-  base: ''
-  ethereum: ''
-  bsc: ''
-  polygon: ''
+  base: https://example.com/subgraph
+  ethereum: https://example.com/subgraph
+  bsc: https://example.com/subgraph
+  polygon: https://example.com/subgraph
 
 metaboards:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn

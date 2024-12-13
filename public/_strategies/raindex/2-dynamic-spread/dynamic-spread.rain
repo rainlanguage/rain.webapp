@@ -570,7 +570,7 @@ gui:
             - 5000
             - 10000
             - 20000
-            
+
     - deployment: polygon-usdt-nht
       name: USDT<>NHT on Polygon.
       description: Rotate USDT and NHT on Polygon.
@@ -1726,7 +1726,7 @@ gui:
             - 0.01
             - 50
             - 100
-    
+
     - deployment: flare-sflr-joule
       name: sFLR<>JOULE on Flare.
       description: Rotate sFLR (Sceptre staked FLR) and JOULE on Flare.
@@ -2116,7 +2116,7 @@ gui:
             - 0.5
             - 2
             - 4
-    
+
     - deployment: ethereum-mnw-weth
       name: MNW<>WETH on Ethereum.
       description: Rotate MNW and WETH on Ethereum.
@@ -2216,7 +2216,7 @@ gui:
             - 0.5
             - 2
             - 4
-    
+
     - deployment: bsc-tft-busd
       name: BUSD<>TFT on BSC.
       description: Rotate BUSD and TFT on BSC.
@@ -2877,7 +2877,7 @@ metaboards:
   linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-linea-0xed7d6156/1.0.0/gn
 
 subgraphs:
-  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
+  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/2024-12-13-9dc7/gn
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
   arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
   polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn

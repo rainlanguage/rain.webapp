@@ -3406,7 +3406,7 @@ gui:
           min: 0
 
     - deployment: ethereum-mnw-weth
-      name: Sell WETH for MNW on Ethereum.
+      name: Buy MNW for WETH on Ethereum.
       description: >
         Swap WETH for MNW on Ethereum mainnet.
       deposits:

@@ -3,7 +3,7 @@ raindex-version: ef0670ae29fa4f03fa04e1cb0252714209392699
 gui:
   name: Two-sided dynamic spread strategies
   description: The dynamic spread strategy for market-making uses time-based adjustments to maintain liquidity by narrowing spreads as market conditions stabilize, while recalculating averages and trade sizes to mitigate risks during trends.
-  deployments: 
+  deployments:
     - deployment: clip-weth
       name: CLIP/WETH
       description: This will rotate CLIP and WETH.
@@ -84,17 +84,17 @@ gui:
             - 100
 
 networks:
-  linea: 
+  linea:
     rpc: https://rpc.linea.build
     chain-id: 59144
     network-id: 59144
     currency: ETH
 subgraphs:
-  linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-linea/0.1/gn
+  linea: https://example.com/subgraph
 metaboards:
   linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-linea-0xed7d6156/1.0.0/gn
 orderbooks:
-  linea: 
+  linea:
     address: 0x22410e2a46261a1B1e3899a072f303022801C764
     network: linea
     subgraph: linea

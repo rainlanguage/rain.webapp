@@ -1,14 +1,14 @@
 # Strategy: Streaming DCA
 # Strategy cost averages output token against the input token for an input-ouput token pair,
-# buy offering tokens at a fixed rate per unit time which can be provided in the bindings, along with a minimum 
+# buy offering tokens at a fixed rate per unit time which can be provided in the bindings, along with a minimum
 # io-ratio for the order.
 # Bounty auction to pay for gas denominated in input token terms, with a min and max bounty offered for the trade.
 # Since the strategy has a per-second budget, any external order taker can offer any amount of input token and
-# take the output tokens from the orderbook provided the trade pays for the gas as well. So even if multiple order 
-# takers come in and try to take the order, the strategy just cost averages the tokens for a taker and 
+# take the output tokens from the orderbook provided the trade pays for the gas as well. So even if multiple order
+# takers come in and try to take the order, the strategy just cost averages the tokens for a taker and
 # calculates the budget amount for next. This prevents external takers to DDos the order as ouput amount is calculated
 # for each taker individually.
-# 
+#
 # Target Network: Base
 # Quote (Input / Incoming): USDC or WLTH
 # Base (Output / Outgoing): WLTH or USDC
@@ -19,15 +19,15 @@
 # Liquidity pool fee: 0.3%
 
 networks:
-  base-community: 
-    rpc: https://mainnet.base.org 
-    chain-id: 8453 
-    network-id: 8453 
+  base-community:
+    rpc: https://mainnet.base.org
+    chain-id: 8453
+    network-id: 8453
     currency: ETH
 
 subgraphs:
-  base-community: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.1/gn
-  
+  base-community: https://example.com/subgraph
+
 orderbooks:
   base-community:
     address: 0xA2f56F8F74B7d04d61f281BE6576b6155581dcBA
@@ -100,18 +100,18 @@ scenarios:
               # If the order's input-output token are paired on the uniswap v3 pool, then set to identity
               # If the order's input-output token are NOT paired on the uniswap v3 pool, then set to reserve.
               quote-multiplier: '''quote-multiplier-identity'
-    
+
               # Number of output tokens offered per day.
               per-day-output: 10000
-    
+
               # Unix timestamp for strating of the strategy.
               # Ideally set it 15 minutes ahead of the whatever the timestamp is while you're deploying the order.
               # https://www.epochconverter.com/
               strat-start-time: 1723131051
-                                
+
               # Bounty amount denominated in input tokens
               #
-              # Minimum bounty offered in input token denominations. 
+              # Minimum bounty offered in input token denominations.
               bounty-min: 0.02
               # Maximum bounty offered in input token denominations.
               bounty-max: 1
@@ -119,18 +119,18 @@ scenarios:
               auction-start-time: 300
               # Number of seconds for which bounty auction will last.
               auction-duration: 1800
-    
+
               # Uniswap v3 pool fees to calcualte budget from the pool.
               # Uniswap v3 pool fees of pool which the output token is paired with.
               # If the order's input-output tokens are NOT paired on the uniswap v3 pool, then fee is the pool fee for output-reserve token pool.
               # If the order's input-output tokens are paired on the uniswap v3 pool, then fee is the pool fee for output-input token pool.
               twap-io-fee: '[uniswap-v3-fee-medium]'
-              
+
               # Uniswap v3 pool fees to calcualte multiplier for the io-ratio.
               # If the order's input-output tokens are NOT paired on the uniswap v3 pool, then fee is the pool fee for input-reserve token pool.
               # If the order's input-output tokens are paired on the uniswap v3 pool, then this binding is irrelevant.
               twap-multiplier-fee: '[uniswap-v3-fee-low]'
-    
+
             scenarios:
               prod:
                 bindings:
@@ -171,7 +171,7 @@ scenarios:
               # If the order's input-output token are paired on the uniswap v3 pool, then set to identity
               # If the order's input-output token are NOT paired on the uniswap v3 pool, then set to reserve.
               quote-multiplier: '''quote-multiplier-identity'
-    
+
               # Unix timestamp for strating of the strategy.
               # Ideally set it 15 minutes ahead of the whatever the timestamp is while you're deploying the order.
               # https://www.epochconverter.com/
@@ -179,7 +179,7 @@ scenarios:
 
               # Bounty amount denominated in input tokens
               #
-              # Minimum bounty offered in input token denominations. 
+              # Minimum bounty offered in input token denominations.
               bounty-min: 1.77
               # Maximum bounty offered in input token denominations.
               bounty-max: 88
@@ -193,7 +193,7 @@ scenarios:
               # If the order's input-output tokens are NOT paired on the uniswap v3 pool, then fee is the pool fee for output-reserve token pool.
               # If the order's input-output tokens are paired on the uniswap v3 pool, then fee is the pool fee for output-input token pool.
               twap-io-fee: '[uniswap-v3-fee-medium]'
-              
+
               # Uniswap v3 pool fees to calcualte multiplier for the io-ratio.
               # If the order's input-output tokens are NOT paired on the uniswap v3 pool, then fee is the pool fee for input-reserve token pool.
               # If the order's input-output tokens are paired on the uniswap v3 pool, then this binding is irrelevant.
@@ -216,16 +216,16 @@ scenarios:
                   min-ratio: 10
                   plottables: '''plottables-plot'
                   get-last-time: '''get-last-time-plot'
-                  ensure-ratio: '''ensure-ratio-plot'  
+                  ensure-ratio: '''ensure-ratio-plot'
                   per-day-output: 120
-                  
+
               test:
                 bindings:
                   min-ratio: 100
                   plottables: '''plottables-prod'
                   get-last-time: '''get-last-time-prod'
-                  ensure-ratio: '''ensure-ratio-prod'      
-                  per-day-output: 120        
+                  ensure-ratio: '''ensure-ratio-prod'
+                  per-day-output: 120
 
 charts:
   sell-streaming-dca:
@@ -336,15 +336,15 @@ gui:
             - 0.01
             - 50
             - 100
-    
-      
+
+
 deployments:
   base-wlth-dca:
     scenario: streaming-dca.sell-wlth.prod
-    order: base-wlth-sell    
+    order: base-wlth-sell
   base-usdc-dca:
     scenario: streaming-dca.buy-wlth.prod
-    order: base-wlth-buy    
+    order: base-wlth-buy
 ---
 #input-token-address !Order input token address.
 #output-token-address !Order output token address.
@@ -357,7 +357,7 @@ deployments:
 #auction-start-time !Minimum time elapsed before the auction begans.
 #auction-duration !Total time for which the auction lasts.
 #bounty-min !Minimum bounty to offer for each trade in USD.
-#bounty-max !Maximum bounty that can be offered. 
+#bounty-max !Maximum bounty that can be offered.
 
 #per-day-output !The rate of stable denominated distributed tokens distributed per second.
 #strat-start-time !Strategy start timestamp
@@ -444,7 +444,7 @@ deployments:
 #quote-multiplier-reserve
   reserve-amount: ,
   reserve-to-input: uniswap-v3-quote-exact-input(
-    reserve-token-address input-token-address 
+    reserve-token-address input-token-address
     reserve-amount
     uniswap-v3-factory uniswap-v3-init-code
     twap-multiplier-fee
@@ -452,8 +452,8 @@ deployments:
 
 #calculate-io
   using-words-from uniswap-words orderbook-subparser
-  
-  current-time last-time: call<'get-last-time>(), 
+
+  current-time last-time: call<'get-last-time>(),
   elapsed-time: saturating-sub(current-time last-time),
   current-budget: mul(per-day-output div(elapsed-time 86400)),
   bounty-amount: call<'bounty-auction>(current-time last-time),

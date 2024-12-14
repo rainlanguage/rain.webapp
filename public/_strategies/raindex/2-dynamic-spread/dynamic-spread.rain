@@ -570,7 +570,7 @@ gui:
             - 5000
             - 10000
             - 20000
-            
+
     - deployment: polygon-usdt-nht
       name: USDT<>NHT on Polygon.
       description: Rotate USDT and NHT on Polygon.
@@ -1726,7 +1726,7 @@ gui:
             - 0.01
             - 50
             - 100
-    
+
     - deployment: flare-sflr-joule
       name: sFLR<>JOULE on Flare.
       description: Rotate sFLR (Sceptre staked FLR) and JOULE on Flare.
@@ -2116,7 +2116,7 @@ gui:
             - 0.5
             - 2
             - 4
-    
+
     - deployment: ethereum-mnw-weth
       name: MNW<>WETH on Ethereum.
       description: Rotate MNW and WETH on Ethereum.
@@ -2216,7 +2216,7 @@ gui:
             - 0.5
             - 2
             - 4
-    
+
     - deployment: bsc-tft-busd
       name: BUSD<>TFT on BSC.
       description: Rotate BUSD and TFT on BSC.
@@ -2877,13 +2877,13 @@ metaboards:
   linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-linea-0xed7d6156/1.0.0/gn
 
 subgraphs:
-  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
-  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
-  arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
-  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
-  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
-  ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn
-  linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-linea/2024-10-14-12fc/gn
+  flare: https://example.com/subgraph
+  base: https://example.com/subgraph
+  arbitrum: https://example.com/subgraph
+  polygon: https://example.com/subgraph
+  bsc: https://example.com/subgraph
+  ethereum: https://example.com/subgraph
+  linea: https://example.com/subgraph
 
 orderbooks:
   flare:

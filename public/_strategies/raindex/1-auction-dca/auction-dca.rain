@@ -176,6 +176,12 @@ tokens:
     network: flare
     address: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
     decimals: 6
+  flare-cysflr:
+    network: flare
+    address: 0x19831cfB53A0dbeAD9866C43557C1D48DfF76567
+  flare-cusdx:
+    network: flare
+    address: 0xFE2907DFa8DB6e320cDbF45f0aa888F6135ec4f8
   polygon-usdc:
     network: polygon
     address: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
@@ -384,6 +390,13 @@ orders:
       - token: flare-usdce
     outputs:
       - token: flare-wflr
+  flare-cysflr-cusdx:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-cysflr
+    outputs:
+      - token: flare-cusdx
   polygon-usdc-mnw:
     orderbook: polygon
     network: polygon
@@ -610,6 +623,9 @@ deployments:
     scenario: flare-sflr-baseline
   flare-usdce-wflr:
     order: flare-usdce-wflr
+    scenario: flare
+  flare-cysflr-cusdx:
+    order: flare-cysflr-cusdx
     scenario: flare
 
 gui:
@@ -4054,6 +4070,72 @@ gui:
             The initial LOCK per USDT to kickoff the first auction. (e.g. 0.9 LOCK per USDT)
           min: 0
 
+    - deployment: flare-cysflr-cusdx
+      name: Sell cUSDX for cysFLR on Flare.
+      description: >
+        Swap cUSDX for cysFLR on Flare.
+      deposits:
+        - token: flare-cusdx
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 500
+            - 1000
+            - 2000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (cUSDX per period)
+          description: >
+            The amount of cUSDX to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (cUSDX)
+          description: >
+            The maximum amount of cUSDX to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (cUSDX)
+          description: >
+            The minimum amount of cUSDX to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
     - deployment: flare-sflr-wflr
       name: Sell WFLR for SFLR on Flare based on underlying collateral.
       description: >

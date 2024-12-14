@@ -41,12 +41,12 @@ metaboards:
   polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-polygon/0.1/gn
 
 subgraphs:
-  arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
-  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
-  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.1/gn
-  ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn
-  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
-  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
+  arbitrum: https://example.com/subgraph
+  bsc: https://example.com/subgraph
+  base: https://example.com/subgraph
+  ethereum: https://example.com/subgraph
+  flare: https://example.com/subgraph
+  polygon: https://example.com/subgraph
 
 orderbooks:
   arbitrum:
@@ -176,6 +176,12 @@ tokens:
     network: flare
     address: 0xfbda5f676cb37624f28265a144a48b0d6e87d3b6
     decimals: 6
+  flare-cysflr:
+    network: flare
+    address: 0x19831cfB53A0dbeAD9866C43557C1D48DfF76567
+  flare-cusdx:
+    network: flare
+    address: 0xFE2907DFa8DB6e320cDbF45f0aa888F6135ec4f8
   polygon-usdc:
     network: polygon
     address: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
@@ -183,6 +189,10 @@ tokens:
   polygon-mnw:
     network: polygon
     address: 0x3c59798620e5fEC0Ae6dF1A19c6454094572Ab92
+    decimals: 18
+  polygon-weth:
+    network: polygon
+    address: 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619
     decimals: 18
   polygon-usdce:
     network: polygon
@@ -380,6 +390,13 @@ orders:
       - token: flare-usdce
     outputs:
       - token: flare-wflr
+  flare-cysflr-cusdx:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-cysflr
+    outputs:
+      - token: flare-cusdx
   polygon-usdc-mnw:
     orderbook: polygon
     network: polygon
@@ -394,6 +411,20 @@ orders:
       - token: polygon-mnw
     outputs:
       - token: polygon-usdc
+  polygon-weth-mnw:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-weth
+    outputs:
+      - token: polygon-mnw
+  polygon-mnw-weth:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-mnw
+    outputs:
+      - token: polygon-weth
   polygon-gfi-usdce:
     orderbook: polygon
     network: polygon
@@ -512,6 +543,12 @@ deployments:
   polygon-usdc-mnw:
     order: polygon-usdc-mnw
     scenario: polygon
+  polygon-mnw-weth:
+    order: polygon-mnw-weth
+    scenario: polygon
+  polygon-weth-mnw:
+    order: polygon-weth-mnw
+    scenario: polygon
   polygon-gfi-usdce:
     order: polygon-gfi-usdce
     scenario: polygon
@@ -586,6 +623,9 @@ deployments:
     scenario: flare-sflr-baseline
   flare-usdce-wflr:
     order: flare-usdce-wflr
+    scenario: flare
+  flare-cysflr-cusdx:
+    order: flare-cysflr-cusdx
     scenario: flare
 
 gui:
@@ -1455,6 +1495,238 @@ gui:
           description: >
             The initial MNW per USDC to kickoff the first auction (e.g. 2.2).
           min: 0.01
+
+    - deployment: polygon-weth-mnw
+      name: Sell MNW for WETH on Polygon.
+      description: >
+        DCA MNW for WETH on Polygon.
+      deposits:
+        - token: polygon-mnw
+          min: 0
+          presets:
+            - 0
+            - 1000
+            - 2000
+            - 10000
+            - 20000
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (MNW per period)
+          description: >
+            The amount of MNW to spend each budget period.
+
+            For example, if the budget is daily and this is 1000 then 1000 MNW will be sold for WETH each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (MNW)
+          description: >
+            The maximum amount of MNW to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (MNW)
+          description: >
+            The minimum amount of MNW to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline WETH per MNW
+          description: >
+            The absolute minimum amount of WETH per MNW that the auction will trade at (e.g. 0.00012).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff WETH per MNW
+          description: >
+            The initial WETH per MNW to kickoff the first auction (e.g. 0.00012).
+          min: 0
+
+    - deployment: polygon-mnw-weth
+      name: Buy MNW with WETH on Polygon.
+      description: >
+        DCA WETH for MNW on Polygon.
+      deposits:
+        - token: polygon-weth
+          min: 0
+          presets:
+            - 0
+            - 0.1
+            - 0.5
+            - 1
+            - 1.5
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (WETH per period)
+          description: >
+            The amount of WETH to spend each budget period.
+
+            For example, if the budget is daily and this is 100 then 100 WETH will be sold for MNW each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (WETH)
+          description: >
+            The maximum amount of WETH to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (WETH)
+          description: >
+            The minimum amount of WETH to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline MNW per WETH
+          description: >
+            The absolute minimum amount of MNW per WETH that the auction will trade at (e.g. 6000).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff MNW per WETH
+          description: >
+            The initial MNW per WETH to kickoff the first auction (e.g. 7460).
+          min: 0
 
     - deployment: polygon-usdce-gfi
       name: Sell GFI for USDC.e on Polygon.
@@ -3148,7 +3420,7 @@ gui:
           min: 0
 
     - deployment: ethereum-mnw-weth
-      name: Sell WETH for MNW on Ethereum.
+      name: Buy MNW for WETH on Ethereum.
       description: >
         Swap WETH for MNW on Ethereum mainnet.
       deposits:
@@ -3798,6 +4070,93 @@ gui:
             The initial LOCK per USDT to kickoff the first auction. (e.g. 0.9 LOCK per USDT)
           min: 0
 
+    - deployment: flare-cysflr-cusdx
+      name: Sell cUSDX for cysFLR on Flare.
+      description: >
+        Swap cUSDX for cysFLR on Flare.
+      deposits:
+        - token: flare-cusdx
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 500
+            - 1000
+            - 2000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (cUSDX per period)
+          description: >
+            The amount of cUSDX to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (cUSDX)
+          description: >
+            The maximum amount of cUSDX to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (cUSDX)
+          description: >
+            The minimum amount of cUSDX to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline cysFLR per cUSDX
+          description: >
+            The absolute minimum amount of cysFLR per cUSDX that the auction will trade at. (e.g. 1.3 cysFLR per cUSDX)
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff cysFLR per cUSDX
+          description: >
+            The initial cysFLR per cUSDX to kickoff the first auction. (e.g. 1.4 cysFLR per cUSDX)
+          min: 0
     - deployment: flare-sflr-wflr
       name: Sell WFLR for SFLR on Flare based on underlying collateral.
       description: >

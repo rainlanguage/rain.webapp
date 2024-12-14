@@ -478,7 +478,99 @@ gui:
             - 5000
             - 10000
             - 20000
-            
+
+    - deployment: polygon-weth-mnw
+      name: WETH<>MNW on Polygon.
+      description: Rotate WETH and MNW on Polygon.
+
+      fields:
+        - binding: is-fast-exit
+          name: Fast exit?
+          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: initial-io
+          name: Initial price (WETH per MNW)
+          description: The rough WETH price you see for MNW on Dextools (e.g. 0.00012).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Maximum amount per auction (WETH)
+          description: The maximum amount of WETH that will be offered in a single auction.
+          min: 0
+          presets:
+            - value: 0.1
+            - value: 0.5
+            - value: 1
+            - value: 1.5
+            - value: 2
+        - binding: min-amount
+          name: Minimum amount per auction (WETH)
+          description: The minimum amount of WETH that will be offered in a single auction.
+          min: 0
+          presets:
+            - value: 0.1
+            - value: 0.5
+
+      deposits:
+        - token: polygon-weth
+          min: 0
+          presets:
+            - 0
+            - 0.1
+            - 0.5
+            - 1
+            - 1.5
+        - token: polygon-mnw
+          min: 0
+          presets:
+            - 0
+            - 1000
+            - 5000
+            - 10000
+            - 20000
+
     - deployment: polygon-usdt-nht
       name: USDT<>NHT on Polygon.
       description: Rotate USDT and NHT on Polygon.
@@ -1634,7 +1726,7 @@ gui:
             - 0.01
             - 50
             - 100
-    
+
     - deployment: flare-sflr-joule
       name: sFLR<>JOULE on Flare.
       description: Rotate sFLR (Sceptre staked FLR) and JOULE on Flare.
@@ -2024,7 +2116,7 @@ gui:
             - 0.5
             - 2
             - 4
-    
+
     - deployment: ethereum-mnw-weth
       name: MNW<>WETH on Ethereum.
       description: Rotate MNW and WETH on Ethereum.
@@ -2124,7 +2216,7 @@ gui:
             - 0.5
             - 2
             - 4
-    
+
     - deployment: bsc-tft-busd
       name: BUSD<>TFT on BSC.
       description: Rotate BUSD and TFT on BSC.
@@ -2665,6 +2757,12 @@ scenarios:
           amount-token: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
           initial-output-token: 0x3c59798620e5fEC0Ae6dF1A19c6454094572Ab92
           initial-input-token: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
+      weth-mnw:
+        runs: 1
+        bindings:
+          amount-token: 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619
+          initial-output-token: 0x3c59798620e5fEC0Ae6dF1A19c6454094572Ab92
+          initial-input-token: 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619
       usdt-nht:
         runs: 1
         bindings:
@@ -2779,13 +2877,13 @@ metaboards:
   linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-linea-0xed7d6156/1.0.0/gn
 
 subgraphs:
-  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-flare/0.2/gn
-  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
-  arbitrum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-arbitrum/0.1/gn
-  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
-  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
-  ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn
-  linea: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-linea/2024-10-14-12fc/gn
+  flare: https://example.com/subgraph
+  base: https://example.com/subgraph
+  arbitrum: https://example.com/subgraph
+  polygon: https://example.com/subgraph
+  bsc: https://example.com/subgraph
+  ethereum: https://example.com/subgraph
+  linea: https://example.com/subgraph
 
 orderbooks:
   flare:
@@ -2933,6 +3031,10 @@ tokens:
   polygon-nht:
     network: polygon
     address: 0x84342e932797FC62814189f01F0Fb05F52519708
+    decimals: 18
+  polygon-weth:
+    network: polygon
+    address: 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619
     decimals: 18
   polygon-usdce:
     network: polygon
@@ -3137,6 +3239,15 @@ orders:
     outputs:
       - token: polygon-usdc
       - token: polygon-mnw
+  polygon-weth-mnw:
+    network: polygon
+    orderbook: polygon
+    inputs:
+      - token: polygon-weth
+      - token: polygon-mnw
+    outputs:
+      - token: polygon-weth
+      - token: polygon-mnw
   polygon-usdt-nht:
     network: polygon
     orderbook: polygon
@@ -3271,6 +3382,9 @@ deployments:
   polygon-usdc-mnw:
     order: polygon-usdc-mnw
     scenario: polygon.usdc-mnw
+  polygon-weth-mnw:
+    order: polygon-weth-mnw
+    scenario: polygon.weth-mnw
   polygon-usdt-nht:
     order: polygon-usdt-nht
     scenario: polygon.usdt-nht

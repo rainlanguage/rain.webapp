@@ -11,8 +11,8 @@ networks:
     currency: FLR
 
 subgraphs:
-  flare-dca: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob-flare-0xb06202aA/1.0.0/gn
-  
+  flare-dca: https://example.com/subgraph
+
 metaboards:
   flare-dca: http://subgraphs.h20liquidity.tech/subgraphs/name/flare-mb-0x59401C93
 

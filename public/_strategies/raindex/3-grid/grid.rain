@@ -23,10 +23,10 @@ networks:
     currency: POL
 
 subgraphs:
-  base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-base/0.7/gn
-  ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-mainnet/2024-10-25-af6a/gn
-  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-bsc/2024-10-14-63f4/gn
-  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/ob4-polygon/0.4/gn
+  base: https://example.com/subgraph
+  ethereum: https://example.com/subgraph
+  bsc: https://example.com/subgraph
+  polygon: https://example.com/subgraph
 
 metaboards:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
@@ -102,6 +102,14 @@ tokens:
     network: polygon
     address: 0xd0e9c8f5Fae381459cf07Ec506C1d2896E8b5df6
     decimals: 18
+  polygon-weth:
+    network: polygon
+    address: 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619
+    decimals: 18
+  polygon-mnw:
+    network: polygon
+    address: 0x3c59798620e5fEC0Ae6dF1A19c6454094572Ab92
+    decimals: 18
 
 orders:
   base-usdc-weth:
@@ -125,6 +133,13 @@ orders:
       - token: ethereum-weth
     outputs:
       - token: ethereum-mnw
+  polygon-weth-mnw:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-weth
+    outputs:
+      - token: polygon-mnw
   bsc-busd-tft:
     orderbook: bsc
     network: bsc
@@ -179,6 +194,9 @@ deployments:
     scenario: simple.bsc
   polygon-usdc-ioen:
     order: polygon-usdc-ioen
+    scenario: simple.polygon
+  polygon-weth-mnw:
+    order: polygon-weth-mnw
     scenario: simple.polygon
 
 gui:

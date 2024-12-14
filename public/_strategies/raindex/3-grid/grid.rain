@@ -164,22 +164,18 @@ scenarios:
     scenarios:
       base:
         orderbook: base
-        network: base
         bindings:
           raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       ethereum:
         orderbook: ethereum
-        network: ethereum
         bindings:
           raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
       bsc:
         orderbook: bsc
-        network: bsc
         bindings:
           raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       polygon:
         orderbook: polygon
-        network: polygon
         bindings:
           raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
 

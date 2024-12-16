@@ -156,48 +156,50 @@ orders:
       - token: polygon-ioen
 
 scenarios:
-  simple:
-    runs: 1
+  base:
+    orderbook: base
     bindings:
+      raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       tranche-space-min-headroom: 0.25
       tranche-space-recharge-delay: 300
-    scenarios:
-      base:
-        orderbook: base
-        bindings:
-          raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
-      ethereum:
-        orderbook: ethereum
-        bindings:
-          raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
-      bsc:
-        orderbook: bsc
-        bindings:
-          raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
-      polygon:
-        orderbook: polygon
-        bindings:
-          raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
+  ethereum:
+    orderbook: ethereum
+    bindings:
+      raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
+      tranche-space-min-headroom: 0.25
+      tranche-space-recharge-delay: 300
+  bsc:
+    orderbook: bsc
+    bindings:
+      raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
+      tranche-space-min-headroom: 0.25
+      tranche-space-recharge-delay: 300
+  polygon:
+    orderbook: polygon
+    bindings:
+      raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
+      tranche-space-min-headroom: 0.25
+      tranche-space-recharge-delay: 300
 
 deployments:
   base-usdc-weth:
     order: base-usdc-weth
-    scenario: simple.base
+    scenario: base
   ethereum-weth-pai:
     order: ethereum-weth-pai
-    scenario: simple.ethereum
+    scenario: ethereum
   ethereum-weth-mnw:
     order: ethereum-weth-mnw
-    scenario: simple.ethereum
+    scenario: ethereum
   bsc-busd-tft:
     order: bsc-busd-tft
-    scenario: simple.bsc
+    scenario: bsc
   polygon-usdc-ioen:
     order: polygon-usdc-ioen
-    scenario: simple.polygon
+    scenario: polygon
   polygon-weth-mnw:
     order: polygon-weth-mnw
-    scenario: simple.polygon
+    scenario: polygon
 
 gui:
   name: Grid

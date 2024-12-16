@@ -428,7 +428,8 @@ gui:
     )
     "Trade causes dust."
   ),
-  :call<'set-last-tranche-space>(tranche-space-after);
+  :call<'set-last-tranche-space>(tranche-space-after),
+  :call<'set-last-trade-time>();
 
 #calculate-tranche
   last-tranche-space: call<'get-last-tranche-space>(),

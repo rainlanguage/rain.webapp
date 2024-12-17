@@ -4513,7 +4513,7 @@ gui:
         - binding: initial-io
           name: Kickoff cUSDX per cysFLR
           description: >
-            The initial cUSDX per cysFLR to kickoff the first auction. (e.g. 1.4 cUSDX per cysFLR)
+            The initial cUSDX per cysFLR to kickoff the first auction. (e.g. 0.80 cUSDX per cysFLR)
           min: 0
     
     - deployment: flare-sflr-wflr

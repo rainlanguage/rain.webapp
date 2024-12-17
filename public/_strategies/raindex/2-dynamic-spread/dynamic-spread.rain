@@ -1441,9 +1441,9 @@ gui:
             - 100
             - 1000
             - 10000
-    - deployment: flare-cysflr-cusdx
-      name: cysFLR<>cUSDX on Flare.
-      description: Rotate cysFLR and cUSDX on Flare.
+    - deployment: flare-cusdx-cysflr
+      name: cUSDX<>cysFLR on Flare.
+      description: Rotate cUSDX and cysFLR on Flare.
 
       fields:
         - binding: is-fast-exit
@@ -2790,7 +2790,7 @@ scenarios:
           amount-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
           initial-output-token: 0x12e605bc104e93B45e1aD99F9e555f659051c2BB
           initial-input-token: 0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d
-      cysflr-cusdx:
+      cusdx-cysflr:
         runs: 1
         bindings:
           amount-token: 0xFE2907DFa8DB6e320cDbF45f0aa888F6135ec4f8
@@ -3283,15 +3283,15 @@ orders:
     outputs:
       - token: flare-sflr
       - token: flare-wflr
-  flare-cysflr-cusdx:
+  flare-cusdx-cysflr:
     network: flare
     orderbook: flare
     inputs:
-      - token: flare-cysflr
       - token: flare-cusdx
+      - token: flare-cysflr
     outputs:
-      - token: flare-cysflr
       - token: flare-cusdx
+      - token: flare-cysflr
   flare-sflr-joule:
     network: flare
     orderbook: flare
@@ -3477,8 +3477,8 @@ deployments:
   flare-sflr-wflr:
     order: flare-sflr-wflr
     scenario: flare.sflr-wflr
-  flare-cysflr-cusdx:
-    order: flare-cysflr-cusdx
+  flare-cusdx-cysflr:
+    order: flare-cusdx-cysflr
     scenario: flare.cysflr-cusdx
   flare-usdce-weth:
     order: flare-usdce-weth

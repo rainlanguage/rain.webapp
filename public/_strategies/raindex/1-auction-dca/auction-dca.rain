@@ -182,6 +182,9 @@ tokens:
   flare-cusdx:
     network: flare
     address: 0xFE2907DFa8DB6e320cDbF45f0aa888F6135ec4f8
+  flare-weth:
+    network: flare
+    address: 0x1502FA4be69d526124D453619276FacCab275d3D
   polygon-usdc:
     network: polygon
     address: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
@@ -424,6 +427,20 @@ orders:
     network: flare
     inputs:
       - token: flare-sflr
+    outputs:
+      - token: flare-cysflr
+  flare-cysflr-weth:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-cysflr
+    outputs:
+      - token: flare-weth
+  flare-weth-cysflr:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-weth
     outputs:
       - token: flare-cysflr
   polygon-usdc-mnw:
@@ -684,6 +701,12 @@ deployments:
     scenario: flare
   flare-sflr-cysflr:
     order: flare-sflr-cysflr
+    scenario: flare
+  flare-cysflr-weth:
+    order: flare-cysflr-weth
+    scenario: flare
+  flare-weth-cysflr:
+    order: flare-weth-cysflr
     scenario: flare
 
 gui:
@@ -4710,6 +4733,182 @@ gui:
           name: Kickoff sFLR per cysFLR
           description: >
             The initial sFLR per cysFLR to kickoff the first auction.
+          min: 0
+    
+    - deployment: flare-cysflr-weth
+      name: Sell WETH for cysFLR on Flare.
+      description: >
+        Swap WETH for cysFLR on Flare.
+      deposits:
+        - token: flare-weth
+          min: 0
+          presets:
+            - 0
+            - 0.1
+            - 0.2
+            - 0.5
+            - 1
+            - 1.5
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (WETH per period)
+          description: >
+            The amount of WETH to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (WETH)
+          description: >
+            The maximum amount of WETH to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (WETH)
+          description: >
+            The minimum amount of WETH to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline cysFLR per WETH
+          description: >
+            The absolute minimum amount of cysFLR per WETH that the auction will trade at.
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff cysFLR per WETH
+          description: >
+            The initial cysFLR per WETH to kickoff the first auction.
+          min: 0
+    
+    - deployment: flare-weth-cysflr
+      name: Sell cysFLR for WETH on Flare.
+      description: >
+        Swap cysFLR for WETH on Flare.
+      deposits:
+        - token: flare-cysflr
+          min: 0
+          presets:
+            - 0
+            - 1000
+            - 2000
+            - 5000
+            - 10000
+            - 20000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (cysFLR per period)
+          description: >
+            The amount of cysFLR to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (cysFLR)
+          description: >
+            The maximum amount of cysFLR to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (cysFLR)
+          description: >
+            The minimum amount of cysFLR to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline WETH per cysFLR
+          description: >
+            The absolute minimum amount of WETH per cysFLR that the auction will trade at.
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff WETH per cysFLR
+          description: >
+            The initial WETH per cysFLR to kickoff the first auction.
           min: 0
     
     - deployment: flare-sflr-wflr

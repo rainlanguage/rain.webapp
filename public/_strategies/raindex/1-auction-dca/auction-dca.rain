@@ -405,6 +405,13 @@ orders:
       - token: flare-cysflr
     outputs:
       - token: flare-cusdx
+  flare-cusdx-cysflr:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-cusdx
+    outputs:
+      - token: flare-cysflr
   polygon-usdc-mnw:
     orderbook: polygon
     network: polygon
@@ -654,6 +661,9 @@ deployments:
     scenario: flare
   flare-cysflr-cusdx:
     order: flare-cysflr-cusdx
+    scenario: flare
+  flare-cusdx-cysflr:
+    order: flare-cusdx-cysflr
     scenario: flare
 
 gui:

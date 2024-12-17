@@ -4485,7 +4485,7 @@ gui:
         - binding: baseline
           name: Baseline cUSDX per cysFLR
           description: >
-            The absolute minimum amount of cUSDX per cysFLR that the auction will trade at. (e.g. 1.3 cUSDX per cysFLR)
+            The absolute minimum amount of cUSDX per cysFLR that the auction will trade at. (e.g. 0.75 cUSDX per cysFLR)
           min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier

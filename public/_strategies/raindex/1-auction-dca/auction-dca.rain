@@ -4616,7 +4616,7 @@ gui:
         - binding: baseline
           name: Baseline cysFLR per sFLR
           description: >
-            The absolute minimum amount of cysFLR per sFLR that the auction will trade at. (e.g. 0.02 cysFLR per sFLR)
+            The absolute minimum amount of cysFLR per sFLR that the auction will trade at.
           min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
@@ -4644,7 +4644,7 @@ gui:
         - binding: initial-io
           name: Kickoff cysFLR per sFLR
           description: >
-            The initial cysFLR per sFLR to kickoff the first auction. (e.g. 0.046 cysFLR per sFLR)
+            The initial cysFLR per sFLR to kickoff the first auction.
           min: 0
     
     - deployment: flare-sflr-cysflr

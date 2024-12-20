@@ -21,18 +21,25 @@ networks:
     chain-id: 137
     network-id: 137
     currency: POL
+  flare:
+    rpc: https://rpc.ankr.com/flare
+    chain-id: 14
+    network-id: 14
+    currency: FLR
 
 subgraphs:
   base: https://example.com/subgraph
   ethereum: https://example.com/subgraph
   bsc: https://example.com/subgraph
   polygon: https://example.com/subgraph
+  flare: https://example.com/subgraph
 
 metaboards:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
   bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-bsc/0.1/gn
   polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-polygon/0.1/gn
   ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/metadata-mainnet/2024-10-25-2857/gn
+  flare: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-flare-0x893BBFB7/0.1/gn
 
 orderbooks:
   base:
@@ -51,6 +58,10 @@ orderbooks:
     address: 0x7D2f700b1f6FD75734824EA4578960747bdF269A
     network: polygon
     subgraph: polygon
+  flare:
+    address: 0xCEe8Cd002F151A536394E564b84076c41bBBcD4d
+    network: flare
+    subgraph: flare
 
 deployers:
   base:
@@ -65,6 +76,9 @@ deployers:
   polygon:
     address: 0xE7116BC05C8afe25e5B54b813A74F916B5D42aB1
     network: polygon
+  flare:
+    address: 0xE3989Ea7486c0F418C764e6c511e86f6E8830FAb
+    network: flare
 
 tokens:
   base-usdc:
@@ -110,6 +124,12 @@ tokens:
     network: polygon
     address: 0x3c59798620e5fEC0Ae6dF1A19c6454094572Ab92
     decimals: 18
+  flare-cysflr:
+    network: flare
+    address: 0x19831cfB53A0dbeAD9866C43557C1D48DfF76567
+  flare-cusdx:
+    network: flare
+    address: 0xFE2907DFa8DB6e320cDbF45f0aa888F6135ec4f8
 
 orders:
   base-usdc-weth:
@@ -154,6 +174,20 @@ orders:
       - token: polygon-usdc
     outputs:
       - token: polygon-ioen
+  flare-cusdx-cysflr:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-cusdx
+    outputs:
+      - token: flare-cysflr
+  flare-cysflr-cusdx:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-cysflr
+    outputs:
+      - token: flare-cusdx
 
 scenarios:
   base:
@@ -180,6 +214,12 @@ scenarios:
       raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
       tranche-space-min-headroom: 0.25
       tranche-space-recharge-delay: 300
+  flare:
+    orderbook: flare
+    bindings:
+      raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
+      tranche-space-min-headroom: 0.25
+      tranche-space-recharge-delay: 300
 
 deployments:
   base-usdc-weth:
@@ -200,6 +240,12 @@ deployments:
   polygon-weth-mnw:
     order: polygon-weth-mnw
     scenario: polygon
+  flare-cusdx-cysflr:
+    order: flare-cusdx-cysflr
+    scenario: flare
+  flare-cysflr-cusdx:
+    order: flare-cysflr-cusdx
+    scenario: flare
 
 gui:
   name: Grid
@@ -373,6 +419,80 @@ gui:
           min: 0
         - binding: tranche-size
           name: Tranche size in IOEN (e.g. 100000)
+          min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+    
+    - deployment: flare-cusdx-cysflr
+      name: Grid sell cysFLR for cUSDX on Flare.
+      description:
+        Grid sell cysFLR for cUSDX on Flare network.
+      deposits:
+        - token: flare-cysflr
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 1000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline cUSDX per cysFLR
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in cysFLR
+          min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+    
+    - deployment: flare-cysflr-cusdx
+      name: Grid sell cUSDX for cysFLR on Flare.
+      description:
+        Grid sell cUSDX for cysFLR on Flare network.
+      deposits:
+        - token: flare-cusdx
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 1000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline cysFLR per cUSDX
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in cUSDX
           min: 0
         - binding: seconds-per-tranche
           name: Time to recharge one grid tranche in seconds (0 is disabled).

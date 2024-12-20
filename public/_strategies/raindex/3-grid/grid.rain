@@ -34,7 +34,6 @@ subgraphs:
   polygon: https://example.com/subgraph
   flare: https://example.com/subgraph
 
-
 metaboards:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
   bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-bsc/0.1/gn
@@ -211,7 +210,7 @@ scenarios:
   flare:
     orderbook: flare
     bindings:
-      raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
+      raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
       tranche-space-min-headroom: 0.25
       tranche-space-recharge-delay: 300
 

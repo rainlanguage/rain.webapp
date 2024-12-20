@@ -181,6 +181,13 @@ orders:
       - token: flare-cusdx
     outputs:
       - token: flare-cysflr
+  flare-cysflr-cusdx:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-cysflr
+    outputs:
+      - token: flare-cusdx
 
 scenarios:
   base:
@@ -235,6 +242,9 @@ deployments:
     scenario: polygon
   flare-cusdx-cysflr:
     order: flare-cusdx-cysflr
+    scenario: flare
+  flare-cysflr-cusdx:
+    order: flare-cysflr-cusdx
     scenario: flare
 
 gui:
@@ -446,6 +456,43 @@ gui:
           min: 0
         - binding: tranche-size
           name: Tranche size in cysFLR
+          min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+    
+    - deployment: flare-cysflr-cusdx
+      name: Grid sell cUSDX for cysFLR on Flare.
+      description:
+        Grid sell cUSDX for cysFLR on Flare network.
+      deposits:
+        - token: flare-cusdx
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 1000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline cysFLR per cUSDX
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in cUSDX
           min: 0
         - binding: seconds-per-tranche
           name: Time to recharge one grid tranche in seconds (0 is disabled).

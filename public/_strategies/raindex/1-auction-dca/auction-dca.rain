@@ -415,6 +415,20 @@ orders:
       - token: flare-cusdx
     outputs:
       - token: flare-cysflr
+  flare-cusdx-usdce:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-cusdx
+    outputs:
+      - token: flare-usdce
+  flare-usdce-cusdx:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-usdce
+    outputs:
+      - token: flare-cusdx
   flare-cysflr-usdce:
     orderbook: flare
     network: flare
@@ -712,6 +726,12 @@ deployments:
     scenario: flare
   flare-cysflr-usdce:
     order: flare-cysflr-usdce
+    scenario: flare
+  flare-cusdx-usdce:
+    order: flare-cusdx-usdce
+    scenario: flare
+  flare-usdce-cusdx:
+    order: flare-usdce-cusdx
     scenario: flare
   flare-usdce-cysflr:
     order: flare-usdce-cysflr
@@ -4577,6 +4597,182 @@ gui:
           name: Kickoff cUSDX per cysFLR
           description: >
             The initial cUSDX per cysFLR to kickoff the first auction. (e.g. 0.80 cUSDX per cysFLR)
+          min: 0
+
+    - deployment: flare-usdce-cusdx
+      name: Sell cUSDX for USDCe on Flare.
+      description: >
+        Swap cUSDX for USDCe on Flare.
+      deposits:
+        - token: flare-cusdx
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 500
+            - 1000
+            - 2000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (cUSDX per period)
+          description: >
+            The amount of cUSDX to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (cUSDX)
+          description: >
+            The maximum amount of cUSDX to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (cUSDX)
+          description: >
+            The minimum amount of cUSDX to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline USDCe per cUSDX
+          description: >
+            The absolute minimum amount of USDCe per cUSDX that the auction will trade at.
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDCe per cUSDX
+          description: >
+            The initial USDCe per cUSDX to kickoff the first auction.
+          min: 0
+    
+    - deployment: flare-cusdx-usdce
+      name: Sell USDCe for cUSDX on Flare.
+      description: >
+        Swap USDCe for cUSDX on Flare.
+      deposits:
+        - token: flare-usdce
+          min: 0
+          presets:
+            - 0
+            - 1000
+            - 2000
+            - 5000
+            - 10000
+            - 20000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (USDCe per period)
+          description: >
+            The amount of USDCe to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDCe)
+          description: >
+            The maximum amount of USDCe to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDCe)
+          description: >
+            The minimum amount of USDCe to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline cUSDX per USDCe
+          description: >
+            The absolute minimum amount of cUSDX per USDCe that the auction will trade at.
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff cUSDX per USDCe
+          description: >
+            The initial cUSDX per USDCe to kickoff the first auction.
           min: 0
 
     - deployment: flare-cysflr-usdce

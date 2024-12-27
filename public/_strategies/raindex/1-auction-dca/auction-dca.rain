@@ -394,6 +394,13 @@ orders:
       - token: flare-sflr
     outputs:
       - token: flare-wflr
+  flare-wflr-sflr:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-wflr
+    outputs:
+      - token: flare-sflr
   flare-usdce-wflr:
     orderbook: flare
     network: flare
@@ -594,6 +601,17 @@ scenarios:
       initial-io-fn: '''sflr-baseline'
       next-trade-baseline-multiplier: 0
       shy-epoch: 0.05
+  flare-sflr-baseline-inv:
+    orderbook: flare
+    deployer: flare
+    runs: 1
+    bindings:
+      raindex-subparser: 0xFe2411CDa193D9E4e83A5c234C7Fd320101883aC
+      subparser-0: 0x915E36ef882941816356bC3718Df868054F868aD
+      baseline-fn: '''sflr-baseline-inv'
+      initial-io-fn: '''sflr-baseline-inv'
+      next-trade-baseline-multiplier: 0
+      shy-epoch: 0.05
 
 deployments:
   arbitrum-usdc-weth:
@@ -701,6 +719,9 @@ deployments:
   flare-sflr-wflr:
     order: flare-sflr-wflr
     scenario: flare-sflr-baseline
+  flare-wflr-sflr:
+    order: flare-wflr-sflr
+    scenario: flare-sflr-baseline-inv
   flare-usdce-wflr:
     order: flare-usdce-wflr
     scenario: flare
@@ -5173,6 +5194,74 @@ gui:
               value: 1.02
             - name: 1.05x
               value: 1.05
+    
+    - deployment: flare-wflr-sflr
+      name: Sell SFLR for WFLR on Flare based on underlying collateral.
+      description: >
+        Swap SFLR for WFLR on Flare based on underlying collateral.
+      deposits:
+        - token: flare-sflr
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 500
+            - 1000
+            - 2000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (SFLR per period)
+          description: >
+            The amount of SFLR to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (SFLR)
+          description: >
+            The maximum amount of SFLR to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (SFLR)
+          description: >
+            The minimum amount of SFLR to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+    
     - deployment: flare-usdce-wflr
       name: Sell WFLR for USDC.e on Flare.
       description: >
@@ -5373,6 +5462,9 @@ _: baseline;
 
 #sflr-baseline
 _: sflr-exchange-rate();
+
+#sflr-baseline-inv
+_: inv(sflr-exchange-rate());
 
 #handle-add-order
 using-words-from raindex-subparser subparser-0

@@ -1053,6 +1053,204 @@ gui:
             - 10000
             - 20000
 
+    - deployment: base-usdc-testcoin
+      name: USDC<>TESTCOIN on Base.
+      description: Rotate USDC and TESTCOIN on Base.
+
+      fields:
+        - binding: is-fast-exit
+          name: Fast exit?
+          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: initial-io
+          name: Initial price (USDC per TESTCOIN)
+          description: The rough USDC price you see for TESTCOIN on Dex Screener (e.g. 0.04983).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of USDC that will be offered in a single auction.
+          min: 5
+          presets:
+            - name: $10
+              value: 10
+            - name: $20
+              value: 20
+            - name: $50
+              value: 50
+            - name: $100
+              value: 100
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of USDC that will be offered in a single auction.
+          min: 5
+          presets:
+            - name: $5
+              value: 5
+            - name: $10
+              value: 10
+            - name: $20
+              value: 20
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 500
+            - 1000
+        - token: base-testcoin
+          min: 0
+          presets:
+            - 0
+            - 1000
+            - 5000
+            - 10000
+            - 20000
+
+    - deployment: base-weth-testcoin
+      name: WETH<>TESTCOIN on Base.
+      description: Rotate WETH and TESTCOIN on Base.
+
+      fields:
+        - binding: is-fast-exit
+          name: Fast exit?
+          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: initial-io
+          name: Initial price (WETH per TESTCOIN)
+          description: The rough WETH price you see for TESTCOIN on Dex Screener (e.g. 0.04983).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of WETH that will be offered in a single auction.
+          min: 0
+          presets:
+            - name: 0.1
+              value: 0.1
+            - name: 0.2
+              value: 0.2
+            - name: 0.5
+              value: 0.5
+            - name: 1
+              value: 1
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of WETH that will be offered in a single auction.
+          min: 0
+          presets:
+            - name: 0.1
+              value: 0.1
+            - name: 0.2
+              value: 0.2
+            - name: 0.5
+              value: 0.5
+            - name: 1
+              value: 1
+      deposits:
+        - token: base-weth
+          min: 0
+          presets:
+            - 0
+            - 0.1
+            - 0.2
+            - 0.5
+            - 1
+        - token: base-testcoin
+          min: 0
+          presets:
+            - 0
+            - 1000
+            - 5000
+            - 10000
+            - 20000
+
     - deployment: arbitrum-usdc-weth
       name: USDC<>WETH on Arbitrum.
       description: Rotate USDC and WETH on Arbitrum.
@@ -2962,6 +3160,18 @@ scenarios:
           amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
           initial-output-token: 0x655A51e6803faF50D4acE80fa501af2F29C856cF
           initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+      usdc-testcoin:
+        runs: 1
+        bindings:
+          amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+          initial-output-token: 0x1100000000000000000000000000000000000022
+          initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+      weth-testcoin:
+        runs: 1
+        bindings:
+          amount-token: 0x4200000000000000000000000000000000000006
+          initial-output-token: 0x1100000000000000000000000000000000000022
+          initial-input-token: 0x4200000000000000000000000000000000000006
       wlth-usdc:
         runs: 1
         bindings:
@@ -3278,6 +3488,10 @@ tokens:
     network: base
     address: 0xac1bd2486aaf3b5c0fc3fd868558b082a531b2b4
     decimals: 18
+  base-testcoin:
+    network: base
+    address: 0x1100000000000000000000000000000000000022
+    decimals: 18
   base-usdc:
     network: base
     address: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
@@ -3487,6 +3701,24 @@ orders:
     outputs:
       - token: base-usdc
       - token: base-paid
+  base-weth-testcoin:
+    network: base
+    orderbook: base
+    inputs:
+      - token: base-weth
+      - token: base-testcoin
+    outputs:
+      - token: base-weth
+      - token: base-testcoin
+  base-usdc-testcoin:
+    network: base
+    orderbook: base
+    inputs:
+      - token: base-usdc
+      - token: base-testcoin
+    outputs:
+      - token: base-usdc
+      - token: base-testcoin
   flare-usdce-sflr:
     network: flare
     orderbook: flare
@@ -3705,6 +3937,12 @@ deployments:
   base-usdc-paid:
     order: base-usdc-paid
     scenario: base.usdc-paid
+  base-usdc-testcoin:
+    order: base-usdc-testcoin
+    scenario: base.usdc-testcoin
+  base-weth-testcoin:
+    order: base-weth-testcoin
+    scenario: base.weth-testcoin
   flare-usdce-sflr:
     order: flare-usdce-sflr
     scenario: flare.usdce-sflr

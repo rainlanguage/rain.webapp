@@ -217,6 +217,10 @@ tokens:
     network: polygon
     address: 0x84342e932797FC62814189f01F0Fb05F52519708
     decimals: 18
+  polygon-poli:
+    network: polygon
+    address: 0x6fb54Ffe60386aC33b722be13d2549dd87BF63AF
+    decimals: 18
   polygon-usdce:
     network: polygon
     address: 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174
@@ -567,6 +571,20 @@ orders:
       - token: polygon-usdt
     outputs:
       - token: polygon-nht
+  polygon-usdt-poli:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-usdt
+    outputs:
+      - token: polygon-poli
+  polygon-poli-usdt:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-poli
+    outputs:
+      - token: polygon-usdt
   polygon-nht-usdt:
     orderbook: polygon
     network: polygon
@@ -714,6 +732,12 @@ deployments:
     scenario: polygon
   polygon-usdt-nht:
     order: polygon-usdt-nht
+    scenario: polygon
+  polygon-poli-usdt:
+    order: polygon-poli-usdt
+    scenario: polygon
+  polygon-usdt-poli:
+    order: polygon-usdt-poli
     scenario: polygon
   polygon-mnw-weth:
     order: polygon-mnw-weth
@@ -2171,7 +2195,237 @@ gui:
           description: >
             The initial NHT per USDT to kickoff the first auction (e.g. 2604).
           min: 0.01
-          
+    - deployment: polygon-usdt-poli
+      name: Sell POLI for USDT on Polygon.
+      description: >
+        DCA POLI for USDT on Polygon.
+      deposits:
+        - token: polygon-poli
+          min: 0
+          presets:
+            - 0
+            - 100000
+            - 500000
+            - 1000000
+            - 2000000
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (POLI per period)
+          description: >
+            The amount of POLI to spend each budget period.
+
+            For example, if the budget is daily and this is 1000 then 1000 POLI will be sold for USDT each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (POLI)
+          description: >
+            The maximum amount of POLI to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (POLI)
+          description: >
+            The minimum amount of POLI to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline USDT per POLI
+          description: >
+            The absolute minimum amount of USDT per POLI that the auction will trade at (e.g. 0.0005).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff USDT per POLI
+          description: >
+            The initial USDT per POLI to kickoff the first auction (e.g. 0.00057).
+          min: 0
+
+    - deployment: polygon-poli-usdt
+      name: Buy POLI with USDT on Polygon.
+      description: >
+        DCA USDT for POLI on Polygon.
+      deposits:
+        - token: polygon-usdt
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 5000
+            - 10000
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (USDT per period)
+          description: >
+            The amount of USDT to spend each budget period.
+
+            For example, if the budget is daily and this is 100 then 100 USDT will be sold for POLI each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDT)
+          description: >
+            The maximum amount of USDT to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDT)
+          description: >
+            The minimum amount of USDT to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          min: 600
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline POLI per USDT
+          description: >
+            The absolute minimum amount of POLI per USDT that the auction will trade at (e.g. 1500).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff POLI per USDT
+          description: >
+            The initial POLI per USDT to kickoff the first auction (e.g. 1700).
+          min: 0
     - deployment: polygon-weth-mnw
       name: Sell MNW for WETH on Polygon.
       description: >

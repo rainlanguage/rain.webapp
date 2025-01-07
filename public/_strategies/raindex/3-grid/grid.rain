@@ -247,6 +247,12 @@ deployments:
   polygon-usdc-ioen:
     order: polygon-usdc-ioen
     scenario: polygon
+  polygon-usdce-stg:
+    order: polygon-usdce-stg
+    scenario: polygon
+  polygon-stg-usdce:
+    order: polygon-stg-usdce
+    scenario: polygon
   polygon-weth-mnw:
     order: polygon-weth-mnw
     scenario: polygon
@@ -493,7 +499,7 @@ gui:
             - 2000
       fields:
         - binding: baseline-io-ratio
-          name: Baseline USDT per STG (e.g. 0.47)
+          name: Baseline USDC.e per STG (e.g. 0.47)
           min: 0
         - binding: io-ratio-growth
           name: IO ratio growth per tranche (e.g. 0.01)

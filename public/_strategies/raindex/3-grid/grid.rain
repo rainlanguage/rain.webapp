@@ -87,6 +87,14 @@ tokens:
     network: ethereum
     address: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
     decimals: 18
+  ethereum-hot:
+    network: ethereum
+    address: 0x6c6EE5e31d828De241282B9606C8e98Ea48526E2
+    decimals: 18
+  ethereum-usdt:
+    network: ethereum
+    address: 0xdAC17F958D2ee523a2206206994597C13D831ec7
+    decimals: 6
   bsc-tft:
     network: bsc
     address: 0x8f0FB159380176D324542b3a7933F0C2Fd0c2bbf
@@ -133,6 +141,20 @@ orders:
       - token: ethereum-weth
     outputs:
       - token: ethereum-mnw
+  ethereum-hot-usdt:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-hot
+    outputs:
+      - token: ethereum-usdt
+  ethereum-usdt-hot:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-usdt
+    outputs:
+      - token: ethereum-hot
   polygon-weth-mnw:
     orderbook: polygon
     network: polygon
@@ -190,6 +212,12 @@ deployments:
     scenario: ethereum
   ethereum-weth-mnw:
     order: ethereum-weth-mnw
+    scenario: ethereum
+  ethereum-hot-usdt:
+    order: ethereum-hot-usdt
+    scenario: ethereum
+  ethereum-usdt-hot:
+    order: ethereum-usdt-hot
     scenario: ethereum
   bsc-busd-tft:
     order: bsc-busd-tft
@@ -299,6 +327,80 @@ gui:
           min: 0
         - binding: tranche-size
           name: Tranche size in MNW (e.g. 2000)
+          min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+
+    - deployment: ethereum-hot-usdt
+      name: Grid buy HOT with USDT on Ethereum.
+      description:
+        Grid buy HOT with USDT on Ethereum Mainnet.
+      deposits:
+        - token: ethereum-usdt
+          min: 0
+          presets:
+            - 1000
+            - 5000
+            - 10000
+            - 100000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline HOT per USDT (e.g. 438)
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 5)
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in HOT (e.g. 5000)
+          min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+
+    - deployment: ethereum-usdt-hot
+      name: Grid sell HOT for USDT on Ethereum.
+      description:
+        Grid sell HOT for USDT on Ethereum Mainnet.
+      deposits:
+        - token: ethereum-hot
+          min: 0
+          presets:
+            - 10000
+            - 50000
+            - 100000
+            - 1000000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline USDT per HOT (e.g. 0.0022)
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 0.0005)
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in USDT (e.g. 500)
           min: 0
         - binding: seconds-per-tranche
           name: Time to recharge one grid tranche in seconds (0 is disabled).

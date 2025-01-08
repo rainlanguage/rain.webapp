@@ -363,7 +363,7 @@ gui:
           name: IO ratio growth per tranche (e.g. 5)
           min: 0
         - binding: tranche-size
-          name: Tranche size in HOT (e.g. 5000)
+          name: Tranche size in USDT (e.g. 500)
           min: 0
         - binding: seconds-per-tranche
           name: Time to recharge one grid tranche in seconds (0 is disabled).
@@ -400,7 +400,7 @@ gui:
           name: IO ratio growth per tranche (e.g. 0.0005)
           min: 0
         - binding: tranche-size
-          name: Tranche size in USDT (e.g. 500)
+          name: Tranche size in HOT (e.g. 5000)
           min: 0
         - binding: seconds-per-tranche
           name: Time to recharge one grid tranche in seconds (0 is disabled).

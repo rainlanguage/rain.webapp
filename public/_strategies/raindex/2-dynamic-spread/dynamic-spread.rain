@@ -103,9 +103,9 @@ gui:
             - 500
             - 1000
 
-    - deployment: polygon-quick-wmatic
-      name: QUICK<>WPOL (WMATIC) on Polygon.
-      description: Rotate QUICK and WPOL (WMATIC) on Polygon.
+    - deployment: polygon-wmatic-quick
+      name: WPOL/WMATIC<>QUICK on Polygon.
+      description: Rotate WPOL (WMATIC) and QUICK on Polygon.
 
       fields:
         - binding: is-fast-exit
@@ -117,8 +117,8 @@ gui:
             - name: No
               value: 0
         - binding: initial-io
-          name: Initial price (QUICK per WPOL/WMATIC)
-          description: The rough price ratio for QUICK to WPOL/WMATIC (e.g. 0.1).
+          name: Initial price (WPOL/WMATIC per QUICK)
+          description: The rough price ratio for WPOL/WMATIC per QUICK (e.g. 0.1).
           min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier
@@ -160,22 +160,13 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Maximum amount per auction (WPOL)
-          description: The maximum amount of WPOL that will be offered in a single auction.
+          name: Maximum amount per auction (QUICK)
+          description: The maximum amount of QUICK that will be offered in a single auction.
           min: 0
-          presets:
-            - value: 50
-            - value: 100
-            - value: 150
-            - value: 500
         - binding: min-amount
-          name: Minimum amount per auction (WPOL)
-          description: The minimum amount of WPOL that will be offered in a single auction.
+          name: Minimum amount per auction (QUICK)
+          description: The minimum amount of QUICK that will be offered in a single auction.
           min: 0
-          presets:
-            - value: 20
-            - value: 50
-            - value: 100
 
       deposits:
         - token: polygon-quick
@@ -1823,7 +1814,7 @@ gui:
             - 100
             - 200
             - 500
-    
+
     - deployment: flare-usdce-sflr
       name: USDC.e<>sFLR on Flare.
       description: Rotate USDC.e (Bridged USDC on Stargate) and sFLR on Flare.
@@ -3140,10 +3131,10 @@ scenarios:
           amount-token: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
           initial-output-token: 0x831753dd7087cac61ab5644b308642cc1c33dc13
           initial-input-token: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
-      quick-wmatic:
+      wmatic-quick:
         runs: 1
         bindings:
-          amount-token: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
+          amount-token: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
           initial-output-token: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
           initial-input-token: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
       usdc-ioen:

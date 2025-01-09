@@ -99,12 +99,28 @@ tokens:
     network: bsc
     address: 0x8f0FB159380176D324542b3a7933F0C2Fd0c2bbf
     decimals: 7
+  bsc-usdt:
+    network: bsc
+    address: 0x55d398326f99059fF775485246999027B3197955
+    decimals: 18
+  bsc-stg:
+    network: bsc
+    address: 0xB0D502E938ed5f4df2E681fE6E419ff29631d62b
+    decimals: 18
   bsc-busd:
     network: bsc
     address: 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56
   polygon-usdc:
     network: polygon
     address: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
+    decimals: 6
+  polygon-stg:
+    network: polygon
+    address: 0x2F6F07CDcf3588944Bf4C42aC74ff24bF56e7590
+    decimals: 18
+  polygon-usdce:
+    network: polygon
+    address: 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174
     decimals: 6
   polygon-ioen:
     network: polygon
@@ -169,6 +185,20 @@ orders:
       - token: bsc-busd
     outputs:
       - token: bsc-tft
+  bsc-usdt-stg:
+    orderbook: bsc
+    network: bsc
+    inputs:
+      - token: bsc-usdt
+    outputs:
+      - token: bsc-stg
+  bsc-stg-usdt:
+    orderbook: bsc
+    network: bsc
+    inputs:
+      - token: bsc-stg
+    outputs:
+      - token: bsc-usdt
   polygon-usdc-ioen:
     orderbook: polygon
     network: polygon
@@ -176,6 +206,20 @@ orders:
       - token: polygon-usdc
     outputs:
       - token: polygon-ioen
+  polygon-stg-usdce:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-stg
+    outputs:
+      - token: polygon-usdce
+  polygon-usdce-stg:
+    orderbook: polygon
+    network: polygon
+    inputs:
+      - token: polygon-usdce
+    outputs:
+      - token: polygon-stg
 
 scenarios:
   base:
@@ -222,8 +266,20 @@ deployments:
   bsc-busd-tft:
     order: bsc-busd-tft
     scenario: bsc
+  bsc-usdt-stg:
+    order: bsc-usdt-stg
+    scenario: bsc
+  bsc-stg-usdt:
+    order: bsc-stg-usdt
+    scenario: bsc
   polygon-usdc-ioen:
     order: polygon-usdc-ioen
+    scenario: polygon
+  polygon-usdce-stg:
+    order: polygon-usdce-stg
+    scenario: polygon
+  polygon-stg-usdce:
+    order: polygon-stg-usdce
     scenario: polygon
   polygon-weth-mnw:
     order: polygon-weth-mnw
@@ -436,6 +492,158 @@ gui:
           min: 0
         - binding: tranche-size
           name: Tranche size in TFT (e.g. 1000)
+          min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+
+    - deployment: bsc-usdt-stg
+      name: Grid sell STG for USDT on BSC.
+      description:
+        Grid sell STG for USDT on BSC network.
+      deposits:
+        - token: bsc-stg
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+            - 2000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline USDT per STG (e.g. 0.47)
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 0.01)
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in STG (e.g. 100)
+          min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+
+    - deployment: bsc-stg-usdt
+      name: Grid buy STG with USDT on BSC.
+      description:
+        Grid buy STG with USDT on BSC network.
+      deposits:
+        - token: bsc-usdt
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+            - 2000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline STG per USDT (e.g. 2.08)
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 0.1)
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in USDT (e.g. 100)
+          min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+
+    - deployment: polygon-usdce-stg
+      name: Grid sell STG for USDC.e on Polygon.
+      description:
+        Grid sell STG for USDC.e on Polygon network.
+      deposits:
+        - token: polygon-stg
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+            - 2000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline USDC.e per STG (e.g. 0.47)
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 0.01)
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in STG (e.g. 100)
+          min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+
+    - deployment: polygon-stg-usdce
+      name: Grid buy STG with USDCe on Polygon.
+      description:
+        Grid buy STG with USDCe on Polygon network.
+      deposits:
+        - token: polygon-usdce
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+            - 2000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline STG per USDCe (e.g. 2.08)
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 0.1)
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in USDCe (e.g. 100)
           min: 0
         - binding: seconds-per-tranche
           name: Time to recharge one grid tranche in seconds (0 is disabled).

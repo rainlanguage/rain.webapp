@@ -3655,7 +3655,7 @@ orders:
     outputs:
       - token: polygon-quick-old
       - token: polygon-quick
-  polygon-quick-wmatic:
+  polygon-wmatic-quick:
     network: polygon
     orderbook: polygon
     inputs:
@@ -3834,9 +3834,9 @@ deployments:
   polygon-quick-old-quick:
     order: polygon-quick-old-quick
     scenario: polygon.quick-old-quick
-  polygon-quick-wmatic:
-    order: polygon-quick-wmatic
-    scenario: polygon.quick-wmatic
+  polygon-wmatic-quick:
+    order: polygon-wmatic-quick
+    scenario: polygon.wmatic-quick
   polygon-usdc-ioen:
     order: polygon-usdc-ioen
     scenario: polygon.usdc-ioen

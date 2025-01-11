@@ -71,6 +71,10 @@ tokens:
     network: base
     address: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
     decimals: 6
+  base-testcoin:
+    network: base
+    address: 0x1100000000000000000000000000000000000022
+    decimals: 18
   base-weth:
     network: base
     address: 0x4200000000000000000000000000000000000006
@@ -135,6 +139,20 @@ orders:
       - token: base-usdc
     outputs:
       - token: base-weth
+  base-usdc-testcoin:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-usdc
+    outputs:
+      - token: base-testcoin
+  base-testcoin-usdc:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-testcoin
+    outputs:
+      - token: base-usdc
   ethereum-weth-pai:
     orderbook: ethereum
     network: ethereum
@@ -229,6 +247,15 @@ deployments:
   base-usdc-weth:
     order: base-usdc-weth
     scenario: base
+  base-usdc-testcoin:
+    order: base-usdc-testcoin
+  base-testcoin-usdc:
+    order: base-testcoin-usdc
+  base-weth-testcoin:
+    order: base-weth-testcoin
+  base-testcoin-weth:
+    order: base-testcoin-weth
+    scenario: base
   ethereum-weth-pai:
     order: ethereum-weth-pai
     scenario: ethereum
@@ -283,6 +310,154 @@ gui:
           min: 1
         - binding: tranche-size
           name: Tranche size in ETH (e.g. 1)
+          min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+
+    - deployment: base-usdc-testcoin
+      name: Grid sell TESTCOIN for USDC on Base.
+      description:
+        Grid sell TESTCOIN for USDC on Base network.
+      deposits:
+        - token: base-testcoin
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline USDC per TESTCOIN (e.g. 3500)
+          min: 1000
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 100)
+          min: 1
+        - binding: tranche-size
+          name: Tranche size in TESTCOIN (e.g. 1)
+          min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+
+    - deployment: base-testcoin-usdc
+      name: Grid buy TESTCOIN with USDC on Base.
+      description:
+        Grid buy TESTCOIN with USDC on Base network.
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline TESTCOIN per USDC (e.g. 3500)
+          min: 1000
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 100)
+          min: 1
+        - binding: tranche-size
+          name: Tranche size in USDC (e.g. 1)
+          min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+
+    - deployment: base-weth-testcoin
+      name: Grid sell TESTCOIN for WETH on Base.
+      description:
+        Grid sell TESTCOIN for WETH on Base network.
+      deposits:
+        - token: base-testcoin
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 500
+            - 1000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline WETH per TESTCOIN (e.g. 3500)
+          min: 1000
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 100)
+          min: 1
+        - binding: tranche-size
+          name: Tranche size in TESTCOIN (e.g. 1)
+          min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+
+    - deployment: base-testcoin-weth
+      name: Grid buy TESTCOIN with WETH on Base.
+      description:
+        Grid buy TESTCOIN with WETH on Base network.
+      deposits:
+        - token: base-weth
+          min: 0
+          presets:
+            - 0
+            - 0.1
+            - 0.5
+            - 1
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline TESTCOIN per WETH (e.g. 3500)
+          min: 1000
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche (e.g. 100)
+          min: 1
+        - binding: tranche-size
+          name: Tranche size in WETH (e.g. 1)
           min: 0
         - binding: seconds-per-tranche
           name: Time to recharge one grid tranche in seconds (0 is disabled).

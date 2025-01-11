@@ -6,65 +6,23 @@ networks:
     chain-id: 8453
     network-id: 8453
     currency: ETH
-  ethereum:
-    rpc: https://rpc.ankr.com/eth
-    chain-id: 1
-    network-id: 1
-    currency: ETH
-  bsc:
-    rpc: https://rpc.ankr.com/bsc
-    chain-id: 56
-    network-id: 56
-    currency: BNB
-  polygon:
-    rpc: https://rpc.ankr.com/polygon
-    chain-id: 137
-    network-id: 137
-    currency: POL
 
 subgraphs:
   base: https://example.com/subgraph
-  ethereum: https://example.com/subgraph
-  bsc: https://example.com/subgraph
-  polygon: https://example.com/subgraph
-
+  
 metaboards:
   base: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-base-0x59401C93/0.1/gn
-  bsc: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-bsc/0.1/gn
-  polygon: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/mb-polygon/0.1/gn
-  ethereum: https://api.goldsky.com/api/public/project_clv14x04y9kzi01saerx7bxpg/subgraphs/metadata-mainnet/2024-10-25-2857/gn
-
+  
 orderbooks:
   base:
     address: 0xd2938e7c9fe3597f78832ce780feb61945c377d7
     network: base
     subgraph: base
-  ethereum:
-    address: 0x0eA6d458488d1cf51695e1D6e4744e6FB715d37C
-    network: ethereum
-    subgraph: ethereum
-  bsc:
-    address: 0xd2938E7c9fe3597F78832CE780Feb61945c377d7
-    network: bsc
-    subgraph: bsc
-  polygon:
-    address: 0x7D2f700b1f6FD75734824EA4578960747bdF269A
-    network: polygon
-    subgraph: polygon
 
 deployers:
   base:
     address: 0xC1A14cE2fd58A3A2f99deCb8eDd866204eE07f8D
     network: base
-  ethereum:
-    address: 0xd19581a021f4704ad4eBfF68258e7A0a9DB1CD77
-    network: ethereum
-  bsc:
-    address: 0xA2f56F8F74B7d04d61f281BE6576b6155581dcBA
-    network: bsc
-  polygon:
-    address: 0xE7116BC05C8afe25e5B54b813A74F916B5D42aB1
-    network: polygon
 
 tokens:
   base-usdc:
@@ -73,56 +31,14 @@ tokens:
     decimals: 6
   base-testcoin:
     network: base
-    address: 0x1100000000000000000000000000000000000022
+    address: 0x222789334D44bB5b2364939477E15A6c981Ca165
     decimals: 18
   base-weth:
     network: base
     address: 0x4200000000000000000000000000000000000006
     decimals: 18
-  ethereum-pai:
-    network: ethereum
-    address: 0x13E4b8CfFe704d3De6F19E52b201d92c21EC18bD
-    decimals: 18
-  ethereum-mnw:
-    network: ethereum
-    address: 0xd3E4Ba569045546D09CF021ECC5dFe42b1d7f6E4
-    decimals: 18
-  ethereum-weth:
-    network: ethereum
-    address: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
-    decimals: 18
-  bsc-tft:
-    network: bsc
-    address: 0x8f0FB159380176D324542b3a7933F0C2Fd0c2bbf
-    decimals: 7
-  bsc-busd:
-    network: bsc
-    address: 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56
-  polygon-usdc:
-    network: polygon
-    address: 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359
-    decimals: 6
-  polygon-ioen:
-    network: polygon
-    address: 0xd0e9c8f5Fae381459cf07Ec506C1d2896E8b5df6
-    decimals: 18
-  polygon-weth:
-    network: polygon
-    address: 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619
-    decimals: 18
-  polygon-mnw:
-    network: polygon
-    address: 0x3c59798620e5fEC0Ae6dF1A19c6454094572Ab92
-    decimals: 18
 
 orders:
-  base-usdc-weth:
-    orderbook: base
-    network: base
-    inputs:
-      - token: base-usdc
-    outputs:
-      - token: base-weth
   base-usdc-testcoin:
     orderbook: base
     network: base
@@ -137,41 +53,6 @@ orders:
       - token: base-testcoin
     outputs:
       - token: base-usdc
-  ethereum-weth-pai:
-    orderbook: ethereum
-    network: ethereum
-    inputs:
-      - token: ethereum-weth
-    outputs:
-      - token: ethereum-pai
-  ethereum-weth-mnw:
-    orderbook: ethereum
-    network: ethereum
-    inputs:
-      - token: ethereum-weth
-    outputs:
-      - token: ethereum-mnw
-  polygon-weth-mnw:
-    orderbook: polygon
-    network: polygon
-    inputs:
-      - token: polygon-weth
-    outputs:
-      - token: polygon-mnw
-  bsc-busd-tft:
-    orderbook: bsc
-    network: bsc
-    inputs:
-      - token: bsc-busd
-    outputs:
-      - token: bsc-tft
-  polygon-usdc-ioen:
-    orderbook: polygon
-    network: polygon
-    inputs:
-      - token: polygon-usdc
-    outputs:
-      - token: polygon-ioen
 
 scenarios:
   base:
@@ -180,29 +61,8 @@ scenarios:
       raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
       tranche-space-min-headroom: 0.25
       tranche-space-recharge-delay: 300
-  ethereum:
-    orderbook: ethereum
-    bindings:
-      raindex-subparser: 0x22410e2a46261a1B1e3899a072f303022801C764
-      tranche-space-min-headroom: 0.25
-      tranche-space-recharge-delay: 300
-  bsc:
-    orderbook: bsc
-    bindings:
-      raindex-subparser: 0x662dFd6d5B6DF94E07A60954901D3001c24F856a
-      tranche-space-min-headroom: 0.25
-      tranche-space-recharge-delay: 300
-  polygon:
-    orderbook: polygon
-    bindings:
-      raindex-subparser: 0xF9323B7d23c655122Fb0272D989b83E105cBcf9d
-      tranche-space-min-headroom: 0.25
-      tranche-space-recharge-delay: 300
 
 deployments:
-  base-usdc-weth:
-    order: base-usdc-weth
-    scenario: base
   base-usdc-testcoin:
     order: base-usdc-testcoin
   base-testcoin-usdc:
@@ -212,64 +72,12 @@ deployments:
   base-testcoin-weth:
     order: base-testcoin-weth
     scenario: base
-  ethereum-weth-pai:
-    order: ethereum-weth-pai
-    scenario: ethereum
-  ethereum-weth-mnw:
-    order: ethereum-weth-mnw
-    scenario: ethereum
-  bsc-busd-tft:
-    order: bsc-busd-tft
-    scenario: bsc
-  polygon-usdc-ioen:
-    order: polygon-usdc-ioen
-    scenario: polygon
-  polygon-weth-mnw:
-    order: polygon-weth-mnw
-    scenario: polygon
 
 gui:
   name: Grid
   description: >
     Grid order strategy
   deployments:
-    - deployment: base-usdc-weth
-      name: Grid sell WETH for USDC on Base.
-      description:
-        Grid sell WETH for USDC on Base network.
-      deposits:
-        - token: base-weth
-          min: 0
-          presets:
-            - 0
-            - 0.1
-            - 1
-            - 10
-      fields:
-        - binding: baseline-io-ratio
-          name: Baseline USDC per WETH (e.g. 3500)
-          min: 1000
-        - binding: io-ratio-growth
-          name: IO ratio growth per tranche (e.g. 100)
-          min: 1
-        - binding: tranche-size
-          name: Tranche size in ETH (e.g. 1)
-          min: 0
-        - binding: seconds-per-tranche
-          name: Time to recharge one grid tranche in seconds (0 is disabled).
-          min: 0
-          presets:
-            - name: Disabled (0)
-              value: 0
-            - name: 1 hour (3600)
-              value: 3600
-            - name: 6 hours (21600)
-              value: 21600
-            - name: 12 hours (43200)
-              value: 43200
-            - name: 24 hours (86400)
-              value: 86400
-
     - deployment: base-usdc-testcoin
       name: Grid sell TESTCOIN for USDC on Base.
       description:
@@ -402,152 +210,6 @@ gui:
           min: 1
         - binding: tranche-size
           name: Tranche size in WETH (e.g. 1)
-          min: 0
-        - binding: seconds-per-tranche
-          name: Time to recharge one grid tranche in seconds (0 is disabled).
-          min: 0
-          presets:
-            - name: Disabled (0)
-              value: 0
-            - name: 1 hour (3600)
-              value: 3600
-            - name: 6 hours (21600)
-              value: 21600
-            - name: 12 hours (43200)
-              value: 43200
-            - name: 24 hours (86400)
-              value: 86400
-
-    - deployment: ethereum-weth-pai
-      name: Grid sell PAI for WETH on Ethereum.
-      description:
-        Grid sell PAI for WETH on Ethereum Mainnet.
-      deposits:
-        - token: ethereum-pai
-          min: 0
-          presets:
-            - 1000
-            - 10000
-            - 100000
-      fields:
-        - binding: baseline-io-ratio
-          name: Baseline WETH per PAI (e.g. 0.0001317)
-          min: 0
-        - binding: io-ratio-growth
-          name: IO ratio growth per tranche (e.g. 0.000002857)
-          min: 0
-        - binding: tranche-size
-          name: Tranche size in PAI (e.g. 1000)
-          min: 0
-        - binding: seconds-per-tranche
-          name: Time to recharge one grid tranche in seconds (0 is disabled).
-          min: 0
-          presets:
-            - name: Disabled (0)
-              value: 0
-            - name: 1 hour (3600)
-              value: 3600
-            - name: 6 hours (21600)
-              value: 21600
-            - name: 12 hours (43200)
-              value: 43200
-            - name: 24 hours (86400)
-              value: 86400
-
-    - deployment: ethereum-weth-mnw
-      name: Grid sell MNW for WETH on Ethereum.
-      description:
-        Grid sell MNW for WETH on Ethereum Mainnet.
-      deposits:
-        - token: ethereum-mnw
-          min: 0
-          presets:
-            - 1000
-            - 10000
-            - 100000
-      fields:
-        - binding: baseline-io-ratio
-          name: Baseline WETH per MNW (e.g. 0.00012)
-          min: 0
-        - binding: io-ratio-growth
-          name: IO ratio growth per tranche (e.g. 0.00001)
-          min: 0
-        - binding: tranche-size
-          name: Tranche size in MNW (e.g. 2000)
-          min: 0
-        - binding: seconds-per-tranche
-          name: Time to recharge one grid tranche in seconds (0 is disabled).
-          min: 0
-          presets:
-            - name: Disabled (0)
-              value: 0
-            - name: 1 hour (3600)
-              value: 3600
-            - name: 6 hours (21600)
-              value: 21600
-            - name: 12 hours (43200)
-              value: 43200
-            - name: 24 hours (86400)
-              value: 86400
-
-    - deployment: bsc-busd-tft
-      name: Grid sell TFT for BUSD on BSC.
-      description:
-        Grid sell TFT for BUSD on BSC network.
-      deposits:
-        - token: bsc-tft
-          min: 0
-          presets:
-            - 0
-            - 1000
-            - 5000
-            - 10000
-      fields:
-        - binding: baseline-io-ratio
-          name: Baseline BUSD per TFT (e.g. 0.012)
-          min: 0
-        - binding: io-ratio-growth
-          name: IO ratio growth per tranche (e.g. 0.005)
-          min: 0
-        - binding: tranche-size
-          name: Tranche size in TFT (e.g. 1000)
-          min: 0
-        - binding: seconds-per-tranche
-          name: Time to recharge one grid tranche in seconds (0 is disabled).
-          min: 0
-          presets:
-            - name: Disabled (0)
-              value: 0
-            - name: 1 hour (3600)
-              value: 3600
-            - name: 6 hours (21600)
-              value: 21600
-            - name: 12 hours (43200)
-              value: 43200
-            - name: 24 hours (86400)
-              value: 86400
-
-    - deployment: polygon-usdc-ioen
-      name: Grid sell IOEN for USDC on Polygon.
-      description:
-        Grid sell IOEN for USDC on Polygon network.
-      deposits:
-        - token: polygon-ioen
-          min: 0
-          presets:
-            - 0
-            - 100000
-            - 200000
-            - 1000000
-      fields:
-        - binding: baseline-io-ratio
-          name: Baseline USDC per IOEN (e.g. 0.0027)
-          min: 0
-        - binding: io-ratio-growth
-          name: IO ratio growth per tranche (e.g. 0.0001)
-          min: 0
-        - binding: tranche-size
-          name: Tranche size in IOEN (e.g. 100000)
           min: 0
         - binding: seconds-per-tranche
           name: Time to recharge one grid tranche in seconds (0 is disabled).

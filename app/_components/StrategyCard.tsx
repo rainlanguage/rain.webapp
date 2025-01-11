@@ -11,9 +11,11 @@ export const StrategyCard = ({ data }: { data: StrategyFile }) => {
 				<Markdown rehypePlugins={[rehypeRaw]}>{data.descriptionMD}</Markdown>
 			</div>
 			<div className="flex flex-col xl:grid xl:grid-cols-2 2xl:grid-cols-3 gap-4">
-				{data.yamlData.gui.deployments.map((deployment, i: number) => (
+			{data.yamlData.gui.deployments !== undefined && 
+				data.yamlData.gui.deployments.map((deployment, i: number) => (
 					<DeploymentCard key={i} deployment={deployment} slug={data.fileName} />
-				))}
+				))
+			}
 			</div>
 		</div>
 	);

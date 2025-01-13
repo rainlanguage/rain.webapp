@@ -25,7 +25,7 @@ deployers:
     network: base
 
 tokens:
-  base-testcoin:
+  base-cofek:
     network: base
     address: 0x222789334D44bB5b2364939477E15A6c981Ca165
     decimals: 18
@@ -40,32 +40,32 @@ tokens:
   
 
 orders:
-  base-usdc-testcoin:
+  base-usdc-cofek:
     orderbook: base
     network: base
     inputs:
       - token: base-usdc
     outputs:
-      - token: base-testcoin
-  base-testcoin-usdc:
+      - token: base-cofek
+  base-cofek-usdc:
     orderbook: base
     network: base
     inputs:
-      - token: base-testcoin
+      - token: base-cofek
     outputs:
       - token: base-usdc
-  base-weth-testcoin:
+  base-weth-cofek:
     orderbook: base
     network: base
     inputs:
       - token: base-weth
     outputs:
-      - token: base-testcoin
-  base-testcoin-weth:
+      - token: base-cofek
+  base-cofek-weth:
     orderbook: base
     network: base
     inputs:
-      - token: base-testcoin
+      - token: base-cofek
     outputs:
       - token: base-weth
  
@@ -81,17 +81,17 @@ scenarios:
       shy-epoch: 0.05
 
 deployments:
-  base-usdc-testcoin:
-    order: base-usdc-testcoin
+  base-usdc-cofek:
+    order: base-usdc-cofek
     scenario: base
-  base-testcoin-usdc:
-    order: base-testcoin-usdc
+  base-cofek-usdc:
+    order: base-cofek-usdc
     scenario: base
-  base-weth-testcoin:
-    order: base-weth-testcoin
+  base-weth-cofek:
+    order: base-weth-cofek
     scenario: base
-  base-testcoin-weth:
-    order: base-testcoin-weth
+  base-cofek-weth:
+    order: base-cofek-weth
     scenario: base
 
 gui:
@@ -106,12 +106,12 @@ gui:
     The strategy works by repeatedly auctioning off tokens with an exponential
     decay in the price, that resets each trade.
   deployments:
-    - deployment: base-usdc-testcoin
-      name: Sell TESTCOIN for USDC on Base.
+    - deployment: base-usdc-cofek
+      name: Sell COFEK for USDC on Base.
       description: >
-        Sell TESTCOIN for USDC on Base.
+        Sell COFEK for USDC on Base.
       deposits:
-        - token: base-testcoin
+        - token: base-cofek
           min: 0
           presets:
             - 0
@@ -133,19 +133,19 @@ gui:
             - name: Per week (604800)
               value: 604800
         - binding: amount-per-epoch
-          name: Budget (TESTCOIN per period)
+          name: Budget (COFEK per period)
           description: >
-            The amount of TESTCOIN to spend each budget period.
+            The amount of COFEK to spend each budget period.
           min: 0
         - binding: max-trade-amount
-          name: Maximum trade size (TESTCOIN)
+          name: Maximum trade size (COFEK)
           description: >
-            The maximum amount of TESTCOIN to sell in a single auction.
+            The maximum amount of COFEK to sell in a single auction.
           min: 0
         - binding: min-trade-amount
-          name: Minimum trade size (TESTCOIN)
+          name: Minimum trade size (COFEK)
           description: >
-            The minimum amount of TESTCOIN to sell in a single auction.
+            The minimum amount of COFEK to sell in a single auction.
           min: 0
         - binding: time-per-trade-epoch
           name: Auction period (in seconds)
@@ -159,9 +159,9 @@ gui:
             - name: Every 4 hours (14400)
               value: 14400
         - binding: baseline
-          name: Baseline USDC per TESTCOIN
+          name: Baseline USDC per COFEK
           description: >
-            The absolute minimum amount of USDC per TESTCOIN that the auction will trade at (e.g. 0.03 USDC per TESTCOIN)
+            The absolute minimum amount of USDC per COFEK that the auction will trade at (e.g. 0.03 USDC per COFEK)
           min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
@@ -187,15 +187,15 @@ gui:
             - name: 0.95x
               value: 0.95
         - binding: initial-io
-          name: Kickoff USDC per TESTCOIN
+          name: Kickoff USDC per COFEK
           description: >
-            The initial USDC per TESTCOIN to kickoff the first auction (e.g. 0.05 USDC per TESTCOIN)
+            The initial USDC per COFEK to kickoff the first auction (e.g. 0.05 USDC per COFEK)
           min: 0
 
-    - deployment: base-testcoin-usdc
-      name: Buy TESTCOIN with USDC on Base.
+    - deployment: base-cofek-usdc
+      name: Buy COFEK with USDC on Base.
       description: >
-        Buy TESTCOIN with USDC on Base.
+        Buy COFEK with USDC on Base.
       deposits:
         - token: base-usdc
           min: 0
@@ -245,9 +245,9 @@ gui:
             - name: Every 4 hours (14400)
               value: 14400
         - binding: baseline
-          name: Baseline TESTCOIN per USDC
+          name: Baseline COFEK per USDC
           description: >
-            The absolute minimum amount of TESTCOIN per USDC that the auction will trade at (e.g. 10 TESTCOIN per USDC)
+            The absolute minimum amount of COFEK per USDC that the auction will trade at (e.g. 10 COFEK per USDC)
           min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
@@ -273,17 +273,17 @@ gui:
             - name: 0.95x
               value: 0.95
         - binding: initial-io
-          name: Kickoff TESTCOIN per USDC
+          name: Kickoff COFEK per USDC
           description: >
-            The initial TESTCOIN per USDC to kickoff the first auction (e.g. 20 TESTCOIN per USDC)
+            The initial COFEK per USDC to kickoff the first auction (e.g. 20 COFEK per USDC)
           min: 0
 
-    - deployment: base-weth-testcoin
-      name: Sell TESTCOIN for WETH on Base.
+    - deployment: base-weth-cofek
+      name: Sell COFEK for WETH on Base.
       description: >
-        Sell TESTCOIN for WETH on Base.
+        Sell COFEK for WETH on Base.
       deposits:
-        - token: base-testcoin
+        - token: base-cofek
           min: 0
           presets:
             - 0
@@ -305,19 +305,19 @@ gui:
             - name: Per week (604800)
               value: 604800
         - binding: amount-per-epoch
-          name: Budget (TESTCOIN per period)
+          name: Budget (COFEK per period)
           description: >
-            The amount of TESTCOIN to spend each budget period.
+            The amount of COFEK to spend each budget period.
           min: 0
         - binding: max-trade-amount
-          name: Maximum trade size (TESTCOIN)
+          name: Maximum trade size (COFEK)
           description: >
-            The maximum amount of TESTCOIN to sell in a single auction.
+            The maximum amount of COFEK to sell in a single auction.
           min: 0
         - binding: min-trade-amount
-          name: Minimum trade size (TESTCOIN)
+          name: Minimum trade size (COFEK)
           description: >
-            The minimum amount of TESTCOIN to sell in a single auction.
+            The minimum amount of COFEK to sell in a single auction.
           min: 0
         - binding: time-per-trade-epoch
           name: Auction period (in seconds)
@@ -331,9 +331,9 @@ gui:
             - name: Every 4 hours (14400)
               value: 14400
         - binding: baseline
-          name: Baseline WETH per TESTCOIN
+          name: Baseline WETH per COFEK
           description: >
-            The absolute minimum amount of WETH per TESTCOIN that the auction will trade at (e.g. 0.03 WETH per TESTCOIN)
+            The absolute minimum amount of WETH per COFEK that the auction will trade at (e.g. 0.03 WETH per COFEK)
           min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
@@ -359,23 +359,23 @@ gui:
             - name: 0.95x
               value: 0.95
         - binding: initial-io
-          name: Kickoff WETH per TESTCOIN
+          name: Kickoff WETH per COFEK
           description: >
-            The initial WETH per TESTCOIN to kickoff the first auction (e.g. 0.05 WETH per TESTCOIN)
+            The initial WETH per COFEK to kickoff the first auction (e.g. 0.05 WETH per COFEK)
           min: 0
 
-    - deployment: base-testcoin-weth
-      name: Buy TESTCOIN with WETH on Base.
+    - deployment: base-cofek-weth
+      name: Buy COFEK with WETH on Base.
       description: >
-        Buy TESTCOIN with WETH on Base.
+        Buy COFEK with WETH on Base.
       deposits:
         - token: base-weth
           min: 0
           presets:
             - 0
-            - 100
-            - 1000
-            - 10000
+            - 0.1
+            - 0.5
+            - 1
 
       fields:
         - binding: time-per-amount-epoch
@@ -417,9 +417,9 @@ gui:
             - name: Every 4 hours (14400)
               value: 14400
         - binding: baseline
-          name: Baseline TESTCOIN per WETH
+          name: Baseline COFEK per WETH
           description: >
-            The absolute minimum amount of TESTCOIN per WETH that the auction will trade at (e.g. 10 TESTCOIN per WETH)
+            The absolute minimum amount of COFEK per WETH that the auction will trade at (e.g. 10 COFEK per WETH)
           min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
@@ -445,9 +445,9 @@ gui:
             - name: 0.95x
               value: 0.95
         - binding: initial-io
-          name: Kickoff TESTCOIN per WETH
+          name: Kickoff COFEK per WETH
           description: >
-            The initial TESTCOIN per WETH to kickoff the first auction (e.g. 20 TESTCOIN per WETH)
+            The initial COFEK per WETH to kickoff the first auction (e.g. 20 COFEK per WETH)
           min: 0
 ---
 #raindex-subparser !Raindex subparser.

@@ -5,9 +5,9 @@ gui:
   name: Two-sided dynamic spread strategies
   description: The dynamic spread strategy for market-making uses time-based adjustments to maintain liquidity by narrowing spreads as market conditions stabilize, while recalculating averages and trade sizes to mitigate risks during trends.
   deployments:
-    - deployment: base-usdc-testcoin
-      name: USDC<>TESTCOIN on Base.
-      description: Rotate USDC and TESTCOIN on Base.
+    - deployment: base-usdc-cofek
+      name: USDC<>COFEK on Base.
+      description: Rotate USDC and COFEK on Base.
 
       fields:
         - binding: is-fast-exit
@@ -19,8 +19,8 @@ gui:
             - name: No
               value: 0
         - binding: initial-io
-          name: Initial price (USDC per TESTCOIN)
-          description: The rough USDC price you see for TESTCOIN on Dex Screener (e.g. 0.04983).
+          name: Initial price (USDC per COFEK)
+          description: The rough USDC price you see for COFEK on Dex Screener (e.g. 0.04983).
           min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier
@@ -94,7 +94,7 @@ gui:
             - 200
             - 500
             - 1000
-        - token: base-testcoin
+        - token: base-cofek
           min: 0
           presets:
             - 0
@@ -103,9 +103,9 @@ gui:
             - 10000
             - 20000
 
-    - deployment: base-weth-testcoin
-      name: WETH<>TESTCOIN on Base.
-      description: Rotate WETH and TESTCOIN on Base.
+    - deployment: base-weth-cofek
+      name: WETH<>COFEK on Base.
+      description: Rotate WETH and COFEK on Base.
 
       fields:
         - binding: is-fast-exit
@@ -117,8 +117,8 @@ gui:
             - name: No
               value: 0
         - binding: initial-io
-          name: Initial price (WETH per TESTCOIN)
-          description: The rough WETH price you see for TESTCOIN on Dex Screener (e.g. 0.04983).
+          name: Initial price (WETH per COFEK)
+          description: The rough WETH price you see for COFEK on Dex Screener (e.g. 0.04983).
           min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier
@@ -194,7 +194,7 @@ gui:
             - 0.2
             - 0.5
             - 1
-        - token: base-testcoin
+        - token: base-cofek
           min: 0
           presets:
             - 0
@@ -212,13 +212,13 @@ scenarios:
       history-cap: '1e50'
       shy-epoch: 0.05
     scenarios:
-      usdc-testcoin:
+      usdc-cofek:
         runs: 1
         bindings:
           amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
           initial-output-token: 0x222789334D44bB5b2364939477E15A6c981Ca165
           initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
-      weth-testcoin:
+      weth-cofek:
         runs: 1
         bindings:
           amount-token: 0x4200000000000000000000000000000000000006
@@ -250,7 +250,7 @@ deployers:
     network: base
 
 tokens:
-  base-testcoin:
+  base-cofek:
     network: base
     address: 0x222789334D44bB5b2364939477E15A6c981Ca165
     decimals: 18
@@ -264,32 +264,32 @@ tokens:
     decimals: 18
  
 orders:
-  base-weth-testcoin:
+  base-weth-cofek:
     network: base
     orderbook: base
     inputs:
       - token: base-weth
-      - token: base-testcoin
+      - token: base-cofek
     outputs:
       - token: base-weth
-      - token: base-testcoin
-  base-usdc-testcoin:
+      - token: base-cofek
+  base-usdc-cofek:
     network: base
     orderbook: base
     inputs:
       - token: base-usdc
-      - token: base-testcoin
+      - token: base-cofek
     outputs:
       - token: base-usdc
-      - token: base-testcoin
+      - token: base-cofek
 
 deployments:
-  base-usdc-testcoin:
-    order: base-usdc-testcoin
-    scenario: base.usdc-testcoin
-  base-weth-testcoin:
-    order: base-weth-testcoin
-    scenario: base.weth-testcoin
+  base-usdc-cofek:
+    order: base-usdc-cofek
+    scenario: base.usdc-cofek
+  base-weth-cofek:
+    order: base-weth-cofek
+    scenario: base.weth-cofek
 
 ---
 #raindex-subparser !Subparser for the Raindex.

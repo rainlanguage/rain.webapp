@@ -29,7 +29,7 @@ tokens:
     network: base
     address: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
     decimals: 6
-  base-testcoin:
+  base-cofek:
     network: base
     address: 0x222789334D44bB5b2364939477E15A6c981Ca165
     decimals: 18
@@ -39,20 +39,34 @@ tokens:
     decimals: 18
 
 orders:
-  base-usdc-testcoin:
+  base-usdc-cofek:
     orderbook: base
     network: base
     inputs:
       - token: base-usdc
     outputs:
-      - token: base-testcoin
-  base-testcoin-usdc:
+      - token: base-cofek
+  base-cofek-usdc:
     orderbook: base
     network: base
     inputs:
-      - token: base-testcoin
+      - token: base-cofek
     outputs:
       - token: base-usdc
+  base-weth-cofek:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-weth
+    outputs:
+      - token: base-cofek
+  base-cofek-weth:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-cofek
+    outputs:
+      - token: base-weth
 
 scenarios:
   base:
@@ -63,14 +77,14 @@ scenarios:
       tranche-space-recharge-delay: 300
 
 deployments:
-  base-usdc-testcoin:
-    order: base-usdc-testcoin
-  base-testcoin-usdc:
-    order: base-testcoin-usdc
-  base-weth-testcoin:
-    order: base-weth-testcoin
-  base-testcoin-weth:
-    order: base-testcoin-weth
+  base-usdc-cofek:
+    order: base-usdc-cofek
+  base-cofek-usdc:
+    order: base-cofek-usdc
+  base-weth-cofek:
+    order: base-weth-cofek
+  base-cofek-weth:
+    order: base-cofek-weth
     scenario: base
 
 gui:
@@ -78,12 +92,12 @@ gui:
   description: >
     Grid order strategy
   deployments:
-    - deployment: base-usdc-testcoin
-      name: Grid sell TESTCOIN for USDC on Base.
+    - deployment: base-usdc-cofek
+      name: Grid sell COFEK for USDC on Base.
       description:
-        Grid sell TESTCOIN for USDC on Base network.
+        Grid sell COFEK for USDC on Base network.
       deposits:
-        - token: base-testcoin
+        - token: base-cofek
           min: 0
           presets:
             - 0
@@ -92,13 +106,13 @@ gui:
             - 1000
       fields:
         - binding: baseline-io-ratio
-          name: Baseline USDC per TESTCOIN (e.g. 3500)
+          name: Baseline USDC per COFEK (e.g. 3500)
           min: 1000
         - binding: io-ratio-growth
           name: IO ratio growth per tranche (e.g. 100)
           min: 1
         - binding: tranche-size
-          name: Tranche size in TESTCOIN (e.g. 1)
+          name: Tranche size in COFEK (e.g. 1)
           min: 0
         - binding: seconds-per-tranche
           name: Time to recharge one grid tranche in seconds (0 is disabled).
@@ -115,10 +129,10 @@ gui:
             - name: 24 hours (86400)
               value: 86400
 
-    - deployment: base-testcoin-usdc
-      name: Grid buy TESTCOIN with USDC on Base.
+    - deployment: base-cofek-usdc
+      name: Grid buy COFEK with USDC on Base.
       description:
-        Grid buy TESTCOIN with USDC on Base network.
+        Grid buy COFEK with USDC on Base network.
       deposits:
         - token: base-usdc
           min: 0
@@ -129,7 +143,7 @@ gui:
             - 1000
       fields:
         - binding: baseline-io-ratio
-          name: Baseline TESTCOIN per USDC (e.g. 3500)
+          name: Baseline COFEK per USDC (e.g. 3500)
           min: 1000
         - binding: io-ratio-growth
           name: IO ratio growth per tranche (e.g. 100)
@@ -152,12 +166,12 @@ gui:
             - name: 24 hours (86400)
               value: 86400
 
-    - deployment: base-weth-testcoin
-      name: Grid sell TESTCOIN for WETH on Base.
+    - deployment: base-weth-cofek
+      name: Grid sell COFEK for WETH on Base.
       description:
-        Grid sell TESTCOIN for WETH on Base network.
+        Grid sell COFEK for WETH on Base network.
       deposits:
-        - token: base-testcoin
+        - token: base-cofek
           min: 0
           presets:
             - 0
@@ -166,13 +180,13 @@ gui:
             - 1000
       fields:
         - binding: baseline-io-ratio
-          name: Baseline WETH per TESTCOIN (e.g. 3500)
+          name: Baseline WETH per COFEK (e.g. 3500)
           min: 1000
         - binding: io-ratio-growth
           name: IO ratio growth per tranche (e.g. 100)
           min: 1
         - binding: tranche-size
-          name: Tranche size in TESTCOIN (e.g. 1)
+          name: Tranche size in COFEK (e.g. 1)
           min: 0
         - binding: seconds-per-tranche
           name: Time to recharge one grid tranche in seconds (0 is disabled).
@@ -189,10 +203,10 @@ gui:
             - name: 24 hours (86400)
               value: 86400
 
-    - deployment: base-testcoin-weth
-      name: Grid buy TESTCOIN with WETH on Base.
+    - deployment: base-cofek-weth
+      name: Grid buy COFEK with WETH on Base.
       description:
-        Grid buy TESTCOIN with WETH on Base network.
+        Grid buy COFEK with WETH on Base network.
       deposits:
         - token: base-weth
           min: 0
@@ -203,7 +217,7 @@ gui:
             - 1
       fields:
         - binding: baseline-io-ratio
-          name: Baseline TESTCOIN per WETH (e.g. 3500)
+          name: Baseline COFEK per WETH (e.g. 3500)
           min: 1000
         - binding: io-ratio-growth
           name: IO ratio growth per tranche (e.g. 100)

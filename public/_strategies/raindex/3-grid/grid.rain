@@ -109,13 +109,13 @@ gui:
             - 1000
       fields:
         - binding: baseline-io-ratio
-          name: Baseline USDC per COFEK (e.g. 3500)
+          name: Baseline USDC per COFEK
           min: 1000
         - binding: io-ratio-growth
-          name: IO ratio growth per tranche (e.g. 100)
+          name: IO ratio growth per tranche
           min: 1
         - binding: tranche-size
-          name: Tranche size in COFEK (e.g. 1)
+          name: Tranche size in COFEK
           min: 0
         - binding: seconds-per-tranche
           name: Time to recharge one grid tranche in seconds (0 is disabled).
@@ -146,13 +146,13 @@ gui:
             - 1000
       fields:
         - binding: baseline-io-ratio
-          name: Baseline COFEK per USDC (e.g. 3500)
+          name: Baseline COFEK per USDC
           min: 1000
         - binding: io-ratio-growth
-          name: IO ratio growth per tranche (e.g. 100)
+          name: IO ratio growth per tranche
           min: 1
         - binding: tranche-size
-          name: Tranche size in USDC (e.g. 1)
+          name: Tranche size in USDC
           min: 0
         - binding: seconds-per-tranche
           name: Time to recharge one grid tranche in seconds (0 is disabled).
@@ -183,13 +183,13 @@ gui:
             - 1000
       fields:
         - binding: baseline-io-ratio
-          name: Baseline WETH per COFEK (e.g. 3500)
+          name: Baseline WETH per COFEK
           min: 1000
         - binding: io-ratio-growth
-          name: IO ratio growth per tranche (e.g. 100)
+          name: IO ratio growth per tranche
           min: 1
         - binding: tranche-size
-          name: Tranche size in COFEK (e.g. 1)
+          name: Tranche size in COFEK
           min: 0
         - binding: seconds-per-tranche
           name: Time to recharge one grid tranche in seconds (0 is disabled).
@@ -220,13 +220,13 @@ gui:
             - 1
       fields:
         - binding: baseline-io-ratio
-          name: Baseline COFEK per WETH (e.g. 3500)
+          name: Baseline COFEK per WETH
           min: 1000
         - binding: io-ratio-growth
-          name: IO ratio growth per tranche (e.g. 100)
+          name: IO ratio growth per tranche
           min: 1
         - binding: tranche-size
-          name: Tranche size in WETH (e.g. 1)
+          name: Tranche size in WETH
           min: 0
         - binding: seconds-per-tranche
           name: Time to recharge one grid tranche in seconds (0 is disabled).

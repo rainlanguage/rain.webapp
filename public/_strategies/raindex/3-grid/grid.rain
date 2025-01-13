@@ -79,10 +79,13 @@ scenarios:
 deployments:
   base-usdc-cofek:
     order: base-usdc-cofek
+    scenario: base
   base-cofek-usdc:
     order: base-cofek-usdc
+    scenario: base
   base-weth-cofek:
     order: base-weth-cofek
+    scenario: base
   base-cofek-weth:
     order: base-cofek-weth
     scenario: base

@@ -702,6 +702,22 @@ scenarios:
       baseline-fn: '''constant-baseline'
       initial-io-fn: '''constant-initial-io'
       shy-epoch: 0.05
+    scenarios:
+      simple:
+        bindings:
+          time-per-amount-epoch: 86400
+          time-per-trade-epoch: 3600
+          next-trade-multiplier: 1.01
+          next-trade-baseline-multiplier: 0
+        scenarios:
+          stable-base:
+            bindings:
+              min-trade-amount: 5
+            scenarios:
+              cyclo-buy:
+                bindings:
+                  initial-io: 100
+
   flare-sflr-baseline:
     orderbook: flare
     deployer: flare
@@ -873,6 +889,9 @@ deployments:
   flare-cusdx-cysflr:
     order: flare-cusdx-cysflr
     scenario: flare
+  flare-cysflr-usdce-simplified:
+    order: flare-cysflr-usdce
+    scenario: flare.simple.stable-base.cyclo-buy
   flare-cysflr-usdce:
     order: flare-cysflr-usdce
     scenario: flare
@@ -5778,7 +5797,7 @@ gui:
           description: >
             The initial cysFLR per cUSDX to kickoff the first auction. (e.g. 1.4 cysFLR per cUSDX)
           min: 0
-    
+
     - deployment: flare-cusdx-cysflr
       name: Sell cysFLR for cUSDX on Flare.
       description: >
@@ -5954,7 +5973,7 @@ gui:
           description: >
             The initial USDCe per cUSDX to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-cusdx-usdce
       name: Sell USDCe for cUSDX on Flare.
       description: >
@@ -6043,6 +6062,59 @@ gui:
             The initial cUSDX per USDCe to kickoff the first auction.
           min: 0
 
+    - deployment: flare-cysflr-usdce-simplified
+      name: Buy cysFLR with USDCe on Flare (SIMPLIFIED).
+      description: >
+        Swap USDCe for cysFLR on Flare.
+      deposits:
+        - token: flare-usdce
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 500
+            - 1000
+            - 2000
+      fields:
+        - binding: amount-per-epoch
+          name: Budget (USDCe per day)
+          description: >
+            The maximum amount of USDCe to spend each day.
+
+            Note that the strategy does not start trading immediately, it will
+            spend a few hours synching with the market and building a trading
+            budget before starting to clear trades.
+
+            This strategy is intended to be long running (at least several days).
+          min: 1
+        - binding: max-trade-amount
+          name: Maximum trade size (USDCe)
+          description: >
+            The maximum amount of USDCe to spend in a single trade.
+            A reasonable size is about 1/10th of the budget, but can be anything
+            at least the minimum trade of $5.
+          min: 5
+        - binding: baseline
+          name: Minimum cysFLR per USDCe
+          description: >
+            The absolute minimum amount of cysFLR per 1 USDCe that the strategy
+            will trade at. If the market goes below this then the strategy will
+            pause until the market recovers (although the budget will continue).
+
+            Generally the strategy will trade at a better price than this, and
+            will trade more aggressively the further the price is from this
+            baseline. For example, if the market is 1% from the baseline it will
+            trade roughly hourly, but if the market is 10%+ from the baseline it
+            will be trading as quickly as the budget allows.
+
+            This is the inverse (1/x) of the price of cysFLR,
+            i.e. if the worst tradeable price of cysFLR is $0.2 then this should
+            be 5.
+
+            This must be at least 1 because cysFLR doesn't trade above $1.
+          min: 1
+
     - deployment: flare-cysflr-usdce
       name: Sell USDCe for cysFLR on Flare.
       description: >
@@ -6130,7 +6202,7 @@ gui:
           description: >
             The initial cysFLR per USDCe to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-usdce-cysflr
       name: Sell cysFLR for USDCe on Flare.
       description: >
@@ -6218,7 +6290,7 @@ gui:
           description: >
             The initial USDCe per cysFLR to kickoff the first auction.
           min: 0
- 
+
     - deployment: flare-cysflr-sflr
       name: Sell sFLR for cysFLR on Flare.
       description: >
@@ -6306,7 +6378,7 @@ gui:
           description: >
             The initial cysFLR per sFLR to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-sflr-cysflr
       name: Sell cysFLR for sFLR on Flare.
       description: >
@@ -6394,7 +6466,7 @@ gui:
           description: >
             The initial sFLR per cysFLR to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-cysflr-weth
       name: Sell WETH for cysFLR on Flare.
       description: >
@@ -6482,7 +6554,7 @@ gui:
           description: >
             The initial cysFLR per WETH to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-weth-cysflr
       name: Sell cysFLR for WETH on Flare.
       description: >
@@ -6570,7 +6642,7 @@ gui:
           description: >
             The initial WETH per cysFLR to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-sflr-wflr
       name: Sell WFLR for SFLR on Flare based on underlying collateral.
       description: >
@@ -6637,7 +6709,7 @@ gui:
               value: 1.02
             - name: 1.05x
               value: 1.05
-    
+
     - deployment: flare-wflr-sflr
       name: Sell SFLR for WFLR on Flare based on underlying collateral.
       description: >
@@ -6704,7 +6776,7 @@ gui:
               value: 1.02
             - name: 1.05x
               value: 1.05
-    
+
     - deployment: flare-usdce-wflr
       name: Sell WFLR for USDC.e on Flare.
       description: >

@@ -184,6 +184,10 @@ tokens:
     network: ethereum
     address: 0xdAC17F958D2ee523a2206206994597C13D831ec7
     decimals: 6
+  ethereum-wmtx:
+    network: ethereum
+    address: 0xDBB5Cf12408a3Ac17d668037Ce289f9eA75439D7
+    decimals: 6
   flare-wflr:
     network: flare
     address: 0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d
@@ -461,6 +465,13 @@ orders:
       - token: ethereum-usdt
     outputs:
       - token: ethereum-lock
+  ethereum-usdt-wmtx:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-usdt
+    outputs:
+      - token: ethereum-wmtx
   flare-sflr-wflr:
     orderbook: flare
     network: flare
@@ -875,6 +886,9 @@ deployments:
     scenario: ethereum
   ethereum-usdt-lock:
     order: ethereum-usdt-lock
+    scenario: ethereum
+  ethereum-usdt-wmtx:
+    order: ethereum-usdt-wmtx
     scenario: ethereum
   flare-sflr-wflr:
     order: flare-sflr-wflr
@@ -5538,6 +5552,94 @@ gui:
               value: 1.2
             - name: 1.5
               value: 1.5
+
+    - deployment: ethereum-usdt-wmtx
+      name: Sell WMTX for USDT on Ethereum.
+      description: >
+        Swap WMTX for USDT on Ethereum mainnet.
+      deposits:
+        - token: ethereum-wmtx
+          min: 0
+          presets:
+            - 0
+            - 250
+            - 750
+            - 1250
+            - 5000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (WMTX per period)
+          description: >
+            The amount of WMTX to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (WMTX)
+          description: >
+            The maximum amount of WMTX to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (WMTX)
+          description: >
+            The minimum amount of WMTX to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline USDT per WMTX
+          description: >
+            The absolute minimum amount of USDT per WMTX that the auction will trade at. (e.g. 0.30 USDT per WMTX)
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDT per WMTX
+          description: >
+            The initial USDT per WMTX to kickoff the first auction. (e.g. 0.42 USDT per WMTX)
+          min: 0
 
     - deployment: ethereum-usdt-lock
       name: Sell LOCK for USDT on Ethereum.

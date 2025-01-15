@@ -103,9 +103,9 @@ gui:
             - 10000
             - 20000
 
-    - deployment: base-weth-cofek
-      name: WETH<>COFEK on Base.
-      description: Rotate WETH and COFEK on Base.
+    - deployment: base-cofek-weth
+      name: COFEK<>WETH on Base.
+      description: Rotate COFEK and WETH on Base.
 
       fields:
         - binding: is-fast-exit
@@ -117,8 +117,8 @@ gui:
             - name: No
               value: 0
         - binding: initial-io
-          name: Initial price (WETH per COFEK)
-          description: The rough WETH price you see for COFEK on Dex Screener (e.g. 0.04983).
+          name: Initial price (COFEK per WETH)
+          description: The rough COFEK per WETH price you see on Dex Screener.
           min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier
@@ -161,30 +161,30 @@ gui:
               value: 28800
         - binding: max-amount
           name: Max amount
-          description: The maximum amount of WETH that will be offered in a single auction.
+          description: The maximum amount of COFEK that will be offered in a single auction.
           min: 0
           presets:
-            - name: 0.1
-              value: 0.1
-            - name: 0.2
-              value: 0.2
-            - name: 0.5
-              value: 0.5
-            - name: 1
-              value: 1
+            - name: 100000
+              value: 100000
+            - name: 200000
+              value: 200000
+            - name: 500000
+              value: 500000
+            - name: 1000000
+              value: 1000000
         - binding: min-amount
           name: Minimum amount
-          description: The minimum amount of WETH that will be offered in a single auction.
+          description: The minimum amount of COFEK that will be offered in a single auction.
           min: 0
           presets:
-            - name: 0.1
-              value: 0.1
-            - name: 0.2
-              value: 0.2
-            - name: 0.5
-              value: 0.5
-            - name: 1
-              value: 1
+            - name: 100000
+              value: 100000
+            - name: 200000
+              value: 200000
+            - name: 500000
+              value: 500000
+            - name: 1000000
+              value: 1000000
       deposits:
         - token: base-weth
           min: 0
@@ -198,10 +198,10 @@ gui:
           min: 0
           presets:
             - 0
-            - 1000
-            - 5000
             - 10000
-            - 20000
+            - 50000
+            - 100000
+            - 200000
 
 scenarios:
   base:
@@ -218,12 +218,12 @@ scenarios:
           amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
           initial-output-token: 0x222789334D44bB5b2364939477E15A6c981Ca165
           initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
-      weth-cofek:
+      cofek-weth:
         runs: 1
         bindings:
-          amount-token: 0x4200000000000000000000000000000000000006
-          initial-output-token: 0x222789334D44bB5b2364939477E15A6c981Ca165
-          initial-input-token: 0x4200000000000000000000000000000000000006
+          amount-token: 0x222789334D44bB5b2364939477E15A6c981Ca165
+          initial-output-token: 0x4200000000000000000000000000000000000006
+          initial-input-token: 0x222789334D44bB5b2364939477E15A6c981Ca165
 
 networks:
   base:
@@ -264,15 +264,15 @@ tokens:
     decimals: 18
  
 orders:
-  base-weth-cofek:
+  base-cofek-weth:
     network: base
     orderbook: base
     inputs:
-      - token: base-weth
       - token: base-cofek
+      - token: base-weth
     outputs:
-      - token: base-weth
       - token: base-cofek
+      - token: base-weth
   base-usdc-cofek:
     network: base
     orderbook: base
@@ -287,9 +287,9 @@ deployments:
   base-usdc-cofek:
     order: base-usdc-cofek
     scenario: base.usdc-cofek
-  base-weth-cofek:
-    order: base-weth-cofek
-    scenario: base.weth-cofek
+  base-cofek-weth:
+    order: base-cofek-weth
+    scenario: base.cofek-weth
 
 ---
 #raindex-subparser !Subparser for the Raindex.

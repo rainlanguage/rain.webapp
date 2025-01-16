@@ -3740,7 +3740,7 @@ gui:
         - binding: baseline
           name: Baseline PATEK per USDT
           description: >
-            The absolute minimum amount of PATEK per USDT that the auction will trade at (e.g. 0.35)
+            The absolute minimum amount of PATEK per USDT that the auction will trade at (e.g. 1.75)
           min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
@@ -3774,7 +3774,7 @@ gui:
             - name: 0.99x
               value: 0.99
         - binding: initial-io
-          name: Kickoff PATEK per USDT (e.g. 0.43)
+          name: Kickoff PATEK per USDT (e.g. 2.32)
           description: >
             The initial PATEK per USDT to kickoff the first auction.
           min: 0
@@ -3855,7 +3855,7 @@ gui:
         - binding: baseline
           name: Baseline USDT per PATEK
           description: >
-            The absolute minimum amount of USDT per PATEK that the auction will trade at (e.g. 1.75 USDT per PATEK).
+            The absolute minimum amount of USDT per PATEK that the auction will trade at (e.g. 0.35 USDT per PATEK).
           min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
@@ -3891,7 +3891,7 @@ gui:
         - binding: initial-io
           name: Kickoff USDT per PATEK
           description: >
-            The initial USDT per PATEK to kickoff the first auction (e.g. 2.31 USDT per PATEK)
+            The initial USDT per PATEK to kickoff the first auction (e.g. 0.42 USDT per PATEK)
           min: 0
 
     - deployment: bsc-stg-usdt

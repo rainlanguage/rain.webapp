@@ -3777,7 +3777,7 @@ gui:
           name: Kickoff PATEK per USDT (e.g. 0.43)
           description: >
             The initial PATEK per USDT to kickoff the first auction.
-          min: 1
+          min: 0
 
     - deployment: bsc-usdt-patek
       name: Sell PATEK for USDT on BSC.

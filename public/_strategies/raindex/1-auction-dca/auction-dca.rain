@@ -126,6 +126,12 @@ gui:
             The budget is spent over this time period.
           min: 1
           presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
             - name: Per hour (3600)
               value: 3600
             - name: Per day (86400)
@@ -152,6 +158,12 @@ gui:
           description: >
             The auction period is the time between each auction price halvening.
           presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
             - name: Every hour (3600)
               value: 3600
             - name: Every 2 hours (7200)
@@ -212,6 +224,12 @@ gui:
             The budget is spent over this time period.
           min: 1
           presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
             - name: Per hour (3600)
               value: 3600
             - name: Per day (86400)
@@ -238,6 +256,12 @@ gui:
           description: >
             The auction period is the time between each auction price halvening.
           presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
             - name: Every hour (3600)
               value: 3600
             - name: Every 2 hours (7200)
@@ -298,6 +322,12 @@ gui:
             The budget is spent over this time period.
           min: 1
           presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
             - name: Per hour (3600)
               value: 3600
             - name: Per day (86400)
@@ -324,6 +354,12 @@ gui:
           description: >
             The auction period is the time between each auction price halvening.
           presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
             - name: Every hour (3600)
               value: 3600
             - name: Every 2 hours (7200)
@@ -384,6 +420,12 @@ gui:
             The budget is spent over this time period.
           min: 1
           presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
             - name: Per hour (3600)
               value: 3600
             - name: Per day (86400)
@@ -410,6 +452,12 @@ gui:
           description: >
             The auction period is the time between each auction price halvening.
           presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
             - name: Every hour (3600)
               value: 3600
             - name: Every 2 hours (7200)

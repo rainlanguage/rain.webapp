@@ -3741,7 +3741,7 @@ gui:
           name: Baseline PATEK per USDT
           description: >
             The absolute minimum amount of PATEK per USDT that the auction will trade at (e.g. 0.35)
-          min: 1
+          min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
           description: >

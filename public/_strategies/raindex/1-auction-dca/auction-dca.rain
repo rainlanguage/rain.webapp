@@ -140,6 +140,10 @@ tokens:
     network: base
     address: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
     decimals: 6
+  base-toast:
+    network: base
+    address: 0x21f8c472D1702919aF0AF57a9E2926f2c1FB67C5
+    decimals: 18
   base-wlth:
     network: base
     address: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
@@ -347,6 +351,20 @@ orders:
     network: base
     inputs:
       - token: base-paid
+    outputs:
+      - token: base-usdc
+  base-usdc-toast:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-usdc
+    outputs:
+      - token: base-toast
+  base-toast-usdc:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-toast
     outputs:
       - token: base-usdc
   base-usdc-wlth:
@@ -827,6 +845,12 @@ deployments:
     scenario: base
   base-paid-usdc:
     order: base-paid-usdc
+    scenario: base
+  base-usdc-toast:
+    order: base-usdc-toast
+    scenario: base
+  base-toast-usdc:
+    order: base-toast-usdc
     scenario: base
   base-usdc-wlth:
     order: base-usdc-wlth
@@ -4174,6 +4198,202 @@ gui:
           name: Kickoff PAID per USDC
           description: >
             The initial PAID per USDC to kickoff the first auction (e.g. 20 PAID per USDC)
+          min: 0
+          presets:
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+
+    - deployment: base-usdc-toast
+      name: Sell TOAST for USDC on Base.
+      description: >
+        Sell TOAST for USDC on Base.
+      deposits:
+        - token: base-toast
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (TOAST per period)
+          description: >
+            The amount of TOAST to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (TOAST)
+          description: >
+            The maximum amount of TOAST to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (TOAST)
+          description: >
+            The minimum amount of TOAST to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline USDC per TOAST
+          description: >
+            The absolute minimum amount of USDC per TOAST that the auction will trade at (e.g. 0.05 USDC per TOAST)
+          min: 0
+          presets:
+            - name: 0.01
+              value: 0.01
+            - name: 0.02
+              value: 0.02
+            - name: 0.05
+              value: 0.05
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDC per TOAST
+          description: >
+            The initial USDC per TOAST to kickoff the first auction (e.g. 0.01 USDC per TOAST)
+          min: 0
+          presets:
+            - name: 0.05
+              value: 0.05
+            - name: 0.1
+              value: 0.1
+
+    - deployment: base-toast-usdc
+      name: Buy TOAST with USDC on Base.
+      description: >
+        Buy TOAST with USDC on Base.
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline TOAST per USDC
+          description: >
+            The absolute minimum amount of TOAST per USDC that the auction will trade at (e.g. 50 TOAST per USDC)
+          min: 0
+          presets:
+            - name: 10
+              value: 10
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff TOAST per USDC
+          description: >
+            The initial TOAST per USDC to kickoff the first auction (e.g. 98 TOAST per USDC)
           min: 0
           presets:
             - name: 20

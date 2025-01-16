@@ -160,6 +160,10 @@ gui:
           presets:
             - name: Per minute (60)
               value: 60
+            - name: Every 5 minutes (300)
+              value: 300
+            - name: Every 10 minutes (600)
+              value: 600
             - name: Every 20 minutes (1200)
               value: 1200
             - name: Every 30 minutes (1800)
@@ -258,6 +262,10 @@ gui:
           presets:
             - name: Per minute (60)
               value: 60
+            - name: Every 5 minutes (300)
+              value: 300
+            - name: Every 10 minutes (600)
+              value: 600
             - name: Every 20 minutes (1200)
               value: 1200
             - name: Every 30 minutes (1800)
@@ -356,6 +364,10 @@ gui:
           presets:
             - name: Per minute (60)
               value: 60
+            - name: Every 5 minutes (300)
+              value: 300
+            - name: Every 10 minutes (600)
+              value: 600
             - name: Every 20 minutes (1200)
               value: 1200
             - name: Every 30 minutes (1800)
@@ -454,6 +466,10 @@ gui:
           presets:
             - name: Per minute (60)
               value: 60
+            - name: Every 5 minutes (300)
+              value: 300
+            - name: Every 10 minutes (600)
+              value: 600
             - name: Every 20 minutes (1200)
               value: 1200
             - name: Every 30 minutes (1800)

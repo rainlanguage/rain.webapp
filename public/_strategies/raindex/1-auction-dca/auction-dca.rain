@@ -6824,6 +6824,8 @@ gui:
           description: >
             The auction period is the time between each auction price halvening.
           presets:
+            - name: Every half hour (1800)
+              value: 1800
             - name: Every hour (3600)
               value: 3600
             - name: Every 2 hours (7200)

@@ -216,14 +216,14 @@ scenarios:
         runs: 1
         bindings:
           amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
-          initial-output-token: 0x222789334D44bB5b2364939477E15A6c981Ca165
+          initial-output-token: 0xa794e6e187E7Bc0aBDfb1025260eD8482328A599
           initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
       cofek-weth:
         runs: 1
         bindings:
-          amount-token: 0x222789334D44bB5b2364939477E15A6c981Ca165
+          amount-token: 0xa794e6e187E7Bc0aBDfb1025260eD8482328A599
           initial-output-token: 0x4200000000000000000000000000000000000006
-          initial-input-token: 0x222789334D44bB5b2364939477E15A6c981Ca165
+          initial-input-token: 0xa794e6e187E7Bc0aBDfb1025260eD8482328A599
 
 networks:
   base:
@@ -252,7 +252,7 @@ deployers:
 tokens:
   base-cofek:
     network: base
-    address: 0x222789334D44bB5b2364939477E15A6c981Ca165
+    address: 0xa794e6e187E7Bc0aBDfb1025260eD8482328A599
     decimals: 18
   base-usdc:
     network: base

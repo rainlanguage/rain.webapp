@@ -31,7 +31,7 @@ tokens:
     decimals: 6
   base-cofek:
     network: base
-    address: 0x222789334D44bB5b2364939477E15A6c981Ca165
+    address: 0xa794e6e187E7Bc0aBDfb1025260eD8482328A599
     decimals: 18
   base-weth:
     network: base

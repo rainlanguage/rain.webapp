@@ -5802,7 +5802,7 @@ gui:
           description: >
             The initial cysFLR per cUSDX to kickoff the first auction. (e.g. 1.4 cysFLR per cUSDX)
           min: 0
-    
+
     - deployment: flare-cusdx-cysflr
       name: Sell cysFLR for cUSDX on Flare.
       description: >
@@ -5978,7 +5978,7 @@ gui:
           description: >
             The initial USDCe per cUSDX to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-cusdx-usdce
       name: Sell USDCe for cUSDX on Flare.
       description: >
@@ -6154,7 +6154,7 @@ gui:
           description: >
             The initial cysFLR per USDCe to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-usdce-cysflr
       name: Sell cysFLR for USDCe on Flare.
       description: >
@@ -6242,7 +6242,7 @@ gui:
           description: >
             The initial USDCe per cysFLR to kickoff the first auction.
           min: 0
- 
+
     - deployment: flare-cysflr-sflr
       name: Sell sFLR for cysFLR on Flare.
       description: >
@@ -6330,7 +6330,7 @@ gui:
           description: >
             The initial cysFLR per sFLR to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-sflr-cysflr
       name: Sell cysFLR for sFLR on Flare.
       description: >
@@ -6418,7 +6418,7 @@ gui:
           description: >
             The initial sFLR per cysFLR to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-cysflr-weth
       name: Sell WETH for cysFLR on Flare.
       description: >
@@ -6506,7 +6506,7 @@ gui:
           description: >
             The initial cysFLR per WETH to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-weth-cysflr
       name: Sell cysFLR for WETH on Flare.
       description: >
@@ -6594,7 +6594,7 @@ gui:
           description: >
             The initial WETH per cysFLR to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-wflr-xvn
       name: Sell XVN for WFLR on Flare.
       description: >
@@ -6685,7 +6685,7 @@ gui:
           description: >
             The initial WFLR per XVN to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-xvn-wflr
       name: Sell WFLR for XVN on Flare.
       description: >
@@ -6773,7 +6773,7 @@ gui:
           description: >
             The initial XVN per WFLR to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-sflr-wflr
       name: Sell WFLR for SFLR on Flare based on underlying collateral.
       description: >
@@ -6824,6 +6824,8 @@ gui:
           description: >
             The auction period is the time between each auction price halvening.
           presets:
+            - name: Every half hour (1800)
+              value: 1800
             - name: Every hour (3600)
               value: 3600
             - name: Every 2 hours (7200)
@@ -6840,7 +6842,7 @@ gui:
               value: 1.02
             - name: 1.05x
               value: 1.05
-    
+
     - deployment: flare-wflr-sflr
       name: Sell SFLR for WFLR on Flare based on underlying collateral.
       description: >
@@ -6891,6 +6893,8 @@ gui:
           description: >
             The auction period is the time between each auction price halvening.
           presets:
+            - name: Every half hour (1800)
+              value: 1800
             - name: Every hour (3600)
               value: 3600
             - name: Every 2 hours (7200)
@@ -6907,7 +6911,7 @@ gui:
               value: 1.02
             - name: 1.05x
               value: 1.05
-    
+
     - deployment: flare-usdce-wflr
       name: Sell WFLR for USDC.e on Flare.
       description: >

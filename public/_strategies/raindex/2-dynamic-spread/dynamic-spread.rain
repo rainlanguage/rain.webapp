@@ -2701,7 +2701,7 @@ gui:
               value: 0
         - binding: initial-io
           name: Initial price (USDT per PATEK)
-          description: The rough USD price you see for PATEK on Dextools (e.g. 0.009)
+          description: The rough USD price you see for PATEK on Dextools (e.g. 0.41)
           min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier
@@ -2745,7 +2745,7 @@ gui:
         - binding: max-amount
           name: Max amount
           description: The maximum amount of USDT that will be offered in a single auction.
-          min: 50
+          min: 0
           presets:
             - name: $100
               value: 100
@@ -2758,7 +2758,7 @@ gui:
         - binding: min-amount
           name: Minimum amount
           description: The minimum amount of USDT that will be offered in a single auction.
-          min: 20
+          min: 0
           presets:
             - name: $80
               value: 80

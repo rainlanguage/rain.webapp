@@ -128,7 +128,7 @@ tokens:
     network: bsc
     address: 0xB0D502E938ed5f4df2E681fE6E419ff29631d62b
     decimals: 18
-  bsc-patek:
+  bsc-patex:
     network: bsc
     address: 0xFD4f2Caf941B6d737382DCe420b368DE3FC7f2D4
     decimals: 18
@@ -318,20 +318,20 @@ orders:
       - token: bsc-busd
     outputs:
       - token: bsc-tft
-  bsc-patek-usdt:
+  bsc-patex-usdt:
     orderbook: bsc
     network: bsc
     inputs:
-      - token: bsc-patek
+      - token: bsc-patex
     outputs:
       - token: bsc-usdt
-  bsc-usdt-patek:
+  bsc-usdt-patex:
     orderbook: bsc
     network: bsc
     inputs:
       - token: bsc-usdt
     outputs:
-      - token: bsc-patek
+      - token: bsc-patex
   bsc-stg-usdt:
     orderbook: bsc
     network: bsc
@@ -831,11 +831,11 @@ deployments:
   bsc-busd-tft:
     order: bsc-busd-tft
     scenario: bsc
-  bsc-patek-usdt:
-    order: bsc-patek-usdt
+  bsc-patex-usdt:
+    order: bsc-patex-usdt
     scenario: bsc
-  bsc-usdt-patek:
-    order: bsc-usdt-patek
+  bsc-usdt-patex:
+    order: bsc-usdt-patex
     scenario: bsc
   bsc-stg-usdt:
     order: bsc-stg-usdt
@@ -3664,10 +3664,10 @@ gui:
             The initial BUSD per TFT to kickoff the first auction (e.g. 0.009 BUSD per TFT)
           min: 0
 
-    - deployment: bsc-patek-usdt
-      name: Buy PATEK with USDT on BSC.
+    - deployment: bsc-patex-usdt
+      name: Buy PATEX with USDT on BSC.
       description: >
-        Swap USDT for PATEK on BSC.
+        Swap USDT for PATEX on BSC.
       deposits:
         - token: bsc-usdt
           min: 0
@@ -3704,7 +3704,7 @@ gui:
           description: >
             The amount of USDT to spend each budget period.
 
-            For example, if the budget is daily and this is 1000 then 1000 USDT will be spent buying PATEK each day.
+            For example, if the budget is daily and this is 1000 then 1000 USDT will be spent buying PATEX each day.
           min: 0
         - binding: max-trade-amount
           name: Maximum trade size (USDT)
@@ -3738,9 +3738,9 @@ gui:
             - name: Every 24 hours (86400)
               value: 86400
         - binding: baseline
-          name: Baseline PATEK per USDT
+          name: Baseline PATEX per USDT
           description: >
-            The absolute minimum amount of PATEK per USDT that the auction will trade at (e.g. 1.75)
+            The absolute minimum amount of PATEX per USDT that the auction will trade at (e.g. 1.75)
           min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
@@ -3774,17 +3774,17 @@ gui:
             - name: 0.99x
               value: 0.99
         - binding: initial-io
-          name: Kickoff PATEK per USDT (e.g. 2.32)
+          name: Kickoff PATEX per USDT (e.g. 2.32)
           description: >
-            The initial PATEK per USDT to kickoff the first auction.
+            The initial PATEX per USDT to kickoff the first auction.
           min: 0
 
-    - deployment: bsc-usdt-patek
-      name: Sell PATEK for USDT on BSC.
+    - deployment: bsc-usdt-patex
+      name: Sell PATEX for USDT on BSC.
       description: >
-        Swap PATEK for USDT on BSC.
+        Swap PATEX for USDT on BSC.
       deposits:
-        - token: bsc-patek
+        - token: bsc-patex
           min: 0
           presets:
             - 0
@@ -3815,21 +3815,21 @@ gui:
             - name: Per 365 days (31536000)
               value: 31536000
         - binding: amount-per-epoch
-          name: Budget (PATEK per period)
+          name: Budget (PATEX per period)
           description: >
-            The amount of PATEK to spend each budget period.
+            The amount of PATEX to spend each budget period.
 
-            For example, if the budget is daily and this is 100 then 100 PATEK will be sold for USDT each day.
+            For example, if the budget is daily and this is 100 then 100 PATEX will be sold for USDT each day.
           min: 0
         - binding: max-trade-amount
-          name: Maximum trade size (PATEK)
+          name: Maximum trade size (PATEX)
           description: >
-            The maximum amount of PATEK to sell in a single auction.
+            The maximum amount of PATEX to sell in a single auction.
           min: 0
         - binding: min-trade-amount
-          name: Minimum trade size (PATEK)
+          name: Minimum trade size (PATEX)
           description: >
-            The minimum amount of PATEK to sell in a single auction.
+            The minimum amount of PATEX to sell in a single auction.
           min: 0
         - binding: time-per-trade-epoch
           name: Auction period (in seconds)
@@ -3853,9 +3853,9 @@ gui:
             - name: Every 24 hours (86400)
               value: 86400
         - binding: baseline
-          name: Baseline USDT per PATEK
+          name: Baseline USDT per PATEX
           description: >
-            The absolute minimum amount of USDT per PATEK that the auction will trade at (e.g. 0.35 USDT per PATEK).
+            The absolute minimum amount of USDT per PATEX that the auction will trade at (e.g. 0.35 USDT per PATEX).
           min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
@@ -3889,9 +3889,9 @@ gui:
             - name: 0.99x
               value: 0.99
         - binding: initial-io
-          name: Kickoff USDT per PATEK
+          name: Kickoff USDT per PATEX
           description: >
-            The initial USDT per PATEK to kickoff the first auction (e.g. 0.42 USDT per PATEK)
+            The initial USDT per PATEX to kickoff the first auction (e.g. 0.42 USDT per PATEX)
           min: 0
 
     - deployment: bsc-stg-usdt

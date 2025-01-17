@@ -2687,9 +2687,9 @@ gui:
             - 2
             - 4
 
-    - deployment: bsc-usdt-patek
-      name: USDT<>PATEK on BSC.
-      description: Rotate USDT and PATEK on BSC.
+    - deployment: bsc-usdt-patex
+      name: USDT<>PATEX on BSC.
+      description: Rotate USDT and PATEX on BSC.
       fields:
         - binding: is-fast-exit
           name: Fast exit?
@@ -2700,8 +2700,8 @@ gui:
             - name: No
               value: 0
         - binding: initial-io
-          name: Initial price (USDT per PATEK)
-          description: The rough USD price you see for PATEK on Dextools (e.g. 0.41)
+          name: Initial price (USDT per PATEX)
+          description: The rough USD price you see for PATEX on Dextools (e.g. 0.41)
           min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier
@@ -2776,7 +2776,7 @@ gui:
             - 2000
             - 10000
             - 20000
-        - token: bsc-patek
+        - token: bsc-patex
           min: 0
           presets:
             - 0
@@ -3380,7 +3380,7 @@ scenarios:
       history-cap: '1e50'
       shy-epoch: 0.05
     scenarios:
-      usdt-patek:
+      usdt-patex:
         runs: 1
         bindings:
           amount-token: 0x55d398326f99059fF775485246999027B3197955
@@ -3673,7 +3673,7 @@ tokens:
     network: bsc
     address: 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56
     decimals: 18
-  bsc-patek:
+  bsc-patex:
     network: bsc
     address: 0xFD4f2Caf941B6d737382DCe420b368DE3FC7f2D4
     decimals: 18
@@ -3962,14 +3962,14 @@ orders:
     outputs:
       - token: bsc-tft
       - token: bsc-usdc
-  bsc-usdt-patek:
+  bsc-usdt-patex:
     network: bsc
     orderbook: bsc
     inputs:
-      - token: bsc-patek
+      - token: bsc-patex
       - token: bsc-usdt
     outputs:
-      - token: bsc-patek
+      - token: bsc-patex
       - token: bsc-usdt
   base-wlth-usdc:
     network: base
@@ -4099,9 +4099,9 @@ deployments:
   bsc-tft-usdc:
     order: bsc-tft-usdc
     scenario: bsc.tft-usdc
-  bsc-usdt-patek:
-    order: bsc-usdt-patek
-    scenario: bsc.usdt-patek
+  bsc-usdt-patex:
+    order: bsc-usdt-patex
+    scenario: bsc.usdt-patex
   base-wlth-usdc:
     order: base-wlth-usdc
     scenario: base.wlth-usdc

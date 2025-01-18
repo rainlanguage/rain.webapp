@@ -10,9 +10,17 @@ gui:
       description: Rotate USDGLO and LUSD on Arbitrum.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDGLO?
+          description: If enabled, the strategy will attempt to exit any USDGLO position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit LUSD?
+          description: If enabled, the strategy will attempt to exit any LUSD position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -108,9 +116,17 @@ gui:
       description: Rotate WPOL (WMATIC) and QUICK on Polygon.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit QUICK?
+          description: If enabled, the strategy will attempt to exit any QUICK position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit WPOL/WMATIC?
+          description: If enabled, the strategy will attempt to exit any WPOL/WMATIC position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -191,9 +207,17 @@ gui:
       description: Rotate QUICK (old) and QUICK on Polygon.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit QUICK (new)?
+          description: If enabled, the strategy will attempt to exit any QUICK (new) position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit QUICK (old)?
+          description: If enabled, the strategy will attempt to exit any QUICK (old) position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -289,9 +313,17 @@ gui:
       description: Rotate USDC and IOEN on Polygon.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDC?
+          description: If enabled, the strategy will attempt to exit any USDC position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit IOEN?
+          description: If enabled, the strategy will attempt to exit any IOEN position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -382,9 +414,17 @@ gui:
       description: Rotate USDC and MNW on Polygon.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDC?
+          description: If enabled, the strategy will attempt to exit any USDC position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit MNW?
+          description: If enabled, the strategy will attempt to exit any MNW position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -475,9 +515,17 @@ gui:
       description: Rotate USDT and POLI on Polygon.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDT?
+          description: If enabled, the strategy will attempt to exit any USDT position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit POLI?
+          description: If enabled, the strategy will attempt to exit any POLI position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -570,9 +618,17 @@ gui:
       description: Rotate WETH and MNW on Polygon.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit WETH?
+          description: If enabled, the strategy will attempt to exit any WETH position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit MNW?
+          description: If enabled, the strategy will attempt to exit any MNW position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -662,9 +718,17 @@ gui:
       description: Rotate USDT and NHT on Polygon.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDT?
+          description: If enabled, the strategy will attempt to exit any USDT position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit NHT?
+          description: If enabled, the strategy will attempt to exit any NHT position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -755,9 +819,17 @@ gui:
       description: Rotate USDCe and GFI on Polygon.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDCe?
+          description: If enabled, the strategy will attempt to exit any USDCe position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit GFI?
+          description: If enabled, the strategy will attempt to exit any GFI position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -849,9 +921,17 @@ gui:
       description: Rotate USDC and WETH on Base.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDC?
+          description: If enabled, the strategy will attempt to exit any USDC position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit WETH?
+          description: If enabled, the strategy will attempt to exit any WETH position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -901,7 +981,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (USDC)
           description: The maximum amount of USDC that will be offered in a single auction.
           min: 5
           presets:
@@ -914,7 +994,7 @@ gui:
             - name: $100
               value: 100
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (USDC)
           description: The minimum amount of USDC that will be offered in a single auction.
           min: 5
           presets:
@@ -947,9 +1027,17 @@ gui:
       description: Rotate LUCKY and WETH on Base.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit LUCKY?
+          description: If enabled, the strategy will attempt to exit any LUCKY position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit WETH?
+          description: If enabled, the strategy will attempt to exit any WETH position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -999,7 +1087,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (LUCKY)
           description: The maximum amount of LUCKY that will be offered in a single auction.
           min: 1550
           presets:
@@ -1012,7 +1100,7 @@ gui:
             - name: 30900
               value: 30900
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (LUCKY)
           description: The minimum amount of LUCKY that will be offered in a single auction.
           min: 1550
           presets:
@@ -1046,9 +1134,17 @@ gui:
       description: Rotate USDC and PAID on Base.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDC?
+          description: If enabled, the strategy will attempt to exit any USDC position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit PAID?
+          description: If enabled, the strategy will attempt to exit any PAID position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -1098,7 +1194,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (USDC)
           description: The maximum amount of USDC that will be offered in a single auction.
           min: 5
           presets:
@@ -1111,7 +1207,7 @@ gui:
             - name: $100
               value: 100
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (USDC)
           description: The minimum amount of USDC that will be offered in a single auction.
           min: 5
           presets:
@@ -1144,9 +1240,17 @@ gui:
       description: Rotate USDC and TOAST on Base.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDC?
+          description: If enabled, the strategy will attempt to exit any USDC position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit TOAST?
+          description: If enabled, the strategy will attempt to exit any TOAST position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -1196,7 +1300,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (USDC)
           description: The maximum amount of USDC that will be offered in a single auction.
           min: 5
           presets:
@@ -1209,7 +1313,7 @@ gui:
             - name: $100
               value: 100
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (USDC)
           description: The minimum amount of USDC that will be offered in a single auction.
           min: 5
           presets:
@@ -1242,9 +1346,17 @@ gui:
       description: Rotate USDC and WETH on Arbitrum.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDC?
+          description: If enabled, the strategy will attempt to exit any USDC position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit WETH?
+          description: If enabled, the strategy will attempt to exit any WETH position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -1294,7 +1406,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (USDC)
           description: The maximum amount of USDC that will be offered in a single auction.
           min: 5
           presets:
@@ -1307,7 +1419,7 @@ gui:
             - name: $100
               value: 100
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (USDC)
           description: The minimum amount of USDC that will be offered in a single auction.
           min: 5
           presets:
@@ -1341,9 +1453,17 @@ gui:
       description: Rotate USDT and KIMA on Arbitrum.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDT?
+          description: If enabled, the strategy will attempt to exit any USDT position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit KIMA?
+          description: If enabled, the strategy will attempt to exit any KIMA position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -1393,7 +1513,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (USDT)
           description: The maximum amount of USDT that will be offered in a single auction.
           min: 5
           presets:
@@ -1406,7 +1526,7 @@ gui:
             - name: 100
               value: 100
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (USDT)
           description: The minimum amount of USDT that will be offered in a single auction.
           min: 5
           presets:
@@ -1440,9 +1560,17 @@ gui:
       description: Rotate WBTC and WETH on Arbitrum.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit WBTC?
+          description: If enabled, the strategy will attempt to exit any WBTC position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit WETH?
+          description: If enabled, the strategy will attempt to exit any WETH position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -1492,7 +1620,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (WBTC)
           description: The maximum amount of WBTC that will be offered in a single auction.
           min: 0.00005
           presets:
@@ -1505,7 +1633,7 @@ gui:
             - name: 0.1
               value: 0.1
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (WBTC)
           description: The minimum amount of WBTC that will be offered in a single auction.
           min: 0.00005
           presets:
@@ -1537,9 +1665,17 @@ gui:
       description: Rotate USDC and TOSHI on Base.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDC?
+          description: If enabled, the strategy will attempt to exit any USDC position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit TOSHI?
+          description: If enabled, the strategy will attempt to exit any TOSHI position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -1589,7 +1725,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (USDC)
           description: The maximum amount of USDC that will be offered in a single auction.
           min: 0
           presets:
@@ -1602,7 +1738,7 @@ gui:
             - name: $100
               value: 100
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (USDC)
           description: The minimum amount of USDC that will be offered in a single auction.
           min: 0
           presets:
@@ -1633,9 +1769,17 @@ gui:
       description: Rotate sFLR (Sceptre staked FLR) and WFLR on Flare.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit sFLR?
+          description: If enabled, the strategy will attempt to exit any sFLR position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit WFLR?
+          description: If enabled, the strategy will attempt to exit any WFLR position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -1685,7 +1829,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (sFLR)
           description: The maximum amount of sFLR that will be offered in a single auction.
           min: 0
           presets:
@@ -1698,7 +1842,7 @@ gui:
             - name: 100000
               value: 100000
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (sFLR)
           description: The minimum amount of sFLR that will be offered in a single auction.
           min: 0
           presets:
@@ -1729,9 +1873,17 @@ gui:
       description: Rotate cUSDX and cysFLR on Flare.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit cUSDX?
+          description: If enabled, the strategy will attempt to exit any cUSDX position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit cysFLR?
+          description: If enabled, the strategy will attempt to exit any cysFLR position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -1781,7 +1933,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (cUSDX)
           description: The maximum amount of cUSDX that will be offered in a single auction.
           min: 0
           presets:
@@ -1792,7 +1944,7 @@ gui:
             - name: 1000
               value: 1000
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (cUSDX)
           description: The minimum amount of cUSDX that will be offered in a single auction.
           min: 0
           presets:
@@ -1818,15 +1970,23 @@ gui:
             - 100
             - 200
             - 500
-    
+
     - deployment: flare-xvn-wflr
       name: XVN<>WFLR on Flare.
       description: Rotate XVN and WFLR on Flare.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit WFLR?
+          description: If enabled, the strategy will attempt to exit any WFLR position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit XVN?
+          description: If enabled, the strategy will attempt to exit any XVN position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -1876,7 +2036,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (WFLR)
           description: The maximum amount of WFLR that will be offered in a single auction.
           min: 0
           presets:
@@ -1887,7 +2047,7 @@ gui:
             - name: 10000
               value: 10000
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (WFLR)
           description: The minimum amount of WFLR that will be offered in a single auction.
           min: 0
           presets:
@@ -1913,15 +2073,23 @@ gui:
             - 10000
             - 20000
             - 50000
-    
+
     - deployment: flare-usdce-cusdx
       name: USDCe<>cUSDX on Flare.
       description: Rotate USDCe and cUSDX on Flare.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDCe?
+          description: If enabled, the strategy will attempt to exit any USDCe position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit cUSDX?
+          description: If enabled, the strategy will attempt to exit any cUSDX position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -1971,7 +2139,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (USDCe)
           description: The maximum amount of USDCe that will be offered in a single auction.
           min: 0
           presets:
@@ -1982,7 +2150,7 @@ gui:
             - name: 1000
               value: 1000
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (USDCe)
           description: The minimum amount of USDCe that will be offered in a single auction.
           min: 0
           presets:
@@ -2014,9 +2182,17 @@ gui:
       description: Rotate USDC.e (Bridged USDC on Stargate) and sFLR on Flare.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDC.e?
+          description: If enabled, the strategy will attempt to exit any USDC.e position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit sFLR?
+          description: If enabled, the strategy will attempt to exit any sFLR position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -2064,7 +2240,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (USDC.e)
           description: The maximum amount of USDC.e that will be offered in a single auction.
           min: 0
           presets:
@@ -2077,7 +2253,7 @@ gui:
             - name: $100
               value: 100
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (USDC.e)
           description: The minimum amount of USDC.e that will be offered in a single auction.
           min: 0
           presets:
@@ -2108,9 +2284,17 @@ gui:
       description: Rotate USDC.e (Bridged USDC on Stargate) and WETH on Flare.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDC.e?
+          description: If enabled, the strategy will attempt to exit any USDC.e position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit WETH?
+          description: If enabled, the strategy will attempt to exit any WETH position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -2160,7 +2344,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (USDC.e)
           description: The maximum amount of USDC.e that will be offered in a single auction.
           min: 1
           presets:
@@ -2173,7 +2357,7 @@ gui:
             - name: $100
               value: 100
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (USDC.e)
           description: The minimum amount of USDC.e that will be offered in a single auction.
           min: 1
           presets:
@@ -2205,9 +2389,17 @@ gui:
       description: Rotate USDC.e (Bridged USDC on Stargate) and WFLR on Flare.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDC.e?
+          description: If enabled, the strategy will attempt to exit any USDC.e position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit WFLR?
+          description: If enabled, the strategy will attempt to exit any WFLR position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -2255,7 +2447,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (USDC.e)
           description: The maximum amount of USDC.e that will be offered in a single auction.
           min: 0
           presets:
@@ -2268,7 +2460,7 @@ gui:
             - name: $100
               value: 100
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (USDC.e)
           description: The minimum amount of USDC.e that will be offered in a single auction.
           min: 0
           presets:
@@ -2300,9 +2492,17 @@ gui:
       description: Rotate sFLR (Sceptre staked FLR) and JOULE on Flare.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit sFLR?
+          description: If enabled, the strategy will attempt to exit any sFLR position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit JOULE?
+          description: If enabled, the strategy will attempt to exit any JOULE position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -2352,7 +2552,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (sFLR)
           description: The maximum amount of sFLR that will be offered in a single auction.
           min: 0
           presets:
@@ -2365,7 +2565,7 @@ gui:
             - name: 5000 sFLR
               value: 5000
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (sFLR)
           description: The minimum amount of sFLR that will be offered in a single auction.
           min: 0
           presets:
@@ -2397,9 +2597,17 @@ gui:
       description: Rotate USDC and BLOOD on Base.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDC?
+          description: If enabled, the strategy will attempt to exit any USDC position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit BLOOD?
+          description: If enabled, the strategy will attempt to exit any BLOOD position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -2449,7 +2657,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (USDC)
           description: The maximum amount of USDC that will be offered in a single auction.
           min: 5
           presets:
@@ -2462,7 +2670,7 @@ gui:
             - name: $100
               value: 100
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (USDC)
           description: The minimum amount of USDC that will be offered in a single auction.
           min: 5
           presets:
@@ -2495,9 +2703,17 @@ gui:
       description: Rotate CLIP and WETH on Linea.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit WETH?
+          description: If enabled, the strategy will attempt to exit any WETH position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit CLIP?
+          description: If enabled, the strategy will attempt to exit any CLIP position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -2547,7 +2763,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (WETH)
           description: The maximum amount of WETH that will be offered in a single auction.
           min: 0.02
           presets:
@@ -2558,7 +2774,7 @@ gui:
             - name: 10 ETH
               value: 10
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (WETH)
           description: The minimum amount of WETH that will be offered in a single auction.
           min: 0.005
           presets:
@@ -2590,9 +2806,17 @@ gui:
       description: Rotate PAI and WETH on Ethereum.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit WETH?
+          description: If enabled, the strategy will attempt to exit any WETH position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit PAI?
+          description: If enabled, the strategy will attempt to exit any PAI position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -2642,7 +2866,7 @@ gui:
             - name: 24 hours (86400)
               value: 86400
         - binding: max-amount
-          name: Max amount
+          name: Max amount (WETH)
           description: The maximum amount of WETH that will be offered in a single auction.
           min: 1
           presets:
@@ -2657,7 +2881,7 @@ gui:
             - name: 20 WETH
               value: 20
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (WETH)
           description: The minimum amount of WETH that will be offered in a single auction.
           min: 1
           presets:
@@ -2690,9 +2914,17 @@ gui:
       description: Rotate MNW and WETH on Ethereum.
 
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit WETH?
+          description: If enabled, the strategy will attempt to exit any WETH position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit MNW?
+          description: If enabled, the strategy will attempt to exit any MNW position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -2742,7 +2974,7 @@ gui:
             - name: 24 hours (86400)
               value: 86400
         - binding: max-amount
-          name: Max amount
+          name: Max amount (WETH)
           description: The maximum amount of WETH that will be offered in a single auction.
           min: 1
           presets:
@@ -2757,7 +2989,7 @@ gui:
             - name: 20 WETH
               value: 20
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (WETH)
           description: The minimum amount of WETH that will be offered in a single auction.
           min: 1
           presets:
@@ -2789,9 +3021,17 @@ gui:
       name: BUSD<>TFT on BSC.
       description: Rotate BUSD and TFT on BSC.
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit BUSD?
+          description: If enabled, the strategy will attempt to exit any BUSD position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit TFT?
+          description: If enabled, the strategy will attempt to exit any TFT position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -2841,7 +3081,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (BUSD)
           description: The maximum amount of BUSD that will be offered in a single auction.
           min: 50
           presets:
@@ -2854,7 +3094,7 @@ gui:
             - name: $1000
               value: 1000
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (BUSD)
           description: The minimum amount of BUSD that will be offered in a single auction.
           min: 20
           presets:
@@ -2885,9 +3125,17 @@ gui:
       name: USDC<>TFT on BSC.
       description: Rotate USDC and TFT on BSC.
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDC?
+          description: If enabled, the strategy will attempt to exit any USDC position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit TFT?
+          description: If enabled, the strategy will attempt to exit any TFT position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -2937,7 +3185,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (USDC)
           description: The maximum amount of USDC that will be offered in a single auction.
           min: 20
           presets:
@@ -2950,7 +3198,7 @@ gui:
             - name: $1000
               value: 1000
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (USDC)
           description: The minimum amount of USDC that will be offered in a single auction.
           min: 20
           presets:
@@ -2981,9 +3229,17 @@ gui:
       name: WETH<>UMJA on Arbitrum.
       description: Rotate WETH and UMJA on Arbitrum.
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit WETH?
+          description: If enabled, the strategy will attempt to exit any WETH position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit UMJA?
+          description: If enabled, the strategy will attempt to exit any UMJA position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -3033,7 +3289,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (WETH)
           description: The maximum amount of WETH that will be offered in a single auction.
           min: 0.001
           presets:
@@ -3046,7 +3302,7 @@ gui:
             - name: 0.1 ETH
               value: 0.1
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (WETH)
           description: The minimum amount of WETH that will be offered in a single auction.
           min: 0.001
           presets:
@@ -3078,9 +3334,17 @@ gui:
       name: WLTH<>USDC on Base.
       description: Rotate WLTH and USDC on Base.
       fields:
-        - binding: is-fast-exit
-          name: Fast exit?
-          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+        - binding: amount-is-fast-exit
+          name: Fast exit USDC?
+          description: If enabled, the strategy will attempt to exit any USDC position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit WLTH?
+          description: If enabled, the strategy will attempt to exit any WLTH position it builds up in a single trade, as soon as it can do so profitably.
           presets:
             - name: Yes
               value: 1
@@ -3130,7 +3394,7 @@ gui:
             - name: 8 hours (28800)
               value: 28800
         - binding: max-amount
-          name: Max amount
+          name: Max amount (USDC)
           description: The maximum amount of USDC that will be offered in a single auction.
           min: 5
           presets:
@@ -3143,7 +3407,7 @@ gui:
             - name: $100
               value: 100
         - binding: min-amount
-          name: Minimum amount
+          name: Minimum amount (USDC)
           description: The minimum amount of USDC that will be offered in a single auction.
           min: 5
           presets:
@@ -4130,7 +4394,8 @@ deployments:
 #initial-input-token !Initial input token for the initial IO ratio.
 #cost-basis-multiplier !Multiplier for the cost basis IO ratio. Effectively a minimum spread.
 
-#is-fast-exit !Non-zero for fast exit behaviour.
+#amount-is-fast-exit !Non-zero for fast exit behaviour where the amount token is the fast exit token.
+#not-amount-is-fast-exit !Non-zero for fast exit behaviour where the not amount token is the fast exit token.
 
 #last-trade-io-key "last-trade-io"
 #last-trade-time-key "last-trade-time"
@@ -4272,7 +4537,7 @@ other-vwaio: call<'get-cost-basis-io-ratio>(),
 max-output: max(
   epoch-max-output
   every(
-    is-fast-exit
+    if(call<'amount-is-output>() amount-is-fast-exit not-amount-is-fast-exit)
     mul(other-total-out other-vwaio))),
 _: io,
 :call<'set-last-trade>(io);

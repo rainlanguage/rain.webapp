@@ -152,6 +152,10 @@ tokens:
     network: base
     address: 0x655A51e6803faF50D4acE80fa501af2F29C856cF
     decimals: 18
+  base-sarco:
+    network: base
+    address: 0xF3907Bc0FFF5Ff5aCf1E3dD7987005779C7bf57d
+    decimals: 18
   ethereum-weth:
     network: ethereum
     address: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
@@ -355,6 +359,20 @@ orders:
     network: base
     inputs:
       - token: base-paid
+    outputs:
+      - token: base-usdc
+  base-usdc-sarco:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-usdc
+    outputs:
+      - token: base-sarco
+  base-sarco-usdc:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-sarco
     outputs:
       - token: base-usdc
   base-usdc-akuma:
@@ -863,6 +881,12 @@ deployments:
     scenario: base
   base-paid-usdc:
     order: base-paid-usdc
+    scenario: base
+  base-usdc-sarco:
+    order: base-usdc-sarco
+    scenario: base
+  base-sarco-usdc:
+    order: base-sarco-usdc
     scenario: base
   base-usdc-akuma:
     order: base-usdc-akuma
@@ -4229,6 +4253,202 @@ gui:
             - name: 50
               value: 50
 
+    - deployment: base-usdc-sarco
+      name: Sell SARCO for USDC on Base.
+      description: >
+        Sell SARCO for USDC on Base.
+      deposits:
+        - token: base-sarco
+          min: 0
+          presets:
+            - 0
+            - 10000
+            - 100000
+            - 1000000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (SARCO per period)
+          description: >
+            The amount of SARCO to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (SARCO)
+          description: >
+            The maximum amount of SARCO to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (SARCO)
+          description: >
+            The minimum amount of SARCO to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline USDC per SARCO
+          description: >
+            The absolute minimum amount of USDC per SARCO that the auction will trade at (e.g. 0.0029 USDC per SARCO)
+          min: 0
+          presets:
+            - name: 0.01
+              value: 0.01
+            - name: 0.02
+              value: 0.02
+            - name: 0.05
+              value: 0.05
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDC per SARCO
+          description: >
+            The initial USDC per SARCO to kickoff the first auction (e.g. 0.0029 USDC per SARCO)
+          min: 0
+          presets:
+            - name: 0.05
+              value: 0.05
+            - name: 0.1
+              value: 0.1
+
+    - deployment: base-sarco-usdc
+      name: Buy SARCO with USDC on Base.
+      description: >
+        Buy SARCO with USDC on Base.
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline SARCO per USDC
+          description: >
+            The absolute minimum amount of SARCO per USDC that the auction will trade at (e.g. 300 SARCO per USDC)
+          min: 0
+          presets:
+            - name: 10
+              value: 10
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff SARCO per USDC
+          description: >
+            The initial SARCO per USDC to kickoff the first auction (e.g. 336 SARCO per USDC)
+          min: 0
+          presets:
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+
     - deployment: base-usdc-akuma
       name: Sell AKUMA for USDC on Base.
       description: >
@@ -4429,7 +4649,7 @@ gui:
               value: 100
             - name: 500
               value: 500
-
+              
     - deployment: base-usdc-toast
       name: Sell TOAST for USDC on Base.
       description: >

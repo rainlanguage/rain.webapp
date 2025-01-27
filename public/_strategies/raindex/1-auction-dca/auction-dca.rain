@@ -168,6 +168,10 @@ tokens:
     network: base
     address: 0x2C002ffEC41568d138Acc36f5894d6156398D539
     decimals: 18
+  base-akuma:
+    network: base
+    address: 0x2F20Cf3466f80A5f7f532fCa553c8cbc9727FEf6
+    decimals: 18
   base-weth:
     network: base
     address: 0x4200000000000000000000000000000000000006
@@ -351,6 +355,20 @@ orders:
     network: base
     inputs:
       - token: base-paid
+    outputs:
+      - token: base-usdc
+  base-usdc-akuma:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-usdc
+    outputs:
+      - token: base-akuma
+  base-akuma-usdc:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-akuma
     outputs:
       - token: base-usdc
   base-usdc-toast:
@@ -845,6 +863,12 @@ deployments:
     scenario: base
   base-paid-usdc:
     order: base-paid-usdc
+    scenario: base
+  base-usdc-akuma:
+    order: base-usdc-akuma
+    scenario: base
+  base-akuma-usdc:
+    order: base-akuma-usdc
     scenario: base
   base-usdc-toast:
     order: base-usdc-toast
@@ -4204,6 +4228,207 @@ gui:
               value: 20
             - name: 50
               value: 50
+
+    - deployment: base-usdc-akuma
+      name: Sell AKUMA for USDC on Base.
+      description: >
+        Sell AKUMA for USDC on Base.
+      deposits:
+        - token: base-akuma
+          min: 0
+          presets:
+            - 0
+            - 100000
+            - 500000
+            - 1000000
+            - 10000000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (AKUMA per period)
+          description: >
+            The amount of AKUMA to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (AKUMA)
+          description: >
+            The maximum amount of AKUMA to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (AKUMA)
+          description: >
+            The minimum amount of AKUMA to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline USDC per AKUMA
+          description: >
+            The absolute minimum amount of USDC per AKUMA that the auction will trade at (e.g. 0.00020 USDC per AKUMA)
+          min: 0
+          presets:
+            - name: 0.01
+              value: 0.01
+            - name: 0.02
+              value: 0.02
+            - name: 0.05
+              value: 0.05
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDC per AKUMA
+          description: >
+            The initial USDC per AKUMA to kickoff the first auction (e.g. 0.00043 USDC per AKUMA)
+          min: 0
+          presets:
+            - name: 0.05
+              value: 0.05
+            - name: 0.1
+              value: 0.1
+
+    - deployment: base-akuma-usdc
+      name: Buy AKUMA with USDC on Base.
+      description: >
+        Buy AKUMA with USDC on Base.
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline AKUMA per USDC
+          description: >
+            The absolute minimum amount of AKUMA per USDC that the auction will trade at (e.g. 2000 AKUMA per USDC)
+          min: 0
+          presets:
+            - name: 10
+              value: 10
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff AKUMA per USDC
+          description: >
+            The initial AKUMA per USDC to kickoff the first auction (e.g. 2282 AKUMA per USDC)
+          min: 0
+          presets:
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+            - name: 100
+              value: 100
+            - name: 500
+              value: 500
 
     - deployment: base-usdc-toast
       name: Sell TOAST for USDC on Base.

@@ -144,6 +144,10 @@ tokens:
     network: base
     address: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
     decimals: 6
+  base-toast:
+    network: base
+    address: 0x21f8c472D1702919aF0AF57a9E2926f2c1FB67C5
+    decimals: 18
   base-wlth:
     network: base
     address: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
@@ -151,6 +155,10 @@ tokens:
   base-paid:
     network: base
     address: 0x655A51e6803faF50D4acE80fa501af2F29C856cF
+    decimals: 18
+  base-sarco:
+    network: base
+    address: 0xF3907Bc0FFF5Ff5aCf1E3dD7987005779C7bf57d
     decimals: 18
   ethereum-weth:
     network: ethereum
@@ -167,6 +175,10 @@ tokens:
   base-lucky:
     network: base
     address: 0x2C002ffEC41568d138Acc36f5894d6156398D539
+    decimals: 18
+  base-akuma:
+    network: base
+    address: 0x2F20Cf3466f80A5f7f532fCa553c8cbc9727FEf6
     decimals: 18
   base-weth:
     network: base
@@ -365,6 +377,48 @@ orders:
     network: base
     inputs:
       - token: base-paid
+    outputs:
+      - token: base-usdc
+  base-usdc-sarco:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-usdc
+    outputs:
+      - token: base-sarco
+  base-sarco-usdc:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-sarco
+    outputs:
+      - token: base-usdc
+  base-usdc-akuma:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-usdc
+    outputs:
+      - token: base-akuma
+  base-akuma-usdc:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-akuma
+    outputs:
+      - token: base-usdc
+  base-usdc-toast:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-usdc
+    outputs:
+      - token: base-toast
+  base-toast-usdc:
+    orderbook: base
+    network: base
+    inputs:
+      - token: base-toast
     outputs:
       - token: base-usdc
   base-usdc-wlth:
@@ -851,6 +905,24 @@ deployments:
     scenario: base
   base-paid-usdc:
     order: base-paid-usdc
+    scenario: base
+  base-usdc-sarco:
+    order: base-usdc-sarco
+    scenario: base
+  base-sarco-usdc:
+    order: base-sarco-usdc
+    scenario: base
+  base-usdc-akuma:
+    order: base-usdc-akuma
+    scenario: base
+  base-akuma-usdc:
+    order: base-akuma-usdc
+    scenario: base
+  base-usdc-toast:
+    order: base-usdc-toast
+    scenario: base
+  base-toast-usdc:
+    order: base-toast-usdc
     scenario: base
   base-usdc-wlth:
     order: base-usdc-wlth
@@ -4435,6 +4507,599 @@ gui:
             - name: 50
               value: 50
 
+    - deployment: base-usdc-sarco
+      name: Sell SARCO for USDC on Base.
+      description: >
+        Sell SARCO for USDC on Base.
+      deposits:
+        - token: base-sarco
+          min: 0
+          presets:
+            - 0
+            - 10000
+            - 100000
+            - 1000000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (SARCO per period)
+          description: >
+            The amount of SARCO to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (SARCO)
+          description: >
+            The maximum amount of SARCO to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (SARCO)
+          description: >
+            The minimum amount of SARCO to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline USDC per SARCO
+          description: >
+            The absolute minimum amount of USDC per SARCO that the auction will trade at (e.g. 0.0029 USDC per SARCO)
+          min: 0
+          presets:
+            - name: 0.01
+              value: 0.01
+            - name: 0.02
+              value: 0.02
+            - name: 0.05
+              value: 0.05
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDC per SARCO
+          description: >
+            The initial USDC per SARCO to kickoff the first auction (e.g. 0.0029 USDC per SARCO)
+          min: 0
+          presets:
+            - name: 0.05
+              value: 0.05
+            - name: 0.1
+              value: 0.1
+
+    - deployment: base-sarco-usdc
+      name: Buy SARCO with USDC on Base.
+      description: >
+        Buy SARCO with USDC on Base.
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline SARCO per USDC
+          description: >
+            The absolute minimum amount of SARCO per USDC that the auction will trade at (e.g. 300 SARCO per USDC)
+          min: 0
+          presets:
+            - name: 10
+              value: 10
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff SARCO per USDC
+          description: >
+            The initial SARCO per USDC to kickoff the first auction (e.g. 336 SARCO per USDC)
+          min: 0
+          presets:
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+
+    - deployment: base-usdc-akuma
+      name: Sell AKUMA for USDC on Base.
+      description: >
+        Sell AKUMA for USDC on Base.
+      deposits:
+        - token: base-akuma
+          min: 0
+          presets:
+            - 0
+            - 100000
+            - 500000
+            - 1000000
+            - 10000000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (AKUMA per period)
+          description: >
+            The amount of AKUMA to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (AKUMA)
+          description: >
+            The maximum amount of AKUMA to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (AKUMA)
+          description: >
+            The minimum amount of AKUMA to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline USDC per AKUMA
+          description: >
+            The absolute minimum amount of USDC per AKUMA that the auction will trade at (e.g. 0.00020 USDC per AKUMA)
+          min: 0
+          presets:
+            - name: 0.01
+              value: 0.01
+            - name: 0.02
+              value: 0.02
+            - name: 0.05
+              value: 0.05
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDC per AKUMA
+          description: >
+            The initial USDC per AKUMA to kickoff the first auction (e.g. 0.00043 USDC per AKUMA)
+          min: 0
+          presets:
+            - name: 0.05
+              value: 0.05
+            - name: 0.1
+              value: 0.1
+
+    - deployment: base-akuma-usdc
+      name: Buy AKUMA with USDC on Base.
+      description: >
+        Buy AKUMA with USDC on Base.
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline AKUMA per USDC
+          description: >
+            The absolute minimum amount of AKUMA per USDC that the auction will trade at (e.g. 2000 AKUMA per USDC)
+          min: 0
+          presets:
+            - name: 10
+              value: 10
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff AKUMA per USDC
+          description: >
+            The initial AKUMA per USDC to kickoff the first auction (e.g. 2282 AKUMA per USDC)
+          min: 0
+          presets:
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+            - name: 100
+              value: 100
+            - name: 500
+              value: 500
+              
+    - deployment: base-usdc-toast
+      name: Sell TOAST for USDC on Base.
+      description: >
+        Sell TOAST for USDC on Base.
+      deposits:
+        - token: base-toast
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (TOAST per period)
+          description: >
+            The amount of TOAST to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (TOAST)
+          description: >
+            The maximum amount of TOAST to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (TOAST)
+          description: >
+            The minimum amount of TOAST to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline USDC per TOAST
+          description: >
+            The absolute minimum amount of USDC per TOAST that the auction will trade at (e.g. 0.05 USDC per TOAST)
+          min: 0
+          presets:
+            - name: 0.01
+              value: 0.01
+            - name: 0.02
+              value: 0.02
+            - name: 0.05
+              value: 0.05
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDC per TOAST
+          description: >
+            The initial USDC per TOAST to kickoff the first auction (e.g. 0.01 USDC per TOAST)
+          min: 0
+          presets:
+            - name: 0.05
+              value: 0.05
+            - name: 0.1
+              value: 0.1
+
+    - deployment: base-toast-usdc
+      name: Buy TOAST with USDC on Base.
+      description: >
+        Buy TOAST with USDC on Base.
+      deposits:
+        - token: base-usdc
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (USDC per period)
+          description: >
+            The amount of USDC to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDC)
+          description: >
+            The maximum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDC)
+          description: >
+            The minimum amount of USDC to spend in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 4 hours (14400)
+              value: 14400
+        - binding: baseline
+          name: Baseline TOAST per USDC
+          description: >
+            The absolute minimum amount of TOAST per USDC that the auction will trade at (e.g. 50 TOAST per USDC)
+          min: 0
+          presets:
+            - name: 10
+              value: 10
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff TOAST per USDC
+          description: >
+            The initial TOAST per USDC to kickoff the first auction (e.g. 98 TOAST per USDC)
+          min: 0
+          presets:
+            - name: 20
+              value: 20
+            - name: 50
+              value: 50
+
     - deployment: base-usdc-wlth
       name: Sell WLTH for USDC on Base.
       description: >
@@ -6056,7 +6721,7 @@ gui:
           description: >
             The initial cysFLR per cUSDX to kickoff the first auction. (e.g. 1.4 cysFLR per cUSDX)
           min: 0
-    
+
     - deployment: flare-cusdx-cysflr
       name: Sell cysFLR for cUSDX on Flare.
       description: >
@@ -6232,7 +6897,7 @@ gui:
           description: >
             The initial USDCe per cUSDX to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-cusdx-usdce
       name: Sell USDCe for cUSDX on Flare.
       description: >
@@ -6408,7 +7073,7 @@ gui:
           description: >
             The initial cysFLR per USDCe to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-usdce-cysflr
       name: Sell cysFLR for USDCe on Flare.
       description: >
@@ -6496,7 +7161,7 @@ gui:
           description: >
             The initial USDCe per cysFLR to kickoff the first auction.
           min: 0
- 
+
     - deployment: flare-cysflr-sflr
       name: Sell sFLR for cysFLR on Flare.
       description: >
@@ -6584,7 +7249,7 @@ gui:
           description: >
             The initial cysFLR per sFLR to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-sflr-cysflr
       name: Sell cysFLR for sFLR on Flare.
       description: >
@@ -6672,7 +7337,7 @@ gui:
           description: >
             The initial sFLR per cysFLR to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-cysflr-weth
       name: Sell WETH for cysFLR on Flare.
       description: >
@@ -6760,7 +7425,7 @@ gui:
           description: >
             The initial cysFLR per WETH to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-weth-cysflr
       name: Sell cysFLR for WETH on Flare.
       description: >
@@ -6848,7 +7513,7 @@ gui:
           description: >
             The initial WETH per cysFLR to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-wflr-xvn
       name: Sell XVN for WFLR on Flare.
       description: >
@@ -6939,7 +7604,7 @@ gui:
           description: >
             The initial WFLR per XVN to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-xvn-wflr
       name: Sell WFLR for XVN on Flare.
       description: >
@@ -7027,7 +7692,7 @@ gui:
           description: >
             The initial XVN per WFLR to kickoff the first auction.
           min: 0
-    
+
     - deployment: flare-sflr-wflr
       name: Sell WFLR for SFLR on Flare based on underlying collateral.
       description: >
@@ -7078,6 +7743,8 @@ gui:
           description: >
             The auction period is the time between each auction price halvening.
           presets:
+            - name: Every half hour (1800)
+              value: 1800
             - name: Every hour (3600)
               value: 3600
             - name: Every 2 hours (7200)
@@ -7094,7 +7761,7 @@ gui:
               value: 1.02
             - name: 1.05x
               value: 1.05
-    
+
     - deployment: flare-wflr-sflr
       name: Sell SFLR for WFLR on Flare based on underlying collateral.
       description: >
@@ -7145,6 +7812,8 @@ gui:
           description: >
             The auction period is the time between each auction price halvening.
           presets:
+            - name: Every half hour (1800)
+              value: 1800
             - name: Every hour (3600)
               value: 3600
             - name: Every 2 hours (7200)
@@ -7161,7 +7830,7 @@ gui:
               value: 1.02
             - name: 1.05x
               value: 1.05
-    
+
     - deployment: flare-usdce-wflr
       name: Sell WFLR for USDC.e on Flare.
       description: >

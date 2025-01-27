@@ -128,6 +128,10 @@ tokens:
     network: bsc
     address: 0xB0D502E938ed5f4df2E681fE6E419ff29631d62b
     decimals: 18
+  bsc-patex:
+    network: bsc
+    address: 0xFD4f2Caf941B6d737382DCe420b368DE3FC7f2D4
+    decimals: 18
   bsc-usdt:
     network: bsc
     address: 0x55d398326f99059fF775485246999027B3197955
@@ -326,6 +330,20 @@ orders:
       - token: bsc-busd
     outputs:
       - token: bsc-tft
+  bsc-patex-usdt:
+    orderbook: bsc
+    network: bsc
+    inputs:
+      - token: bsc-patex
+    outputs:
+      - token: bsc-usdt
+  bsc-usdt-patex:
+    orderbook: bsc
+    network: bsc
+    inputs:
+      - token: bsc-usdt
+    outputs:
+      - token: bsc-patex
   bsc-stg-usdt:
     orderbook: bsc
     network: bsc
@@ -866,6 +884,12 @@ deployments:
     scenario: bsc
   bsc-busd-tft:
     order: bsc-busd-tft
+    scenario: bsc
+  bsc-patex-usdt:
+    order: bsc-patex-usdt
+    scenario: bsc
+  bsc-usdt-patex:
+    order: bsc-usdt-patex
     scenario: bsc
   bsc-stg-usdt:
     order: bsc-stg-usdt
@@ -3710,6 +3734,236 @@ gui:
           name: Kickoff BUSD per TFT
           description: >
             The initial BUSD per TFT to kickoff the first auction (e.g. 0.009 BUSD per TFT)
+          min: 0
+
+    - deployment: bsc-patex-usdt
+      name: Buy PATEX with USDT on BSC.
+      description: >
+        Swap USDT for PATEX on BSC.
+      deposits:
+        - token: bsc-usdt
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 1000
+            - 10000
+            - 100000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (USDT per period)
+          description: >
+            The amount of USDT to spend each budget period.
+
+            For example, if the budget is daily and this is 1000 then 1000 USDT will be spent buying PATEX each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDT)
+          description: >
+            The maximum amount of USDT to spend in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDT)
+          description: >
+            The minimum amount of USDT to spend in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline PATEX per USDT
+          description: >
+            The absolute minimum amount of PATEX per USDT that the auction will trade at (e.g. 1.75)
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff PATEX per USDT (e.g. 2.32)
+          description: >
+            The initial PATEX per USDT to kickoff the first auction.
+          min: 0
+
+    - deployment: bsc-usdt-patex
+      name: Sell PATEX for USDT on BSC.
+      description: >
+        Swap PATEX for USDT on BSC.
+      deposits:
+        - token: bsc-patex
+          min: 0
+          presets:
+            - 0
+            - 10
+            - 100
+            - 1000
+            - 10000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+
+            For example, if the budget is daily then this is 86400 seconds (24 * 60 * 60).
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+            - name: Per 30 days (2592000)
+              value: 2592000
+            - name: Per 365 days (31536000)
+              value: 31536000
+        - binding: amount-per-epoch
+          name: Budget (PATEX per period)
+          description: >
+            The amount of PATEX to spend each budget period.
+
+            For example, if the budget is daily and this is 100 then 100 PATEX will be sold for USDT each day.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (PATEX)
+          description: >
+            The maximum amount of PATEX to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (PATEX)
+          description: >
+            The minimum amount of PATEX to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every 20 minutes (1200)
+              value: 1200
+            - name: Every 30 minutes (1800)
+              value: 1800
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+            - name: Every 3 hours (10800)
+              value: 10800
+            - name: Every 6 hours (21600)
+              value: 21600
+            - name: Every 12 hours (43200)
+              value: 43200
+            - name: Every 24 hours (86400)
+              value: 86400
+        - binding: baseline
+          name: Baseline USDT per PATEX
+          description: >
+            The absolute minimum amount of USDT per PATEX that the auction will trade at (e.g. 0.35 USDT per PATEX).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+            - name: 1.1x
+              value: 1.1
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.7x
+              value: 0.7
+            - name: 0.8x
+              value: 0.8
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+            - name: 0.99x
+              value: 0.99
+        - binding: initial-io
+          name: Kickoff USDT per PATEX
+          description: >
+            The initial USDT per PATEX to kickoff the first auction (e.g. 0.42 USDT per PATEX)
           min: 0
 
     - deployment: bsc-stg-usdt

@@ -3762,7 +3762,7 @@ networks:
     network-id: 42161
     currency: ETH
   polygon:
-    rpc: https://rpc.ankr.com/polygon
+    rpc: https://polygon.llamarpc.com
     chain-id: 137
     network-id: 137
     currency: POL

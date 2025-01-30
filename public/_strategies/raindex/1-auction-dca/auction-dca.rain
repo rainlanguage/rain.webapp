@@ -219,6 +219,11 @@ tokens:
   flare-cysflr:
     network: flare
     address: 0x19831cfB53A0dbeAD9866C43557C1D48DfF76567
+    decimals: 18
+  flare-cyweth:
+    network: flare
+    address: 0xd8BF1d2720E9fFD01a2F9A2eFc3E101a05B852b4
+    decimals: 18
   flare-cusdx:
     network: flare
     address: 0xFE2907DFa8DB6e320cDbF45f0aa888F6135ec4f8
@@ -582,6 +587,20 @@ orders:
       - token: flare-cusdx
     outputs:
       - token: flare-cysflr
+  flare-cyweth-cusdx:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-cyweth
+    outputs:
+      - token: flare-cusdx
+  flare-cusdx-cyweth:
+    orderbook: flare
+    network: flare
+    inputs:
+      - token: flare-cusdx
+    outputs:
+      - token: flare-cyweth
   flare-cusdx-usdce:
     orderbook: flare
     network: flare
@@ -992,6 +1011,12 @@ deployments:
     scenario: flare
   flare-cusdx-cysflr:
     order: flare-cusdx-cysflr
+    scenario: flare
+  flare-cyweth-cusdx:
+    order: flare-cyweth-cusdx
+    scenario: flare
+  flare-cusdx-cyweth:
+    order: flare-cusdx-cyweth
     scenario: flare
   flare-cysflr-usdce:
     order: flare-cysflr-usdce
@@ -6808,6 +6833,182 @@ gui:
           name: Kickoff cUSDX per cysFLR
           description: >
             The initial cUSDX per cysFLR to kickoff the first auction. (e.g. 0.80 cUSDX per cysFLR)
+          min: 0
+
+    - deployment: flare-cyweth-cusdx
+      name: Sell cUSDX for cyWETH on Flare.
+      description: >
+        Swap cUSDX for cyWETH on Flare.
+      deposits:
+        - token: flare-cusdx
+          min: 0
+          presets:
+            - 0
+            - 100
+            - 200
+            - 500
+            - 1000
+            - 2000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (cUSDX per period)
+          description: >
+            The amount of cUSDX to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (cUSDX)
+          description: >
+            The maximum amount of cUSDX to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (cUSDX)
+          description: >
+            The minimum amount of cUSDX to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline cyWETH per cUSDX
+          description: >
+            The absolute minimum amount of cyWETH per cUSDX that the auction will trade at. (e.g. 0.5 cyWETH per cUSDX)
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff cyWETH per cUSDX
+          description: >
+            The initial cyWETH per cUSDX to kickoff the first auction. (e.g. 1 cyWETH per cUSDX)
+          min: 0
+
+    - deployment: flare-cusdx-cyweth
+      name: Sell cyWETH for cUSDX on Flare.
+      description: >
+        Swap cyWETH for cUSDX on Flare.
+      deposits:
+        - token: flare-cyweth
+          min: 0
+          presets:
+            - 0
+            - 1000
+            - 2000
+            - 5000
+            - 10000
+            - 20000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (cyWETH per period)
+          description: >
+            The amount of cyWETH to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (cyWETH)
+          description: >
+            The maximum amount of cyWETH to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (cyWETH)
+          description: >
+            The minimum amount of cyWETH to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline cUSDX per cyWETH
+          description: >
+            The absolute minimum amount of cUSDX per cyWETH that the auction will trade at. (e.g. 0.75 cUSDX per cyWETH)
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff cUSDX per cyWETH
+          description: >
+            The initial cUSDX per cyWETH to kickoff the first auction. (e.g. 1 cUSDX per cyWETH)
           min: 0
 
     - deployment: flare-usdce-cusdx

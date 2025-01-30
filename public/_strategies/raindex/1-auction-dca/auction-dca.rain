@@ -587,18 +587,18 @@ orders:
       - token: flare-cusdx
     outputs:
       - token: flare-cysflr
-  flare-cyweth-cusdx:
+  flare-cyweth-usdce:
     orderbook: flare
     network: flare
     inputs:
       - token: flare-cyweth
     outputs:
-      - token: flare-cusdx
-  flare-cusdx-cyweth:
+      - token: flare-usdce
+  flare-usdce-cyweth:
     orderbook: flare
     network: flare
     inputs:
-      - token: flare-cusdx
+      - token: flare-usdce
     outputs:
       - token: flare-cyweth
   flare-cusdx-usdce:
@@ -1012,11 +1012,11 @@ deployments:
   flare-cusdx-cysflr:
     order: flare-cusdx-cysflr
     scenario: flare
-  flare-cyweth-cusdx:
-    order: flare-cyweth-cusdx
+  flare-cyweth-usdce:
+    order: flare-cyweth-usdce
     scenario: flare
-  flare-cusdx-cyweth:
-    order: flare-cusdx-cyweth
+  flare-usdce-cyweth:
+    order: flare-usdce-cyweth
     scenario: flare
   flare-cysflr-usdce:
     order: flare-cysflr-usdce
@@ -6835,12 +6835,12 @@ gui:
             The initial cUSDX per cysFLR to kickoff the first auction. (e.g. 0.80 cUSDX per cysFLR)
           min: 0
 
-    - deployment: flare-cyweth-cusdx
-      name: Sell cUSDX for cyWETH on Flare.
+    - deployment: flare-cyweth-usdce
+      name: Sell USDC.e for cyWETH on Flare.
       description: >
-        Swap cUSDX for cyWETH on Flare.
+        Swap USDC.e for cyWETH on Flare.
       deposits:
-        - token: flare-cusdx
+        - token: flare-usdce
           min: 0
           presets:
             - 0
@@ -6866,19 +6866,19 @@ gui:
             - name: Per week (604800)
               value: 604800
         - binding: amount-per-epoch
-          name: Budget (cUSDX per period)
+          name: Budget (USDC.e per period)
           description: >
-            The amount of cUSDX to spend each budget period.
+            The amount of USDC.e to spend each budget period.
           min: 0
         - binding: max-trade-amount
-          name: Maximum trade size (cUSDX)
+          name: Maximum trade size (USDC.e)
           description: >
-            The maximum amount of cUSDX to sell in a single auction.
+            The maximum amount of USDC.e to sell in a single auction.
           min: 0
         - binding: min-trade-amount
-          name: Minimum trade size (cUSDX)
+          name: Minimum trade size (USDC.e)
           description: >
-            The minimum amount of cUSDX to sell in a single auction.
+            The minimum amount of USDC.e to sell in a single auction.
           min: 0
         - binding: time-per-trade-epoch
           name: Auction period (in seconds)
@@ -6890,9 +6890,9 @@ gui:
             - name: Every 2 hours (7200)
               value: 7200
         - binding: baseline
-          name: Baseline cyWETH per cUSDX
+          name: Baseline cyWETH per USDC.e
           description: >
-            The absolute minimum amount of cyWETH per cUSDX that the auction will trade at. (e.g. 0.5 cyWETH per cUSDX)
+            The absolute minimum amount of cyWETH per USDC.e that the auction will trade at. (e.g. 0.5 cyWETH per USDC.e)
           min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
@@ -6918,15 +6918,15 @@ gui:
             - name: 0.95x
               value: 0.95
         - binding: initial-io
-          name: Kickoff cyWETH per cUSDX
+          name: Kickoff cyWETH per USDC.e
           description: >
-            The initial cyWETH per cUSDX to kickoff the first auction. (e.g. 1 cyWETH per cUSDX)
+            The initial cyWETH per USDC.e to kickoff the first auction. (e.g. 1 cyWETH per USDC.e)
           min: 0
 
-    - deployment: flare-cusdx-cyweth
-      name: Sell cyWETH for cUSDX on Flare.
+    - deployment: flare-usdce-cyweth
+      name: Sell cyWETH for USDC.e on Flare.
       description: >
-        Swap cyWETH for cUSDX on Flare.
+        Swap cyWETH for USDC.e on Flare.
       deposits:
         - token: flare-cyweth
           min: 0
@@ -6978,9 +6978,9 @@ gui:
             - name: Every 2 hours (7200)
               value: 7200
         - binding: baseline
-          name: Baseline cUSDX per cyWETH
+          name: Baseline USDC.e per cyWETH
           description: >
-            The absolute minimum amount of cUSDX per cyWETH that the auction will trade at. (e.g. 0.75 cUSDX per cyWETH)
+            The absolute minimum amount of USDC.e per cyWETH that the auction will trade at. (e.g. 0.75 USDC.e per cyWETH)
           min: 0
         - binding: next-trade-multiplier
           name: Auction start multiplier
@@ -7006,9 +7006,9 @@ gui:
             - name: 0.95x
               value: 0.95
         - binding: initial-io
-          name: Kickoff cUSDX per cyWETH
+          name: Kickoff USDC.e per cyWETH
           description: >
-            The initial cUSDX per cyWETH to kickoff the first auction. (e.g. 1 cUSDX per cyWETH)
+            The initial USDC.e per cyWETH to kickoff the first auction. (e.g. 1 USDC.e per cyWETH)
           min: 0
 
     - deployment: flare-usdce-cusdx

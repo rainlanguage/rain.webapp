@@ -315,10 +315,10 @@ export const SubmissionModal = ({
 			)}
 			<DialogContent
 				onInteractOutside={resetSubmissionState}
-				className="bg-white flex flex-col justify-center w-full font-light gap-y-8"
+				className="bg-white flex flex-col justify-center w-full font-light gap-y-8 p-2 md:p-12"
 			>
 				{showDisclaimer && (
-					<div className="flex flex-col items-start gap-y-4">
+					<div className="flex flex-col items-start gap-y-4 max-h-screen py-safe overflow-scroll">
 						<DialogTitle className="w-full font-light text-2xl">Wait!</DialogTitle>
 						<div className="space-y-4">
 							<Alert color="red" className="text-base">

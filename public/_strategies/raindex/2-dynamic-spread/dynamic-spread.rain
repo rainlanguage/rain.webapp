@@ -4527,6 +4527,9 @@ deployments:
   flare-cusdx-cysflr:
     order: flare-cusdx-cysflr
     scenario: flare.cusdx-cysflr
+  flare-wflr-cysflr:
+    order: flare-wflr-cysflr
+    scenario: flare.wflr-cysflr
   flare-usdce-weth:
     order: flare-usdce-weth
     scenario: flare.usdce-weth

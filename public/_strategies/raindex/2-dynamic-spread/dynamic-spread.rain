@@ -563,7 +563,98 @@ gui:
             - 1000000
             - 2000000
 
+    - deployment: polygon-wmatic-mnw
+      name: WMATIC<>MNW on Polygon.
+      description: Rotate WMATIC/WPOL and MNW on Polygon.
 
+      fields:
+        - binding: is-fast-exit
+          name: Fast exit?
+          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: initial-io
+          name: Initial price (WMATIC per MNW)
+          description: The rough USD price you see for MNW on Dextools (e.g. 0.6).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Maximum amount per auction (WMATIC)
+          description: The maximum amount of WMATIC that will be offered in a single auction.
+          min: 0
+          presets:
+            - value: 10
+            - value: 20
+            - value: 50
+            - value: 100
+            - value: 200
+        - binding: min-amount
+          name: Minimum amount per auction (WMATIC)
+          description: The minimum amount of WMATIC that will be offered in a single auction.
+          min: 0
+          presets:
+            - value: 10
+            - value: 20
+
+      deposits:
+      - token: polygon-wmatic
+        min: 0
+        presets:
+          - 0
+          - 100
+          - 500
+          - 1000
+          - 5000
+          - 10000
+      - token: polygon-mnw
+        min: 0
+        presets:
+          - 0
+          - 1000
+          - 5000
+          - 10000
+          - 20000
 
     - deployment: polygon-weth-mnw
       name: WETH<>MNW on Polygon.
@@ -3749,6 +3840,12 @@ scenarios:
           amount-token: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
           initial-output-token: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
           initial-input-token: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
+      wmatic-mnw:
+        runs: 1
+        bindings:
+          amount-token: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
+          initial-output-token: 0x3c59798620e5fEC0Ae6dF1A19c6454094572Ab92
+          initial-input-token: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
       usdc-ioen:
         runs: 1
         bindings:
@@ -4351,6 +4448,15 @@ orders:
     outputs:
       - token: polygon-quick
       - token: polygon-wmatic
+  polygon-wmatic-mnw:
+    network: polygon
+    orderbook: polygon
+    inputs:
+      - token: polygon-mnw
+      - token: polygon-wmatic
+    outputs:
+      - token: polygon-mnw
+      - token: polygon-wmatic
   polygon-usdc-ioen:
     network: polygon
     orderbook: polygon
@@ -4548,6 +4654,9 @@ deployments:
   polygon-wmatic-quick:
     order: polygon-wmatic-quick
     scenario: polygon.wmatic-quick
+  polygon-wmatic-mnw:
+    order: polygon-wmatic-mnw
+    scenario: polygon.wmatic-mnw
   polygon-usdc-ioen:
     order: polygon-usdc-ioen
     scenario: polygon.usdc-ioen

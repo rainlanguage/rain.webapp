@@ -578,7 +578,7 @@ gui:
               value: 0
         - binding: initial-io
           name: Initial price (WMATIC per MNW)
-          description: The rough USD price you see for MNW on Dextools (e.g. 0.6).
+          description: The rough WMATIC price you see for MNW on Dextools (e.g. 0.6).
           min: 0
         - binding: next-trade-multiplier
           name: Next trade multiplier

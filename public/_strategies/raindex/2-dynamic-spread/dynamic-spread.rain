@@ -611,6 +611,106 @@ gui:
             - 1000000
             - 2000000
 
+    - deployment: polygon-wmatic-mnw
+      name: WMATIC<>MNW on Polygon.
+      description: Rotate WMATIC/WPOL and MNW on Polygon.
+
+      fields:
+        - binding: amount-is-fast-exit
+          name: Fast exit WMATIC?
+          description: If enabled, the strategy will attempt to exit any WMATIC position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit MNW?
+          description: If enabled, the strategy will attempt to exit any MNW position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: initial-io
+          name: Initial price (WMATIC per MNW)
+          description: The rough WMATIC price you see for MNW on Dextools (e.g. 0.6).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Maximum amount per auction (WMATIC)
+          description: The maximum amount of WMATIC that will be offered in a single auction.
+          min: 0
+          presets:
+            - value: 10
+            - value: 20
+            - value: 50
+            - value: 100
+            - value: 200
+        - binding: min-amount
+          name: Minimum amount per auction (WMATIC)
+          description: The minimum amount of WMATIC that will be offered in a single auction.
+          min: 0
+          presets:
+            - value: 10
+            - value: 20
+
+      deposits:
+      - token: polygon-wmatic
+        min: 0
+        presets:
+          - 0
+          - 100
+          - 500
+          - 1000
+          - 5000
+          - 10000
+      - token: polygon-mnw
+        min: 0
+        presets:
+          - 0
+          - 1000
+          - 5000
+          - 10000
+          - 20000
 
 
     - deployment: polygon-weth-mnw
@@ -1447,6 +1547,430 @@ gui:
             - 1000000
             - 2000000
 
+    - deployment: base-wlth-weth
+      name: WLTH<>WETH on Base.
+      description: Rotate WLTH and WETH on Base.
+
+      fields:
+        - binding: amount-is-fast-exit
+          name: Fast exit WLTH?
+          description: If enabled, the strategy will attempt to exit any WLTH position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit WETH?
+          description: If enabled, the strategy will attempt to exit any WETH position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: initial-io
+          name: Initial price (WETH per WLTH)
+          description: The rough WLTH price you see for WETH on Dextools (e.g. 0.000013).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of WLTH that will be offered in a single auction.
+          min: 1550
+          presets:
+            - name: 3100
+              value: 3100
+            - name: 6200
+              value: 6200
+            - name: 15550
+              value: 15550
+            - name: 30900
+              value: 30900
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of WLTH that will be offered in a single auction.
+          min: 1550
+          presets:
+            - name: 1550
+              value: 1550
+            - name: 3100
+              value: 3100
+            - name: 6200
+              value: 6200
+
+      deposits:
+        - token: base-wlth
+          min: 0
+          presets:
+            - 0
+            - 30000
+            - 60000
+            - 150000
+            - 300000
+        - token: base-weth
+          min: 0
+          presets:
+            - 0
+            - 0.05
+            - 0.1
+            - 0.2
+            - 0.5
+    - deployment: base-ajna-weth
+      name: AJNA<>WETH on Base.
+      description: Rotate AJNA and WETH on Base.
+
+      fields:
+        - binding: amount-is-fast-exit
+          name: Fast exit AJNA?
+          description: If enabled, the strategy will attempt to exit any AJNA position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit WETH?
+          description: If enabled, the strategy will attempt to exit any WETH position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: initial-io
+          name: Initial price (WETH per AJNA)
+          description: The rough AJNA price you see for WETH on Dextools (e.g. 0.00000096).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of AJNA that will be offered in a single auction.
+          min: 1550
+          presets:
+            - name: 3100
+              value: 3100
+            - name: 6200
+              value: 6200
+            - name: 15550
+              value: 15550
+            - name: 30900
+              value: 30900
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of AJNA that will be offered in a single auction.
+          min: 1550
+          presets:
+            - name: 1550
+              value: 1550
+            - name: 3100
+              value: 3100
+            - name: 6200
+              value: 6200
+
+      deposits:
+        - token: base-ajna
+          min: 0
+          presets:
+            - 0
+            - 30000
+            - 60000
+            - 150000
+            - 300000
+        - token: base-weth
+          min: 0
+          presets:
+            - 0
+            - 0.05
+            - 0.1
+            - 0.2
+            - 0.5
+    - deployment: base-sarco-weth
+      name: SARCO<>WETH on Base.
+      description: Rotate SARCO and WETH on Base.
+
+      fields:
+        - binding: amount-is-fast-exit
+          name: Fast exit SARCO?
+          description: If enabled, the strategy will attempt to exit any SARCO position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit WETH?
+          description: If enabled, the strategy will attempt to exit any WETH position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: initial-io
+          name: Initial price (WETH per SARCO)
+          description: The rough SARCO price you see for WETH on Dextools (e.g. 0.00000067).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of SARCO that will be offered in a single auction.
+          min: 1550
+          presets:
+            - name: 3100
+              value: 3100
+            - name: 6200
+              value: 6200
+            - name: 15550
+              value: 15550
+            - name: 30900
+              value: 30900
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of SARCO that will be offered in a single auction.
+          min: 1550
+          presets:
+            - name: 1550
+              value: 1550
+            - name: 3100
+              value: 3100
+            - name: 6200
+              value: 6200
+
+      deposits:
+        - token: base-sarco
+          min: 0
+          presets:
+            - 0
+            - 30000
+            - 60000
+            - 150000
+            - 300000
+        - token: base-weth
+          min: 0
+          presets:
+            - 0
+            - 0.05
+            - 0.1
+            - 0.2
+            - 0.5
+    - deployment: base-akuma-weth
+      name: AKUMA<>WETH on Base.
+      description: Rotate AKUMA and WETH on Base.
+
+      fields:
+        - binding: amount-is-fast-exit
+          name: Fast exit AKUMA?
+          description: If enabled, the strategy will attempt to exit any AKUMA position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit WETH?
+          description: If enabled, the strategy will attempt to exit any WETH position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: initial-io
+          name: Initial price (WETH per AKUMA)
+          description: The rough AKUMA price you see for WETH on Dextools (e.g. 0.00000004).
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of AKUMA that will be offered in a single auction.
+          min: 1550
+          presets:
+            - name: 3100
+              value: 3100
+            - name: 6200
+              value: 6200
+            - name: 15550
+              value: 15550
+            - name: 30900
+              value: 30900
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of AKUMA that will be offered in a single auction.
+          min: 1550
+          presets:
+            - name: 1550
+              value: 1550
+            - name: 3100
+              value: 3100
+            - name: 6200
+              value: 6200
+
+      deposits:
+        - token: base-akuma
+          min: 0
+          presets:
+            - 0
+            - 30000
+            - 60000
+            - 150000
+            - 300000
+        - token: base-weth
+          min: 0
+          presets:
+            - 0
+            - 0.05
+            - 0.1
+            - 0.2
+            - 0.5
 
     - deployment: base-usdc-toast
       name: USDC<>TOAST on Base.
@@ -3230,6 +3754,110 @@ gui:
             - 2
             - 4
 
+    - deployment: bsc-tft-wbnb
+      name: WBNB<>TFT on BSC.
+      description: Rotate WBNB and TFT on BSC.
+      fields:
+        - binding: amount-is-fast-exit
+          name: Fast exit TFT?
+          description: If enabled, the strategy will attempt to exit any TFT position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: not-amount-is-fast-exit
+          name: Fast exit WBNB?
+          description: If enabled, the strategy will attempt to exit any WBNB position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: initial-io
+          name: Initial price (WBNB per TFT)
+          description: The rough USD price you see for TFT on Dextools (e.g. 0.000022)
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 2 hours (7200)
+              value: 7200
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of TFT that will be offered in a single auction.
+          min: 50
+          presets:
+            - name: 1000
+              value: 1000
+            - name: 2000
+              value: 2000
+            - name: 5000
+              value: 5000
+            - name: 10000
+              value: 10000
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of TFT that will be offered in a single auction.
+          min: 20
+          presets:
+            - name: 800
+              value: 800
+            - name: 1000
+              value: 1000
+            - name: 1500
+              value: 1500
+            - name: 2000
+              value: 2000
+      deposits:
+        - token: bsc-wbnb
+          min: 0
+          presets:
+            - 0
+            - 2000
+            - 10000
+            - 20000
+        - token: bsc-tft
+          min: 0
+          presets:
+            - 0
+            - 250000
+            - 1250000
+            - 2500000
     - deployment: bsc-tft-busd
       name: BUSD<>TFT on BSC.
       description: Rotate BUSD and TFT on BSC.
@@ -3749,6 +4377,30 @@ scenarios:
           amount-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
           initial-output-token: 0x3982E57fF1b193Ca8eb03D16Db268Bd4B40818f8
           initial-input-token: 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913
+      wlth-weth:
+        runs: 1
+        bindings:
+          amount-token: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
+          initial-output-token: 0x99b2B1A2aDB02B38222ADcD057783D7e5D1FCC7D
+          initial-input-token: 0x4200000000000000000000000000000000000006
+      ajan-weth:
+        runs: 1
+        bindings:
+          amount-token: 0x7F05a7A9AF2f5a07D1e64877C8dC37a64a22508E
+          initial-output-token: 0x7F05a7A9AF2f5a07D1e64877C8dC37a64a22508E
+          initial-input-token: 0x4200000000000000000000000000000000000006
+      sarco-weth:
+        runs: 1
+        bindings:
+          amount-token: 0xF3907Bc0FFF5Ff5aCf1E3dD7987005779C7bf57d
+          initial-output-token: 0xF3907Bc0FFF5Ff5aCf1E3dD7987005779C7bf57d
+          initial-input-token: 0x4200000000000000000000000000000000000006
+      akuma-weth:
+        runs: 1
+        bindings:
+          amount-token: 0x2F20Cf3466f80A5f7f532fCa553c8cbc9727FEf6
+          initial-output-token: 0x2F20Cf3466f80A5f7f532fCa553c8cbc9727FEf6
+          initial-input-token: 0x4200000000000000000000000000000000000006
 
   flare:
     orderbook: flare
@@ -3832,6 +4484,12 @@ scenarios:
           amount-token: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
           initial-output-token: 0xB5C064F955D8e7F38fE0460C556a72987494eE17
           initial-input-token: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
+      wmatic-mnw:
+        runs: 1
+        bindings:
+          amount-token: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
+          initial-output-token: 0x3c59798620e5fEC0Ae6dF1A19c6454094572Ab92
+          initial-input-token: 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270
       usdc-ioen:
         runs: 1
         bindings:
@@ -3888,6 +4546,12 @@ scenarios:
           amount-token: 0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d
           initial-output-token: 0x8f0FB159380176D324542b3a7933F0C2Fd0c2bbf
           initial-input-token: 0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d
+      tft-wbnb:
+        runs: 1
+        bindings:
+          amount-token: 0x8f0FB159380176D324542b3a7933F0C2Fd0c2bbf
+          initial-output-token: 0x8f0FB159380176D324542b3a7933F0C2Fd0c2bbf
+          initial-input-token: 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c
   ethereum:
     orderbook: ethereum
     runs: 1
@@ -4171,6 +4835,10 @@ tokens:
     network: bsc
     address: 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56
     decimals: 18
+  bsc-wbnb:
+    network: bsc
+    address: 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c
+    decimals: 18
   bsc-usdc:
     network: bsc
     address: 0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d
@@ -4182,6 +4850,10 @@ tokens:
   base-toast:
     network: base
     address: 0x21f8c472D1702919aF0AF57a9E2926f2c1FB67C5
+    decimals: 18
+  base-ajna:
+    network: base
+    address: 0x7F05a7A9AF2f5a07D1e64877C8dC37a64a22508E
     decimals: 18
   ethereum-pai:
     network: ethereum
@@ -4276,6 +4948,42 @@ orders:
     outputs:
       - token: base-lucky
       - token: base-weth
+  base-wlth-weth:
+    network: base
+    orderbook: base
+    inputs:
+      - token: base-wlth
+      - token: base-weth
+    outputs:
+      - token: base-wlth
+      - token: base-weth
+  base-sarco-weth:
+    network: base
+    orderbook: base
+    inputs:
+      - token: base-sarco
+      - token: base-weth
+    outputs:
+      - token: base-sarco
+      - token: base-weth
+  base-ajna-weth:
+    network: base
+    orderbook: base
+    inputs:
+      - token: base-ajna
+      - token: base-weth
+    outputs:
+      - token: base-ajna
+      - token: base-weth
+  base-akuma-weth:
+    network: base
+    orderbook: base
+    inputs:
+      - token: base-akuma
+      - token: base-weth
+    outputs:
+      - token: base-akuma
+      - token: base-weth
   base-usdc-toshi:
     network: base
     orderbook: base
@@ -4411,6 +5119,15 @@ orders:
     outputs:
       - token: polygon-quick
       - token: polygon-wmatic
+  polygon-wmatic-mnw:
+    network: polygon
+    orderbook: polygon
+    inputs:
+      - token: polygon-mnw
+      - token: polygon-wmatic
+    outputs:
+      - token: polygon-mnw
+      - token: polygon-wmatic
   polygon-usdc-ioen:
     network: polygon
     orderbook: polygon
@@ -4483,6 +5200,15 @@ orders:
     outputs:
       - token: bsc-tft
       - token: bsc-usdc
+  bsc-tft-wbnb:
+    network: bsc
+    orderbook: bsc
+    inputs:
+      - token: bsc-tft
+      - token: bsc-wbnb
+    outputs:
+      - token: bsc-tft
+      - token: bsc-wbnb
   base-wlth-usdc:
     network: base
     orderbook: base
@@ -4566,6 +5292,18 @@ deployments:
   base-usdc-toast:
     order: base-usdc-toast
     scenario: base.usdc-toast
+  base-akuma-weth:
+    order: base-akuma-weth
+    scenario: base.akuma-weth
+  base-wlth-weth:
+    order: base-wlth-weth
+    scenario: base.wlth-weth
+  base-ajna-weth:
+    order: base-ajna-weth
+    scenario: base.ajna-weth
+  base-sarco-weth:
+    order: base-sarco-weth
+    scenario: base.sarco-weth
   flare-usdce-sflr:
     order: flare-usdce-sflr
     scenario: flare.usdce-sflr
@@ -4605,6 +5343,9 @@ deployments:
   polygon-usdt-poli:
     order: polygon-usdt-poli
     scenario: polygon.usdt-poli
+  polygon-wmatic-mnw:
+    order: polygon-wmatic-mnw
+    scenario: polygon.wmatic-mnw
   polygon-weth-mnw:
     order: polygon-weth-mnw
     scenario: polygon.weth-mnw
@@ -4620,6 +5361,9 @@ deployments:
   bsc-tft-usdc:
     order: bsc-tft-usdc
     scenario: bsc.tft-usdc
+  bsc-tft-wbnb:
+    order: bsc-tft-wbnb
+    scenario: bsc.tft-wbnb
   base-wlth-usdc:
     order: base-wlth-usdc
     scenario: base.wlth-usdc

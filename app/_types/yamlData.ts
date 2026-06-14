@@ -10,7 +10,7 @@ export interface Field {
 
 export interface Preset {
 	name: string;
-	value: number;
+	value: number | boolean;
 }
 
 export interface Referral {

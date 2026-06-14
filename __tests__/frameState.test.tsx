@@ -79,6 +79,49 @@ describe('getUpdatedFrameState', () => {
 		});
 	});
 
+	describe('fields step - boolean preset', () => {
+		const booleanYamlData: YamlData = {
+			...mockYamlData,
+			gui: {
+				...mockYamlData.gui,
+				deployments: [
+					{
+						...mockYamlData.gui.deployments[0],
+						fields: [
+							{
+								binding: 'pin-best-quote',
+								name: 'Pin to best quote',
+								description: 'Whether to pin the order to the best quote',
+								presets: [
+									{ name: 'Enabled', value: true },
+									{ name: 'Disabled', value: false }
+								]
+							}
+						]
+					}
+				]
+			}
+		};
+
+		const booleanState = (): FrameState => ({
+			...defaultState,
+			deploymentOption: booleanYamlData.gui.deployments[0] as DeploymentOption,
+			bindings: {}
+		});
+
+		it('should bind a "true" boolean preset value', () => {
+			const result = getUpdatedFrameState(booleanYamlData, booleanState(), 'true');
+			expect(result.error).toBeNull();
+			expect(result.bindings['pin-best-quote']).toBe('true');
+		});
+
+		it('should bind a "false" boolean preset value', () => {
+			const result = getUpdatedFrameState(booleanYamlData, booleanState(), 'false');
+			expect(result.error).toBeNull();
+			expect(result.bindings['pin-best-quote']).toBe('false');
+		});
+	});
+
 	describe('deposit step - submit button', () => {
 		it('should set an error if inputText is not a number', () => {
 			const stateWithDeposits = { ...defaultState, currentStep: 'deposit' };

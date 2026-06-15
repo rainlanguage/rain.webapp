@@ -56,7 +56,10 @@ export const getFieldPresetsButtons = (field: Field): Button[] => {
 					//  If no name exists on the preset, display the value
 					.map((preset: Preset) => ({
 						buttonTarget: 'buttonValue',
-						buttonValue: `${preset.value}`,
+						// Rainlang has no boolean literal: non-zero is true, zero is false.
+						// A boolean preset binds 1/0; the display text keeps the original value.
+						buttonValue:
+							typeof preset.value === 'boolean' ? (preset.value ? '1' : '0') : `${preset.value}`,
 						buttonText: `${preset.name || preset.value}`
 					}))
 			: []),

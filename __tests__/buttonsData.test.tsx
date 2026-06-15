@@ -65,7 +65,7 @@ describe('getFieldPresetsButtons', () => {
 		]);
 	});
 
-	it('renders boolean preset values as true/false buttons', () => {
+	it('renders boolean preset buttons with numeric 1/0 values and boolean display text', () => {
 		const booleanField: Field = {
 			presets: [
 				{ name: 'Enabled', value: true },
@@ -79,10 +79,10 @@ describe('getFieldPresetsButtons', () => {
 
 		expect(fieldButtons).toEqual([
 			{ buttonTarget: 'buttonValue', buttonValue: 'back', buttonText: '←' },
-			{ buttonTarget: 'buttonValue', buttonValue: 'true', buttonText: 'Enabled' },
-			{ buttonTarget: 'buttonValue', buttonValue: 'false', buttonText: 'Disabled' },
-			{ buttonTarget: 'buttonValue', buttonValue: 'true', buttonText: 'true' },
-			{ buttonTarget: 'buttonValue', buttonValue: 'false', buttonText: 'false' }
+			{ buttonTarget: 'buttonValue', buttonValue: '1', buttonText: 'Enabled' },
+			{ buttonTarget: 'buttonValue', buttonValue: '0', buttonText: 'Disabled' },
+			{ buttonTarget: 'buttonValue', buttonValue: '1', buttonText: 'true' },
+			{ buttonTarget: 'buttonValue', buttonValue: '0', buttonText: 'false' }
 		]);
 	});
 });

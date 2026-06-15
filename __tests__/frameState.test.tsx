@@ -1,7 +1,8 @@
+import { getFieldPresetsButtons } from '@/app/_services/buttonsData';
 import { getUpdatedFrameState } from '@/app/_services/frameState';
 import { TokenInfo } from '@/app/_services/getTokenInfo';
 import { FrameState } from '@/app/_types/frame';
-import { YamlData, DeploymentOption } from '@/app/_types/yamlData';
+import { Field, YamlData, DeploymentOption } from '@/app/_types/yamlData';
 
 describe('getUpdatedFrameState', () => {
 	const mockYamlData: YamlData = {
@@ -109,16 +110,27 @@ describe('getUpdatedFrameState', () => {
 			bindings: {}
 		});
 
-		it('should bind a "true" boolean preset value', () => {
-			const result = getUpdatedFrameState(booleanYamlData, booleanState(), 'true');
+		const booleanField = booleanYamlData.gui.deployments[0].fields[0] as Field;
+		// The value a button emits is what gets bound; a boolean preset emits rainlang 1/0.
+		const enabledButtonValue = getFieldPresetsButtons(booleanField).find(
+			(button) => button.buttonText === 'Enabled'
+		)?.buttonValue as string;
+		const disabledButtonValue = getFieldPresetsButtons(booleanField).find(
+			(button) => button.buttonText === 'Disabled'
+		)?.buttonValue as string;
+
+		it('should bind a "true" boolean preset as rainlang 1', () => {
+			expect(enabledButtonValue).toBe('1');
+			const result = getUpdatedFrameState(booleanYamlData, booleanState(), enabledButtonValue);
 			expect(result.error).toBeNull();
-			expect(result.bindings['pin-best-quote']).toBe('true');
+			expect(result.bindings['pin-best-quote']).toBe('1');
 		});
 
-		it('should bind a "false" boolean preset value', () => {
-			const result = getUpdatedFrameState(booleanYamlData, booleanState(), 'false');
+		it('should bind a "false" boolean preset as rainlang 0', () => {
+			expect(disabledButtonValue).toBe('0');
+			const result = getUpdatedFrameState(booleanYamlData, booleanState(), disabledButtonValue);
 			expect(result.error).toBeNull();
-			expect(result.bindings['pin-best-quote']).toBe('false');
+			expect(result.bindings['pin-best-quote']).toBe('0');
 		});
 	});
 

@@ -16,6 +16,9 @@
 # production
 /build
 
+# storybook build output (screenshots/ PNGs ARE committed; the static build is not)
+/storybook-static
+
 # misc
 .DS_Store
 *.pem

@@ -1,0 +1,22 @@
+# Renders every committed Storybook story to a deterministic PNG via the shared
+# rainlanguage/rainix `component-screenshots` reusable (rainlanguage/rainix#262).
+# rain.webapp is the pilot consumer (rollout item #1): PR screenshots must come
+# from a committed story that imports the real code, never a fabricated DOM.
+#
+# The capture logic (build Storybook -> serve over loopback -> headless Chromium
+# `--headless --screenshot` per story) lives in rainix, not here — this repo owns
+# only its .storybook config + stories (app/**/*.stories.tsx).
+#
+# BOOTSTRAP: pinned to the rainix#263 branch because the reusable + its
+# `storybook-shell` devShell are not on rainix `main` yet. This job is expected
+# to be red until rainix#263 merges (and its RAINIX_SHA points at a commit that
+# contains `storybook-shell`). Switch the ref to `@main` once #263 lands, per the
+# org convention of pinning shared-CI reusables to @main.
+name: component-screenshots
+on: [push]
+
+jobs:
+  screenshots:
+    uses: rainlanguage/rainix/.github/workflows/component-screenshots.yml@2026-07-10-component-screenshots
+    secrets:
+      CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}

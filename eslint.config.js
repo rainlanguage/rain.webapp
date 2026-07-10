@@ -15,7 +15,8 @@ export default [
 			'pnpm-lock.yaml',
 			'package-lock.json',
 			'yarn.lock',
-			'.next'
+			'.next',
+			'storybook-static'
 		]
 	},
 

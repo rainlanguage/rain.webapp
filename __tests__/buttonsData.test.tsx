@@ -64,6 +64,27 @@ describe('getFieldPresetsButtons', () => {
 			}
 		]);
 	});
+
+	it('renders boolean preset buttons with numeric 1/0 values and boolean display text', () => {
+		const booleanField: Field = {
+			presets: [
+				{ name: 'Enabled', value: true },
+				{ name: 'Disabled', value: false },
+				{ value: true },
+				{ value: false }
+			]
+		} as unknown as Field;
+
+		const fieldButtons = getFieldPresetsButtons(booleanField);
+
+		expect(fieldButtons).toEqual([
+			{ buttonTarget: 'buttonValue', buttonValue: 'back', buttonText: '←' },
+			{ buttonTarget: 'buttonValue', buttonValue: '1', buttonText: 'Enabled' },
+			{ buttonTarget: 'buttonValue', buttonValue: '0', buttonText: 'Disabled' },
+			{ buttonTarget: 'buttonValue', buttonValue: '1', buttonText: 'true' },
+			{ buttonTarget: 'buttonValue', buttonValue: '0', buttonText: 'false' }
+		]);
+	});
 });
 
 describe('getDepositPresetsButtons', () => {

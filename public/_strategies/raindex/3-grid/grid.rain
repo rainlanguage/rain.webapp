@@ -83,6 +83,14 @@ tokens:
     network: ethereum
     address: 0xd3E4Ba569045546D09CF021ECC5dFe42b1d7f6E4
     decimals: 18
+  ethereum-usdt:
+    network: ethereum
+    address: 0xdAC17F958D2ee523a2206206994597C13D831ec7
+    decimals: 6
+  ethereum-rkfi:
+    network: ethereum
+    address: 0x65FdA84473084bA2CcA8452883E6eA3561092234
+    decimals: 18
   ethereum-weth:
     network: ethereum
     address: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
@@ -149,6 +157,20 @@ orders:
       - token: ethereum-weth
     outputs:
       - token: ethereum-mnw
+  ethereum-usdt-rkfi:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-usdt
+    outputs:
+      - token: ethereum-rkfi
+  ethereum-rkfi-usdt:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-rkfi
+    outputs:
+      - token: ethereum-usdt
   polygon-weth-mnw:
     orderbook: polygon
     network: polygon
@@ -234,6 +256,12 @@ deployments:
     scenario: ethereum
   ethereum-weth-mnw:
     order: ethereum-weth-mnw
+    scenario: ethereum
+  ethereum-rkfi-usdt:
+    order: ethereum-rkfi-usdt
+    scenario: ethereum
+  ethereum-usdt-rkfi:
+    order: ethereum-usdt-rkfi
     scenario: ethereum
   bsc-busd-tft:
     order: bsc-busd-tft
@@ -355,6 +383,78 @@ gui:
           min: 0
         - binding: tranche-size
           name: Tranche size in MNW (e.g. 2000)
+          min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+
+    - deployment: ethereum-rkfi-usdt
+      name: Grid buy RKFI with USDT on Ethereum.
+      description:
+        Grid buy RKFI with USDT on Ethereum Mainnet.
+      deposits:
+        - token: ethereum-usdt
+          min: 0
+          presets:
+            - 1000
+            - 10000
+            - 100000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline RKFI per USDT
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in USDT
+          min: 0
+        - binding: seconds-per-tranche
+          name: Time to recharge one grid tranche in seconds (0 is disabled).
+          min: 0
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 1 hour (3600)
+              value: 3600
+            - name: 6 hours (21600)
+              value: 21600
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+
+    - deployment: ethereum-usdt-rkfi
+      name: Grid sell RKFI for USDT on Ethereum.
+      description:
+        Grid sell RKFI for USDT on Ethereum Mainnet.
+      deposits:
+        - token: ethereum-rkfi
+          min: 0
+          presets:
+            - 1000
+            - 10000
+            - 100000
+      fields:
+        - binding: baseline-io-ratio
+          name: Baseline USDT per RKFI
+          min: 0
+        - binding: io-ratio-growth
+          name: IO ratio growth per tranche
+          min: 0
+        - binding: tranche-size
+          name: Tranche size in RKFI
           min: 0
         - binding: seconds-per-tranche
           name: Time to recharge one grid tranche in seconds (0 is disabled).

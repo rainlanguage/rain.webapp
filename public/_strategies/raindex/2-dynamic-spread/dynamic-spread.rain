@@ -2976,6 +2976,104 @@ gui:
             - 2
             - 4
 
+    - deployment: ethereum-rkfi-usdt
+      name: RKFI<>USDT on Ethereum.
+      description: Rotate RKFI and USDT on Ethereum.
+
+      fields:
+        - binding: is-fast-exit
+          name: Fast exit?
+          description: If enabled, the strategy will attempt to exit any position it builds up in a single trade, as soon as it can do so profitably.
+          presets:
+            - name: Yes
+              value: 1
+            - name: No
+              value: 0
+        - binding: initial-io
+          name: Initial price (USDT per RKFI)
+          description: The rough USDT price you see for RKFI on Dextools.
+          min: 0
+        - binding: next-trade-multiplier
+          name: Next trade multiplier
+          description: This is the most the strategy will move the price in a single trade. Larger numbers will capture larger price jumps but trade less often, smaller numbers will trade more often but be less defensive against large price jumps in the market.
+          min: 1
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: cost-basis-multiplier
+          name: Cost basis multiplier
+          description: The minimum spread applied to the breakeven in addition to the auction. This is applied in both directions so 1.01x would be a 2% total spread.
+          min: 1
+          presets:
+            - name: 1 (auction spread only)
+              value: 1
+            - name: 1.0005x (0.1% total)
+              value: 1.0005
+            - name: 1.001x (0.2% total)
+              value: 1.001
+            - name: 1.0025x (0.5% total)
+              value: 1.0025
+            - name: 1.005x (1% total)
+              value: 1.005
+        - binding: time-per-epoch
+          name: Time per halving (seconds)
+          description: The amount of time (in seconds) between halvings of the price and the amount offered during each auction, relative to their baselines.
+          min: 600
+          presets:
+            - name: 4 hours (14400)
+              value: 14400
+            - name: 8 hours (28800)
+              value: 28800
+            - name: 12 hours (43200)
+              value: 43200
+            - name: 24 hours (86400)
+              value: 86400
+        - binding: max-amount
+          name: Max amount
+          description: The maximum amount of USDT that will be offered in a single auction.
+          min: 1
+          presets:
+            - name: 500
+              value: 500
+            - name: 1000
+              value: 1000
+            - name: 5000
+              value: 5000
+            - name: 10000
+              value: 10000
+        - binding: min-amount
+          name: Minimum amount
+          description: The minimum amount of USDT that will be offered in a single auction.
+          min: 1
+          presets:
+            - name: 100
+              value: 100
+            - name: 200
+              value: 200
+            - name: 300
+              value: 300
+            - name: 400
+              value: 400
+      deposits:
+        - token: ethereum-rkfi
+          min: 0
+          presets:
+            - 0
+            - 1000
+            - 5000
+            - 10000
+        - token: ethereum-usdt
+          min: 0
+          presets:
+            - 0
+            - 500
+            - 1000
+            - 5000
+
     - deployment: ethereum-mnw-weth
       name: MNW<>WETH on Ethereum.
       description: Rotate MNW and WETH on Ethereum.
@@ -3831,6 +3929,12 @@ scenarios:
           amount-token: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
           initial-output-token: 0xd3E4Ba569045546D09CF021ECC5dFe42b1d7f6E4
           initial-input-token: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+      rkfi-usdt:
+        runs: 1
+        bindings:
+          amount-token: 0xdAC17F958D2ee523a2206206994597C13D831ec7
+          initial-output-token: 0x65FdA84473084bA2CcA8452883E6eA3561092234
+          initial-input-token: 0xdAC17F958D2ee523a2206206994597C13D831ec7
   linea:
     orderbook: linea
     runs: 1
@@ -4125,6 +4229,14 @@ tokens:
   ethereum-weth:
     network: ethereum
     address: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    decimals: 18
+  ethereum-usdt:
+    network: ethereum
+    address: 0xdAC17F958D2ee523a2206206994597C13D831ec7
+    decimals: 6
+  ethereum-rkfi:
+    network: ethereum
+    address: 0x65FdA84473084bA2CcA8452883E6eA3561092234
     decimals: 18
   linea-clip:
     network: linea
@@ -4450,6 +4562,15 @@ orders:
     outputs:
       - token: ethereum-pai
       - token: ethereum-weth
+  ethereum-rkfi-usdt:
+    network: ethereum
+    orderbook: ethereum
+    inputs:
+      - token: ethereum-rkfi
+      - token: ethereum-usdt
+    outputs:
+      - token: ethereum-rkfi
+      - token: ethereum-usdt
   ethereum-mnw-weth:
     network: ethereum
     orderbook: ethereum
@@ -4584,6 +4705,9 @@ deployments:
   ethereum-mnw-weth:
     order: ethereum-mnw-weth
     scenario: ethereum.mnw-weth
+  ethereum-rkfi-usdt:
+    order: ethereum-rkfi-usdt
+    scenario: ethereum.rkfi-usdt
   linea-clip-weth:
     order: linea-clip-weth
     scenario: linea.clip-weth

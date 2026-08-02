@@ -17,7 +17,7 @@ networks:
     network-id: 56
     currency: BNB
   polygon:
-    rpc: https://rpc.ankr.com/polygon
+    rpc: https://polygon.llamarpc.com
     chain-id: 137
     network-id: 137
     currency: POL

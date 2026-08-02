@@ -200,6 +200,10 @@ tokens:
     network: ethereum
     address: 0x922D8563631B03C2c4cf817f4d18f6883AbA0109
     decimals: 18
+  ethereum-hot:
+    network: ethereum
+    address: 0x6c6EE5e31d828De241282B9606C8e98Ea48526E2
+    decimals: 18
   ethereum-usdt:
     network: ethereum
     address: 0xdAC17F958D2ee523a2206206994597C13D831ec7
@@ -514,6 +518,20 @@ orders:
       - token: ethereum-weth
     outputs:
       - token: ethereum-mnw
+  ethereum-hot-usdt:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-hot
+    outputs:
+      - token: ethereum-usdt
+  ethereum-usdt-hot:
+    orderbook: ethereum
+    network: ethereum
+    inputs:
+      - token: ethereum-usdt
+    outputs:
+      - token: ethereum-hot
   ethereum-lock-weth:
     orderbook: ethereum
     network: ethereum
@@ -1022,6 +1040,12 @@ deployments:
     scenario: ethereum
   ethereum-usdc-nmt:
     order: ethereum-usdc-nmt
+    scenario: ethereum
+  ethereum-hot-usdt:
+    order: ethereum-hot-usdt
+    scenario: ethereum
+  ethereum-usdt-hot:
+    order: ethereum-usdt-hot
     scenario: ethereum
   ethereum-lock-usdt:
     order: ethereum-lock-usdt
@@ -6902,6 +6926,182 @@ gui:
           name: Kickoff LOCK per USDT
           description: >
             The initial LOCK per USDT to kickoff the first auction. (e.g. 0.9 LOCK per USDT)
+          min: 0
+
+    - deployment: ethereum-usdt-hot
+      name: Sell HOT for USDT on Ethereum.
+      description: >
+        Swap HOT for USDT on Ethereum mainnet.
+      deposits:
+        - token: ethereum-hot
+          min: 0
+          presets:
+            - 0
+            - 5000
+            - 10000
+            - 20000
+            - 50000
+            - 100000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (HOT per period)
+          description: >
+            The amount of HOT to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (HOT)
+          description: >
+            The maximum amount of HOT to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (HOT)
+          description: >
+            The minimum amount of HOT to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline USDT per HOT
+          description: >
+            The absolute minimum amount of USDT per HOT that the auction will trade at. (e.g. 0.0020 USDT per HOT)
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff USDT per HOT
+          description: >
+            The initial USDT per HOT to kickoff the first auction. (e.g. 0.0022 USDT per HOT)
+          min: 0
+
+    - deployment: ethereum-hot-usdt
+      name: Sell USDT for HOT on Ethereum.
+      description: >
+        Swap USDT for HOT on Ethereum mainnet.
+      deposits:
+        - token: ethereum-usdt
+          min: 0
+          presets:
+            - 0
+            - 500
+            - 1000
+            - 2000
+            - 10000
+            - 20000
+
+      fields:
+        - binding: time-per-amount-epoch
+          name: Budget period (in seconds)
+          description: >
+            The budget is spent over this time period.
+          min: 1
+          presets:
+            - name: Per minute (60)
+              value: 60
+            - name: Per hour (3600)
+              value: 3600
+            - name: Per day (86400)
+              value: 86400
+            - name: Per week (604800)
+              value: 604800
+        - binding: amount-per-epoch
+          name: Budget (USDT per period)
+          description: >
+            The amount of USDT to spend each budget period.
+          min: 0
+        - binding: max-trade-amount
+          name: Maximum trade size (USDT)
+          description: >
+            The maximum amount of USDT to sell in a single auction.
+          min: 0
+        - binding: min-trade-amount
+          name: Minimum trade size (USDT)
+          description: >
+            The minimum amount of USDT to sell in a single auction.
+          min: 0
+        - binding: time-per-trade-epoch
+          name: Auction period (in seconds)
+          description: >
+            The auction period is the time between each auction price halvening.
+          presets:
+            - name: Every hour (3600)
+              value: 3600
+            - name: Every 2 hours (7200)
+              value: 7200
+        - binding: baseline
+          name: Baseline HOT per USDT
+          description: >
+            The absolute minimum amount of HOT per USDT that the auction will trade at. (e.g. 400 HOT per USDT)
+          min: 0
+        - binding: next-trade-multiplier
+          name: Auction start multiplier
+          description: >
+            The multiplier to apply to the last trade to kick off the next auction.
+          min: 1.01
+          presets:
+            - name: 1.01x
+              value: 1.01
+            - name: 1.02x
+              value: 1.02
+            - name: 1.05x
+              value: 1.05
+        - binding: next-trade-baseline-multiplier
+          name: Auction end multiplier
+          description: >
+            The multiplier to apply to the last trade to set the baseline for the next auction.
+          presets:
+            - name: Disabled (0)
+              value: 0
+            - name: 0.9x
+              value: 0.9
+            - name: 0.95x
+              value: 0.95
+        - binding: initial-io
+          name: Kickoff HOT per USDT
+          description: >
+            The initial HOT per USDT to kickoff the first auction. (e.g. 438 HOT per USDT)
           min: 0
 
     - deployment: flare-cysflr-cusdx
